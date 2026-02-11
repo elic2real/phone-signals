@@ -1,3 +1,166 @@
+# ===============================
+# UNIFIED FEATURE PIPELINE (FeatureSet)
+# ===============================
+from dataclasses import dataclass, field
+
+@dataclass
+class FeatureSet:
+    pair: str
+    ts: float
+    bid: float
+    ask: float
+    mid: float
+    spread_pips: float
+    atr_m1_pips: float
+    atr_m5_pips: float
+    atr_m15_pips: float
+    atr_h1_pips: float
+    atr_h4_pips: float
+    v_scalar: float
+    vol_slope_m1: float
+    wr_m5: float
+    wr_m15: float
+    mnorm_m1: float
+    mnorm_m5: float
+    volz_m1: float
+    volz_m5: float
+    path_10s: dict = field(default_factory=dict)
+    path_30s: dict = field(default_factory=dict)
+    path_60s: dict = field(default_factory=dict)
+    book: dict = field(default_factory=dict)
+
+def compute_features(pair, pricing_stream, candle_cache, book_cache):
+    ts = time.time()
+    tick = pricing_stream.get_latest_tick(pair)
+    bid = tick.bid if tick else 0.0
+    ask = tick.ask if tick else 0.0
+    mid = tick.mid if tick else 0.0
+    spread_pips = tick.spread_pips if tick else 0.0
+    # ATRs
+    m1 = candle_cache.get((pair, "M1"), [])
+    m5 = candle_cache.get((pair, "M5"), [])
+    m15 = candle_cache.get((pair, "M15"), [])
+    h1 = candle_cache.get((pair, "H1"), [])
+    h4 = candle_cache.get((pair, "H4"), [])
+    atr_m1_pips = compute_atr_pips(m1, 14)
+    atr_m5_pips = compute_atr_pips(m5, 14)
+    atr_m15_pips = compute_atr_pips(m15, 14)
+    atr_h1_pips = compute_atr_pips(h1, 14)
+    atr_h4_pips = compute_atr_pips(h4, 14)
+    v_scalar = atr_m1_pips / (compute_atr_pips(m1, 100) or 1.0)
+    vol_slope_m1 = compute_vol_slope(m1)
+    wr_m5 = compute_wr(m5, 14)
+    wr_m15 = compute_wr(m15, 14)
+    mnorm_m1 = compute_mnorm(m1, 14, atr_m1_pips)
+    mnorm_m5 = compute_mnorm(m5, 14, atr_m5_pips)
+    volz_m1 = compute_volz(m1)
+    volz_m5 = compute_volz(m5)
+    # Path metrics
+    path_10s = compute_path_metrics(pair, pricing_stream, 10)
+    path_30s = compute_path_metrics(pair, pricing_stream, 30)
+    path_60s = compute_path_metrics(pair, pricing_stream, 60)
+    # Book features
+    book = book_cache.get(pair, {})
+    return FeatureSet(
+        pair=pair,
+        ts=ts,
+        bid=bid,
+        ask=ask,
+        mid=mid,
+        spread_pips=spread_pips,
+        atr_m1_pips=atr_m1_pips,
+        atr_m5_pips=atr_m5_pips,
+        atr_m15_pips=atr_m15_pips,
+        atr_h1_pips=atr_h1_pips,
+        atr_h4_pips=atr_h4_pips,
+        v_scalar=v_scalar,
+        vol_slope_m1=vol_slope_m1,
+        wr_m5=wr_m5,
+        wr_m15=wr_m15,
+        mnorm_m1=mnorm_m1,
+        mnorm_m5=mnorm_m5,
+        volz_m1=volz_m1,
+        volz_m5=volz_m5,
+        path_10s=path_10s,
+        path_30s=path_30s,
+        path_60s=path_60s,
+        book=book
+    )
+
+# Indicator computation helpers (single source of truth)
+def compute_atr_pips(candles, n):
+    if len(candles) < n:
+        return 0.0
+    tr = []
+    for i in range(1, n+1):
+        h = candles[-i]["high"]
+        l = candles[-i]["low"]
+        c_prev = candles[-i-1]["close"] if i < len(candles) else h
+        tr.append(max(h-l, abs(h-c_prev), abs(l-c_prev)))
+    return sum(tr)/n * 10000
+
+def compute_wr(candles, n):
+    if len(candles) < n:
+        return 0.0
+    highs = [c["high"] for c in candles[-n:]]
+    lows = [c["low"] for c in candles[-n:]]
+    close = candles[-1]["close"]
+    hh = max(highs)
+    ll = min(lows)
+    return -100 * (hh - close) / (hh - ll + 1e-8) if hh != ll else 0.0
+
+def compute_mnorm(candles, n, atr):
+    if len(candles) < n:
+        return 0.0
+    mom = candles[-1]["close"] - candles[-n]["close"]
+    return mom / (atr or 1.0)
+
+def compute_volz(candles):
+    if len(candles) < 10:
+        return 0.0
+    vols = [c["volume"] for c in candles[-10:]]
+    med = statistics.median(vols)
+    mad = statistics.median([abs(v-med) for v in vols]) + 1e-8
+    return (vols[-1] - med) / mad
+
+def compute_vol_slope(candles):
+    if len(candles) < 15:
+        return 0.0
+    atrs = [compute_atr_pips(candles[-i:], 14) for i in range(1, 6)]
+    return atrs[-1] - atrs[0] if len(atrs) == 5 else 0.0
+
+def compute_path_metrics(pair, pricing_stream, window_s):
+    ticks = pricing_stream.get_recent_ticks(pair, 100)
+    now = time.time()
+    cutoff = now - window_s
+    window_ticks = [t for t in ticks if t.ts >= cutoff]
+    if not window_ticks:
+        return {}
+    prices = [t.mid for t in window_ticks]
+    disp = abs(prices[-1] - prices[0]) if len(prices) > 1 else 0.0
+    path_len = sum(abs(prices[i] - prices[i-1]) for i in range(1, len(prices)))
+    eff = disp / (path_len + 1e-8)
+    overlap = path_len / (disp + 1e-8) if disp > 0 else 0.0
+    speed = disp / (window_ticks[-1].spread_pips or 1.0)
+    velocity = speed - (disp / (window_ticks[0].spread_pips or 1.0)) if len(window_ticks) > 1 else 0.0
+    pullback = 0.0  # Placeholder, implement as needed
+    pullback_rate = 0.0  # Placeholder
+    local_hi = max(prices)
+    local_lo = min(prices)
+    acceptance_time = sum(1 for p in prices if p > local_hi*0.98 or p < local_lo*1.02)
+    return {
+        "disp": disp,
+        "path_len": path_len,
+        "eff": eff,
+        "overlap": overlap,
+        "speed": speed,
+        "velocity": velocity,
+        "pullback": pullback,
+        "pullback_rate": pullback_rate,
+        "local_hi": local_hi,
+        "local_lo": local_lo,
+        "acceptance_time": acceptance_time
+    }
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -872,6 +1035,7 @@ CANDLE_REFRESH_FOCUS_SEC = float(os.getenv("CANDLE_REFRESH_FOCUS_SEC", "5") or "
 CANDLE_REFRESH_WATCH_SEC = float(os.getenv("CANDLE_REFRESH_WATCH_SEC", "15") or "15")
 CANDLE_REFRESH_SKIP_SEC = float(os.getenv("CANDLE_REFRESH_SKIP_SEC", "30") or "30")
 EXIT_CANDLE_REFRESH_SEC = float(os.getenv("EXIT_CANDLE_REFRESH_SEC", "5") or "5")
+BOOKS_REFRESH_SEC = float(os.getenv("BOOKS_REFRESH_SEC", "10") or "10")
 
 SPREAD_MAX_PIPS = 12.0
 
@@ -1603,8 +1767,11 @@ def compute_volume_z(candles: List[dict], win: int = 20) -> float:
     return (latest - med) / denom
 
 
-def _book_poll_interval(state: str) -> float:
+def _book_poll_interval(state: str, cadence: Optional["AdaptiveCadence"] = None) -> float:
     """Dynamic polling interval for order/position books based on state."""
+    if cadence:
+        return cadence.get_interval("books_sec")
+    
     s = str(state or "").upper()
     if s in ("WATCH", "GET_READY", "ENTER", "MANAGING", "ARM_TICK_ENTRY"):
         return 15.0
@@ -1673,10 +1840,11 @@ def _poll_books(
     price_map: Dict[str, Tuple[float, float]],
     book_cache: Dict[str, Dict[str, Any]],
     now: float,
+    cadence: Optional["AdaptiveCadence"] = None,
 ) -> None:
     """Poll order/position books with state-driven cadence and update metrics."""
     for pair, st in states.items():
-        interval = _book_poll_interval(st.state)
+        interval = _book_poll_interval(st.state, cadence)
         cache = book_cache.get(pair)
         if cache and (now - float(cache.get("ts", 0.0))) < interval:
             continue
@@ -7802,9 +7970,104 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         "exit_sec": float(EXIT_SCAN_SEC),
         "exit_refresh_sec": float(EXIT_REFRESH_SEC),
     }
+    # SOP v2.1: Unified Adaptive Cadence System
+    # Drives scan/pricing/candles/books/truth based on health+state+urgency
+    class AdaptiveCadence:
+        """Unified adaptive cadence manager for all polling activities"""
+        
+        def __init__(self):
+            self.base_intervals = {
+                "skip_sec": float(SKIP_SCAN_SEC),
+                "watch_sec": float(WATCH_SCAN_SEC),
+                "focus_sec": float(FOCUS_SCAN_SEC),
+                "exit_sec": float(EXIT_SCAN_SEC),
+                "exit_refresh_sec": float(EXIT_REFRESH_SEC),
+                "pricing_sec": PRICE_REFRESH_SEC,
+                "candles_sec": CANDLE_REFRESH_SKIP_SEC,
+                "books_sec": BOOKS_REFRESH_SEC,
+                "truth_sec": 15.0,  # Base truth polling interval
+            }
+            self.health_multiplier = 1.0
+            self.urgency_multiplier = 1.0
+            self.last_update = now_ts()
+            
+        def update(self, health: dict, states: dict, open_trades: list, net_fail_count: int):
+            """Update cadence multipliers based on system state"""
+            # Health degradation multiplier (0.5x to 2.0x)
+            if health.get("degraded", False):
+                self.health_multiplier = 0.5  # Slow down when degraded
+            elif net_fail_count > 5:
+                self.health_multiplier = 0.7  # Slow down with many failures
+            elif health.get("price_stale", False):
+                self.health_multiplier = 0.8
+            else:
+                self.health_multiplier = 1.0
+                
+            # Urgency multiplier based on market activity (0.5x to 2.0x)
+            active_states = sum(1 for st in states.values() 
+                              if st.state in ("GET_READY", "ENTER", "MANAGING", "ARM_TICK_ENTRY"))
+            open_trades_count = len(open_trades)
+            
+            if open_trades_count > 0:
+                # More aggressive with open trades
+                self.urgency_multiplier = min(2.0, 1.0 + (open_trades_count * 0.2))
+            elif active_states > 0:
+                # Moderate urgency with active states
+                self.urgency_multiplier = min(1.5, 1.0 + (active_states * 0.1))
+            else:
+                # Normal operation
+                self.urgency_multiplier = 1.0
+                
+            # Hourly mode override
+            if HOURLY_SCAN_MODE:
+                self.urgency_multiplier = max(self.urgency_multiplier, 
+                                            HOURLY_SCAN_INTERVAL_SEC / self.base_intervals["skip_sec"])
+                
+            self.last_update = now_ts()
+            
+        def get_interval(self, key: str) -> float:
+            """Get adaptive interval for a specific activity"""
+            base = self.base_intervals.get(key, 60.0)
+            adaptive = base / (self.health_multiplier * self.urgency_multiplier)
+            return max(1.0, adaptive)  # Minimum 1 second interval
+            
+        def get_candle_refresh(self, scan_type: str) -> float:
+            """Get candle refresh interval based on scan type"""
+            base = CANDLE_REFRESH_SKIP_SEC
+            if scan_type == "FOCUS":
+                base = CANDLE_REFRESH_FOCUS_SEC
+            elif scan_type == "WATCH":
+                base = CANDLE_REFRESH_WATCH_SEC
+            elif scan_type == "EXIT":
+                base = EXIT_CANDLE_REFRESH_SEC
+                
+            adaptive = base / (self.health_multiplier * self.urgency_multiplier)
+            return max(1.0, adaptive)
+            
+        def log_status(self):
+            """Log current cadence status"""
+            log_runtime("info", "CADENCE_STATUS", {
+                "health_mult": self.health_multiplier,
+                "urgency_mult": self.urgency_multiplier,
+                "skip_sec": self.get_interval("skip_sec"),
+                "focus_sec": self.get_interval("focus_sec"),
+                "watch_sec": self.get_interval("watch_sec"),
+                "exit_sec": self.get_interval("exit_sec"),
+                "pricing_sec": self.get_interval("pricing_sec"),
+                "books_sec": self.get_interval("books_sec"),
+                "truth_sec": self.get_interval("truth_sec"),
+            })
+    
+    cadence = AdaptiveCadence()
+    
     # State-driven cadence: tighten when any pair is active (WATCH/GET_READY/ENTER/MANAGING)
     def _has_active_states() -> bool:
         return any(st.state in ("WATCH", "GET_READY", "ENTER", "MANAGING", "ARM_TICK_ENTRY") for st in states.values())
+    
+    # Initialize cadence system
+    cadence.update(health={}, states={}, open_trades=[], net_fail_count=0)
+    
+    # State-driven cadence override for active states
     if _has_active_states():
         scan_cfg["skip_sec"] = min(scan_cfg["skip_sec"], 15.0)
         scan_cfg["watch_sec"] = min(scan_cfg["watch_sec"], 8.0)
@@ -7911,6 +8174,28 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             if run_for_sec is not None and (now_ts() - start_ts) >= float(run_for_sec):
                 break
             now_loop = now_ts()
+            
+            # SOP v2.1: Update adaptive cadence based on current state
+            health_snapshot = {
+                "degraded": any(st.degraded for st in states.values()),
+                "price_stale": any(hasattr(st, 'stale_poll_count') and st.stale_poll_count > STALE_FEED_MAX_POLLS 
+                                  for st in states.values()),
+            }
+            cadence.update(health_snapshot, states, open_trades, net_fail_count)
+            
+            # Log cadence status periodically
+            if int(now_loop) % 60 == 0:
+                cadence.log_status()
+            
+            # Use adaptive intervals
+            scan_cfg = {
+                "skip_sec": cadence.get_interval("skip_sec"),
+                "watch_sec": cadence.get_interval("watch_sec"),
+                "focus_sec": cadence.get_interval("focus_sec"),
+                "exit_sec": cadence.get_interval("exit_sec"),
+                "exit_refresh_sec": cadence.get_interval("exit_refresh_sec"),
+            }
+            truth_throttle_sec = cadence.get_interval("truth_sec")
             if (now_loop - last_loop_ts) > 60.0:
                 last_wide = 0.0
             if (now_loop - last_time_sync) >= 300.0:
@@ -8097,7 +8382,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     exit_pairs,
                     now,
                     cache=exit_price_cache,
-                    ttl=EXIT_PRICE_REFRESH_SEC,
+                    ttl=cadence.get_interval("pricing_sec"),
                     label="pricing_multi_exit",
                 ) or {}
                 for p, px in price_map_exit.items():
@@ -8708,7 +8993,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 last_wide = now_ts()
 
             scan_now = now_ts()
-            candle_refresh_sec = _scan_candle_refresh_sec(scan_type)
+            candle_refresh_sec = cadence.get_candle_refresh(scan_type)
 
             # Log what we're scanning
             print(f"\n{time.strftime('%H:%M:%S')} - {scan_type} SCAN: {', '.join(scan_pairs)}")
@@ -8773,7 +9058,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
             # Poll order/position books (state-driven cadence) and compute book metrics
             try:
-                _poll_books(o, states, price_map, book_cache, scan_now)
+                _poll_books(o, states, price_map, book_cache, scan_now, cadence)
             except Exception as e:
                 log_throttled(
                     "books_poll_fail",
@@ -9166,12 +9451,36 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 else:
                     tf_data = {"available": [exec_gran or TF_EXEC], "M5": c_exec}
                 
-                sigs = build_signals(pair, st, c_exec, tf_data)
-                raw_sig_count = len(sigs)
-            
                 # Track bar completeness for logging
                 bar_complete = bool(c_exec[-1].get("complete", True)) if c_exec else True
                 bar_age_ms = (now_ts() - float(c_exec[-1].get("time", now_ts()))) * 1000 if not bar_complete and c_exec else 0
+                
+                # SOP v2.1: Data density wiring - enrich tf_data with book metrics and freshness
+                book_metrics = book_cache.get(pair, {})
+                data_freshness = {
+                    "candles_age_ms": bar_age_ms,
+                    "books_age_sec": (scan_now - book_metrics.get("ts", 0)) if book_metrics else float("inf"),
+                    "price_age_sec": (scan_now - price_map.get(pair, [0, 0, 0])[2]) if pair in price_map and len(price_map[pair]) > 2 else float("inf"),
+                }
+                
+                # Enrich tf_data with book metrics and freshness
+                if tf_data is None:
+                    tf_data = {}
+                tf_data["book_metrics"] = book_metrics
+                tf_data["freshness"] = data_freshness
+                
+                # Log data density and freshness
+                log_runtime("debug", "DATA_DENSITY", {
+                    "pair": pair,
+                    "tf_available": tf_data.get("available", []),
+                    "book_metrics_available": bool(book_metrics),
+                    "candles_age_ms": data_freshness["candles_age_ms"],
+                    "books_age_sec": data_freshness["books_age_sec"],
+                    "price_age_sec": data_freshness["price_age_sec"],
+                })
+                
+                sigs = build_signals(pair, st, c_exec, tf_data)
+                raw_sig_count = len(sigs)
             
                 # Check for stale feed
                 current_candle_time = float(c_exec[-1].get("time", 0))
@@ -11873,6 +12182,46 @@ def test_force_split_two_legs(*, pair: str = "EUR_USD", speed_class: str = "MED"
     from phone_bot_tests import test_force_split_two_legs as _impl
     return _impl(pair=pair, speed_class=speed_class, units_total=units_total)
 
+
+# ...existing code...
+def apply_8020_split(units_total):
+    units_main = int(round(units_total * 0.80))
+    units_runner = units_total - units_main
+    return units_main, units_runner
+
+# Example usage in entry logic:
+def place_entry_with_split(pair, candidate, features):
+    # Compute size scaling
+    confidence = candidate.score
+    spread_pips = features.spread_pips
+    atr_pips = features.atr_m1_pips
+    base_units = UNITS_MIN + (UNITS_MAX - UNITS_MIN) * (confidence ** GAMMA)
+    spread_atr = spread_pips / (atr_pips or 1.0)
+    choke = clamp01(1 - (spread_atr - 0.10)/(0.70-0.10))
+    mult_final = 0.25 + 1.75*(confidence**1.7)
+    mult_final *= (0.35 + 0.65*choke)
+    units_total = int(round(base_units * mult_final))
+    units_main, units_runner = apply_8020_split(units_total)
+    # Log sizes
+    log_trade_event({
+        "pair": pair,
+        "strategy_id": candidate.strategy_id,
+        "score": candidate.score,
+        "confidence": confidence,
+        "units_total": units_total,
+        "units_main": units_main,
+        "units_runner": units_runner,
+        "entry_zone": candidate.entry_zone,
+        "tp_anchor": candidate.tp_anchor,
+        "invalid_level": candidate.invalid_level,
+        "features": candidate.features,
+        "event": "entry_split"
+    })
+    # Place orders (stub)
+    # place_order(pair, units_main, ...)
+    # place_order(pair, units_runner, ...)
+    return units_main, units_runner
+# ...existing code...
 
 if __name__ == "__main__":
     main()
