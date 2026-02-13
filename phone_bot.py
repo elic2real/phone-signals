@@ -13014,9 +13014,11 @@ def _run_live_indicator_proof() -> int:
     """Run indicator path against live market data and emit proof marker."""
     _append_proof_marker("live-indicator-proof", "start")
     if not os.getenv("OANDA_API_KEY"):
-        os.environ["OANDA_API_KEY"] = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
+        log_runtime("error", "LIVE_INDICATOR_PROOF_MISSING_API_KEY", message="OANDA_API_KEY environment variable required for live indicator proof")
+        return 1
     if not os.getenv("OANDA_ACCOUNT_ID"):
-        os.environ["OANDA_ACCOUNT_ID"] = "101-001-22881868-001"
+        log_runtime("error", "LIVE_INDICATOR_PROOF_MISSING_ACCOUNT_ID", message="OANDA_ACCOUNT_ID environment variable required for live indicator proof")
+        return 1
     if not os.getenv("OANDA_ENV"):
         os.environ["OANDA_ENV"] = "practice"
     initialize_bot()
