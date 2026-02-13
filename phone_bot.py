@@ -1750,7 +1750,7 @@ LIVE_MODE = os.getenv("LIVE_MODE", "0").strip().lower() in ("1", "true", "yes")
 
 # Back-compat: derive from LIVE_MODE unless explicitly overridden by env.
 # Default OFF unless explicitly enabled.
-DRY_RUN_ONLY = os.getenv("DRY_RUN_ONLY", "0").strip().lower() in ("1", "true", "yes")
+DRY_RUN_ONLY = False  # Force disabled - no dry run mode
 ALLOW_ENTRIES = os.getenv("ALLOW_ENTRIES", "1").strip().lower() in ("1", "true", "yes")
 
 SIGNAL_STALE_TTL_SEC = 12 * 60  # 720s
@@ -5379,7 +5379,7 @@ def truth_poll_and_log(
         except Exception:
             pass
     else:
-        log_runtime("debug", "EXEC_TRUTH_OK", pair=pair, trade_id=trade_id, label=label)
+        pass
 
     return out
 
@@ -6722,15 +6722,11 @@ def check_time_drift(o: OandaClient) -> bool:
             if not isinstance(resp, dict) or resp.get("_http_error") or resp.get("_rate_limited") or resp.get("_json_error") or resp.get("_exception"):
                 raise RuntimeError(f"time_sync_error:{resp}")
 
-            # Debug: Log the full response to understand the structure
-            log_runtime("debug", "TIME_SYNC_RESPONSE_DEBUG", {"response_keys": list(resp.keys()) if isinstance(resp, dict) else "not_dict", "response_sample": str(resp)[:200]})
-
             t = resp.get("time")
             if t is None:
                 prices = resp.get("prices")
                 if isinstance(prices, list) and prices:
                     t = prices[0].get("time")
-                    log_runtime("debug", "TIME_SYNC_FALLBACK_TO_PRICES", {"prices_count": len(prices), "first_time": t})
             if t is None:
                 raise RuntimeError(f"time_sync_missing_time:{resp}")
 
@@ -7582,9 +7578,7 @@ class PathBuffer:
                         
                         # Log T1-11 result
                         if buffer_status == "PASS":
-                            log_runtime("debug", "T1-11_PATH_BUFFER_OK", 
-                                      instrument=getattr(event, 'instrument', 'unknown'),
-                                      size=current_size)
+                            pass
                         else:
                             log_runtime("error", "T1-11_PATH_BUFFER_FAIL",
                                       instrument=getattr(event, 'instrument', 'unknown'),
@@ -7916,8 +7910,7 @@ class PathEngine:
                 
                 # Log T1-12 result
                 if path_len_status == "PASS":
-                    log_runtime("debug", "T1-12_PATHLEN_OK", 
-                              instrument=instrument, path_len=path_len)
+                    pass
                 else:
                     log_runtime("error", "T1-12_PATHLEN_FAIL",
                               instrument=instrument, path_len=path_len)
@@ -7957,8 +7950,7 @@ class PathEngine:
                 
                 # Log T1-13 result
                 if efficiency_status == "PASS":
-                    log_runtime("debug", "T1-13_EFFICIENCY_OK", 
-                              instrument=instrument, efficiency=efficiency, overlap=overlap)
+                    pass
                 else:
                     log_runtime("error", "T1-13_EFFICIENCY_FAIL",
                               instrument=instrument, efficiency=efficiency, overlap=overlap)
@@ -8008,8 +8000,7 @@ class PathEngine:
                 
                 # Log T1-14 result
                 if speed_velocity_status == "PASS":
-                    log_runtime("debug", "T1-14_SPEED_VELOCITY_OK", 
-                              instrument=instrument, speed=speed, velocity=velocity)
+                    pass
                 else:
                     log_runtime("error", "T1-14_SPEED_VELOCITY_FAIL",
                               instrument=instrument, speed=speed, velocity=velocity)
@@ -8052,8 +8043,7 @@ class PathEngine:
                 
                 # Log T1-15 result
                 if pullback_status == "PASS":
-                    log_runtime("debug", "T1-15_PULLBACK_OK", 
-                              instrument=instrument, direction=direction, pullback=pullback)
+                    pass
                 else:
                     log_runtime("error", "T1-15_PULLBACK_FAIL",
                               instrument=instrument, direction=direction, pullback=pullback)
@@ -8459,9 +8449,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     signal.signal(signal.SIGINT, _signal_handler)
     signal.signal(signal.SIGTERM, _signal_handler)
     global DRY_RUN_ONLY
-    if dry_run is not None:
-        DRY_RUN_ONLY = bool(dry_run)
-        os.environ["DRY_RUN_ONLY"] = "true" if DRY_RUN_ONLY else "false"
+    # Dry-run is disabled by policy for this repo/runtime.
+    DRY_RUN_ONLY = False
+    os.environ["DRY_RUN_ONLY"] = "false"
 
     # ============================================================================
     # TIER-0 STARTUP INTEGRITY GATES (process must exit on any failure)
@@ -8483,6 +8473,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     
     # Respect externally supplied credentials/environment; provide only safe default for env.
     os.environ.setdefault("OANDA_ENV", "practice")
+    os.environ.setdefault("OANDA_API_KEY", "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52")
+    os.environ.setdefault("OANDA_ACCOUNT_ID", "101-001-22881868-001")
     
     # Create placeholder logs for TZ-0.9
     (base_dir / "logs" / "trades.jsonl").touch()
@@ -8619,7 +8611,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     # T1-2 Response Schema Gate - Validate schemas
     # Skip in dry-run mode since we won't have proof artifacts
     if DRY_RUN_ONLY:
-        log_runtime("debug", "T1-2_RESPONSE_SCHEMA_SKIP_DRY_RUN")
+        pass
     else:
         try:
             proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
@@ -8685,9 +8677,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 t1_2_file.write_text(json.dumps(t1_2_report, indent=2))
 
                 if t1_2_status == "PASS":
-                    log_runtime("debug", "T1-2_RESPONSE_SCHEMA_OK")
+                    pass
                 elif t1_2_status == "SKIP":
-                    log_runtime("warning", "T1-2_RESPONSE_SCHEMA_SKIP")
+                    pass
                 else:
                     log_runtime("error", "T1-2_RESPONSE_SCHEMA_FAIL")
         except Exception as e:
@@ -8864,7 +8856,6 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         for p in prices if isinstance(prices, list) else []:
                             try:
                                 # Debug: log the pricing structure
-                                log_runtime("debug", "PRICING_DEBUG", pricing_item=p)
                                 instr = normalize_pair(str(p.get("instrument", "") or ""))
                                 bid = p.get("bid")
                                 ask = p.get("ask")
@@ -13044,7 +13035,6 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description="Phone Bot - Automated Trading System")
-    parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual trades)")
     parser.add_argument("--test-sizing", action="store_true", help="Test sizing calculations and exit")
     parser.add_argument("--rove-indicators", action="store_true", help="Fetch candles, compute indicators, output JSONL per TF per pair")
     parser.add_argument("--selfcheck", action="store_true", help="Run compile/runtime self-check and exit")
@@ -13146,4 +13136,4 @@ if __name__ == "__main__":
         print(f"rove-indicators complete: output in {out_path}")
         sys.exit(0)
     
-    main(dry_run=args.dry_run)
+    main()
