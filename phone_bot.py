@@ -5,7 +5,7 @@ def ffloat(x: Any, default: float = 0.0) -> float:
             return default
         return float(x)
     except Exception as e:
-        log_runtime("debug", "ffloat_conversion_error", value=str(x), error=str(e))
+        log_runtime("debug", "float_conversion_error", value=str(x), error=str(e))
         return default
 #!/usr/bin/env python3
 import os
@@ -439,10 +439,9 @@ def initialize_bot():
 
     api_key = str(os.getenv("OANDA_API_KEY", "")).strip()
     account_id = str(os.getenv("OANDA_ACCOUNT_ID", "")).strip()
-    if not api_key:
-        raise RuntimeError("initialize_bot: OANDA_API_KEY environment variable is required (no hardcoded fallback allowed)")
-    if not account_id:
-        raise RuntimeError("initialize_bot: OANDA_ACCOUNT_ID environment variable is required (no hardcoded fallback allowed)")
+    if not api_key or not account_id:
+        log_runtime("critical", "BOOT_FAILURE_MISSING_CREDENTIALS", message="missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
+        raise RuntimeError("initialize_bot: missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
     env_raw = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV)).strip()
     env = normalize_oanda_env(env_raw) or "practice"
 
@@ -13013,11 +13012,8 @@ def _run_selfcheck() -> int:
 def _run_live_indicator_proof() -> int:
     """Run indicator path against live market data and emit proof marker."""
     _append_proof_marker("live-indicator-proof", "start")
-    if not os.getenv("OANDA_API_KEY"):
-        log_runtime("error", "LIVE_INDICATOR_PROOF_MISSING_API_KEY", message="OANDA_API_KEY environment variable required for live indicator proof")
-        return 1
-    if not os.getenv("OANDA_ACCOUNT_ID"):
-        log_runtime("error", "LIVE_INDICATOR_PROOF_MISSING_ACCOUNT_ID", message="OANDA_ACCOUNT_ID environment variable required for live indicator proof")
+    if not os.getenv("OANDA_API_KEY") or not os.getenv("OANDA_ACCOUNT_ID"):
+        log_runtime("error", "LIVE_INDICATOR_PROOF_MISSING_CREDENTIALS", message="OANDA_API_KEY and OANDA_ACCOUNT_ID environment variables required for live indicator proof")
         return 1
     if not os.getenv("OANDA_ENV"):
         os.environ["OANDA_ENV"] = "practice"
