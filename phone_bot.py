@@ -88,9 +88,14 @@ def _record_runner_exit(reason, tr, favorable_atr, track):
 # --- EARLY BOOTSTRAP: DO NOT DEFINE DUPLICATE FUNCTIONS HERE ---
 # Canonical implementations are defined later in the file
 # ---------------------------------------------------------------
-MTF_SIGNAL_TIMEOUT = 60.0  # seconds, default value
-MTF_MAX_STRATEGIES_PER_PAIR = 5  # default value
-MTF_CONFLICT_RESOLUTION = "priority"  # default value
+
+# ===== MULTI-TIMEFRAME (MTF) CONFIGURATION =====
+MTF_SIGNAL_TIMEOUT = 60.0  # seconds - Maximum time to wait for MTF signal coordination
+MTF_MAX_STRATEGIES_PER_PAIR = 5  # Maximum number of strategies per trading pair
+MTF_CONFLICT_RESOLUTION = "priority"  # Strategy conflict resolution method: "priority", "first", "last"
+
+# ===== PRICING STREAM CONFIGURATION =====
+PRICING_STREAM_POLL_INTERVAL = 0.5  # seconds - Polling interval for pricing stream (500ms for high-frequency data)
 
 
 # Emoji constants
@@ -107,41 +112,44 @@ EMOJI_DB = "🗄️"
 EMOJI_SUCCESS = "🎉"
 EMOJI_STOP = "🛑"
 
-# ===== MISSING CONSTANTS & CONFIGURATION =====
-REJECTED_ORDER_RETRY_MAX = 3
-REJECTED_ORDER_RETRY_DELAY = 1.0
-ORDER_REJECT_BACKOFF_MULTIPLIER = 2.0
-ALTERNATIVE_ROUTING_ENABLED = False
-MIN_PARTIAL_FILL_UNITS = 1
+# ===== ORDER RETRY CONFIGURATION =====
+# Configuration for handling rejected orders and retry logic
+REJECTED_ORDER_RETRY_MAX = 3  # Maximum number of retry attempts for rejected orders
+REJECTED_ORDER_RETRY_DELAY = 1.0  # seconds - Initial delay between retry attempts
+ORDER_REJECT_BACKOFF_MULTIPLIER = 2.0  # Exponential backoff multiplier for retries
+ALTERNATIVE_ROUTING_ENABLED = False  # Enable alternative order routing on rejection
+MIN_PARTIAL_FILL_UNITS = 1  # Minimum units for accepting partial fills
 
-# Runner configuration
-RUNNER_MIN_HOLD_TIME = 300.0  # 5 minutes
-RUNNER_MAX_HOLD_TIME = 14400.0  # 4 hours
-RUNNER_MIN_PROGRESS = 0.1  # 10% progress
-RUNNER_SPEED_THRESHOLD = 0.5
-RUNNER_PULLBACK_LIMIT = 0.3  # 30% pullback
+# ===== RUNNER STRATEGY CONFIGURATION =====
+# Configuration for runner trading strategy behavior and risk management
+RUNNER_MIN_HOLD_TIME = 300.0  # seconds (5 minutes) - Minimum time to hold a runner position
+RUNNER_MAX_HOLD_TIME = 14400.0  # seconds (4 hours) - Maximum time to hold a runner position
+RUNNER_MIN_PROGRESS = 0.1  # 10% - Minimum progress threshold to consider trade viable
+RUNNER_SPEED_THRESHOLD = 0.5  # Minimum speed threshold for momentum detection
+RUNNER_PULLBACK_LIMIT = 0.3  # 30% - Maximum allowed pullback before exit
 
-# Webhook configuration
-WEBHOOK_ENABLED = False
-WEBHOOK_URL = ""
-WEBHOOK_RETRY_MAX = 3
-WEBHOOK_TIMEOUT = 30.0
-WEBHOOK_RETRY_DELAY = 1.0
+# ===== WEBHOOK CONFIGURATION =====
+# Configuration for external webhook notifications
+WEBHOOK_ENABLED = False  # Enable webhook notifications
+WEBHOOK_URL = ""  # Webhook endpoint URL
+WEBHOOK_RETRY_MAX = 3  # Maximum retry attempts for failed webhook calls
+WEBHOOK_TIMEOUT = 30.0  # seconds - HTTP timeout for webhook requests
+WEBHOOK_RETRY_DELAY = 1.0  # seconds - Delay between webhook retry attempts
 
-# Push notification configuration
-PUSH_ENABLED = False
-PUSH_SERVICE = ""
-PUSH_TOKEN = ""
+# ===== PUSH NOTIFICATION CONFIGURATION =====
+# Configuration for push notification services
+PUSH_ENABLED = False  # Enable push notifications
+PUSH_SERVICE = ""  # Push notification service name
+PUSH_TOKEN = ""  # Push notification service token
 
-# Database transaction configuration
-DB_TRANSACTION_TIMEOUT = 30.0
-DB_TRANSACTION_MAX_RETRIES = 3
-
-# Additional DB configuration
-DB_MAX_RETRIES = 3
-DB_RETRY_DELAY = 0.25
-DB_LOCK_TIMEOUT = 5.0
-DB_ENABLE_WAL = True
+# ===== DATABASE CONFIGURATION =====
+# Configuration for SQLite database operations and transaction handling
+DB_TRANSACTION_TIMEOUT = 30.0  # seconds - Maximum time to wait for DB transaction
+DB_TRANSACTION_MAX_RETRIES = 3  # Maximum retry attempts for DB transactions
+DB_MAX_RETRIES = 3  # Maximum retry attempts for DB operations
+DB_RETRY_DELAY = 0.25  # seconds - Delay between DB retry attempts
+DB_LOCK_TIMEOUT = 5.0  # seconds - Maximum time to wait for DB lock
+DB_ENABLE_WAL = True  # Enable Write-Ahead Logging for better concurrency
 
 # Database backup configuration
 DB_BACKUP_PATH = Path("./backups")
@@ -156,9 +164,11 @@ db = None
 o = None
 pair = "EUR_USD"
 
-INSTR_META: Dict[str, Dict[str, Any]] = {}
-INSTR_META_TS: float = 0.0
-INSTR_META_TTL: float = 3600.0
+# ===== INSTRUMENT METADATA CONFIGURATION =====
+# Configuration for instrument metadata caching and refresh
+INSTR_META: Dict[str, Dict[str, Any]] = {}  # Cache for instrument metadata from OANDA
+INSTR_META_TS: float = 0.0  # Timestamp of last metadata refresh
+INSTR_META_TTL: float = 3600.0  # seconds (1 hour) - Time-to-live for cached instrument metadata
 INSTR_META_LOCK = threading.Lock()  # Protects INSTR_META and INSTR_META_TS
 
 
@@ -1314,7 +1324,7 @@ class PricingStream:
         
     def _stream_loop(self):
         """Main streaming loop - polls pricing endpoint continuously"""
-        poll_interval = 0.5  # 500ms for high-frequency data
+        poll_interval = PRICING_STREAM_POLL_INTERVAL
         
         while self.running and self.oanda_client:
             try:
