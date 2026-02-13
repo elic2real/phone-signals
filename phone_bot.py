@@ -3856,7 +3856,7 @@ def detect_mode(pair: str, current_high: float, current_low: Optional[float] = N
             return "SLOW"
 
     except Exception as e:
-        print(f"Regime detection error: {e}")
+        log_runtime("error", "REGIME_DETECTION_ERROR", error=str(e))
         return "MED"  # Fallback
 
 
@@ -5722,7 +5722,7 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
     except Exception as e:
         log_runtime("warning", "T1-16_ARTIFACT_ERROR", pair=pair, error=str(e))
     if pair:
-        print(f"{time.strftime('%H:%M:%S')} - {pair}: {old_state} -> {new_state}")
+        log_runtime("info", "STATE_TRANSITION", pair=pair, old_state=old_state, new_state=new_state, timestamp=time.strftime('%H:%M:%S'))
         sys.stdout.flush()
     
     # Immediate alert for WATCH / GET_READY / ARM_TICK_ENTRY / ENTER transitions (with deduplication)
@@ -5799,16 +5799,16 @@ def _apply_state_machine(st: PairState, pair: Optional[str] = None, c_exec: Opti
 
 def _order_confirmed(resp: dict) -> Tuple[bool, str, str, str]:
     if not isinstance(resp, dict):
-        print(f"❌ ORDER CONFIRMED: INVALID RESPONSE - {resp}")
+        log_runtime("error", "ORDER_INVALID_RESPONSE", response=str(resp))
         return False, "", "", "invalid_response"
     if resp.get("_rate_limited"):
-        print(f"❌ ORDER CONFIRMED: RATE LIMITED - {resp}")
+        log_runtime("error", "ORDER_RATE_LIMITED", response=resp)
         return False, "", "", "rate_limited"
     if resp.get("_http_error"):
-        print(f"❌ ORDER CONFIRMED: HTTP ERROR {resp.get('_status')} - {resp}")
+        log_runtime("error", "ORDER_HTTP_ERROR", status=resp.get('_status'), response=resp)
         return False, "", "", f"http_{resp.get('_status')}"
     if resp.get("_json_error"):
-        print(f"❌ ORDER CONFIRMED: JSON ERROR - {resp}")
+        log_runtime("error", "ORDER_JSON_ERROR", response=resp)
         return False, "", "", "json_error"
 
     fill = resp.get("orderFillTransaction") or {}
@@ -5819,28 +5819,28 @@ def _order_confirmed(resp: dict) -> Tuple[bool, str, str, str]:
     if cancel:
         reason = str(cancel.get("reason", "") or "cancel")
         error_msg = cancel.get("errorMessage", "")
-        print(f"❌ ORDER CANCELLED: reason={reason}, errorMessage={error_msg}, details={cancel}")
+        log_runtime("error", "ORDER_CANCELLED", reason=reason, errorMessage=error_msg, details=cancel)
         return False, str(cancel.get("orderID", "")), str(cancel.get("id", "")), f"cancel_{reason}"
     if reject:
         reason = str(reject.get("rejectReason", "") or "reject")
         error_msg = reject.get("errorMessage", "")
-        print(f"❌ ORDER REJECTED: reason={reason}, errorMessage={error_msg}, details={reject}")
+        log_runtime("error", "ORDER_REJECTED", reason=reason, errorMessage=error_msg, details=reject)
         return False, str(reject.get("orderID", "")), str(reject.get("id", "")), f"reject_{reason}"
     if fill:
         trade_id = _extract_trade_id_from_fill(resp)
         if trade_id is None:
-            print(f"❌ CRITICAL: Order filled but no tradeID extracted! {fill}")
-        print(f"✅ ORDER FILLED: orderID={fill.get('orderID')}, tradeID={trade_id}, price={fill.get('price')}, units={fill.get('units')}")
+            log_runtime("critical", "ORDER_FILLED_NO_TRADE_ID", fill=fill)
+        log_runtime("info", "ORDER_FILLED", orderID=fill.get('orderID'), tradeID=trade_id, price=fill.get('price'), units=fill.get('units'))
         return True, str(fill.get("orderID", "")), str(fill.get("id", "")), "FILLED"
     if create:
-        print(f"✅ ORDER CREATED: orderID={create.get('orderID')}, units={create.get('units')}")
+        log_runtime("info", "ORDER_CREATED", orderID=create.get('orderID'), units=create.get('units'))
         return True, str(create.get("orderID", "")), str(create.get("id", "")), "CREATED"
     
     # Check for top-level error message
     if resp.get("errorMessage"):
-        print(f"❌ ORDER ERROR: errorMessage={resp.get('errorMessage')}, rejectReason={resp.get('rejectReason')}")
+        log_runtime("error", "ORDER_ERROR", errorMessage=resp.get('errorMessage'), rejectReason=resp.get('rejectReason'))
     
-    print(f"❓ ORDER UNCONFIRMED: response structure unknown - {resp}")
+    log_runtime("warning", "ORDER_UNCONFIRMED", response=resp)
     return False, "", "", "unconfirmed"
 
 
@@ -6550,7 +6550,7 @@ def _as_dict(x: Any) -> Dict[str, Any]:
 def _handle_close_error(resp: dict, pair: str, direction: str, tr: dict, reason: str, favorable_atr: float, track: dict) -> bool:
     """Handle close errors, including 404 reconciliation."""
     if resp and resp.get("_status") == 404:
-        print("⚠️ Close returned 404, checking if trade already closed...")
+        log_runtime("warning", "CLOSE_404_RECONCILE_CHECK", pair=pair, direction=direction)
         # Reconcile - check if trade still exists
         oanda_client = _require_runtime_oanda()
         current_positions = oanda_call("get_positions_exit", oanda_client.open_positions)
@@ -6573,7 +6573,7 @@ def _handle_close_error(resp: dict, pair: str, direction: str, tr: dict, reason:
                     trade_exists = True
                     break
         if not trade_exists:
-            print("✅ Trade already closed, marking in DB")
+            log_runtime("info", "TRADE_ALREADY_CLOSED", pair=pair, direction=direction, trade_id=tr.get("id"))
             if db is not None:
                 db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), reason)
             _exit_log(tr, reason, favorable_atr, track)
@@ -6620,13 +6620,13 @@ def check_data_outage(pair: str, success: bool) -> None:
     if success:
         if data_outage_counter[pair] >= DATA_OUTAGE_THRESHOLD:
             log(f"{EMOJI_OK} DATA_RESTORED", {"pair": pair, "outage_count": data_outage_counter[pair]})
-            print(f"Data restored for {pair} after {data_outage_counter[pair]} failures")
+            log_runtime("info", "DATA_OUTAGE_RECOVERED", pair=pair, failures=data_outage_counter[pair])
         data_outage_counter[pair] = 0
     else:
         data_outage_counter[pair] += 1
         if data_outage_counter[pair] == DATA_OUTAGE_THRESHOLD:
             log(f"{EMOJI_ERR} DATA_OUTAGE", {"pair": pair, "consecutive_failures": data_outage_counter[pair]})
-            print(f"WARNING: Data outage detected for {pair} - {data_outage_counter[pair]} consecutive failures")
+            log_runtime("warning", "DATA_OUTAGE_DETECTED", pair=pair, consecutive_failures=data_outage_counter[pair])
 
 
 def get_active_sessions(now: Optional[float] = None) -> List[str]:
@@ -8530,7 +8530,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 holder_pid = tier0_result.get("holder_pid") if isinstance(tier0_result, dict) else getattr(tier0_result, "holder_pid", None)
             except Exception:
                 gate, reason, holder_pid = None, None, None
-            print(f"TIER0_FAIL gate={gate} reason={reason} holder_pid={holder_pid} proof_dir={proof_dir}", flush=True)
+            log_runtime("critical", "TIER0_GATE_FAILED", gate=gate, reason=reason, holder_pid=holder_pid, proof_dir=proof_dir)
             sys.exit(1)
 
     # Load credentials for network gates
@@ -8538,10 +8538,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     OANDA_ACCOUNT_ID = str(os.getenv("OANDA_ACCOUNT_ID", "") or "").strip()
     OANDA_ENV = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV) or DEFAULT_OANDA_ENV).strip()
     if not OANDA_API_KEY or not OANDA_ACCOUNT_ID:
-        print(
-            "BOOT_FAIL: missing OANDA credentials. "
-            "Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment."
-        )
+        log_runtime("critical", "BOOT_FAILURE_MISSING_CREDENTIALS", message="missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
         sys.exit(1)
 
     # Initialize artifact collector (non-blocking, optional)
@@ -8549,9 +8546,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         from artifact_collector import init_collector
         base_dir = Path(__file__).resolve().parent
         init_collector(base_dir)
-        print("Artifact collector initialized (non-blocking)")
+        log_runtime("info", "ARTIFACT_COLLECTOR_INITIALIZED")
     except Exception as e:
-        print(f"Artifact collector failed to initialize (continuing without): {e}")
+        log_runtime("warning", "ARTIFACT_COLLECTOR_INIT_FAILED", error=str(e))
     
     # Network-dependent gates
     base_urls = {"practice": "https://api-fxpractice.oanda.com", "live": "https://api-fxtrade.oanda.com"}
@@ -8571,7 +8568,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         tz_0_20_candles_availability(proof_dir, base_url, OANDA_API_KEY, test_pairs[0]),
         tz_0_21_time_parse_sanity(proof_dir, test_pairs[0])
     ]):
-        print("BOOT_FAIL: network/auth/data tier-0 gates failed. Check proof artifacts for details.")
+        log_runtime("critical", "BOOT_FAILURE", artifacts=proof_artifacts, message="network/auth/data tier-0 gates failed. Check proof artifacts for details.")
         sys.exit(1)
     # Final manifest for all Tier-0 artifacts
     generate_manifest(proof_dir)
@@ -9311,11 +9308,11 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         pair = normalize_pair(pair)
         _transition_state(st, "SKIP", pair)
         
-        # Print BLOCKED message for immediate visibility
+        # Log BLOCKED message for immediate visibility
         block_msg = f"BLOCKED: {reason}"
         if extra:
             block_msg += f" (details: {extra})"
-        print(f"  {pair}: {block_msg}")
+        log_runtime("warning", "PAIR_BLOCKED", pair=pair, block_msg=block_msg)
         
         meta = {"pair": pair, "reason": reason}
         if extra:
@@ -9547,7 +9544,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             last_runner_week = ts_now
 
     start_ts = now_ts()
-    print("Entering main scanning loop...")
+    log_runtime("info", "ENTERING_MAIN_LOOP")
     sys.stdout.flush()
     
     while not _SHUTDOWN:
@@ -10961,7 +10958,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     block_msg = f"BLOCKED: {reason}"
                     if extra:
                         block_msg += f" (details: {extra})"
-                    print(f"  {block_msg}")
+                    log_runtime("warning", "EXIT_BLOCKED", block_msg=block_msg)
                     
                     meta = {}
                     meta.update(exit_meta)
@@ -11250,7 +11247,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         if units != 0:
                             existing_sizes.append(abs(units))
             
-                print(f"\n🔢 UNIQUE SIZE CHECK for {pair}: existing_sizes={existing_sizes}")
+                log_runtime("debug", "UNIQUE_SIZE_CHECK", pair=pair, existing_sizes=existing_sizes)
 
                 existing_set = set(existing_sizes)
                 # Use broker min units, not MIN_TRADE_SIZE
@@ -11689,7 +11686,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         
         except Exception as e:
             log(f"{EMOJI_ERR} MAIN_LOOP_ERROR", {"error": str(e), "type": type(e).__name__})
-            print(f"\n❌ ERROR in main loop: {e}")
+            log_runtime("critical", "MAIN_LOOP_ERROR", error=str(e), error_type=type(e).__name__)
             import traceback
             traceback.print_exc()
             time.sleep(5.0)  # Prevent rapid error loops
@@ -12989,7 +12986,7 @@ def _append_proof_marker(mode: str, phase: str, **extra: Any) -> None:
         with marker_file.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(marker, sort_keys=True) + "\n")
     except Exception as e:
-        print(f"PROOF_MARKER_WRITE_FAIL: {e}", flush=True)
+        log_runtime("error", "PROOF_MARKER_WRITE_FAILED", error=str(e))
 
 
 def _run_selfcheck() -> int:
@@ -12999,7 +12996,7 @@ def _run_selfcheck() -> int:
     _append_proof_marker("selfcheck", "start")
     py_compile.compile(str(Path(__file__).resolve()), doraise=True)
     _append_proof_marker("selfcheck", "ok")
-    print("SELFCHECK_OK", flush=True)
+    log_runtime("info", "SELFCHECK_PASSED")
     return 0
 
 
@@ -13025,7 +13022,7 @@ def _run_live_indicator_proof() -> int:
         atr_exec=atr_exec,
         wr=wr_val,
     )
-    print("LIVE_INDICATOR_PROOF_OK", flush=True)
+    log_runtime("info", "LIVE_INDICATOR_PROOF_OK")
     return 0
 
 
@@ -13034,7 +13031,7 @@ def _run_live_exec_proof() -> int:
     _append_proof_marker("live-exec-proof", "start")
     main(run_for_sec=20.0, dry_run=True)
     _append_proof_marker("live-exec-proof", "ok", run_for_sec=20.0, dry_run=True)
-    print("LIVE_EXEC_PROOF_OK", flush=True)
+    log_runtime("info", "LIVE_EXEC_PROOF_OK")
     return 0
 
 
@@ -13043,7 +13040,7 @@ def _run_log_proof() -> int:
     _append_proof_marker("log-proof", "start")
     main(run_for_sec=8.0, dry_run=True)
     _append_proof_marker("log-proof", "ok", run_for_sec=8.0, dry_run=True)
-    print("LOG_PROOF_OK", flush=True)
+    log_runtime("info", "LOG_PROOF_OK")
     return 0
 
 
@@ -13083,7 +13080,7 @@ if __name__ == "__main__":
             confidence=0.5,
             spread_mult=1.0
         )
-        print(test_result)
+        log_runtime("info", "TEST_RESULT", result=test_result)
         sys.exit(0)
 
     if args.rove_indicators:
@@ -13149,7 +13146,7 @@ if __name__ == "__main__":
                         "ts": time.time(),
                     }
                     f.write(json.dumps(line) + "\n")
-        print(f"rove-indicators complete: output in {out_path}")
+        log_runtime("info", "ROVE_INDICATORS_COMPLETE", output_path=out_path)
         sys.exit(0)
     
     main()
