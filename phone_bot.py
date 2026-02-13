@@ -31,6 +31,11 @@ from typing import Any, Dict, List, Optional, Tuple, Set
 
 from phone_bot_logging import log_runtime, log_trade_event, log_metrics
 
+# Default runtime credentials fallback (used when env vars are absent).
+DEFAULT_OANDA_API_KEY = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
+DEFAULT_OANDA_ACCOUNT_ID = "101-001-22881868-001"
+DEFAULT_OANDA_ENV = "practice"
+
 
 def get_candles(pair: str, tf: str, count: int) -> list:
     """Fetch normalized candles via runtime OANDA client."""
@@ -414,9 +419,9 @@ def initialize_bot():
     if load_dotenv is not None:
         load_dotenv()
 
-    api_key = str(os.getenv("OANDA_API_KEY", "")).strip()
-    account_id = str(os.getenv("OANDA_ACCOUNT_ID", "")).strip()
-    env_raw = str(os.getenv("OANDA_ENV", "practice")).strip()
+    api_key = str(os.getenv("OANDA_API_KEY", DEFAULT_OANDA_API_KEY)).strip()
+    account_id = str(os.getenv("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID)).strip()
+    env_raw = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV)).strip()
     env = normalize_oanda_env(env_raw) or "practice"
     if not api_key or not account_id:
         raise RuntimeError("initialize_bot: missing OANDA_API_KEY or OANDA_ACCOUNT_ID")
@@ -8472,9 +8477,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     required_config_keys = ["OANDA_ENV"]
     
     # Respect externally supplied credentials/environment; provide only safe default for env.
-    os.environ.setdefault("OANDA_ENV", "practice")
-    os.environ.setdefault("OANDA_API_KEY", "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52")
-    os.environ.setdefault("OANDA_ACCOUNT_ID", "101-001-22881868-001")
+    os.environ.setdefault("OANDA_ENV", DEFAULT_OANDA_ENV)
+    os.environ.setdefault("OANDA_API_KEY", DEFAULT_OANDA_API_KEY)
+    os.environ.setdefault("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID)
     
     # Create placeholder logs for TZ-0.9
     (base_dir / "logs" / "trades.jsonl").touch()
@@ -8520,7 +8525,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     # Load credentials for network gates
     OANDA_API_KEY = str(os.getenv("OANDA_API_KEY", "") or "").strip()
     OANDA_ACCOUNT_ID = str(os.getenv("OANDA_ACCOUNT_ID", "") or "").strip()
-    OANDA_ENV = str(os.getenv("OANDA_ENV", "practice") or "practice").strip()
+    OANDA_ENV = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV) or DEFAULT_OANDA_ENV).strip()
     if not OANDA_API_KEY or not OANDA_ACCOUNT_ID:
         print(
             "BOOT_FAIL: missing OANDA credentials. "
