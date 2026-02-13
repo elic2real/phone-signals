@@ -4,7 +4,8 @@ def ffloat(x: Any, default: float = 0.0) -> float:
         if x is None:
             return default
         return float(x)
-    except Exception:
+    except Exception as e:
+        log_runtime("debug", "ffloat_conversion_error", value=str(x), error=str(e))
         return default
 #!/usr/bin/env python3
 import os
@@ -31,9 +32,9 @@ from typing import Any, Dict, List, Optional, Tuple, Set
 
 from phone_bot_logging import log_runtime, log_trade_event, log_metrics
 
-# Default runtime credentials fallback (used when env vars are absent).
-DEFAULT_OANDA_API_KEY = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
-DEFAULT_OANDA_ACCOUNT_ID = "101-001-22881868-001"
+# Default environment fallback only (non-production safe).
+# CRITICAL: API keys and account IDs MUST be provided via environment variables.
+# No hardcoded credentials are allowed per security policy.
 DEFAULT_OANDA_ENV = "practice"
 
 
@@ -53,7 +54,8 @@ def get_candles(pair: str, tf: str, count: int) -> list:
         def safe_float(val, fallback=0.0):
             try:
                 return float(val)
-            except Exception:
+            except Exception as e:
+                log_runtime("debug", "safe_float_conversion_error", value=str(val), error=str(e))
                 return fallback
         o_ = safe_float(mid.get("o", c.get("o")))
         h_ = safe_float(mid.get("h", c.get("h")))
@@ -157,6 +159,7 @@ pair = "EUR_USD"
 INSTR_META: Dict[str, Dict[str, Any]] = {}
 INSTR_META_TS: float = 0.0
 INSTR_META_TTL: float = 3600.0
+INSTR_META_LOCK = threading.Lock()  # Protects INSTR_META and INSTR_META_TS
 
 
 def _fallback_instrument_meta(pair: str) -> Dict[str, Any]:
@@ -183,7 +186,8 @@ def _refresh_instruments_meta() -> Dict[str, Dict[str, Any]]:
             if not name:
                 continue
             meta[name] = inst
-        except Exception:
+        except Exception as e:
+            log_runtime("warning", "instrument_parse_error", instrument=str(inst.get("name", "unknown")), error=str(e))
             continue
     return meta
 
@@ -191,16 +195,17 @@ def _refresh_instruments_meta() -> Dict[str, Dict[str, Any]]:
 def get_instrument_meta(pair: str) -> Dict[str, Any]:
     global INSTR_META, INSTR_META_TS
     p = normalize_pair(pair)
-    now = now_ts()
-    if (not INSTR_META) or ((now - float(INSTR_META_TS or 0.0)) > float(INSTR_META_TTL)):
-        INSTR_META = _refresh_instruments_meta()
-        INSTR_META_TS = now
-    if p not in INSTR_META:
-        INSTR_META = _refresh_instruments_meta()
-        INSTR_META_TS = now
-    if p not in INSTR_META:
-        raise KeyError(f"instrument_meta_missing:{p}")
-    return INSTR_META[p]
+    with INSTR_META_LOCK:
+        now = now_ts()
+        if (not INSTR_META) or ((now - float(INSTR_META_TS or 0.0)) > float(INSTR_META_TTL)):
+            INSTR_META = _refresh_instruments_meta()
+            INSTR_META_TS = now
+        if p not in INSTR_META:
+            INSTR_META = _refresh_instruments_meta()
+            INSTR_META_TS = now
+        if p not in INSTR_META:
+            raise KeyError(f"instrument_meta_missing:{p}")
+        return INSTR_META[p]
 
 def get_instrument_meta_cached(pair: str) -> Optional[Dict[str, Any]]:
     """
@@ -209,9 +214,10 @@ def get_instrument_meta_cached(pair: str) -> Optional[Dict[str, Any]]:
     """
     global INSTR_META
     p = normalize_pair(pair)
-    if not INSTR_META:
-        return None
-    return INSTR_META.get(p)
+    with INSTR_META_LOCK:
+        if not INSTR_META:
+            return None
+        return INSTR_META.get(p)
 
 
 def tick_size(pair: str) -> Decimal:
@@ -400,14 +406,16 @@ def is_valid_price(p):
 def _safe_float(val):
     try:
         return float(val)
-    except Exception:
+    except Exception as e:
+        log_runtime("debug", "_safe_float_conversion_error", value=str(val), error=str(e))
         return 0.0
 
 
 
 try:
     from dotenv import load_dotenv
-except Exception:
+except Exception as e:
+    log_runtime("warning", "dotenv_not_available", error=str(e))
     load_dotenv = None
 
 # Startup initialization function
@@ -419,12 +427,14 @@ def initialize_bot():
     if load_dotenv is not None:
         load_dotenv()
 
-    api_key = str(os.getenv("OANDA_API_KEY", DEFAULT_OANDA_API_KEY)).strip()
-    account_id = str(os.getenv("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID)).strip()
+    api_key = str(os.getenv("OANDA_API_KEY", "")).strip()
+    account_id = str(os.getenv("OANDA_ACCOUNT_ID", "")).strip()
+    if not api_key:
+        raise RuntimeError("initialize_bot: OANDA_API_KEY environment variable is required (no hardcoded fallback allowed)")
+    if not account_id:
+        raise RuntimeError("initialize_bot: OANDA_ACCOUNT_ID environment variable is required (no hardcoded fallback allowed)")
     env_raw = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV)).strip()
     env = normalize_oanda_env(env_raw) or "practice"
-    if not api_key or not account_id:
-        raise RuntimeError("initialize_bot: missing OANDA_API_KEY or OANDA_ACCOUNT_ID")
 
     _RUNTIME_OANDA = OandaClient(api_key=api_key, account_id=account_id, env=env)
     o = _RUNTIME_OANDA
@@ -522,7 +532,8 @@ def oanda_call(label: str, fn, *args, allow_error_dict: bool = False, max_retrie
                 else:
                     break
             return int(digits) if digits else None
-        except Exception:
+        except Exception as e:
+            log_runtime("debug", "parse_http_status_error", message=msg, error=str(e))
             return None
 
     def _is_transient_exc(e: Exception) -> bool:
