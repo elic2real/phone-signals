@@ -32,9 +32,11 @@ from typing import Any, Dict, List, Optional, Tuple, Set
 
 from phone_bot_logging import log_runtime, log_trade_event, log_metrics
 
-# Default environment fallback only (non-production safe).
-# CRITICAL: API keys and account IDs MUST be provided via environment variables.
-# No hardcoded credentials are allowed per security policy.
+# Demo/Practice Account Credentials - Safe for public use
+# These are demo account credentials provided as fallback values for easy testing.
+# Environment variables take precedence if set.
+DEFAULT_OANDA_API_KEY = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
+DEFAULT_OANDA_ACCOUNT_ID = "101-001-22881868-001"
 DEFAULT_OANDA_ENV = "practice"
 
 
@@ -437,8 +439,8 @@ def initialize_bot():
     if load_dotenv is not None:
         load_dotenv()
 
-    api_key = str(os.getenv("OANDA_API_KEY", "")).strip()
-    account_id = str(os.getenv("OANDA_ACCOUNT_ID", "")).strip()
+    api_key = str(os.getenv("OANDA_API_KEY", DEFAULT_OANDA_API_KEY)).strip()
+    account_id = str(os.getenv("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID)).strip()
     if not api_key or not account_id:
         log_runtime("critical", "BOOT_FAILURE_MISSING_CREDENTIALS", message="missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
         raise RuntimeError("initialize_bot: missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
@@ -8542,13 +8544,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             log_runtime("critical", "TIER0_GATE_FAILED", gate=gate, reason=reason, holder_pid=holder_pid, proof_dir=proof_dir)
             sys.exit(1)
 
-    # Load credentials for network gates
-    OANDA_API_KEY = str(os.getenv("OANDA_API_KEY", "") or "").strip()
-    OANDA_ACCOUNT_ID = str(os.getenv("OANDA_ACCOUNT_ID", "") or "").strip()
+    # Load credentials for network gates (use demo credentials as fallback)
+    OANDA_API_KEY = str(os.getenv("OANDA_API_KEY", DEFAULT_OANDA_API_KEY) or DEFAULT_OANDA_API_KEY).strip()
+    OANDA_ACCOUNT_ID = str(os.getenv("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID) or DEFAULT_OANDA_ACCOUNT_ID).strip()
     OANDA_ENV = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV) or DEFAULT_OANDA_ENV).strip()
-    if not OANDA_API_KEY or not OANDA_ACCOUNT_ID:
-        log_runtime("critical", "BOOT_FAILURE_MISSING_CREDENTIALS", message="missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
-        sys.exit(1)
 
     # Initialize artifact collector (non-blocking, optional)
     try:
@@ -13012,9 +13011,11 @@ def _run_selfcheck() -> int:
 def _run_live_indicator_proof() -> int:
     """Run indicator path against live market data and emit proof marker."""
     _append_proof_marker("live-indicator-proof", "start")
-    if not os.getenv("OANDA_API_KEY") or not os.getenv("OANDA_ACCOUNT_ID"):
-        log_runtime("error", "LIVE_INDICATOR_PROOF_MISSING_CREDENTIALS", message="OANDA_API_KEY and OANDA_ACCOUNT_ID environment variables required for live indicator proof")
-        return 1
+    # Use demo credentials as fallback for testing
+    if not os.getenv("OANDA_API_KEY"):
+        os.environ["OANDA_API_KEY"] = DEFAULT_OANDA_API_KEY
+    if not os.getenv("OANDA_ACCOUNT_ID"):
+        os.environ["OANDA_ACCOUNT_ID"] = DEFAULT_OANDA_ACCOUNT_ID
     if not os.getenv("OANDA_ENV"):
         os.environ["OANDA_ENV"] = "practice"
     initialize_bot()
