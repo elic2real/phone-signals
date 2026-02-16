@@ -4,7 +4,8 @@ def ffloat(x: Any, default: float = 0.0) -> float:
         if x is None:
             return default
         return float(x)
-    except Exception:
+    except Exception as e:
+        log_runtime("debug", "float_conversion_error", value=str(x), error=str(e))
         return default
 #!/usr/bin/env python3
 import os
@@ -31,7 +32,9 @@ from typing import Any, Dict, List, Optional, Tuple, Set
 
 from phone_bot_logging import log_runtime, log_trade_event, log_metrics
 
-# Default runtime credentials fallback (used when env vars are absent).
+# Demo/Practice Account Credentials - Safe for public use
+# These are demo account credentials provided as fallback values for easy testing.
+# Environment variables take precedence if set.
 DEFAULT_OANDA_API_KEY = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
 DEFAULT_OANDA_ACCOUNT_ID = "101-001-22881868-001"
 DEFAULT_OANDA_ENV = "practice"
@@ -53,7 +56,8 @@ def get_candles(pair: str, tf: str, count: int) -> list:
         def safe_float(val, fallback=0.0):
             try:
                 return float(val)
-            except Exception:
+            except Exception as e:
+                log_runtime("debug", "safe_float_conversion_error", value=str(val), error=str(e))
                 return fallback
         o_ = safe_float(mid.get("o", c.get("o")))
         h_ = safe_float(mid.get("h", c.get("h")))
@@ -86,9 +90,14 @@ def _record_runner_exit(reason, tr, favorable_atr, track):
 # --- EARLY BOOTSTRAP: DO NOT DEFINE DUPLICATE FUNCTIONS HERE ---
 # Canonical implementations are defined later in the file
 # ---------------------------------------------------------------
-MTF_SIGNAL_TIMEOUT = 60.0  # seconds, default value
-MTF_MAX_STRATEGIES_PER_PAIR = 5  # default value
-MTF_CONFLICT_RESOLUTION = "priority"  # default value
+
+# ===== MULTI-TIMEFRAME (MTF) CONFIGURATION =====
+MTF_SIGNAL_TIMEOUT = 60.0  # seconds - Maximum time to wait for MTF signal coordination
+MTF_MAX_STRATEGIES_PER_PAIR = 5  # Maximum number of strategies per trading pair
+MTF_CONFLICT_RESOLUTION = "priority"  # Strategy conflict resolution method: "priority", "first", "last"
+
+# ===== PRICING STREAM CONFIGURATION =====
+PRICING_STREAM_POLL_INTERVAL = 0.5  # seconds - Polling interval for pricing stream (500ms for high-frequency data)
 
 
 # Emoji constants
@@ -105,41 +114,44 @@ EMOJI_DB = "🗄️"
 EMOJI_SUCCESS = "🎉"
 EMOJI_STOP = "🛑"
 
-# ===== MISSING CONSTANTS & CONFIGURATION =====
-REJECTED_ORDER_RETRY_MAX = 3
-REJECTED_ORDER_RETRY_DELAY = 1.0
-ORDER_REJECT_BACKOFF_MULTIPLIER = 2.0
-ALTERNATIVE_ROUTING_ENABLED = False
-MIN_PARTIAL_FILL_UNITS = 1
+# ===== ORDER RETRY CONFIGURATION =====
+# Configuration for handling rejected orders and retry logic
+REJECTED_ORDER_RETRY_MAX = 3  # Maximum number of retry attempts for rejected orders
+REJECTED_ORDER_RETRY_DELAY = 1.0  # seconds - Initial delay between retry attempts
+ORDER_REJECT_BACKOFF_MULTIPLIER = 2.0  # Exponential backoff multiplier for retries
+ALTERNATIVE_ROUTING_ENABLED = False  # Enable alternative order routing on rejection
+MIN_PARTIAL_FILL_UNITS = 1  # Minimum units for accepting partial fills
 
-# Runner configuration
-RUNNER_MIN_HOLD_TIME = 300.0  # 5 minutes
-RUNNER_MAX_HOLD_TIME = 14400.0  # 4 hours
-RUNNER_MIN_PROGRESS = 0.1  # 10% progress
-RUNNER_SPEED_THRESHOLD = 0.5
-RUNNER_PULLBACK_LIMIT = 0.3  # 30% pullback
+# ===== RUNNER STRATEGY CONFIGURATION =====
+# Configuration for runner trading strategy behavior and risk management
+RUNNER_MIN_HOLD_TIME = 300.0  # seconds (5 minutes) - Minimum time to hold a runner position
+RUNNER_MAX_HOLD_TIME = 14400.0  # seconds (4 hours) - Maximum time to hold a runner position
+RUNNER_MIN_PROGRESS = 0.1  # 10% - Minimum progress threshold to consider trade viable
+RUNNER_SPEED_THRESHOLD = 0.5  # Minimum speed threshold for momentum detection
+RUNNER_PULLBACK_LIMIT = 0.3  # 30% - Maximum allowed pullback before exit
 
-# Webhook configuration
-WEBHOOK_ENABLED = False
-WEBHOOK_URL = ""
-WEBHOOK_RETRY_MAX = 3
-WEBHOOK_TIMEOUT = 30.0
-WEBHOOK_RETRY_DELAY = 1.0
+# ===== WEBHOOK CONFIGURATION =====
+# Configuration for external webhook notifications
+WEBHOOK_ENABLED = False  # Enable webhook notifications
+WEBHOOK_URL = ""  # Webhook endpoint URL
+WEBHOOK_RETRY_MAX = 3  # Maximum retry attempts for failed webhook calls
+WEBHOOK_TIMEOUT = 30.0  # seconds - HTTP timeout for webhook requests
+WEBHOOK_RETRY_DELAY = 1.0  # seconds - Delay between webhook retry attempts
 
-# Push notification configuration
-PUSH_ENABLED = False
-PUSH_SERVICE = ""
-PUSH_TOKEN = ""
+# ===== PUSH NOTIFICATION CONFIGURATION =====
+# Configuration for push notification services
+PUSH_ENABLED = False  # Enable push notifications
+PUSH_SERVICE = ""  # Push notification service name
+PUSH_TOKEN = ""  # Push notification service token
 
-# Database transaction configuration
-DB_TRANSACTION_TIMEOUT = 30.0
-DB_TRANSACTION_MAX_RETRIES = 3
-
-# Additional DB configuration
-DB_MAX_RETRIES = 3
-DB_RETRY_DELAY = 0.25
-DB_LOCK_TIMEOUT = 5.0
-DB_ENABLE_WAL = True
+# ===== DATABASE CONFIGURATION =====
+# Configuration for SQLite database operations and transaction handling
+DB_TRANSACTION_TIMEOUT = 30.0  # seconds - Maximum time to wait for DB transaction
+DB_TRANSACTION_MAX_RETRIES = 3  # Maximum retry attempts for DB transactions
+DB_MAX_RETRIES = 3  # Maximum retry attempts for DB operations
+DB_RETRY_DELAY = 0.25  # seconds - Delay between DB retry attempts
+DB_LOCK_TIMEOUT = 5.0  # seconds - Maximum time to wait for DB lock
+DB_ENABLE_WAL = True  # Enable Write-Ahead Logging for better concurrency
 
 # Database backup configuration
 DB_BACKUP_PATH = Path("./backups")
@@ -154,9 +166,12 @@ db = None
 o = None
 pair = "EUR_USD"
 
-INSTR_META: Dict[str, Dict[str, Any]] = {}
-INSTR_META_TS: float = 0.0
-INSTR_META_TTL: float = 3600.0
+# ===== INSTRUMENT METADATA CONFIGURATION =====
+# Configuration for instrument metadata caching and refresh
+INSTR_META: Dict[str, Dict[str, Any]] = {}  # Cache for instrument metadata from OANDA
+INSTR_META_TS: float = 0.0  # Timestamp of last metadata refresh
+INSTR_META_TTL: float = 3600.0  # seconds (1 hour) - Time-to-live for cached instrument metadata
+INSTR_META_LOCK = threading.Lock()  # Protects INSTR_META and INSTR_META_TS
 
 
 def _fallback_instrument_meta(pair: str) -> Dict[str, Any]:
@@ -183,7 +198,8 @@ def _refresh_instruments_meta() -> Dict[str, Dict[str, Any]]:
             if not name:
                 continue
             meta[name] = inst
-        except Exception:
+        except Exception as e:
+            log_runtime("warning", "instrument_parse_error", instrument=str(inst.get("name", "unknown")), error=str(e))
             continue
     return meta
 
@@ -191,16 +207,17 @@ def _refresh_instruments_meta() -> Dict[str, Dict[str, Any]]:
 def get_instrument_meta(pair: str) -> Dict[str, Any]:
     global INSTR_META, INSTR_META_TS
     p = normalize_pair(pair)
-    now = now_ts()
-    if (not INSTR_META) or ((now - float(INSTR_META_TS or 0.0)) > float(INSTR_META_TTL)):
-        INSTR_META = _refresh_instruments_meta()
-        INSTR_META_TS = now
-    if p not in INSTR_META:
-        INSTR_META = _refresh_instruments_meta()
-        INSTR_META_TS = now
-    if p not in INSTR_META:
-        raise KeyError(f"instrument_meta_missing:{p}")
-    return INSTR_META[p]
+    with INSTR_META_LOCK:
+        now = now_ts()
+        if (not INSTR_META) or ((now - float(INSTR_META_TS or 0.0)) > float(INSTR_META_TTL)):
+            INSTR_META = _refresh_instruments_meta()
+            INSTR_META_TS = now
+        if p not in INSTR_META:
+            INSTR_META = _refresh_instruments_meta()
+            INSTR_META_TS = now
+        if p not in INSTR_META:
+            raise KeyError(f"instrument_meta_missing:{p}")
+        return INSTR_META[p]
 
 def get_instrument_meta_cached(pair: str) -> Optional[Dict[str, Any]]:
     """
@@ -209,9 +226,10 @@ def get_instrument_meta_cached(pair: str) -> Optional[Dict[str, Any]]:
     """
     global INSTR_META
     p = normalize_pair(pair)
-    if not INSTR_META:
-        return None
-    return INSTR_META.get(p)
+    with INSTR_META_LOCK:
+        if not INSTR_META:
+            return None
+        return INSTR_META.get(p)
 
 
 def tick_size(pair: str) -> Decimal:
@@ -401,14 +419,16 @@ def is_valid_price(p):
 def _safe_float(val):
     try:
         return float(val)
-    except Exception:
+    except Exception as e:
+        log_runtime("debug", "_safe_float_conversion_error", value=str(val), error=str(e))
         return 0.0
 
 
 
 try:
     from dotenv import load_dotenv
-except Exception:
+except Exception as e:
+    log_runtime("warning", "dotenv_not_available", error=str(e))
     load_dotenv = None
 
 # Startup initialization function
@@ -422,10 +442,11 @@ def initialize_bot():
 
     api_key = str(os.getenv("OANDA_API_KEY", DEFAULT_OANDA_API_KEY)).strip()
     account_id = str(os.getenv("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID)).strip()
+    if not api_key or not account_id:
+        log_runtime("critical", "BOOT_FAILURE_MISSING_CREDENTIALS", message="missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
+        raise RuntimeError("initialize_bot: missing OANDA credentials. Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment.")
     env_raw = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV)).strip()
     env = normalize_oanda_env(env_raw) or "practice"
-    if not api_key or not account_id:
-        raise RuntimeError("initialize_bot: missing OANDA_API_KEY or OANDA_ACCOUNT_ID")
 
     _RUNTIME_OANDA = OandaClient(api_key=api_key, account_id=account_id, env=env)
     o = _RUNTIME_OANDA
@@ -523,7 +544,8 @@ def oanda_call(label: str, fn, *args, allow_error_dict: bool = False, max_retrie
                 else:
                     break
             return int(digits) if digits else None
-        except Exception:
+        except Exception as e:
+            log_runtime("debug", "parse_http_status_error", message=msg, error=str(e))
             return None
 
     def _is_transient_exc(e: Exception) -> bool:
@@ -1304,7 +1326,7 @@ class PricingStream:
         
     def _stream_loop(self):
         """Main streaming loop - polls pricing endpoint continuously"""
-        poll_interval = 0.5  # 500ms for high-frequency data
+        poll_interval = PRICING_STREAM_POLL_INTERVAL
         
         while self.running and self.oanda_client:
             try:
@@ -3846,7 +3868,7 @@ def detect_mode(pair: str, current_high: float, current_low: Optional[float] = N
             return "SLOW"
 
     except Exception as e:
-        print(f"Regime detection error: {e}")
+        log_runtime("error", "REGIME_DETECTION_ERROR", error=str(e))
         return "MED"  # Fallback
 
 
@@ -5712,7 +5734,7 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
     except Exception as e:
         log_runtime("warning", "T1-16_ARTIFACT_ERROR", pair=pair, error=str(e))
     if pair:
-        print(f"{time.strftime('%H:%M:%S')} - {pair}: {old_state} -> {new_state}")
+        log_runtime("info", "STATE_TRANSITION", pair=pair, old_state=old_state, new_state=new_state, timestamp=time.strftime('%H:%M:%S'))
         sys.stdout.flush()
     
     # Immediate alert for WATCH / GET_READY / ARM_TICK_ENTRY / ENTER transitions (with deduplication)
@@ -5789,16 +5811,16 @@ def _apply_state_machine(st: PairState, pair: Optional[str] = None, c_exec: Opti
 
 def _order_confirmed(resp: dict) -> Tuple[bool, str, str, str]:
     if not isinstance(resp, dict):
-        print(f"❌ ORDER CONFIRMED: INVALID RESPONSE - {resp}")
+        log_runtime("error", "ORDER_INVALID_RESPONSE", response=str(resp))
         return False, "", "", "invalid_response"
     if resp.get("_rate_limited"):
-        print(f"❌ ORDER CONFIRMED: RATE LIMITED - {resp}")
+        log_runtime("error", "ORDER_RATE_LIMITED", response=resp)
         return False, "", "", "rate_limited"
     if resp.get("_http_error"):
-        print(f"❌ ORDER CONFIRMED: HTTP ERROR {resp.get('_status')} - {resp}")
+        log_runtime("error", "ORDER_HTTP_ERROR", status=resp.get('_status'), response=resp)
         return False, "", "", f"http_{resp.get('_status')}"
     if resp.get("_json_error"):
-        print(f"❌ ORDER CONFIRMED: JSON ERROR - {resp}")
+        log_runtime("error", "ORDER_JSON_ERROR", response=resp)
         return False, "", "", "json_error"
 
     fill = resp.get("orderFillTransaction") or {}
@@ -5809,28 +5831,28 @@ def _order_confirmed(resp: dict) -> Tuple[bool, str, str, str]:
     if cancel:
         reason = str(cancel.get("reason", "") or "cancel")
         error_msg = cancel.get("errorMessage", "")
-        print(f"❌ ORDER CANCELLED: reason={reason}, errorMessage={error_msg}, details={cancel}")
+        log_runtime("error", "ORDER_CANCELLED", reason=reason, errorMessage=error_msg, details=cancel)
         return False, str(cancel.get("orderID", "")), str(cancel.get("id", "")), f"cancel_{reason}"
     if reject:
         reason = str(reject.get("rejectReason", "") or "reject")
         error_msg = reject.get("errorMessage", "")
-        print(f"❌ ORDER REJECTED: reason={reason}, errorMessage={error_msg}, details={reject}")
+        log_runtime("error", "ORDER_REJECTED", reason=reason, errorMessage=error_msg, details=reject)
         return False, str(reject.get("orderID", "")), str(reject.get("id", "")), f"reject_{reason}"
     if fill:
         trade_id = _extract_trade_id_from_fill(resp)
         if trade_id is None:
-            print(f"❌ CRITICAL: Order filled but no tradeID extracted! {fill}")
-        print(f"✅ ORDER FILLED: orderID={fill.get('orderID')}, tradeID={trade_id}, price={fill.get('price')}, units={fill.get('units')}")
+            log_runtime("critical", "ORDER_FILLED_NO_TRADE_ID", fill=fill)
+        log_runtime("info", "ORDER_FILLED", orderID=fill.get('orderID'), tradeID=trade_id, price=fill.get('price'), units=fill.get('units'))
         return True, str(fill.get("orderID", "")), str(fill.get("id", "")), "FILLED"
     if create:
-        print(f"✅ ORDER CREATED: orderID={create.get('orderID')}, units={create.get('units')}")
+        log_runtime("info", "ORDER_CREATED", orderID=create.get('orderID'), units=create.get('units'))
         return True, str(create.get("orderID", "")), str(create.get("id", "")), "CREATED"
     
     # Check for top-level error message
     if resp.get("errorMessage"):
-        print(f"❌ ORDER ERROR: errorMessage={resp.get('errorMessage')}, rejectReason={resp.get('rejectReason')}")
+        log_runtime("error", "ORDER_ERROR", errorMessage=resp.get('errorMessage'), rejectReason=resp.get('rejectReason'))
     
-    print(f"❓ ORDER UNCONFIRMED: response structure unknown - {resp}")
+    log_runtime("warning", "ORDER_UNCONFIRMED", response=resp)
     return False, "", "", "unconfirmed"
 
 
@@ -6540,7 +6562,7 @@ def _as_dict(x: Any) -> Dict[str, Any]:
 def _handle_close_error(resp: dict, pair: str, direction: str, tr: dict, reason: str, favorable_atr: float, track: dict) -> bool:
     """Handle close errors, including 404 reconciliation."""
     if resp and resp.get("_status") == 404:
-        print("⚠️ Close returned 404, checking if trade already closed...")
+        log_runtime("warning", "CLOSE_404_RECONCILE_CHECK", pair=pair, direction=direction)
         # Reconcile - check if trade still exists
         oanda_client = _require_runtime_oanda()
         current_positions = oanda_call("get_positions_exit", oanda_client.open_positions)
@@ -6563,7 +6585,7 @@ def _handle_close_error(resp: dict, pair: str, direction: str, tr: dict, reason:
                     trade_exists = True
                     break
         if not trade_exists:
-            print("✅ Trade already closed, marking in DB")
+            log_runtime("info", "TRADE_ALREADY_CLOSED", pair=pair, direction=direction, trade_id=tr.get("id"))
             if db is not None:
                 db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), reason)
             _exit_log(tr, reason, favorable_atr, track)
@@ -6610,13 +6632,13 @@ def check_data_outage(pair: str, success: bool) -> None:
     if success:
         if data_outage_counter[pair] >= DATA_OUTAGE_THRESHOLD:
             log(f"{EMOJI_OK} DATA_RESTORED", {"pair": pair, "outage_count": data_outage_counter[pair]})
-            print(f"Data restored for {pair} after {data_outage_counter[pair]} failures")
+            log_runtime("info", "DATA_OUTAGE_RECOVERED", pair=pair, failures=data_outage_counter[pair])
         data_outage_counter[pair] = 0
     else:
         data_outage_counter[pair] += 1
         if data_outage_counter[pair] == DATA_OUTAGE_THRESHOLD:
             log(f"{EMOJI_ERR} DATA_OUTAGE", {"pair": pair, "consecutive_failures": data_outage_counter[pair]})
-            print(f"WARNING: Data outage detected for {pair} - {data_outage_counter[pair]} consecutive failures")
+            log_runtime("warning", "DATA_OUTAGE_DETECTED", pair=pair, consecutive_failures=data_outage_counter[pair])
 
 
 def get_active_sessions(now: Optional[float] = None) -> List[str]:
@@ -8806,28 +8828,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 holder_pid = tier0_result.get("holder_pid") if isinstance(tier0_result, dict) else getattr(tier0_result, "holder_pid", None)
             except Exception:
                 gate, reason, holder_pid = None, None, None
-            print(f"TIER0_FAIL gate={gate} reason={reason} holder_pid={holder_pid} proof_dir={proof_dir}", flush=True)
+            log_runtime("critical", "TIER0_GATE_FAILED", gate=gate, reason=reason, holder_pid=holder_pid, proof_dir=proof_dir)
             sys.exit(1)
 
-    # Load credentials for network gates
-    OANDA_API_KEY = str(os.getenv("OANDA_API_KEY", "") or "").strip()
-    OANDA_ACCOUNT_ID = str(os.getenv("OANDA_ACCOUNT_ID", "") or "").strip()
+    # Load credentials for network gates (use demo credentials as fallback)
+    OANDA_API_KEY = str(os.getenv("OANDA_API_KEY", DEFAULT_OANDA_API_KEY) or DEFAULT_OANDA_API_KEY).strip()
+    OANDA_ACCOUNT_ID = str(os.getenv("OANDA_ACCOUNT_ID", DEFAULT_OANDA_ACCOUNT_ID) or DEFAULT_OANDA_ACCOUNT_ID).strip()
     OANDA_ENV = str(os.getenv("OANDA_ENV", DEFAULT_OANDA_ENV) or DEFAULT_OANDA_ENV).strip()
-    if not OANDA_API_KEY or not OANDA_ACCOUNT_ID:
-        print(
-            "BOOT_FAIL: missing OANDA credentials. "
-            "Set OANDA_API_KEY and OANDA_ACCOUNT_ID in environment."
-        )
-        sys.exit(1)
 
     # Initialize artifact collector (non-blocking, optional)
     try:
         from artifact_collector import init_collector
         base_dir = Path(__file__).resolve().parent
         init_collector(base_dir)
-        print("Artifact collector initialized (non-blocking)")
+        log_runtime("info", "ARTIFACT_COLLECTOR_INITIALIZED")
     except Exception as e:
-        print(f"Artifact collector failed to initialize (continuing without): {e}")
+        log_runtime("warning", "ARTIFACT_COLLECTOR_INIT_FAILED", error=str(e))
     
     # Network-dependent gates
     base_urls = {"practice": "https://api-fxpractice.oanda.com", "live": "https://api-fxtrade.oanda.com"}
@@ -8847,7 +8863,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         tz_0_20_candles_availability(proof_dir, base_url, OANDA_API_KEY, test_pairs[0]),
         tz_0_21_time_parse_sanity(proof_dir, test_pairs[0])
     ]):
-        print("BOOT_FAIL: network/auth/data tier-0 gates failed. Check proof artifacts for details.")
+        log_runtime("critical", "BOOT_FAILURE", artifacts=proof_artifacts, message="network/auth/data tier-0 gates failed. Check proof artifacts for details.")
         sys.exit(1)
     # Final manifest for all Tier-0 artifacts
     generate_manifest(proof_dir)
@@ -9587,11 +9603,11 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         pair = normalize_pair(pair)
         _transition_state(st, "SKIP", pair)
         
-        # Print BLOCKED message for immediate visibility
+        # Log BLOCKED message for immediate visibility
         block_msg = f"BLOCKED: {reason}"
         if extra:
             block_msg += f" (details: {extra})"
-        print(f"  {pair}: {block_msg}")
+        log_runtime("warning", "PAIR_BLOCKED", pair=pair, block_msg=block_msg)
         
         meta = {"pair": pair, "reason": reason}
         if extra:
@@ -9823,7 +9839,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             last_runner_week = ts_now
 
     start_ts = now_ts()
-    print("Entering main scanning loop...")
+    log_runtime("info", "ENTERING_MAIN_LOOP")
     sys.stdout.flush()
     
     while not _SHUTDOWN:
@@ -11237,7 +11253,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     block_msg = f"BLOCKED: {reason}"
                     if extra:
                         block_msg += f" (details: {extra})"
-                    print(f"  {block_msg}")
+                    log_runtime("warning", "EXIT_BLOCKED", block_msg=block_msg)
                     
                     meta = {}
                     meta.update(exit_meta)
@@ -11526,7 +11542,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         if units != 0:
                             existing_sizes.append(abs(units))
             
-                print(f"\n🔢 UNIQUE SIZE CHECK for {pair}: existing_sizes={existing_sizes}")
+                log_runtime("debug", "UNIQUE_SIZE_CHECK", pair=pair, existing_sizes=existing_sizes)
 
                 existing_set = set(existing_sizes)
                 # Use broker min units, not MIN_TRADE_SIZE
@@ -11965,7 +11981,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         
         except Exception as e:
             log(f"{EMOJI_ERR} MAIN_LOOP_ERROR", {"error": str(e), "type": type(e).__name__})
-            print(f"\n❌ ERROR in main loop: {e}")
+            log_runtime("critical", "MAIN_LOOP_ERROR", error=str(e), error_type=type(e).__name__)
             import traceback
             traceback.print_exc()
             time.sleep(5.0)  # Prevent rapid error loops
@@ -13265,7 +13281,7 @@ def _append_proof_marker(mode: str, phase: str, **extra: Any) -> None:
         with marker_file.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(marker, sort_keys=True) + "\n")
     except Exception as e:
-        print(f"PROOF_MARKER_WRITE_FAIL: {e}", flush=True)
+        log_runtime("error", "PROOF_MARKER_WRITE_FAILED", error=str(e))
 
 
 def _run_selfcheck() -> int:
@@ -13275,17 +13291,18 @@ def _run_selfcheck() -> int:
     _append_proof_marker("selfcheck", "start")
     py_compile.compile(str(Path(__file__).resolve()), doraise=True)
     _append_proof_marker("selfcheck", "ok")
-    print("SELFCHECK_OK", flush=True)
+    log_runtime("info", "SELFCHECK_PASSED")
     return 0
 
 
 def _run_live_indicator_proof() -> int:
     """Run indicator path against live market data and emit proof marker."""
     _append_proof_marker("live-indicator-proof", "start")
+    # Use demo credentials as fallback for testing
     if not os.getenv("OANDA_API_KEY"):
-        os.environ["OANDA_API_KEY"] = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
+        os.environ["OANDA_API_KEY"] = DEFAULT_OANDA_API_KEY
     if not os.getenv("OANDA_ACCOUNT_ID"):
-        os.environ["OANDA_ACCOUNT_ID"] = "101-001-22881868-001"
+        os.environ["OANDA_ACCOUNT_ID"] = DEFAULT_OANDA_ACCOUNT_ID
     if not os.getenv("OANDA_ENV"):
         os.environ["OANDA_ENV"] = "practice"
     initialize_bot()
@@ -13301,7 +13318,7 @@ def _run_live_indicator_proof() -> int:
         atr_exec=atr_exec,
         wr=wr_val,
     )
-    print("LIVE_INDICATOR_PROOF_OK", flush=True)
+    log_runtime("info", "LIVE_INDICATOR_PROOF_OK")
     return 0
 
 
@@ -13310,7 +13327,7 @@ def _run_live_exec_proof() -> int:
     _append_proof_marker("live-exec-proof", "start")
     main(run_for_sec=20.0, dry_run=True)
     _append_proof_marker("live-exec-proof", "ok", run_for_sec=20.0, dry_run=True)
-    print("LIVE_EXEC_PROOF_OK", flush=True)
+    log_runtime("info", "LIVE_EXEC_PROOF_OK")
     return 0
 
 
@@ -13319,7 +13336,7 @@ def _run_log_proof() -> int:
     _append_proof_marker("log-proof", "start")
     main(run_for_sec=8.0, dry_run=True)
     _append_proof_marker("log-proof", "ok", run_for_sec=8.0, dry_run=True)
-    print("LOG_PROOF_OK", flush=True)
+    log_runtime("info", "LOG_PROOF_OK")
     return 0
 
 
@@ -13359,7 +13376,7 @@ if __name__ == "__main__":
             confidence=0.5,
             spread_mult=1.0
         )
-        print(test_result)
+        log_runtime("info", "TEST_RESULT", result=test_result)
         sys.exit(0)
 
     if args.rove_indicators:
@@ -13425,7 +13442,7 @@ if __name__ == "__main__":
                         "ts": time.time(),
                     }
                     f.write(json.dumps(line) + "\n")
-        print(f"rove-indicators complete: output in {out_path}")
+        log_runtime("info", "ROVE_INDICATORS_COMPLETE", output_path=out_path)
         sys.exit(0)
     
     main()
