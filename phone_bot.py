@@ -361,7 +361,8 @@ def notify(event, message):
                 text=True,
             )
         elif sys.platform == "darwin":
-            script = f'display notification "{full_msg.replace("\"", "\\\"")}" with title "{title}"'
+            escaped_msg = full_msg.replace('"', '\\"')
+            script = f'display notification "{escaped_msg}" with title "{title}"'
             subprocess.run(["osascript", "-e", script], check=False, capture_output=True, text=True)
         elif sys.platform.startswith("win"):
             ps = (
@@ -6779,6 +6780,9 @@ LOCK_OFFSET_ATR = 0.12
 PULSE_SPEED = 1.40
 PULSE_PROGRESS = 0.70
 PULSE_EXITLINE_ATR = 0.25
+PULSE_RECLAIM_WINDOW_SEC = 2.0
+PULSE_RECOVER_CPS_MIN = 0.55
+PULSE_RECOVER_DHR_MAX = 0.50
 STALL_PULLBACK_ATR = 0.18
 STALL_NOEXT_T = 15
 STALL_SPEED = 0.60
@@ -6788,6 +6792,28 @@ DECAY_PULLBACK = 0.25
 PANIC_VELOCITY = -0.80
 PANIC_PULLBACK = 0.60
 PANIC_PULLBACKRATE = 0.06
+PANIC_SPREAD_SHOCK_RATIO = 1.8
+PANIC_SPREAD_CATA_RATIO = 2.6
+ENERGY_CPS_PANIC_MAX = 0.42
+# AEE vNext energy / panic controls
+PANIC_CONFIRM_MIN_HITS = 2
+PANIC_DEBOUNCE_SEC = 1.0
+MIN_EVAL_AGE_SEC = 20.0
+MIN_EVAL_SAMPLES = 8
+ENERGY_CPS_THRESHOLD = 0.52
+ENERGY_DHR_PANIC = 0.72
+ENERGY_RSS_PROMOTE = 0.62
+RUNNER_PROMOTE_RSS_MIN = 0.62
+RUNNER_PROMOTE_LED_MIN = 0.52
+RUNNER_PROMOTE_EPI_MIN = 0.50
+WPD_CHOP_THRESHOLD = 0.62
+LED_EXPANSION_THRESHOLD = 0.56
+ENERGY_GE_DECAY_THRESHOLD = 0.28
+ENERGY_DHR_DECAY_THRESHOLD = 0.58
+ENERGY_EPI_DECAY_THRESHOLD = 0.42
+DECAY_NO_NEW_HIGH_SEC = 8.0
+NEG_EXIT_CONFIRM_WINDOW_SEC = 3.0
+NEG_EXIT_CONFIRM_MIN_HITS = 2
 TICK_EVAL_HZ = 10
 PARTIAL_FILL_TIMEOUT_SEC = float(os.getenv("PARTIAL_FILL_TIMEOUT_SEC", "20") or "20")
 PARTIAL_FILL_CHECK_INTERVAL = float(os.getenv("PARTIAL_FILL_CHECK_INTERVAL", "1.0") or "1.0")
@@ -6918,6 +6944,7 @@ class AEEState:
     velocity: float = 0.0
     pullback_start: float = 0.0
     pulse_exit_line: Optional[float] = None
+    pulse_cross_ts: float = 0.0
     profit_locked: bool = False
     atr: float = 0.0
     tick_armed: bool = False
@@ -6941,6 +6968,28 @@ class AEEState:
     near_tp_last_ext_ts: float = 0.0
     near_tp_last_high: float = 0.0
     near_tp_last_low: float = 0.0
+    eval_samples: int = 0
+    energy_streak: float = 0.0
+    decay_streak: float = 0.0
+    panic_hits: int = 0
+    panic_first_ts: float = 0.0
+    panic_subreasons: List[str] = field(default_factory=list)
+    panic_exit_metrics: Dict[str, Any] = field(default_factory=dict)
+    cps: float = 0.5
+    epi: float = 0.0
+    dhr: float = 0.0
+    ge: float = 0.0
+    rss: float = 0.0
+    wpd: float = 0.0
+    led: float = 0.0
+    overshoot_peak: float = 0.0
+    overshoot_ts: float = 0.0
+    last_favorable_ext_ts: float = 0.0
+    pulse_hit_count: int = 0
+    pulse_first_ts: float = 0.0
+    decay_hit_count: int = 0
+    decay_first_ts: float = 0.0
+    rule_trace: Dict[str, Any] = field(default_factory=dict)
 
 
 def _aee_is_mobile_runtime() -> bool:
@@ -6949,6 +6998,73 @@ def _aee_is_mobile_runtime() -> bool:
 
 def _aee_fixed_tick_hz() -> int:
     return 5 if _aee_is_mobile_runtime() else int(TICK_EVAL_HZ)
+
+
+def _aee_sigmoid(x: float) -> float:
+    z = max(-40.0, min(40.0, float(x)))
+    return 1.0 / (1.0 + math.exp(-z))
+
+
+def _aee_energy_metrics(st: AEEState, metrics: dict, *, now: float, spread_pips: float, med_spread: float) -> dict:
+    speed = float(metrics.get("speed", 0.0) or 0.0)
+    velocity = float(metrics.get("velocity", 0.0) or 0.0)
+    pullback = float(metrics.get("pullback", 0.0) or 0.0)
+    pullback_rate = float(metrics.get("pullback_rate", 0.0) or 0.0)
+    progress = float(metrics.get("progress", 0.0) or 0.0)
+    dist_to_tp = float(metrics.get("dist_to_tp", 9e9) or 9e9)
+    near_tp_band = float(metrics.get("near_tp_band", 0.25) or 0.25)
+
+    st.energy_streak = max(0.0, float(st.energy_streak) * 0.85 + (1.0 if (velocity > 0.0 or (speed - pullback_rate) > 0.0) else 0.0))
+    st.decay_streak = max(0.0, float(st.decay_streak) * 0.85 + (1.0 if (velocity < 0.0 and pullback_rate > 0.0) else 0.0))
+
+    spread_ratio = (spread_pips / max(0.1, float(med_spread)))
+    chop_ratio = abs(velocity) / max(0.05, speed + pullback_rate)
+
+    cps = _aee_sigmoid(
+        1.40 * speed
+        + 0.80 * max(0.0, velocity)
+        + 0.25 * progress
+        - 0.80 * pullback
+        - 0.70 * pullback_rate
+        - 0.35 * max(0.0, spread_ratio - 1.0)
+        - 0.25 * max(0.0, near_tp_band - dist_to_tp)
+    )
+
+    epi = max(0.0, min(1.0, st.energy_streak / 6.0))
+
+    dhr = _aee_sigmoid(
+        -0.25
+        + 0.85 * max(0.0, -velocity)
+        + 0.95 * pullback_rate
+        + 0.70 * max(0.0, pullback - 0.2)
+        + 0.45 * max(0.0, spread_ratio - 1.0)
+        + 0.30 * (st.decay_streak / 5.0)
+    )
+
+    ge = float(pullback / max(1e-6, float(st.peak_progress or progress or 1e-6)))
+
+    rss = _aee_sigmoid(1.35 * cps + 0.65 * epi - 0.70 * dhr - 0.30 * ge)
+
+    wpd = max(0.0, min(1.0, 0.65 * max(0.0, 1.0 - chop_ratio) + 0.35 * max(0.0, spread_ratio - 1.0)))
+    led = max(0.0, min(1.0, 0.55 * max(0.0, speed) + 0.45 * max(0.0, velocity + 0.2)))
+
+    st.cps = cps
+    st.epi = epi
+    st.dhr = dhr
+    st.ge = ge
+    st.rss = rss
+    st.wpd = wpd
+    st.led = led
+
+    return {
+        "cps": cps,
+        "epi": epi,
+        "dhr": dhr,
+        "ge": ge,
+        "rss": rss,
+        "wpd": wpd,
+        "led": led,
+    }
 
 
 def proof_write_event(event: dict) -> None:
@@ -7116,7 +7232,7 @@ def check_aee_exits(
     now_ts_val: Optional[float] = None,
 ) -> Optional[str]:
     """SOP v2 priority order: P1 PANIC, P2 NEAR_TP_STALL, P3 PULSE_STALL, P4 FAILED_TO_CONTINUE_DECAY."""
-    _ = trade  # reserved for trade-aware checks per SOP contract
+    _ = trade
     progress = float(metrics.get("progress", 0.0) or 0.0)
     speed = float(metrics.get("speed", 0.0) or 0.0)
     velocity = float(metrics.get("velocity", 0.0) or 0.0)
@@ -7127,23 +7243,119 @@ def check_aee_exits(
     dist_to_tp = float(metrics.get("dist_to_tp", 9e9) or 9e9)
     near_tp_band = float(metrics.get("near_tp_band", 0.25) or 0.25)
     atr_exec = float(metrics.get("atr_exec", 0.0) or 0.0)
+    cps = float(metrics.get("cps", 0.5) or 0.5)
+    epi = float(metrics.get("epi", 0.0) or 0.0)
+    dhr = float(metrics.get("dhr", 0.0) or 0.0)
+    ge = float(metrics.get("ge", 0.0) or 0.0)
+    no_new_high_sec = float(metrics.get("no_new_high_sec", 0.0) or 0.0)
+    wpd = float(metrics.get("wpd", 0.0) or 0.0)
+    led = float(metrics.get("led", 0.0) or 0.0)
     now_v = float(now_ts_val if now_ts_val is not None else now_ts())
 
-    # Eval mode handling
-    if eval_mode == "SURVIVAL":
-        # Survival mode: more sensitive panic thresholds
-        if velocity <= -0.4 or pullback >= 0.35:
-            return "PANIC_EXIT"
-    elif eval_mode == "TICK":
-        # Tick mode: full priority ordering
-        pass  # Use normal priority ordering below
-    # NORMAL mode: use default thresholds
+    trade_age = max(0.0, now_v - float(getattr(aee_state, "entry_time", now_v) or now_v))
+    sample_ok = int(getattr(aee_state, "eval_samples", 0) or 0) >= int(MIN_EVAL_SAMPLES)
+    age_ok = trade_age >= float(MIN_EVAL_AGE_SEC)
 
-    # P1 PANIC_EXIT
-    if velocity <= PANIC_VELOCITY or pullback >= PANIC_PULLBACK:
+    rule_trace: Dict[str, Any] = {
+        "trade_age_sec": float(trade_age),
+        "sample_ok": bool(sample_ok),
+        "age_ok": bool(age_ok),
+    }
+
+    def _set_rule_trace(rule: str, *, hit_count: int, persistence: float, exit_allowed: bool, raw_condition: bool) -> None:
+        rule_trace[rule] = {
+            "rule_hit_count": int(hit_count),
+            "rule_persistence": float(max(0.0, persistence)),
+            "exit_allowed": bool(exit_allowed),
+            "raw_condition": bool(raw_condition),
+        }
+
+    def _persistence_gate(rule: str, raw_condition: bool) -> bool:
+        count_attr = f"{rule}_hit_count"
+        first_attr = f"{rule}_first_ts"
+        if raw_condition:
+            if float(getattr(aee_state, first_attr, 0.0) or 0.0) <= 0.0:
+                setattr(aee_state, first_attr, now_v)
+            setattr(aee_state, count_attr, int(getattr(aee_state, count_attr, 0) or 0) + 1)
+        else:
+            setattr(aee_state, count_attr, 0)
+            setattr(aee_state, first_attr, 0.0)
+
+        hits = int(getattr(aee_state, count_attr, 0) or 0)
+        first_ts = float(getattr(aee_state, first_attr, 0.0) or 0.0)
+        persistence = (now_v - first_ts) if first_ts > 0.0 else 0.0
+        exit_allowed = bool(sample_ok and age_ok and hits >= int(NEG_EXIT_CONFIRM_MIN_HITS) and persistence >= float(NEG_EXIT_CONFIRM_WINDOW_SEC))
+        _set_rule_trace(rule, hit_count=hits, persistence=persistence, exit_allowed=exit_allowed, raw_condition=raw_condition)
+        return exit_allowed
+
+    if eval_mode == "SURVIVAL":
+        if velocity <= -0.4 or pullback >= 0.35:
+            rule_trace["survival_override"] = {"raw_condition": True, "exit_allowed": True}
+            aee_state.rule_trace = dict(rule_trace)
+            return "PANIC_EXIT"
+
+    spread_pips = float(metrics.get("spread_pips", 0.0) or 0.0)
+    med_spread = max(0.1, float(metrics.get("med_spread", spread_pips) or spread_pips or 0.1))
+    spread_ratio = spread_pips / med_spread if med_spread > 0 else 0.0
+
+    sig_velocity = velocity <= float(PANIC_VELOCITY)
+    sig_pullback = pullback >= max(float(PANIC_PULLBACK), float(allowed_giveback_atr * leg_mult))
+    sig_spread = spread_ratio >= float(PANIC_SPREAD_SHOCK_RATIO)
+    panic_conditions = int(sig_velocity) + int(sig_pullback) + int(sig_spread)
+    panic_subreasons = []
+    if sig_velocity:
+        panic_subreasons.append("velocity_crash")
+    if sig_pullback:
+        panic_subreasons.append("deep_pullback")
+    if sig_spread:
+        panic_subreasons.append("spread_shock")
+
+    hazard_gate = dhr >= float(ENERGY_DHR_PANIC) and cps <= float(ENERGY_CPS_PANIC_MAX)
+    catastrophic_spread = spread_ratio >= float(PANIC_SPREAD_CATA_RATIO)
+    panic_raw = bool((panic_conditions >= 2 and hazard_gate) or catastrophic_spread)
+
+    if panic_raw:
+        if float(getattr(aee_state, "panic_first_ts", 0.0) or 0.0) <= 0.0:
+            aee_state.panic_first_ts = now_v
+        aee_state.panic_hits = int(getattr(aee_state, "panic_hits", 0) or 0) + 1
+    else:
+        aee_state.panic_hits = 0
+        aee_state.panic_first_ts = 0.0
+
+    panic_persistence = now_v - float(getattr(aee_state, "panic_first_ts", now_v) or now_v)
+    panic_allowed = (
+        int(getattr(aee_state, "panic_hits", 0) or 0) >= int(PANIC_CONFIRM_MIN_HITS)
+        and panic_persistence >= float(PANIC_DEBOUNCE_SEC)
+        and (hazard_gate or catastrophic_spread)
+    )
+    panic_exit_metrics = {
+        "signals": {
+            "velocity": bool(sig_velocity),
+            "pullback": bool(sig_pullback),
+            "spread": bool(sig_spread),
+        },
+        "panic_signal_count": int(panic_conditions),
+        "spread_ratio": float(spread_ratio),
+        "hazard_gate": bool(hazard_gate),
+        "catastrophic_spread": bool(catastrophic_spread),
+        "cps": float(cps),
+        "dhr": float(dhr),
+    }
+    aee_state.panic_subreasons = list(panic_subreasons)
+    aee_state.panic_exit_metrics = dict(panic_exit_metrics)
+
+    rule_trace["panic"] = {
+        "rule_hit_count": int(getattr(aee_state, "panic_hits", 0) or 0),
+        "rule_persistence": float(max(0.0, panic_persistence)),
+        "exit_allowed": bool(panic_allowed),
+        "raw_condition": bool(panic_raw),
+        "panic_subreasons": list(panic_subreasons),
+        "panic_exit_metrics": dict(panic_exit_metrics),
+    }
+    if panic_allowed:
+        aee_state.rule_trace = dict(rule_trace)
         return "PANIC_EXIT"
 
-    # P2 NEAR_TP_STALL_CAPTURE (LOCKED)
     in_near_tp = dist_to_tp <= near_tp_band
     if in_near_tp:
         local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
@@ -7172,6 +7384,7 @@ def check_aee_exits(
         cond_speed = speed < float(STALL_SPEED)
 
         if cond_vel_2 or cond_pullback or (cond_noext_15 and cond_speed):
+            aee_state.rule_trace = dict(rule_trace)
             return "NEAR_TP_STALL_CAPTURE"
     else:
         aee_state.near_tp_stall_hits = 0
@@ -7179,19 +7392,52 @@ def check_aee_exits(
         aee_state.near_tp_vel_neg_hits = 0
         aee_state.near_tp_last_ext_ts = 0.0
 
-    # P3 PULSE_STALL_CAPTURE
     if aee_state.pulse_exit_line is None and atr_exec > 0.0 and progress >= PULSE_PROGRESS:
         if aee_state.direction == "LONG":
             aee_state.pulse_exit_line = float(aee_state.local_high) - (PULSE_EXITLINE_ATR * atr_exec)
         else:
             aee_state.pulse_exit_line = float(aee_state.local_low) + (PULSE_EXITLINE_ATR * atr_exec)
+
+    pulse_crossed = False
     if aee_state.pulse_exit_line is not None:
         if aee_state.direction == "LONG" and current_price <= float(aee_state.pulse_exit_line):
-            return "PULSE_STALL_CAPTURE"
+            pulse_crossed = True
         if aee_state.direction == "SHORT" and current_price >= float(aee_state.pulse_exit_line):
-            return "PULSE_STALL_CAPTURE"
+            pulse_crossed = True
 
-    # P4 FAILED_TO_CONTINUE_DECAY
+    if pulse_crossed and float(getattr(aee_state, "pulse_cross_ts", 0.0) or 0.0) <= 0.0:
+        aee_state.pulse_cross_ts = float(now_v)
+    if not pulse_crossed:
+        aee_state.pulse_cross_ts = 0.0
+
+    pulse_cross_age = max(0.0, float(now_v) - float(getattr(aee_state, "pulse_cross_ts", 0.0) or now_v)) if pulse_crossed else 0.0
+    pulse_energy_weak = bool(
+        cps <= float(ENERGY_CPS_THRESHOLD)
+        and dhr >= float(ENERGY_DHR_DECAY_THRESHOLD)
+        and ge >= float(max(0.18, ENERGY_GE_DECAY_THRESHOLD * 0.80))
+    )
+    pulse_recovered = bool(
+        pulse_crossed
+        and pulse_cross_age <= float(PULSE_RECLAIM_WINDOW_SEC)
+        and (velocity >= 0.0 or cps >= float(PULSE_RECOVER_CPS_MIN) or dhr <= float(PULSE_RECOVER_DHR_MAX))
+    )
+    if pulse_recovered:
+        aee_state.pulse_cross_ts = 0.0
+
+    pulse_raw = bool(
+        pulse_crossed
+        and pulse_cross_age >= float(PULSE_RECLAIM_WINDOW_SEC)
+        and pulse_energy_weak
+        and (not pulse_recovered)
+    )
+    pulse_allowed = _persistence_gate("pulse", raw_condition=pulse_raw)
+    rule_trace["pulse"]["pulse_cross_age"] = float(pulse_cross_age)
+    rule_trace["pulse"]["pulse_recovered"] = bool(pulse_recovered)
+    rule_trace["pulse"]["pulse_energy_weak"] = bool(pulse_energy_weak)
+    if pulse_allowed:
+        aee_state.rule_trace = dict(rule_trace)
+        return "PULSE_STALL_CAPTURE"
+
     ctx_mult = 1.0
     if isinstance(runner_ctx, dict) and str(aee_state.phase) in ("HARVEST", "RUNNER"):
         if runner_ctx.get("trend_bias", 0) == (1 if str(aee_state.direction).upper() == "LONG" else -1):
@@ -7199,15 +7445,26 @@ def check_aee_exits(
         elif runner_ctx.get("trend_bias", 0) != 0:
             ctx_mult = 0.85
     giveback_cap = max(DECAY_LOCK_GIVEBACK_MIN_ATR, allowed_giveback_atr * leg_mult * ctx_mult)
-    if (
+
+    decay_raw = bool(
         progress >= 0.45
         and speed < 0.70
         and velocity < 0.0
         and (pullback_rate >= PANIC_PULLBACKRATE or pullback >= giveback_cap)
-    ):
+        and cps < ENERGY_CPS_THRESHOLD
+        and epi <= ENERGY_EPI_DECAY_THRESHOLD
+        and dhr >= ENERGY_DHR_DECAY_THRESHOLD
+        and ge >= ENERGY_GE_DECAY_THRESHOLD
+        and no_new_high_sec >= DECAY_NO_NEW_HIGH_SEC
+    )
+    decay_allowed = _persistence_gate("decay", raw_condition=decay_raw)
+    if decay_allowed:
+        aee_state.rule_trace = dict(rule_trace)
         return "FAILED_TO_CONTINUE_DECAY"
 
+    aee_state.rule_trace = dict(rule_trace)
     return None
+
 
 def _aee_eval_for_trade(
     *,
@@ -7255,8 +7512,16 @@ def _aee_eval_for_trade(
     st.tp_anchor = float(tp_anchor)
     st.mid_ring.append((now, mid))
     st.spread_ring.append((now, spread_pips))
+    prev_local_high = float(st.local_high)
+    prev_local_low = float(st.local_low)
     st.local_high = max(float(st.local_high), float(mid))
     st.local_low = min(float(st.local_low), float(mid))
+    favorable_ext = (float(st.local_high) > prev_local_high + 1e-12) if direction == "LONG" else (float(st.local_low) < prev_local_low - 1e-12)
+    if float(getattr(st, "last_favorable_ext_ts", 0.0) or 0.0) <= 0.0:
+        st.last_favorable_ext_ts = float(now)
+    if favorable_ext:
+        st.last_favorable_ext_ts = float(now)
+    st.eval_samples = int(getattr(st, "eval_samples", 0) or 0) + 1
 
     _aee_refresh_m1_volatility(pair, st, now)
     atr_exec = float(st.atr14 * st.k) if (st.atr14 > 0.0) else float(atr_entry)
@@ -7295,8 +7560,11 @@ def _aee_eval_for_trade(
     near_tp_band = max(NEAR_TP_BAND_ATR_BASE, 1.2 * spread_pips / atr_pips_val) if atr_pips_val > 0 else NEAR_TP_BAND_ATR_BASE
     med_spread = _median([s for _, s in list(st.spread_ring)[-60:]]) if st.spread_ring else spread_pips
 
+    no_new_high_sec = max(0.0, float(now) - float(getattr(st, "last_favorable_ext_ts", now) or now))
+
     metrics = {
         "progress": progress,
+        "peak_progress": float(st.peak_progress or 0.0),
         "speed": speed_now,
         "velocity": velocity,
         "pullback": pullback,
@@ -7308,10 +7576,14 @@ def _aee_eval_for_trade(
         "atr_exec": atr_exec,
         "leg_mult": float(leg_mult),
         "is_runner": bool(is_runner),
+        "no_new_high_sec": float(no_new_high_sec),
+        "spread_pips": float(spread_pips),
+        "med_spread": float(med_spread),
     }
 
     # Participation -> decay lock with split-leg tolerance context.
     st.peak_progress = max(float(st.peak_progress or 0.0), float(progress))
+    metrics["peak_progress"] = float(st.peak_progress)
     lock_track = {
         "peak": float(st.peak_progress),
         "locked_peak": float(st.locked_peak or 0.0),
@@ -7331,6 +7603,21 @@ def _aee_eval_for_trade(
         h4 = get_candles(pair, "H4", 20)
         runner_ctx = aee_runner_context(h1 if isinstance(h1, list) else [], h4 if isinstance(h4, list) else [])
     metrics["runner_ctx"] = runner_ctx
+
+    # Energy vNext metrics (CPS/EPI/DHR/GE/RSS/WPD/LED)
+    energy_metrics = _aee_energy_metrics(st, metrics, now=now, spread_pips=spread_pips, med_spread=float(med_spread))
+    metrics.update(energy_metrics)
+
+    # Overshoot memory for whipsaw/runner handling
+    if direction == "LONG":
+        overshoot = max(0.0, mid - float(st.tp_anchor))
+    else:
+        overshoot = max(0.0, float(st.tp_anchor) - mid)
+    overshoot_atr = (overshoot / atr_exec) if atr_exec > 0.0 else 0.0
+    if overshoot_atr > float(getattr(st, "overshoot_peak", 0.0) or 0.0):
+        st.overshoot_peak = overshoot_atr
+        st.overshoot_ts = now
+    metrics["overshoot_peak_atr"] = float(getattr(st, "overshoot_peak", 0.0) or 0.0)
 
     st.tick_eval_hz = _aee_fixed_tick_hz()
     armed, reason = should_arm_tick_mode(metrics, st, spread_pips, median_spread_5m=max(0.1, float(med_spread)))
