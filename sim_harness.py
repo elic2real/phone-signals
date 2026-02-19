@@ -1,3 +1,8 @@
+from __future__ import annotations
+# --- CHANGE LIST: TELEMETRY + REJECT REASONS ---
+def log_exit_telemetry(exit_reason, rule_trace, **kwargs):
+    print(f"EXIT: {exit_reason} | Trace: {rule_trace} | Extra: {kwargs}")
+
 #!/usr/bin/env python3
 """Tick replay simulator harness for phone_bot AEE validation.
 
@@ -6,8 +11,6 @@ Includes:
 - bucket scheduler + tick-mode override
 - two-leg management output (core 80% + runner 20%)
 """
-
-from __future__ import annotations
 
 import argparse
 import csv
@@ -122,8 +125,20 @@ class SimEnvironment:
         phone_bot.get_candles = self._get_candles
         phone_bot.aee_states = {}
 
-        if callable(self._orig_check_aee_exits):
-            phone_bot.check_aee_exits = self._instrumented_check_aee_exits  # type: ignore[assignment]
+        # Patch: Use centralized arbiter for all exit logic
+        def arbiter_exit(trade, metrics, aee_state, current_price, *, survival_mode=False, runner_ctx=None, eval_mode="NORMAL", now_ts_val=None):
+            # Use the centralized arbiter from phone_bot
+            pair = trade["pair"]
+            direction = trade["dir"]
+            bid = current_price if direction == "LONG" else current_price
+            ask = current_price if direction == "SHORT" else current_price
+            mid = current_price
+            now = now_ts_val if now_ts_val is not None else self._current_ts
+            spread_pips = phone_bot.to_pips(pair, ask - bid)
+            speed_class = phone_bot.speed_class_from_setup_name(str(trade.get("setup", "")))
+            arbiter_result = phone_bot.final_exit_decision(trade, pair, direction, bid, ask, mid, now, spread_pips, speed_class)
+            return arbiter_result["reason"] if arbiter_result and arbiter_result.get("reason") else None
+        phone_bot.check_aee_exits = arbiter_exit
 
     def restore_live_wiring(self) -> None:
         phone_bot.o = self._orig_o
@@ -238,7 +253,10 @@ class SimEnvironment:
         last_eval_metrics: Dict[str, Any] = {}
 
         entry_price = float(trade.get("entry", 0.0) or 0.0)
+        entry_ts = float(trade.get("ts", 0.0) or 0.0)
         direction = str(trade.get("dir", "LONG")).upper()
+        min_hold_core = float(getattr(phone_bot, "CORE_MIN_HOLD_TIME", getattr(phone_bot, "RUNNER_MIN_HOLD_TIME", 300.0)))
+        min_hold_runner = float(getattr(phone_bot, "RUNNER_MIN_HOLD_TIME", 300.0))
 
         for n, (ts, inst, tick) in enumerate(merged, start=1):
             self._current_tick_idx = n
@@ -271,6 +289,8 @@ class SimEnvironment:
                 "tick_due": None,
                 "tick_reason": None,
                 "exit_reason": None,
+                "exit_blocked_min_hold": False,
+                "runner_exit_blocked_min_hold": False,
                 "metrics": {},
                 "core_open": core_open,
                 "runner_open": runner_open,
@@ -344,35 +364,41 @@ class SimEnvironment:
                     overshoot = (tick.mid - tp_anchor) if direction == "LONG" else (tp_anchor - tick.mid)
                     overshoot_peak_atr = max(overshoot_peak_atr, max(0.0, overshoot / atr_exec))
 
-                # core exits on native AEE reason
+                trade_age_sec = max(0.0, float(ts) - entry_ts)
+
+                # core exits on native AEE reason (delay non-panic exits until min hold)
                 if core_open and rec["exit_reason"]:
-                    core_open = False
-                    core_exit = {
-                        "pair_eval_idx": rec["pair_eval_idx"],
-                        "idx": rec["idx"],
-                        "ts": ts,
-                        "price": tick.bid if direction == "LONG" else tick.ask,
-                        "reason": rec["exit_reason"],
-                        "metrics": metrics,
-                    }
-                    if rec.get("exit_reason") == "PULSE_STALL_CAPTURE":
-                        core_exit["pulse_exit_time"] = float(ts)
-                        core_exit["pulse_energy_state"] = {
-                            "cps": float(metrics.get("cps", 0.0) or 0.0),
-                            "dhr": float(metrics.get("dhr", 0.0) or 0.0),
-                            "ge": float(metrics.get("ge", 0.0) or 0.0),
-                            "velocity": float(metrics.get("velocity", 0.0) or 0.0),
-                        }
-                    self.logs.append(
-                        "AEE_DECISION_ORDER_ACTION",
-                        {
-                            "ts": ts,
+                    is_panic = str(rec["exit_reason"]) == "PANIC_EXIT"
+                    if (not is_panic) and trade_age_sec < min_hold_core:
+                        rec["exit_blocked_min_hold"] = True
+                    else:
+                        core_open = False
+                        core_exit = {
                             "pair_eval_idx": rec["pair_eval_idx"],
-                            "aee_chosen_rule": rec["exit_reason"],
-                            "order_action": "CLOSE_CORE",
-                            "instrument": inst,
-                        },
-                    )
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": rec["exit_reason"],
+                            "metrics": metrics,
+                        }
+                        if rec.get("exit_reason") == "PULSE_STALL_CAPTURE":
+                            core_exit["pulse_exit_time"] = float(ts)
+                            core_exit["pulse_energy_state"] = {
+                                "cps": float(metrics.get("cps", 0.0) or 0.0),
+                                "dhr": float(metrics.get("dhr", 0.0) or 0.0),
+                                "ge": float(metrics.get("ge", 0.0) or 0.0),
+                                "velocity": float(metrics.get("velocity", 0.0) or 0.0),
+                            }
+                        self.logs.append(
+                            "AEE_DECISION_ORDER_ACTION",
+                            {
+                                "ts": ts,
+                                "pair_eval_idx": rec["pair_eval_idx"],
+                                "aee_chosen_rule": rec["exit_reason"],
+                                "order_action": "CLOSE_CORE",
+                                "instrument": inst,
+                            },
+                        )
 
                 # runner promotion
                 rss = float(metrics.get("rss", 0.0) or 0.0)
@@ -381,28 +407,38 @@ class SimEnvironment:
                 ge = float(metrics.get("ge", 0.0) or 0.0)
                 if runner_open and (not runner_promoted):
                     epi = float(metrics.get("epi", 0.0) or 0.0)
+                    runner_survival = float(metrics.get("rsp", 0.0) or 0.0)
+                    regime = str(metrics.get("regime", "MIXED")).upper()
                     runner_energy_promote = (
                         rss >= float(getattr(phone_bot, "RUNNER_PROMOTE_RSS_MIN", phone_bot.ENERGY_RSS_PROMOTE))
                         and led >= float(getattr(phone_bot, "RUNNER_PROMOTE_LED_MIN", phone_bot.LED_EXPANSION_THRESHOLD))
                         and epi >= float(getattr(phone_bot, "RUNNER_PROMOTE_EPI_MIN", 0.50))
+                        and runner_survival >= 0.52
                     )
-                    runner_overshoot_promote = overshoot_peak_atr >= 0.45 and rss >= 0.55
-                    if runner_energy_promote or runner_overshoot_promote:
+                    runner_overshoot_promote = overshoot_peak_atr >= 0.45 and rss >= 0.55 and runner_survival >= 0.50
+                    if regime != "CHOP" and (runner_energy_promote or runner_overshoot_promote):
                         runner_promoted = True
 
                 # runner exits after promotion
                 if runner_open and runner_promoted:
+                    # === CHANGE LIST PATCH: runner giveback logic (protocol-compliant) ===
                     giveback_from_peak = max(0.0, overshoot_peak_atr - max(0.0, float(metrics.get("overshoot_peak_atr", overshoot_peak_atr) or overshoot_peak_atr)))
                     epi = float(metrics.get("epi", 0.0) or 0.0)
-                    # convex continuation: once extension is meaningful, allow wider giveback
+                    runner_survival = float(metrics.get("rsp", 0.0) or 0.0)
+                    # Canonical protocol: convex continuation, let runner breathe, but enforce hard giveback ceiling
                     giveback_thresh = 0.20
                     if overshoot_peak_atr >= 1.20:
                         giveback_thresh = 0.32
                     elif overshoot_peak_atr >= 0.80:
                         giveback_thresh = 0.26
-                    # strong persistence lets runner breathe a bit more
                     if rss >= 0.70 and epi >= 0.55 and led >= 0.55:
                         giveback_thresh += 0.06
+                    if runner_survival >= 0.65:
+                        giveback_thresh += 0.06
+                    elif runner_survival <= 0.40:
+                        giveback_thresh = max(0.12, giveback_thresh - 0.04)
+                    # Enforce hard ceiling for giveback
+                    giveback_thresh = min(giveback_thresh, 0.36)
                     runner_exit_now = False
                     runner_reason = ""
                     if rec["exit_reason"] == "PANIC_EXIT":
@@ -416,26 +452,29 @@ class SimEnvironment:
                         runner_reason = "RUNNER_CAPTURE_FADE"
 
                     if runner_exit_now:
-                        runner_open = False
-                        runner_exit = {
-                            "pair_eval_idx": rec["pair_eval_idx"],
-                            "idx": rec["idx"],
-                            "ts": ts,
-                            "price": tick.bid if direction == "LONG" else tick.ask,
-                            "reason": runner_reason,
-                            "metrics": metrics,
-                            "overshoot_peak_atr": overshoot_peak_atr,
-                        }
-                        self.logs.append(
-                            "AEE_DECISION_ORDER_ACTION",
-                            {
-                                "ts": ts,
+                        if (runner_reason != "PANIC_EXIT") and trade_age_sec < min_hold_runner:
+                            rec["runner_exit_blocked_min_hold"] = True
+                        else:
+                            runner_open = False
+                            runner_exit = {
                                 "pair_eval_idx": rec["pair_eval_idx"],
-                                "aee_chosen_rule": runner_reason,
-                                "order_action": "CLOSE_RUNNER",
-                                "instrument": inst,
-                            },
-                        )
+                                "idx": rec["idx"],
+                                "ts": ts,
+                                "price": tick.bid if direction == "LONG" else tick.ask,
+                                "reason": runner_reason,
+                                "metrics": metrics,
+                                "overshoot_peak_atr": overshoot_peak_atr,
+                            }
+                            self.logs.append(
+                                "AEE_DECISION_ORDER_ACTION",
+                                {
+                                    "ts": ts,
+                                    "pair_eval_idx": rec["pair_eval_idx"],
+                                    "aee_chosen_rule": runner_reason,
+                                    "order_action": "CLOSE_RUNNER",
+                                    "instrument": inst,
+                                },
+                            )
 
             rec["core_open"] = core_open
             rec["runner_open"] = runner_open
@@ -446,34 +485,49 @@ class SimEnvironment:
             if not core_open and not runner_open:
                 break
 
-        # force-close remaining legs at last observed tick
-        last_tick = None
-        for r in reversed(records):
-            if r.get("instrument") == trade["pair"]:
-                last_tick = r
-                break
-        if last_tick is not None:
-            if core_open:
-                core_open = False
-                core_exit = {
-                    "pair_eval_idx": last_tick.get("pair_eval_idx"),
-                    "idx": last_tick.get("idx"),
-                    "ts": last_tick.get("ts"),
-                    "price": float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask")),
-                    "reason": "SIM_EOD_CLOSE",
-                    "metrics": dict(last_tick.get("metrics", {}) or last_eval_metrics),
-                }
-            if runner_open:
-                runner_open = False
-                runner_exit = {
-                    "pair_eval_idx": last_tick.get("pair_eval_idx"),
-                    "idx": last_tick.get("idx"),
-                    "ts": last_tick.get("ts"),
-                    "price": float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask")),
-                    "reason": "SIM_EOD_CLOSE",
-                    "metrics": dict(last_tick.get("metrics", {}) or last_eval_metrics),
-                    "overshoot_peak_atr": overshoot_peak_atr,
-                }
+        # Enforce min hold by delaying exit evaluation for all non-PANIC exits (core and runner)
+        # Find the last tick at or after min_hold for each leg
+        def find_exit_tick(after_ts):
+            for r in records:
+                if r.get("instrument") == trade["pair"] and float(r.get("ts", 0.0) or 0.0) >= after_ts:
+                    return r
+            return None
+
+        # Core leg
+        if core_open:
+            # If not PANIC, delay exit until min_hold is reached
+            last_tick = find_exit_tick(entry_ts + min_hold_core)
+            if last_tick is None:
+                # No tick after min_hold, use last available
+                last_tick = records[-1]
+            core_open = False
+            core_exit_ts = float(last_tick.get("ts"))
+            core_exit_price = float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask"))
+            core_exit = {
+                "pair_eval_idx": last_tick.get("pair_eval_idx"),
+                "idx": last_tick.get("idx"),
+                "ts": core_exit_ts,
+                "price": core_exit_price,
+                "reason": "SIM_EOD_CLOSE",
+                "metrics": dict(last_tick.get("metrics", {}) or last_eval_metrics),
+            }
+        # Runner leg
+        if runner_open:
+            last_tick = find_exit_tick(entry_ts + min_hold_runner)
+            if last_tick is None:
+                last_tick = records[-1]
+            runner_open = False
+            runner_exit_ts = float(last_tick.get("ts"))
+            runner_exit_price = float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask"))
+            runner_exit = {
+                "pair_eval_idx": last_tick.get("pair_eval_idx"),
+                "idx": last_tick.get("idx"),
+                "ts": runner_exit_ts,
+                "price": runner_exit_price,
+                "reason": "SIM_EOD_CLOSE",
+                "metrics": dict(last_tick.get("metrics", {}) or last_eval_metrics),
+                "overshoot_peak_atr": overshoot_peak_atr,
+            }
 
         def pnl_pips(exit_px: float) -> float:
             pip = float(phone_bot.pip_size(trade["pair"]))
@@ -529,6 +583,12 @@ class SimEnvironment:
         core_stats = leg_stats(core_exit)
         runner_stats = leg_stats(runner_exit)
 
+        pair_records = [r for r in records if r.get("instrument") == trade["pair"] and isinstance(r.get("ts"), (int, float))]
+        if pair_records:
+            replay_wall_time_sec = max(0.0, float(pair_records[-1]["ts"]) - float(pair_records[0]["ts"]))
+        else:
+            replay_wall_time_sec = 0.0
+
         def panic_recovery(exit_info: Optional[Dict[str, Any]]) -> Dict[str, Optional[float]]:
             if not exit_info:
                 return {"plus_30": None, "plus_60": None, "plus_120": None}
@@ -580,8 +640,10 @@ class SimEnvironment:
             "legs": {
                 "core": {
                     "weight": 0.8,
+                    "entry_ts": entry_ts,
                     "entry_price": entry_price,
                     "exit": core_exit,
+                    "exit_ts": float(core_exit.get("ts", 0.0) or 0.0) if core_exit else 0.0,
                     "pips": core_pips,
                     "hold_sec": core_stats["hold_sec"],
                     "mfe_pips": core_stats["mfe_pips"],
@@ -592,8 +654,10 @@ class SimEnvironment:
                 },
                 "runner": {
                     "weight": 0.2,
+                    "entry_ts": entry_ts,
                     "entry_price": entry_price,
                     "exit": runner_exit,
+                    "exit_ts": float(runner_exit.get("ts", 0.0) or 0.0) if runner_exit else 0.0,
                     "pips": runner_pips,
                     "hold_sec": runner_stats["hold_sec"],
                     "mfe_pips": runner_stats["mfe_pips"],
@@ -610,10 +674,11 @@ class SimEnvironment:
             },
             "weighted_pips": total_weighted_pips,
             "pips_per_hour": {
-                "weighted": (total_weighted_pips / ((max(core_stats["hold_sec"], runner_stats["hold_sec"]) or 1.0) / 3600.0)),
-                "core": (core_pips / ((core_stats["hold_sec"] or 1.0) / 3600.0)),
-                "runner": (runner_pips / ((runner_stats["hold_sec"] or 1.0) / 3600.0)),
+                "weighted": (total_weighted_pips / (replay_wall_time_sec / 3600.0)) if replay_wall_time_sec > 0 else 0.0,
+                "core": (core_pips / (replay_wall_time_sec / 3600.0)) if replay_wall_time_sec > 0 else 0.0,
+                "runner": (runner_pips / (replay_wall_time_sec / 3600.0)) if replay_wall_time_sec > 0 else 0.0,
             },
+            "replay_wall_time_sec": replay_wall_time_sec,
             "log_summary": self.logs.summary(),
             "logs": self.logs.events,
         }
@@ -642,6 +707,10 @@ def compute_aee_truths(
     atr_exec = float(metrics.get("atr_exec", 0.0) or 0.0)
     cps = float(metrics.get("cps", 0.5) or 0.5)
     dhr = float(metrics.get("dhr", 0.0) or 0.0)
+    no_new_high_sec = float(metrics.get("no_new_high_sec", 0.0) or 0.0)
+    regime = str(metrics.get("regime", "MIXED")).upper()
+    chop_mode = regime == "CHOP"
+    trend_mode = regime == "TREND"
 
     truths: List[str] = []
 
@@ -699,13 +768,42 @@ def compute_aee_truths(
             or dhr <= float(phone_bot.PULSE_RECOVER_DHR_MAX)
         )
     )
-    if pulse_crossed and pulse_cross_age >= float(phone_bot.PULSE_RECLAIM_WINDOW_SEC) and pulse_energy_weak and (not pulse_recovered):
+    crest_confirmed = bool(
+        no_new_high_sec >= float(getattr(phone_bot, "PULSE_CREST_NOEXT_SEC", 3.0))
+        and pullback >= float(getattr(phone_bot, "PULSE_CREST_PULLBACK_ATR", 0.18))
+    )
+    reversal_confirmed = bool(velocity <= float(getattr(phone_bot, "PULSE_REV_VELOCITY", -0.05)) and dhr >= float(phone_bot.ENERGY_DHR_DECAY_THRESHOLD))
+    chop_pulse_gate = True
+    if chop_mode:
+        chop_pulse_gate = bool(
+            cps <= float(getattr(phone_bot, "CHOP_PULSE_CPS_MAX", 0.46))
+            and dhr >= float(getattr(phone_bot, "CHOP_PULSE_DHR_MIN", 0.65))
+            and pullback >= float(getattr(phone_bot, "CHOP_PULSE_PULLBACK_MIN", 0.30))
+            and crest_confirmed
+            and reversal_confirmed
+        )
+    trend_pulse_gate = True
+    if trend_mode:
+        trend_pulse_gate = bool(crest_confirmed and reversal_confirmed)
+    if pulse_crossed and pulse_cross_age >= float(phone_bot.PULSE_RECLAIM_WINDOW_SEC) and pulse_energy_weak and (not pulse_recovered) and crest_confirmed and reversal_confirmed and chop_pulse_gate and trend_pulse_gate:
         truths.append("PULSE_STALL_CAPTURE")
+
+    if chop_mode:
+        rss = float(metrics.get("rss", 0.0) or 0.0)
+        chop_scratch = bool(
+            progress <= float(getattr(phone_bot, "CHOP_SCRATCH_PROGRESS_MAX", 0.55))
+            and rss <= float(getattr(phone_bot, "CHOP_SCRATCH_RSS_MAX", 0.38))
+            and cps <= float(getattr(phone_bot, "CHOP_SCRATCH_CPS_MAX", 0.46))
+            and dhr >= float(getattr(phone_bot, "CHOP_SCRATCH_DHR_MIN", 0.62))
+            and pullback >= float(getattr(phone_bot, "CHOP_SCRATCH_PULLBACK_MIN", 0.12))
+            and no_new_high_sec >= 6.0
+        )
+        if chop_scratch:
+            truths.append("CHOP_SCRATCH_EXIT")
 
     trade_age = max(0.0, now_ts_val - float(getattr(aee_state, "entry_time", now_ts_val) or now_ts_val))
     epi = float(metrics.get("epi", 0.0) or 0.0)
     ge = float(metrics.get("ge", 0.0) or 0.0)
-    no_new_high_sec = float(metrics.get("no_new_high_sec", 0.0) or 0.0)
     if (
         int(getattr(aee_state, "eval_samples", 0) or 0) >= int(phone_bot.MIN_EVAL_SAMPLES)
         and trade_age >= float(phone_bot.MIN_EVAL_AGE_SEC)
@@ -721,7 +819,7 @@ def compute_aee_truths(
     ):
         truths.append("FAILED_TO_CONTINUE_DECAY")
 
-    order = ["PANIC_EXIT", "NEAR_TP_STALL_CAPTURE", "PULSE_STALL_CAPTURE", "FAILED_TO_CONTINUE_DECAY"]
+    order = ["PANIC_EXIT", "NEAR_TP_STALL_CAPTURE", "PULSE_STALL_CAPTURE", "CHOP_SCRATCH_EXIT", "FAILED_TO_CONTINUE_DECAY"]
     seen = set()
     return [x for x in order if x in truths and (x not in seen and not seen.add(x))]
 

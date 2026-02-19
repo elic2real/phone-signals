@@ -1,0 +1,21 @@
+{
+  "scenario": "trend_continuation",
+  "parameters": {
+    "purpose": "trend-following, positive drift, no regime switch",
+    "audit_gates": [
+      "trend_engagement",
+      "positive_pips"
+    ],
+    "forbidden": [
+      "regime_switch"
+    ],
+    "failure_modes": [
+      "no_engagement",
+      "negative_pips"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T21:16:58.421833Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

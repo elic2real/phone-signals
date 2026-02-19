@@ -1,0 +1,21 @@
+{
+  "scenario": "regime_switch",
+  "parameters": {
+    "purpose": "abrupt regime switch (trend\u2192chop)",
+    "audit_gates": [
+      "regime_switch_detected",
+      "no_carryover"
+    ],
+    "forbidden": [
+      "trend_engagement_after_switch"
+    ],
+    "failure_modes": [
+      "carryover",
+      "missed_switch"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T15:32:18.097012Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

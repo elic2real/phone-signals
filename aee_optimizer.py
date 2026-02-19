@@ -212,6 +212,105 @@ def _compute_delay_from_result(result: Dict[str, Any]) -> Dict[str, Dict[str, fl
 
 
 def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, bucket_sec: float, collect_runs: bool = False) -> Dict[str, Any]:
+    # --- Measurement contract v2 and anti-gaming metrics (protocol-compliant, robust to gaming) ---
+    # Use sim_extraction_audit.py logic: penalize short-hold dominance, low exposure/active time ratios, failing audit sanity gates
+    # For each run, extract measurement_contract_v2 and sanity_gates if present
+    run_summaries: List[Dict[str, Any]] = []
+    for i in range(n_runs):
+        run_seed = start_seed + i
+        res = run_one(seed=run_seed, bucket_sec=bucket_sec)
+        wp = _safe_float(res.get("weighted_pips"), 0.0)
+        weighted.append(wp)
+        pph = _safe_float(((res.get("pips_per_hour") or {}).get("weighted")), 0.0)
+        weighted_pph.append(pph)
+        core_pph.append(_safe_float(((res.get("pips_per_hour") or {}).get("core")), 0.0))
+        runner_pph.append(_safe_float(((res.get("pips_per_hour") or {}).get("runner")), 0.0))
+        legs = res.get("legs") if isinstance(res.get("legs"), dict) else {}
+        core_vals.append(_safe_float((legs.get("core") or {}).get("pips"), 0.0))
+        rp = _safe_float((legs.get("runner") or {}).get("pips"), 0.0)
+        runner_vals.append(rp)
+        if rp > 0:
+            runner_positive += 1
+        ex = res.get("exit") or {}
+        reason = str(ex.get("exit_reason") or ex.get("reason") or "UNKNOWN")
+        exit_reasons[reason] += 1
+        total_exits += 1
+        if reason == "PANIC_EXIT":
+            panic_count += 1
+            if wp < 0:
+                panic_losses.append(abs(wp))
+        if wp < 0:
+            neg_losses.append(abs(wp))
+        tr = res.get("trade") or {}
+        hold = _safe_float(ex.get("ts"), 0.0) - _safe_float(tr.get("ts"), 0.0)
+        if hold > 0:
+            hold_vals.append(hold)
+        rr = str(((legs.get("runner") or {}).get("exit") or {}).get("reason") or "")
+        if rr == "RUNNER_ENERGY_DECAY":
+            runner_decay_count += 1
+        recs = [r for r in (res.get("tick_records") or []) if isinstance(r, dict) and r.get("pair_eval_idx") is not None]
+        if recs:
+            last = recs[-1]
+            m = last.get("metrics") or {}
+            p = _safe_float(m.get("progress"), 0.0)
+            pk = _safe_float(m.get("peak_progress"), p)
+            progress_at_exit.append(p)
+            peak_progress.append(pk)
+            if pk > 1e-6:
+                giveback_ratios.append(p / pk)
+            cps = _safe_float(m.get("cps"), 0.0)
+            dhr = _safe_float(m.get("dhr"), 0.0)
+            ge = _safe_float(m.get("ge"), 0.0)
+            if cps < float(getattr(phone_bot, "ENERGY_CPS_THRESHOLD", 0.52)):
+                cps_low_count += 1
+            if dhr >= float(getattr(phone_bot, "ENERGY_DHR_DECAY_THRESHOLD", 0.58)):
+                dhr_spike_count += 1
+            if ge >= float(getattr(phone_bot, "ENERGY_GE_DECAY_THRESHOLD", 0.28)):
+                ge_spike_count += 1
+            if reason == "FAILED_TO_CONTINUE_DECAY" and cps < float(getattr(phone_bot, "ENERGY_CPS_THRESHOLD", 0.52)) and dhr >= float(getattr(phone_bot, "ENERGY_DHR_DECAY_THRESHOLD", 0.58)) and ge >= float(getattr(phone_bot, "ENERGY_GE_DECAY_THRESHOLD", 0.28)):
+                energy_confirmed_decay += 1
+        delays = _compute_delay_from_result(res)
+        for k in delay_acc:
+            delay_acc[k]["clip_hits"] += delays[k]["clip_rate"]
+            delay_acc[k]["clip_gain"] += delays[k]["clip_gain"]
+            delay_acc[k]["count"] += delays[k]["count"]
+        if collect_runs:
+            run_summaries.append(
+                {
+                    "seed": run_seed,
+                    "scenario": str(res.get("scenario") or "unknown"),
+                    "weighted_pips": wp,
+                    "weighted_pips_per_hour": pph,
+                    "core_pips": _safe_float((legs.get("core") or {}).get("pips"), 0.0),
+                    "runner_pips": _safe_float((legs.get("runner") or {}).get("pips"), 0.0),
+                    "exit_reason": reason,
+                    "runner_exit_reason": str(((legs.get("runner") or {}).get("exit") or {}).get("reason") or "UNKNOWN"),
+                    "result": res,
+                }
+            )
+    # Now extract measurement_contracts and sanity_gates from run_summaries
+    measurement_contracts = []
+    sanity_gates_list = []
+    for res in run_summaries:
+        mc = None
+        sg = None
+        try:
+            mc = (res.get("result") or {}).get("measurement_contract_v2")
+            sg = (res.get("result") or {}).get("sanity_gates")
+        except Exception:
+            pass
+        if mc:
+            measurement_contracts.append(mc)
+        if sg:
+            sanity_gates_list.append(sg)
+    # Aggregate anti-gaming metrics
+    avg_exposure_ratio = _mean([mc.get("exposure_ratio", 0.0) for mc in measurement_contracts]) if measurement_contracts else 1.0
+    avg_active_time_ratio = _mean([mc.get("active_time_ratio", 0.0) for mc in measurement_contracts]) if measurement_contracts else 1.0
+    avg_short_hold_10_rate = _mean([mc.get("short_hold_count", {}).get("lt_10s", 0) / n_runs for mc in measurement_contracts]) if measurement_contracts else 0.0
+    # Sanity gates: fail if any run fails any gate (robust to gaming)
+    audit_sanity_pass = all(
+        all(g.get("pass", True) for g in sg.values()) for sg in sanity_gates_list
+    ) if sanity_gates_list else True
     set_params(params)
 
     weighted: List[float] = []
@@ -366,8 +465,12 @@ def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, buck
         - (2.6 * delay["n_plus_5"]["clip_rate"])
         - (1.4 * runner_energy_decay_rate)
         - (1.3 * progress_clip_penalty)
+        - (3.0 * max(0.0, 0.10 - avg_exposure_ratio))
+        - (3.0 * max(0.0, 0.10 - avg_active_time_ratio))
+        - (4.0 * avg_short_hold_10_rate)
     )
-
+    if not audit_sanity_pass:
+        score -= 10.0
     if median_hold < 35.0 and weighted_pips_per_hour > 0.0:
         score -= 4.0
 
@@ -377,9 +480,17 @@ def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, buck
         and p95_loss >= CONSTRAINTS["p95_loss_min"]
         and delay["n_plus_5"]["clip_rate"] <= CONSTRAINTS["clip_rate_n_plus_5_max"]
         and runner_positive_rate >= CONSTRAINTS["runner_positive_rate_min"]
+        and avg_exposure_ratio >= 0.5
+        and avg_active_time_ratio >= 0.5
+        and avg_short_hold_10_rate <= 0.10
+        and audit_sanity_pass
     )
 
     out: Dict[str, Any] = {
+        "avg_exposure_ratio": avg_exposure_ratio,
+        "avg_active_time_ratio": avg_active_time_ratio,
+        "avg_short_hold_10_rate": avg_short_hold_10_rate,
+        "audit_sanity_pass": audit_sanity_pass,
         "params": params,
         "n_runs": n_runs,
         "score": score,

@@ -1,0 +1,21 @@
+{
+  "scenario": "panic_reversal",
+  "parameters": {
+    "purpose": "panic spike, reversal, no trend",
+    "audit_gates": [
+      "panic_exit",
+      "reversal_detection"
+    ],
+    "forbidden": [
+      "trend_engagement"
+    ],
+    "failure_modes": [
+      "missed_reversal",
+      "false_trend"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T21:16:58.444764Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

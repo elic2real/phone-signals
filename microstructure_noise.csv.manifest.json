@@ -1,0 +1,21 @@
+{
+  "scenario": "microstructure_noise",
+  "parameters": {
+    "purpose": "high-frequency noise, pathological spreads, timestamp jitter",
+    "audit_gates": [
+      "robust_to_noise",
+      "no_gaming"
+    ],
+    "forbidden": [
+      "timing_gaming"
+    ],
+    "failure_modes": [
+      "gaming_detected",
+      "crash"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T15:32:18.111864Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

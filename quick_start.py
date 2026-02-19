@@ -1,12 +1,21 @@
+
+from __future__ import annotations
 #!/usr/bin/env python3
 """Quick-start runner for synthetic-data AEE simulation and validation.
 
 Includes both:
-- single-run smoke test (`test`)
-- uncapped batch replay (`batch`) so analysis is not limited to 50 runs
-"""
 
-from __future__ import annotations
+"""
+# Compile check: import all main modules for syntax validation
+try:
+    import phone_bot
+    import sim_extraction_audit
+    import aee_optimizer
+    import phone_bot_logging
+    import sim_harness
+    import sim_extraction_audit
+except Exception as e:
+    print(f"[COMPILE ERROR] {e}")
 
 import argparse
 import json
@@ -15,6 +24,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from aee_validator import AEEValidator
 from tick_generator import export_ticks_csv, sample_scenario_mix
 
@@ -79,7 +90,17 @@ def run_batch_mode(runs: int, output_dir: Path, audit_file: Path, bucket_sec: fl
     rng = random.Random(seed)
     output_dir.mkdir(parents=True, exist_ok=True)
     for i in range(1, runs + 1):
-        scenario, ticks = _generate_ticks(rng)
+        # Enforce scenario wall time >= 600s, print debug info for every run
+        attempt = 0
+        while True:
+            scenario, ticks = _generate_ticks(rng)
+            wall_time = ticks[-1]["ts"] - ticks[0]["ts"] if ticks else 0
+            attempt += 1
+            if wall_time >= 600:
+                print(f"[BATCH] Run {i:04d} scenario={scenario} wall_time={wall_time:.2f}s (attempt {attempt})")
+                break
+            else:
+                print(f"[BATCH][WARN] Run {i:04d} scenario={scenario} wall_time={wall_time:.2f}s < 600s, regenerating (attempt {attempt})")
         pair = str(ticks[0]["instrument"]) if ticks else "EUR_USD"
         csv_path = output_dir / f"test_data_{i:04d}__{scenario}.csv"
         out_path = output_dir / f"sim_results_{i:04d}__{scenario}.json"
@@ -90,6 +111,7 @@ def run_batch_mode(runs: int, output_dir: Path, audit_file: Path, bucket_sec: fl
         with out_path.open("r", encoding="utf-8") as f:
             res = json.load(f)
         res["scenario"] = scenario
+        res["scenario_wall_time_sec"] = wall_time
         with out_path.open("w", encoding="utf-8") as f:
             json.dump(res, f, indent=2)
 

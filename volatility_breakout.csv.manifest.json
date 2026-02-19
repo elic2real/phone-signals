@@ -1,0 +1,22 @@
+{
+  "scenario": "volatility_breakout",
+  "parameters": {
+    "purpose": "energy-based: persistent drift, volatility expansion (breakout)",
+    "audit_gates": [
+      "trend_engagement",
+      "volatility_expansion",
+      "positive_pips"
+    ],
+    "forbidden": [
+      "regime_switch"
+    ],
+    "failure_modes": [
+      "no_engagement",
+      "negative_pips"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T15:32:18.148469Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

@@ -1,0 +1,24 @@
+{
+  "scenario": "edge_case_trap",
+  "parameters": {
+    "purpose": "slow drift, abrupt reversal, micro-pip exit trap, hold forever",
+    "audit_gates": [
+      "no_hold_forever",
+      "exit_on_reversal",
+      "no_micro_pip_gaming"
+    ],
+    "forbidden": [
+      "hold_forever",
+      "micro_pip_exit"
+    ],
+    "failure_modes": [
+      "never_exit",
+      "micro_pip_exit",
+      "missed_reversal"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T15:32:18.131826Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

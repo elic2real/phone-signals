@@ -1,0 +1,21 @@
+{
+  "scenario": "chop_mean_reversion",
+  "parameters": {
+    "purpose": "choppy, mean-reverting, bounded",
+    "audit_gates": [
+      "mean_reversion",
+      "bounded_pnl"
+    ],
+    "forbidden": [
+      "trend_engagement"
+    ],
+    "failure_modes": [
+      "trend_engaged",
+      "large_loss"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T21:16:58.465426Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

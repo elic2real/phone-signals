@@ -1,0 +1,22 @@
+{
+  "scenario": "volatility_squeeze_burst",
+  "parameters": {
+    "purpose": "profitable: volatility squeeze (low vol), then expansion and trend burst",
+    "audit_gates": [
+      "squeeze_detection",
+      "trend_burst",
+      "positive_pips"
+    ],
+    "forbidden": [
+      "regime_switch"
+    ],
+    "failure_modes": [
+      "no_burst",
+      "negative_pips"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T06:11:25.636974Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

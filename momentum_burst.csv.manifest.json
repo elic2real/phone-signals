@@ -1,0 +1,22 @@
+{
+  "scenario": "momentum_burst",
+  "parameters": {
+    "purpose": "energy-based: trend acceleration, volatility contraction/expansion (momentum burst)",
+    "audit_gates": [
+      "trend_acceleration",
+      "momentum_detection",
+      "positive_pips"
+    ],
+    "forbidden": [
+      "regime_switch"
+    ],
+    "failure_modes": [
+      "no_engagement",
+      "negative_pips"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T15:32:18.164597Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}

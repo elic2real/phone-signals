@@ -1,0 +1,22 @@
+{
+  "scenario": "donchian_breakout",
+  "parameters": {
+    "purpose": "profitable: Donchian channel breakout (persistent new highs/lows, strong trend)",
+    "audit_gates": [
+      "breakout_detection",
+      "persistent_highs",
+      "positive_pips"
+    ],
+    "forbidden": [
+      "regime_switch"
+    ],
+    "failure_modes": [
+      "no_breakout",
+      "negative_pips"
+    ]
+  },
+  "random_seed": 1337,
+  "generation_time": "2026-02-18T06:11:25.610403Z",
+  "audit_gates": "<document expected audit gates here>",
+  "failure_modes": "<document failure modes here>"
+}
