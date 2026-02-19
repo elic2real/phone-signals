@@ -23,8 +23,8 @@ MAX_BYTES = 5_000_000
 BACKUPS = 10
 
 # Create directories on startup
-BASE_DIR = os.path.expanduser("~/phone_bot")
-LOG_DIR = os.path.join(BASE_DIR, "logs")
+BASE_DIR = os.getenv("PHONE_BOT_BASE_DIR", os.path.expanduser("~/phone_bot"))
+LOG_DIR = os.getenv("PHONE_BOT_LOG_DIR", os.path.join(BASE_DIR, "logs"))
 os.makedirs(LOG_DIR, exist_ok=True)
 
 # Global logger references
