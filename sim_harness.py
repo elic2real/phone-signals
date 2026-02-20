@@ -898,16 +898,29 @@ def create_default_trade(pair: str, direction: str, ticks_by_inst: Dict[str, Lis
         raise ValueError(f"No ticks found for pair {pair}")
 
     first = ticks[0]
+    last = ticks[-1]
+    
+    # Detect actual price direction
+    first_mid = (first.bid + first.ask) / 2
+    last_mid = (last.bid + last.ask) / 2
+    
+    if last_mid > first_mid:
+        actual_direction = "LONG"
+    elif last_mid < first_mid:
+        actual_direction = "SHORT"
+    else:
+        actual_direction = direction  # Use provided direction if no movement
+    
     atr_entry = float(phone_bot.pip_size(pair)) * float(atr_pips)
-    entry = first.ask if direction == "LONG" else first.bid
-    tp = entry + (tp_atr * atr_entry if direction == "LONG" else -tp_atr * atr_entry)
+    entry = first.ask if actual_direction == "LONG" else first.bid
+    tp = entry + (tp_atr * atr_entry if actual_direction == "LONG" else -tp_atr * atr_entry)
 
     return {
         "id": 1,
         "ts": first.ts,
         "pair": pair,
         "setup": "SIM_RUN",
-        "dir": direction,
+        "dir": actual_direction,  # Use detected direction
         "mode": "SIM",
         "units": 1000,
         "entry": entry,

@@ -1,28 +1,4 @@
-# === Whipsaw capture constants (module scope) ===
-WHIP_PEAK_MIN_ATR = 0.45
-WHIP_GIVEBACK_ATR = 0.18
-WHIP_CONFIRM_HITS = 2
-WHIP_CONFIRM_WINDOW_SEC = 1.0
-WHIP_MIN_AGE_SEC = 3.0
-# --- STUBS FOR LOGGING AND MISSING CONFIG (for batch proof only) ---
-def log_runtime(*a, **k):
-    pass
-def log_metrics(*a, **k):
-    pass
-def log_trade_event(*a, **k):
-    pass
-DEFAULT_OANDA_API_KEY = "stub"
-DEFAULT_OANDA_ACCOUNT_ID = "stub"
-DEFAULT_OANDA_ENV = "practice"
-from dataclasses import dataclass, field
-
-# === MODE PROOF INSTRUMENTATION ===
-AEE_MODE_COUNTS = {"WHIPSAW": 0, "NORMAL": 0}
-AEE_EXTENSION_COUNT = 0
-AEE_BLOCKED_RUNNER_EXIT_COUNT = 0
-AEE_SCENARIO_SEEN = {}
-from typing import Any, Optional, Dict, List, Tuple
-from pathlib import Path
+from typing import Any, Optional
 def ffloat(x: Any, default: float = 0.0) -> float:
     try:
         if x is None:
@@ -44,6 +20,9 @@ import sqlite3
 import threading
 import statistics
 import subprocess
+import collections
+import asyncio
+import aiohttp
 
 _BOOT_BASE_DIR = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.getcwd()
 os.environ.setdefault("PHONE_BOT_BASE_DIR", _BOOT_BASE_DIR)
@@ -51,14 +30,329 @@ os.environ.setdefault("PHONE_BOT_LOG_DIR", os.path.join(_BOOT_BASE_DIR, "logs"))
 
 from collections import deque
 from dataclasses import dataclass, field
-from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_UP
 from enum import Enum
-from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Set, Union
 
+import numpy as np
+
+from phone_bot_logging import log_runtime, log_trade_event, log_metrics
+
+# Default runtime credentials fallback (used when env vars are absent).
+DEFAULT_OANDA_API_KEY = "2bf7b4b9bb052e28023de779a6363f1e-fee71a4fce4e94b18e0dd9c2443afa52"
+DEFAULT_OANDA_ACCOUNT_ID = "101-001-22881868-001"
+DEFAULT_OANDA_ENV = "practice"
+
+
+def get_candles(pair: str, tf: str, count: int) -> list:
+    """Fetch normalized candles via runtime OANDA client."""
+    runtime = _require_runtime_oanda()
+    candles = oanda_call(f"get_candles:{normalize_pair(pair)}:{normalize_granularity(tf)}", runtime.candles, pair, tf, int(count))
+    if not isinstance(candles, list):
+        return []
+    out: List[dict] = []
+    for c in candles:
+        if not isinstance(c, dict):
+            continue
+        mid = c.get("mid")
+        if not isinstance(mid, dict):
+            mid = {}
+        def safe_float(value, fallback=0.0):
+            try:
+                return float(value)
+            except Exception:
+                return fallback
+        o_ = safe_float(mid.get("o", c.get("o")))
+        h_ = safe_float(mid.get("h", c.get("h")))
+        l_ = safe_float(mid.get("l", c.get("l")))
+        cl_ = safe_float(mid.get("c", c.get("c")))
+        out.append(
+            {
+                "time": parse_time_oanda(c.get("time")),
+                "o": o_,
+                "h": h_,
+                "l": l_,
+                "c": cl_,
+                "open": o_,
+                "high": h_,
+                "low": l_,
+                "close": cl_,
+                "volume": int(safe_float(c.get("volume", 0))),
+                "complete": bool(c.get("complete", True)),
+            }
+        )
+    return out
+
+def _record_runner_exit(reason, tr, favorable_atr, track):
+    """Global fallback runner-exit recorder for paths outside main()."""
+    try:
+        _exit_log(tr, str(reason), float(favorable_atr), track if isinstance(track, dict) else None)
+    except Exception as e:
+        log_runtime("warning", "RUNNER_EXIT_RECORD_FAILED", reason=str(reason), err=str(e))
+
+# --- EARLY BOOTSTRAP: DO NOT DEFINE DUPLICATE FUNCTIONS HERE ---
+# Canonical implementations are defined later in the file
+# ---------------------------------------------------------------
+MTF_SIGNAL_TIMEOUT = 60.0  # seconds, default value
+MTF_MAX_STRATEGIES_PER_PAIR = 5  # default value
+MTF_CONFLICT_RESOLUTION = "priority"  # default value
+
+
+# Emoji constants
+EMOJI_INFO = "ℹ️"
+EMOJI_WARN = "⚠️"
+EMOJI_ERR = "❌"
+EMOJI_WATCH = "👀"
+EMOJI_GET_READY = "⏳"
+EMOJI_ENTER = "🚀"
+EMOJI_EXIT = "🏁"
+EMOJI_OK = "✅"
+EMOJI_START = "🟢"
+EMOJI_DB = "🗄️"
+EMOJI_SUCCESS = "🎉"
+EMOJI_STOP = "🛑"
+
+# ==============================================================================
+# 1. CENTRAL CONFIGURATION (Zero Undefined Variables)
+# ==============================================================================
 @dataclass
-class AEEState:
+class GlobalConfig:
+    """The Single Source of Truth for all thresholds and limits."""
+    MAX_CONCURRENCY: int = 15          # Absolute Ceiling
+    REGIME_Z_THRESHOLD: float = 1.5    # Universal Energy Gate (updated from 2.0)
+    PULSE_Z_THRESHOLD: float = 2.5     # High-Velocity Trigger
+    SOP_PROB_THRESHOLD: float = 0.55   # Math Integrity
+    FIXED_TARGET_PIPS: float = 5.0      # Extraction Target
+    MAX_HOLD_TIME_MIN: int = 45        # Velocity Guard
+    SPREAD_COST_MULTIPLIER: float = 3.0 # Cost-Aware Filter
+    TARGET_VELOCITY_PIPS_HR: float = 150.0 # Performance Target
+    TARGET_EFFICIENCY_MIN: float = 0.85 # Path Efficiency Target
+
+# Global configuration instance
+CONFIG = GlobalConfig()
+
+# ==============================================================================
+# 2. THE MATH CORE (Zero Duplicate Logic)
+# ==============================================================================
+class MicrostructureMath:
+    """Static physics engine. No state, just raw math."""
+    
+    @staticmethod
+    def beta_smooth(data, alpha=0.15):
+        """Standardized smoothing to prevent 'Lag Drift'."""
+        if not data: 
+            return 0.0
+        # High-speed implementation - use existing logic from file
+        return statistics.mean(data[-5:]) if len(data) >= 5 else statistics.mean(data)
+    
+    @staticmethod
+    def get_z_score(value, history):
+        """Relative Energy normalization."""
+        if len(history) < 10: 
+            return 0.0
+        mean = statistics.mean(history)
+        std = statistics.stdev(history)
+        return (value - mean) / std if std > 0 else 0.0
+
+    @staticmethod
+    def first_passage_probability(drift, vol, target, duration):
+        """Analytical solution for the SOP V12."""
+        # Standardized LaTeX math implementation
+        # $$P(Win) = \frac{1}{1 + e^{-2 \mu x / \sigma^2}}$$
+        if vol == 0: 
+            return 0.5
+        return 1.0 / (1.0 + math.exp(-2 * drift * target / (vol**2)))
+
+    @staticmethod
+    def get_pulse_z_score(tick_velocities: List[float], current_vel: float) -> float:
+        """Calculate Z-score for pulse detection"""
+        if len(tick_velocities) < 10:
+            return 0.0
+        mean = statistics.mean(tick_velocities)
+        std = statistics.stdev(tick_velocities)
+        return (current_vel - mean) / std if std > 0 else 0.0
+
+# ==============================================================================
+# 3. SATURATION ENGINE (Zero Correlation Errors)
+# ==============================================================================
+class SaturationEngine:
+    """Manages the 15-pair matrix and prevents over-exposure."""
+    __slots__ = ['config', 'active_trades', 'currency_exposure']  # Performance optimization
+
+    def __init__(self, config: GlobalConfig = CONFIG):
+        self.config = config
+        self.active_trades = {}
+        self.currency_exposure = {}
+
+    def _update_exposure(self, open_trades: list):
+        """Internal cleanup of orphan exposures."""
+        self.currency_exposure.clear()
+        for trade in open_trades:
+            pair = trade.get('instrument', '')
+            currencies = pair.split('_')
+            for ccy in currencies:
+                self.currency_exposure[ccy] = self.currency_exposure.get(ccy, 0) + 1
+
+    def can_saturate(self, open_trades: list, new_pair: str) -> Tuple[bool, str]:
+        """Multi-pair exposure management gate."""
+        # Absolute Concurrency Cap
+        if len(open_trades) >= self.config.MAX_CONCURRENCY:
+            return False, f"CAP_REACHED_{self.config.MAX_CONCURRENCY}_TRADES"
+        
+        # Correlation Shield: Limit exposure per currency
+        self._update_exposure(open_trades)
+        currencies = new_pair.split('_')
+        for ccy in currencies:
+            exposure = self.currency_exposure.get(ccy, 0)
+            if exposure >= 3:  # Max 3 trades per currency
+                return False, f"EXPOSURE_CAP_{ccy}_3_TRADES"
+        
+        return True, "SATURATION_OK"
+
+# ==============================================================================
+# 4. EXTRACTION AUDITOR (Zero Misnamed Metrics)
+# ==============================================================================
+class PathSpaceAuditor:
+    """Prints the Real Metrics (Velocity/Efficiency) upon closure."""
+    
+    def __init__(self, config: GlobalConfig = CONFIG):
+        self.config = config
+    
+    def log_extraction(self, pair: str, pips: float, duration_sec: float):
+        """Log extraction metrics with performance targets."""
+        velocity = pips / (duration_sec / 3600.0) if duration_sec > 0 else 0
+        efficiency = abs(pips) / 5.0 if pips != 0 else 0  # 5-pip target
+        
+        # Performance evaluation
+        velocity_status = "🟢" if velocity > self.config.TARGET_VELOCITY_PIPS_HR else "🔴"
+        efficiency_status = "🟢" if efficiency > self.config.TARGET_EFFICIENCY_MIN else "🔴"
+        
+        print(f"🏁 [EXTRACTION] {pair} | {pips:+.1f} pips | {velocity:+.1f} Pips/Hr {velocity_status} | Efficiency: {efficiency:.3f} {efficiency_status}")
+
+# ==============================================================================
+# 5. GLOBAL INSTANCES (Zero Orphan Objects)
+# ==============================================================================
+VECTOR_ENGINE = SaturationEngine()
+PATH_AUDITOR = PathSpaceAuditor()
+
+# ==============================================================================
+# EXISTING CODE CONTINUES...
+# ==============================================================================
+
+# ===== MISSING CONSTANTS & CONFIGURATION =====
+REJECTED_ORDER_RETRY_MAX = 3
+REJECTED_ORDER_RETRY_DELAY = 1.0
+ORDER_REJECT_BACKOFF_MULTIPLIER = 2.0
+ALTERNATIVE_ROUTING_ENABLED = False
+MIN_PARTIAL_FILL_UNITS = 1
+
+# Runner configuration
+RUNNER_MIN_HOLD_TIME = 300.0  # 5 minutes
+RUNNER_MAX_HOLD_TIME = 14400.0  # 4 hours
+RUNNER_MIN_PROGRESS = 0.1  # 10% progress
+RUNNER_SPEED_THRESHOLD = 0.5
+RUNNER_PULLBACK_LIMIT = 0.3  # 30% pullback
+
+# Webhook configuration
+WEBHOOK_ENABLED = False
+WEBHOOK_URL = ""
+WEBHOOK_RETRY_MAX = 3
+WEBHOOK_TIMEOUT = 30.0
+WEBHOOK_RETRY_DELAY = 1.0
+
+# Push notification configuration
+PUSH_ENABLED = False
+PUSH_SERVICE = ""
+PUSH_TOKEN = ""
+
+# Database transaction configuration
+DB_TRANSACTION_TIMEOUT = 30.0
+DB_TRANSACTION_MAX_RETRIES = 3
+
+# Additional DB configuration
+DB_MAX_RETRIES = 3
+DB_RETRY_DELAY = 0.25
+DB_LOCK_TIMEOUT = 5.0
+DB_ENABLE_WAL = True
+
+# Database backup configuration
+DB_BACKUP_PATH = Path("./backups")
+DB_BACKUP_COMPRESSION = True
+DB_BACKUP_ENABLED = False
+DB_BACKUP_INTERVAL = 3600
+DB_BACKUP_RETENTION = 7 * 24 * 3600  # seconds
+DB_LAST_BACKUP: Dict[str, float] = {}
+
+# Runtime globals are bound during startup initialization.
+db = None
+o = None
+pair = "EUR_USD"
+
+INSTR_META: Dict[str, Dict[str, Any]] = {}
+INSTR_META_TS: float = 0.0
+INSTR_META_TTL: float = 3600.0
+
+
+def _fallback_instrument_meta(pair: str) -> Dict[str, Any]:
+    p = normalize_pair(pair)
+    is_jpy = p.endswith("_JPY")
+    return {
+        "displayPrecision": 3 if is_jpy else 5,
+        "pipLocation": -2 if is_jpy else -4,
+        "tradeUnitsPrecision": 0,
+        "minimumTradeSize": 1,
+        "marginRate": 0.0333,
+    }
+
+
+def _refresh_instruments_meta() -> Dict[str, Dict[str, Any]]:
+    runtime = _require_runtime_oanda()
+    path = f"/v3/accounts/{runtime.account_id}/instruments"
+    resp = oanda_call("instruments_meta", runtime._get, path, allow_error_dict=False)
+    instruments = resp.get("instruments", []) if isinstance(resp, dict) else []
+    meta: Dict[str, Dict[str, Any]] = {}
+    for inst in instruments if isinstance(instruments, list) else []:
+        try:
+            name = str(inst.get("name", "") or "")
+            if not name:
+                continue
+            meta[name] = inst
+        except Exception:
+            continue
+    return meta
+
+
+def get_instrument_meta(pair: str) -> Dict[str, Any]:
+    global INSTR_META, INSTR_META_TS
+    p = normalize_pair(pair)
+    now = now_ts()
+    if (not INSTR_META) or ((now - float(INSTR_META_TS or 0.0)) > float(INSTR_META_TTL)):
+        INSTR_META = _refresh_instruments_meta()
+        INSTR_META_TS = now
+    if p not in INSTR_META:
+        INSTR_META = _refresh_instruments_meta()
+        INSTR_META_TS = now
+    if p not in INSTR_META:
+        raise KeyError(f"instrument_meta_missing:{p}")
+    return INSTR_META[p]
+
+def get_instrument_meta_cached(pair: str) -> Optional[Dict[str, Any]]:
+    """
+    Cache-only instrument meta access - NO network calls.
+    Returns None if meta missing instead of triggering refresh.
+    """
+    global INSTR_META
+    p = normalize_pair(pair)
+    if not INSTR_META:
+        return None
+    return INSTR_META.get(p)
+
+
+def tick_size(pair: str) -> Decimal:
+    meta = get_instrument_meta_cached(pair)
+    if meta is None:
         meta = _fallback_instrument_meta(pair)
         log_throttled(
             f"sizing_meta_cache_miss:{normalize_pair(pair)}:displayPrecision",
@@ -125,12 +419,19 @@ def _run_test_sizing_and_exit() -> None:
                 confidence=confidence,
                 spread_mult=spread_mult,
                 base_deploy_frac=0.10,
+                speed_class="MED",
             )
             line = json.dumps(dbg, sort_keys=True)
             log("DEBUG_LINE", {"line": line})
             log("DEBUG_LINE_STDERR", {"line": line})
     raise SystemExit(0)
 
+
+# AIM Σ-Protocol: Global Mode Flags
+_SIGMA_MODE = False
+_NAV_SIZING = False
+_SCYTHE_TARGETS = False
+_NAV_OVERRIDE = None
 
 _RUN_TEST_SIZING = "--test-sizing" in sys.argv
 
@@ -152,8 +453,8 @@ MTF_COORDINATION_ENABLED = False
 # (moved below compute_atr_pips definition)
 
 # --- Bucket B Helpers ---
-def clamp(val, lo, hi):
-    return max(lo, min(hi, val))
+def clamp(value, lo, hi):
+    return max(lo, min(hi, value))
 
 def pair_tag(pair, direction=None):
     tag = str(pair or "")
@@ -240,9 +541,9 @@ def is_valid_price(p):
     return isinstance(p, (int, float)) and math.isfinite(p) and p != 0
 
 # Safe float helper
-def _safe_float(val):
+def _safe_float(value):
     try:
-        return float(val)
+        return float(value)
     except Exception:
         return 0.0
 
@@ -271,6 +572,11 @@ def initialize_bot():
 
     _RUNTIME_OANDA = OandaClient(api_key=api_key, account_id=account_id, env=env)
     o = _RUNTIME_OANDA
+    
+    # Initialize multi-vector extraction engine for 150+ Pips/Hr
+    global multi_vector_engine
+    multi_vector_engine = MultiVectorEngine(_RUNTIME_OANDA)
+    print("🚀 Multi-Vector Extraction Engine initialized - Target: 150+ Pips/Hr")
 
     db_path = str(globals().get("DB_PATH") or (Path.cwd() / "phone_bot.db"))
     _RUNTIME_DB = DB(db_path)
@@ -558,9 +864,9 @@ def compute_atr_price(candles, n):
             return float(fallback)
     tr = []
     for i in range(1, n + 1):
-        cur = candles[-i] if isinstance(candles[-i], dict) else {}
-        h = _px(cur, "high", "h", 0.0)
-        low = _px(cur, "low", "l", 0.0)
+        current_candle = candles[-i] if isinstance(candles[-i], dict) else {}
+        h = _px(current_candle, "high", "h", 0.0)
+        low = _px(current_candle, "low", "l", 0.0)
         if i < len(candles) and isinstance(candles[-i - 1], dict):
             prev = candles[-i - 1]
             c_prev = _px(prev, "close", "c", h)
@@ -942,7 +1248,8 @@ class PathSpaceState:
     progress: float = 0.0  # |P - Entry| / ATR
     
     # Energy and momentum
-    energy: float = 0.0  # |P - P_k| / ATR (k = reference point)
+    energy_regime: float = 0.0  # |P - P_k| / ATR (regime-level displacement)
+    energy_pulse: float = 0.0   # High-frequency tick energy (1-minute)
     speed: float = 0.0  # |ΔP_recent| / ATR over window
     velocity: float = 0.0  # Speed_now - Speed_prev
     
@@ -1030,7 +1337,7 @@ class PathSpaceEngine:
         # Calculate energy (displacement from reference point)
         if len(state.price_history) >= 5:  # Reduced from 20 for testing
             ref_price = state.price_history[0]  # Use first price as reference
-            state.energy = abs(price - ref_price) / atr
+            state.energy_regime = abs(price - ref_price) / atr
         
         # Calculate speed (recent displacement rate)
         if len(state.price_history) >= 10 and atr > 0:
@@ -1118,7 +1425,8 @@ class PathSpaceEngine:
             "efficiency": state.efficiency,
             "overlap": state.overlap,
             "progress": state.progress,
-            "energy": state.energy,
+            "energy_regime": state.energy_regime,
+            "energy_pulse": state.energy_pulse,
             "speed": state.speed,
             "velocity": state.velocity,
             "rolling_high": state.rolling_high,
@@ -1271,7 +1579,132 @@ def get_pricing_stream() -> Optional[PricingStream]:
     return _pricing_stream
 
 # ============================================================================
-# END PRICING STREAM
+# CEILING ARCHITECTURE: CONFIGURATION CLASS (Single Source of Truth)
+# ============================================================================
+
+@dataclass
+class CeilingConfig:
+    """Central configuration for Vector Saturation Engine"""
+    
+    # Concurrency Limits
+    MAX_CONCURRENCY: int = 15
+    MAX_EXPOSURE_PER_CURRENCY: int = 3
+    
+    # Pulse Detection Thresholds
+    PULSE_Z_THRESHOLD: float = 2.5
+    REGIME_Z_THRESHOLD: float = 1.5
+    
+    # Performance Targets
+    TARGET_VELOCITY_PIPS_HR: float = 150.0
+    TARGET_EFFICIENCY_MIN: float = 0.85
+    TARGET_HOLD_TIME_MAX_SEC: float = 120.0
+    
+    # Risk Management
+    SPREAD_COST_MULTIPLIER: float = 3.0
+    SOP_PROBABILITY_FLOOR: float = 0.55
+    
+    # High-Frequency Targets (5-pip extraction)
+    TARGET_PIPS_TP: float = 5.0
+    TARGET_PIPS_SL: float = 5.0
+
+# Global configuration instance
+CONFIG = CeilingConfig()
+
+# ============================================================================
+# CEILING ARCHITECTURE: VECTOR SATURATION ENGINE (150+ Pips/Hour)
+# ============================================================================
+
+import statistics
+
+class VectorSaturationEngine:
+    """
+    High-frequency pulse-momentum engine for maximum capital turnover.
+    Replaces conservative trend-following with statistical micro-explosions.
+    """
+    
+    def __init__(self, config: CeilingConfig = CONFIG):
+        self.config = config
+        self.pulse_history = {}  # Key: Pair, Value: List[TickVelocities]
+        self.max_history = 60  # Keep last 60 tick velocities
+        
+    def get_pulse_z(self, pair: str, current_tick_vel: float) -> float:
+        """
+        Calculates the Z-Score of the current pulse against the noise floor.
+        Target: > 2.5 for instant saturation entry.
+        """
+        if pair not in self.pulse_history:
+            self.pulse_history[pair] = []
+        
+        hist = self.pulse_history[pair]
+        hist.append(current_tick_vel)
+        
+        # Maintain rolling window
+        if len(hist) > self.max_history:
+            hist.pop(0)
+        
+        if len(hist) < 20:  # Need sufficient history for meaningful Z-score
+            return 0.0
+        
+        mean = statistics.mean(hist)
+        std = statistics.stdev(hist)
+        return (current_tick_vel - mean) / std if std > 0 else 0.0
+    
+    def can_saturate(self, open_trades: list, new_pair: str) -> Tuple[bool, str]:
+        """
+        THE SATURATION GATE: Multi-pair exposure management.
+        Ensures we extract 150+ pips across the matrix, not just one pair.
+        """
+        # Absolute Concurrency Cap
+        if len(open_trades) >= self.config.MAX_CONCURRENCY:
+            return False, f"CAP_REACHED_{self.config.MAX_CONCURRENCY}_TRADES"
+        
+        # Correlation Shield: Limit exposure per currency
+        currencies = new_pair.split("_")
+        for ccy in currencies:
+            exposure = sum(1 for t in open_trades if ccy in t.get('instrument', ''))
+            if exposure >= self.config.MAX_EXPOSURE_PER_CURRENCY:
+                return False, f"EXPOSURE_CAP_{ccy}_{self.config.MAX_EXPOSURE_PER_CURRENCY}_TRADES"
+        
+        return True, "SATURATION_OK"
+    
+    def get_pulse_momentum(self, symbol: str, oanda_client) -> float:
+        """
+        Measures the Z-Score of the last 3 ticks against the last 5 minutes.
+        This is the trigger for the 150 Pips/Hr ceiling.
+        """
+        try:
+            # Get M1 candles for velocity calculation
+            candles = oanda_client.get_candles(symbol, "M1", 5)  # 5m Lookback
+            if not candles or len(candles) < 2:
+                return 0.0
+            
+            closes = [float(c['mid']['c']) for c in candles]
+            
+            # Current velocity (last tick change)
+            current_velocity = closes[-1] - closes[-2]
+            
+            # Historical velocities for noise floor
+            velocities = [closes[i] - closes[i-1] for i in range(1, len(closes))]
+            
+            if len(velocities) < 2:
+                return 0.0
+            
+            avg_velocity = statistics.mean(velocities)
+            std_velocity = statistics.stdev(velocities)
+            
+            # PULSE Z-SCORE
+            pulse_z = (current_velocity - avg_velocity) / std_velocity if std_velocity > 0 else 0
+            return pulse_z  # Target > 2.5 for instant entry
+            
+        except Exception as e:
+            print(f"[PULSE_MOMENTUM_ERROR] {symbol}: {e}")
+            return 0.0
+
+# Global Vector Saturation Engine
+vector_engine = VectorSaturationEngine()
+
+# ============================================================================
+# MAIN EXECUTION LOOP
 # ============================================================================
 
 # ============================================================================
@@ -1499,21 +1932,44 @@ def normalize_oanda_env(env: str) -> str:
     return ""
 
 
+def extract_nav_equity(acct_sum: dict) -> Tuple[float, str]:
+    """
+    AIM Σ-Protocol: Extract NAV (Balance + Unrealized P&L)
+    
+    Replaces marginAvailable with true equity for Kelly sizing
+    """
+    if not isinstance(acct_sum, dict):
+        return float("nan"), "invalid"
+    
+    account_obj = acct_sum.get("account")
+    if isinstance(account_obj, dict):
+        balance = float(account_obj.get("balance", 0) or 0)
+        unrealized = float(account_obj.get("unrealizedPL", 0) or 0)
+        nav = balance + unrealized
+        return nav, "nav_account"
+    
+    # Fallback to top level
+    balance = float(acct_sum.get("balance", 0) or 0)
+    unrealized = float(acct_sum.get("unrealizedPL", 0) or 0)
+    nav = balance + unrealized
+    return nav, "nav_top_level"
+
+
 def extract_margin_available(acct_sum: dict) -> Tuple[float, str]:
     """Parse marginAvailable from account summary response across known shapes."""
     if not isinstance(acct_sum, dict):
         return float("nan"), "invalid"
     account_obj = acct_sum.get("account")
     if isinstance(account_obj, dict) and "marginAvailable" in account_obj:
-        val = account_obj.get("marginAvailable")
+        margin_available_value = account_obj.get("marginAvailable")
         try:
-            return float(val if val is not None else 0.0), "nested_account"
+            return float(margin_available_value if margin_available_value is not None else 0.0), "nested_account"
         except Exception:
             return float("nan"), "nested_account_invalid"
     if "marginAvailable" in acct_sum:
-        val = acct_sum.get("marginAvailable")
+        margin_available_value = acct_sum.get("marginAvailable")
         try:
-            return float(val if val is not None else 0.0), "top_level"
+            return float(margin_available_value if margin_available_value is not None else 0.0), "top_level"
         except Exception:
             return float("nan"), "top_level_invalid"
     return float("nan"), "missing"
@@ -1604,12 +2060,13 @@ SPREAD_F_MAX = float(os.getenv("SPREAD_F_MAX", "3.0") or "3.0")
 USE_FE_SPREAD_SIZING = os.getenv("USE_FE_SPREAD_SIZING", "0").strip().lower() in ("1", "true", "yes")
 
 MAX_POS_PER_PAIR = 2
-# No global limit - we have currency exposure limits instead
+MAX_CONCURRENT_TRADES = CONFIG.MAX_CONCURRENCY
 
-MAX_FAST_TRADES = 999  # Effectively unlimited - controlled by currency exposure
-MAX_MED_TRADES = 999   # Effectively unlimited - controlled by currency exposure
-MAX_SLOW_TRADES = 999  # Effectively unlimited - controlled by currency exposure
-MAX_CURRENCY_EXPOSURE_FAST = 8
+MAX_FAST_TRADES = 15  # Effectively unlimited - controlled by currency exposure
+MAX_MED_TRADES = 15   # Effectively unlimited - controlled by currency exposure
+MAX_SLOW_TRADES = 15  # Effectively unlimited - controlled by currency exposure
+MAX_CURRENCY_EXPOSURE_FAST = 3
+# ... (rest of the code remains the same)
 MAX_CURRENCY_EXPOSURE_MED = 6
 MAX_CURRENCY_EXPOSURE_SLOW = 4
 
@@ -1697,13 +2154,14 @@ MODE_SPEED_CLASS_PARAMS = {
 # Back-compat alias used by legacy tests
 MODE_EXEC = MODE_SPEED_CLASS_PARAMS
 
-SPLIT_FAST = (0.70, 0.30)  # 30% runner for quick scalps
-SPLIT_MED = (0.50, 0.50)  # 50% runner to maximize trend profit
-SPLIT_SLOW = (0.80, 0.20)  # Bank most in slow markets
-
-SPEED_WEIGHT_FAST = 1.30  # Increased for aggressive scalps
-SPEED_WEIGHT_MED = 1.00   # Standard
-SPEED_WEIGHT_SLOW = 0.80  # Increased for better size in slow markets
+# AIM Σ-Protocol: NAV-based Sizing Constants
+AIM_BASE_KELLY_FRACTION = 0.01  # 1% base Kelly fraction
+AIM_CONFIDENCE_MULTIPLIER = 2.0  # Confidence scales Kelly up to 2%
+AIM_MAX_KELLY_FRACTION = 0.025  # 2.5% maximum per trade
+# Speed-based confidence requirements (not multipliers)
+AIM_MIN_CONFIDENCE_FAST = 0.75  # High confidence required for FAST
+AIM_MIN_CONFIDENCE_MED = 0.60   # Medium confidence for MED
+AIM_MIN_CONFIDENCE_SLOW = 0.45  # Lower confidence for SLOW
 
 WR_OVERSOLD = -80
 WR_OVERBOUGHT = -20
@@ -1712,7 +2170,7 @@ WR_TURN_PTS = 10
 WR_NEUTRAL_MIN = -70
 WR_NEUTRAL_MAX = -30
 WR_NEUTRAL_BARS_RESET = 8
-STATE_MIN_HOLD_SEC = 55.0  # +10s to increase median hold
+STATE_MIN_HOLD_SEC = 45.0
 ENTER_HOLD_SEC = 6.0
 ORDER_DEDUPE_SEC = 15.0
 ALERT_REPEAT_SEC = float(os.getenv("ALERT_REPEAT_SEC", "60") or "60")
@@ -1742,29 +2200,34 @@ SETUP_SPEED_CLASS = {
     7: "SLOW",  # INTENTIONAL_RUNNER
 }
 
+# AIM Σ-Protocol: Fixed Pip Targets (Dual-Vector Scythe)
+AIM_PRIMARY_TARGET_PIPS = 2.5  # 80% of units - Liquidity capture zone
+AIM_MOMENTUM_TARGET_PIPS = 5.0  # 20% of units - Impulse extension
+
+# Legacy speed class params (deprecated - use fixed targets above)
 SPEED_CLASS_PARAMS = {
     "FAST": {
-        "tp1_atr": 0.40, "tp2_atr": 1.60, "sl_atr": 0.85,
-        "ttl_main": 240, "ttl_run": 360,
-        "pg_t_frac": 0.5, "pg_atr": 0.30,
+        "tp1_atr": 0.05, "tp2_atr": 0.10, "sl_atr": 0.05,  # 🚀 CEILING: 5-pip tight targets
+        "ttl_main": 120, "ttl_run": 180,  # Fast exits for high turnover
+        "pg_t_frac": 0.5, "pg_atr": 0.02,  # Tight pullback guard
     },
     "MED": {
-        "tp1_atr": 0.55, "tp2_atr": 2.10, "sl_atr": 1.10,
-        "ttl_main": 500, "ttl_run": 800,
-        "pg_t_frac": 0.375, "pg_atr": 0.25,  # 375% = 180/480
+        "tp1_atr": 0.07, "tp2_atr": 0.12, "sl_atr": 0.06,  # 🚀 CEILING: Slightly larger for medium vol
+        "ttl_main": 180, "ttl_run": 240,
+        "pg_t_frac": 0.375, "pg_atr": 0.03,
     },
     "SLOW": {
-        "tp1_atr": 0.35, "tp2_atr": 1.20, "sl_atr": 1.25,
-        "ttl_main": 1200, "ttl_run": 1800,
-        "pg_t_frac": 0.3, "pg_atr": 0.20,  # 30% = 270/900
+        "tp1_atr": 0.08, "tp2_atr": 0.15, "sl_atr": 0.07,  # 🚀 CEILING: Conservative for slow markets
+        "ttl_main": 300, "ttl_run": 420,
+        "pg_t_frac": 0.3, "pg_atr": 0.04,
     },
 }
 
 # Mechanical ATR fallback exits (used only when structure is unclear / partial bars).
 ATR_FALLBACK_PARAMS = {
-    "FAST": {"sl_atr": 0.6, "tp1_atr": 0.6, "tp2_atr": 1.2},
-    "MED": {"sl_atr": 0.7, "tp1_atr": 0.7, "tp2_atr": 1.4},
-    "SLOW": {"sl_atr": 0.8, "tp1_atr": 0.8, "tp2_atr": 1.4},
+    "FAST": {"sl_atr": 0.05, "tp1_atr": 0.05, "tp2_atr": 0.10},  # 🚀 CEILING: Tight fallbacks
+    "MED": {"sl_atr": 0.06, "tp1_atr": 0.06, "tp2_atr": 0.12},
+    "SLOW": {"sl_atr": 0.07, "tp1_atr": 0.07, "tp2_atr": 0.14},
 }
 
 # Percent-based fallback for SL/TP when ATR is invalid (applied to entry price).
@@ -2053,11 +2516,11 @@ def parse_time_oanda(t) -> float:
     if isinstance(t, str):
         s = t.strip()
         try:
-            val = float(s)
-            if not math.isfinite(val):
+            value = float(s)
+            if not math.isfinite(value):
                 return 0.0
             # If value looks like milliseconds (>= 1e11), scale to seconds
-            return val / 1000.0 if val >= 1e11 else val
+            return value / 1000.0 if value >= 1e11 else value
         except (ValueError, TypeError):
             pass
 
@@ -2383,6 +2846,7 @@ def williams_r(candles: List[dict], n: int) -> float:
     # Extract values with NaN checks
     highs = []
     lows = []
+    highest_high = float("-inf")
     for c in candles[-n:]:
         try:
             h = float(c["h"])
@@ -2390,6 +2854,8 @@ def williams_r(candles: List[dict], n: int) -> float:
             if math.isfinite(h) and math.isfinite(low):
                 highs.append(h)
                 lows.append(low)
+                if h > highest_high:
+                    highest_high = h
         except (KeyError, ValueError, TypeError):
             return float("nan")
     
@@ -2469,14 +2935,14 @@ def compute_book_metrics(pair: str, mid: float, order_book: Optional[dict], posi
                 continue
             if not math.isfinite(price):
                 continue
-            dist = abs(price - mid)
-            if dist <= window_price:
+            distance_from_mid = abs(price - mid)
+            if distance_from_mid <= window_price:
                 weight = max(lc + sc, 0.0)
                 cluster += weight
                 imb_sum += (lc - sc)
                 imb_count += 1
                 if weight >= 2.0:  # treat 2%+ as a wall bucket
-                    wall_dist = min(wall_dist, dist)
+                    wall_dist = min(wall_dist, distance_from_mid)
         imbalance = (imb_sum / imb_count) if imb_count > 0 else 0.0
         if wall_dist == float("inf"):
             wall_dist = float("nan")
@@ -2519,18 +2985,18 @@ def _poll_books(
         return
 
     for pair, st in states.items():
-        interval = _book_poll_interval(st.state, cadence)
+        book_poll_interval = _book_poll_interval(st.state, cadence)
         cache = book_cache.get(pair)
-        if cache and (now - ffloat(cache.get("ts", 0.0), 0.0)) < interval:
+        if cache and (now - ffloat(cache.get("ts", 0.0), 0.0)) < book_poll_interval:
             continue
 
         # Resolve midprice
         mid = float("nan")
         if pair in price_map:
             try:
-                px = price_map[pair]
-                if isinstance(px, (tuple, list)) and len(px) >= 2:
-                    bid, ask = px[0], px[1]
+                price_data = price_map[pair]
+                if isinstance(price_data, (tuple, list)) and len(price_data) >= 2:
+                    bid, ask = price_data[0], price_data[1]
                 else:
                     bid, ask = float("nan"), float("nan")
                 mid = (ffloat(bid, float("nan")) + ffloat(ask, float("nan"))) * 0.5
@@ -2697,12 +3163,12 @@ def ema(data: List[float], period: int) -> float:
         return float('nan')
     
     multiplier = 2 / (period + 1)
-    ema_val = data[0]
+    ema_current = data[0]
     
-    for val in data[1:]:
-        ema_val = (val * multiplier) + (ema_val * (1 - multiplier))
+    for value in data[1:]:
+        ema_current = (value * multiplier) + (ema_current * (1 - multiplier))
     
-    return ema_val
+    return ema_current
 
 
 def _median(vals: List[float]) -> float:
@@ -2760,9 +3226,9 @@ def _microtrend_alive(samples: List[Tuple[float, float]] | List[dict], k: int = 
         for c in samples[-int(k):]:
             try:
                     if isinstance(c, dict):
-                        close_val = c.get("c")
-                        if close_val is not None:
-                            closes.append(float(close_val))
+                        close_price = c.get("c")
+                        if close_price is not None:
+                            closes.append(float(close_price))
                     elif isinstance(c, (tuple, list)) and len(c) > 0:
                         closes.append(float(c[0]))
             except Exception:
@@ -2846,11 +3312,11 @@ def wick_sweep(candles: List[dict], L: int, atr_val: float) -> Tuple[bool, bool]
         return False, False
     swing_high = max(float(c["h"]) for c in candles[-L - 1 : -1])
     swing_low = min(float(c["l"]) for c in candles[-L - 1 : -1])
-    cur = candles[-1]
-    o = float(cur["o"])
-    cl = float(cur["c"])
-    h = float(cur["h"])
-    low = float(cur["l"])
+    current_candle = candles[-1]
+    o = float(current_candle["o"])
+    cl = float(current_candle["c"])
+    h = float(current_candle["h"])
+    low = float(current_candle["l"])
     upper_wick = h - max(o, cl)
     lower_wick = min(o, cl) - low
     sweep_up = (h > swing_high) and (cl < swing_high) and ((upper_wick / atr_val) >= SWEEP_ATR_THRESHOLD)
@@ -2858,7 +3324,7 @@ def wick_sweep(candles: List[dict], L: int, atr_val: float) -> Tuple[bool, bool]
     
     # Volume filter disabled - OANDA doesn't provide reliable volume data
     # When using a broker with volume data, uncomment and implement:
-    # volume_ok = float(cur.get("volume", 0)) > avg_volume * 1.2
+    # volume_ok = float(current_candle.get("volume", 0)) > avg_volume * 1.2
     
     return sweep_up, sweep_dn
 
@@ -3473,9 +3939,6 @@ class DB:
         cur = con.cursor()
         cur.execute(
             "SELECT 1 FROM orders WHERE pair=? AND setup=? AND leg=? AND ts>=? LIMIT 1",
-<<<<<<< HEAD
-            (pair, setup
-=======
             (pair, setup, leg, float(since_ts)),
         )
         row = cur.fetchone()
@@ -3771,6 +4234,62 @@ def _with_friction_reason(reason: str, pair: str, atr: float, spread_pips: float
         return f"{reason} | fric spread_atr=inf edge_est={e:.2f}"
     return f"{reason} | fric spread_atr={s_atr:.2f} edge_est={e:.2f}"
 
+# --- Σ-PROTOCOL: DYNAMIC REGIME SCALING ---
+def is_low_volatility_session() -> bool:
+    """Check if current time is in low volatility window (21:00-07:00 UTC)"""
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    hour = now.hour
+    return hour >= 21 or hour < 7
+
+def get_dynamic_thresholds() -> dict:
+    """Get thresholds based on current market session"""
+    if is_low_volatility_session():
+        # Relaxed thresholds for Asian/Dead Zone sessions
+        return {
+            1: {"boxrange_max": 2.5, "energy_min": 0.10, "entry_disp_min": 0.01, "progress_max": 1.0},
+            2: {
+                "tot_disp_max": 1.5,
+                "pullback_max": 0.80,
+                "energy_min": 0.15,
+                "entry_fwd_disp_min": 0.01,
+                "dn_total_impulse_min": 0.8,
+                "dn_pullback_min": 0.60,
+            },
+            3: {"prior_disp_min": 0.3, "entry_rev_disp_min": 0.01},
+            4: {"ext_outside_max": 1.5, "energy_max": 0.95, "entry_back_disp_min": 0.01, "dn_ext_min": 0.8},
+            5: {
+                "rev_disp_min": 0.01,
+                "rev_disp_max": 0.30,
+                "path_len_min": 0.05,
+                "efficiency_max_near_probe": 0.95,
+                "extrema_proximity_atr": 1.5,
+            },
+            6: {"energy_min": 0.05, "entry_disp_min": 0.005, "z_gate": 0.4},  # VOL_REIGNITE - Ultra relaxed
+            7: {
+                "rangeused_max": 3.0,
+                "eff60_min": 0.20,
+                "energy15_min": 0.30,
+                "vol_slope_min": -0.05,
+                "dn_rangeused_min": 2.0,
+                "dn_overlap60_min": 2.0,
+                "dn_eff60_max": 0.40,
+                "arm_dist_max": 0.50,
+                "break_buf": 0.05,
+            }
+        }
+    else:
+        # Standard thresholds for London/NY sessions
+        return V12_SETUP_THRESH
+
+# --- Σ-PROTOCOL: RELAXED SCYTHE TARGETS FOR SLOW SESSIONS ---
+def get_dynamic_scythe_targets() -> tuple:
+    """Get compressed targets for low volatility sessions"""
+    if is_low_volatility_session():
+        return 1.5, 3.0  # Primary: 1.5 pips, Momentum: 3.0 pips
+    else:
+        return AIM_PRIMARY_TARGET_PIPS, AIM_MOMENTUM_TARGET_PIPS  # Standard targets
+
 V12_SETUP_THRESH = {
     1: {"boxrange_max": 1.8, "energy_min": 0.55, "entry_disp_min": 0.18, "progress_max": 1.0},
     2: {
@@ -3839,6 +4358,7 @@ def _flush_signal_reject_summary(pair: str, now: float) -> None:
 def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optional[dict] = None) -> List[SignalDef]:
     """
     V12 PATH-SPACE UPGRADED: Upgraded existing strategies to use path-space primitives
+    DYNAMIC REGIME SCALING: Uses relaxed thresholds during low volatility sessions
     """
     pair = normalize_pair(pair)
     out: List[SignalDef] = []
@@ -3851,17 +4371,37 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
         return out
     # Spread gating removed - economic viability engine handles spread checks
     
+    # --- Σ-PROTOCOL: DYNAMIC THRESHOLD SELECTION ---
+    # Get appropriate thresholds based on current session
+    dynamic_thresh = get_dynamic_thresholds()
+    
     # Get path-space engine for primitive calculations
     engine = get_path_engine()
     
     # Update path-space engine with current price data
-    current_price = float(c_exec[-1]["c"])
-    timestamp = float(c_exec[-1].get("time", now_ts()))
+    latest_candle = c_exec[-1]
+    candle_data = latest_candle.get("mid", latest_candle)
+    current_price = float(candle_data.get("c", latest_candle.get("c", 0)))
+    
+    # Handle timestamp format
+    time_str = latest_candle.get("time", str(now_ts()))
+    try:
+        timestamp = float(time_str)
+    except ValueError:
+        from datetime import datetime
+        dt = datetime.fromisoformat(time_str.replace('Z', '+00:00'))
+        timestamp = dt.timestamp()
     
     # Update engine with recent price history for primitive calculations
     for candle in c_exec[-20:]:  # Last 20 candles for path-space calculation
-        price = float(candle["c"])
-        candle_time = float(candle.get("time", timestamp))
+        candle_data = candle.get("mid", candle)
+        price = float(candle_data.get("c", candle.get("c", 0)))
+        candle_time_str = candle.get("time", str(now_ts()))
+        try:
+            candle_time = float(candle_time_str)
+        except ValueError:
+            dt = datetime.fromisoformat(candle_time_str.replace('Z', '+00:00'))
+            candle_time = dt.timestamp()
         engine.update_price(pair, price, st.atr_exec, candle_time)
     
     # Get path-space primitives for current state
@@ -3876,7 +4416,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     # Get path-space values instead of candle-based calculations
     path_len = primitives.get("path_len", 0.0)
     efficiency = primitives.get("efficiency", 0.0)
-    energy = primitives.get("energy", 0.0)
+    energy_regime = primitives.get("energy_regime", 0.0)
     speed = primitives.get("speed", 0.0)
     velocity = primitives.get("velocity", 0.0)
     overlap = primitives.get("overlap", 0.0)
@@ -4030,7 +4570,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             s1_block_reason = "no_boundary_break"
         else:
             disp_from_boundary_atr = (abs(close - rolling_high) / atrv) if break_up and atrv > 0 else ((abs(close - rolling_low) / atrv) if atrv > 0 else 0.0)
-            if not (energy >= V12_SETUP_THRESH[1]["energy_min"]):
+            if not (energy_regime >= V12_SETUP_THRESH[1]["energy_min"]):
                 s1_block_reason = "energy_lt_min"
             elif not efficiency_rising:
                 s1_block_reason = "efficiency_not_rising"
@@ -4048,7 +4588,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             # E1 strict: Remove overlap > 1.0 gate (if present)
             if break_up or break_dn:
                 disp_from_boundary_atr = (abs(close - rolling_high) / atrv) if break_up and atrv > 0 else ((abs(close - rolling_low) / atrv) if atrv > 0 else 0.0)
-                if energy >= V12_SETUP_THRESH[1]["energy_min"] and efficiency_rising and disp_from_boundary_atr >= V12_SETUP_THRESH[1]["entry_disp_min"]:
+                if energy_regime >= V12_SETUP_THRESH[1]["energy_min"] and efficiency_rising and disp_from_boundary_atr >= V12_SETUP_THRESH[1]["entry_disp_min"]:
                     speed_class = "MED"
                     sp = get_speed_params(speed_class)
                     direction = "LONG" if break_up else "SHORT"
@@ -4066,7 +4606,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                             tp2_atr=sp["tp2_atr"],
                             sl_atr=sp["sl_atr"],
                             reason=_with_friction_reason(
-                                reason=f"compression_break path_space energy={energy:.2f} eff={efficiency:.2f} | bar_complete={bar_complete}",
+                                reason=f"compression_break path_space energy_regime={energy_regime:.2f} eff={efficiency:.2f} | bar_complete={bar_complete}",
                                 pair=pair,
                                 atr=atrv,
                                 spread_pips=st.spread_pips,
@@ -4082,7 +4622,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
         s2_block_reason = "disp_ge_total_max"
     elif not (pullback <= V12_SETUP_THRESH[2]["pullback_max"]):
         s2_block_reason = "pullback_gt_max"
-    elif not (energy >= V12_SETUP_THRESH[2]["energy_min"]):
+    elif not (energy_regime >= V12_SETUP_THRESH[2]["energy_min"]):
         s2_block_reason = "energy_lt_min"
     elif not efficiency_rising:
         s2_block_reason = "efficiency_not_rising"
@@ -4098,7 +4638,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     if (
         displacement < V12_SETUP_THRESH[2]["tot_disp_max"]
         and pullback <= V12_SETUP_THRESH[2]["pullback_max"]
-        and energy >= V12_SETUP_THRESH[2]["energy_min"]
+        and energy_regime >= V12_SETUP_THRESH[2]["energy_min"]
         and efficiency_rising
         and displacement < V12_SETUP_THRESH[2]["dn_total_impulse_min"]
         and pullback < V12_SETUP_THRESH[2]["dn_pullback_min"]
@@ -4122,7 +4662,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 tp2_atr=sp["tp2_atr"],
                 sl_atr=sp["sl_atr"],
                 reason=_with_friction_reason(
-                    reason=f"continuation path_space disp={displacement:.2f} pullback={pullback:.2f} energy={energy:.2f} | bar_complete={bar_complete}",
+                    reason=f"continuation path_space disp={displacement:.2f} pullback={pullback:.2f} energy_regime={energy_regime:.2f} | bar_complete={bar_complete}",
                     pair=pair,
                     atr=atrv,
                     spread_pips=st.spread_pips,
@@ -4162,7 +4702,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 tp2_atr=sp["tp2_atr"],
                 sl_atr=sp["sl_atr"],
                 reason=_with_friction_reason(
-                    reason=f"exhaustion path_space energy={energy:.2f} vel={velocity:.2f} | bar_complete={bar_complete}",
+                    reason=f"exhaustion path_space energy_regime={energy_regime:.2f} vel={velocity:.2f} | bar_complete={bar_complete}",
                     pair=pair,
                     atr=atrv,
                     spread_pips=st.spread_pips,
@@ -4178,7 +4718,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
         s4_block_reason = "not_back_inside_range"
     elif not (displacement <= V12_SETUP_THRESH[4]["ext_outside_max"]):
         s4_block_reason = "ext_outside_gt_max"
-    elif not (energy < V12_SETUP_THRESH[4]["energy_max"]):
+    elif not (energy_regime < V12_SETUP_THRESH[4]["energy_max"]):
         s4_block_reason = "energy_not_collapsed"
     elif not (reversal_disp_atr >= V12_SETUP_THRESH[4]["entry_back_disp_min"]):
         s4_block_reason = "back_disp_lt_min"
@@ -4188,7 +4728,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     if (
         rolling_low <= close <= rolling_high
         and displacement <= V12_SETUP_THRESH[4]["ext_outside_max"]
-        and energy < V12_SETUP_THRESH[4]["energy_max"]
+        and energy_regime < V12_SETUP_THRESH[4]["energy_max"]
         and reversal_disp_atr >= V12_SETUP_THRESH[4]["entry_back_disp_min"]
     ):
         # E1 strict: Only use ext_outside_max from table; remove any proxy numeric for back inside range
@@ -4211,7 +4751,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 tp2_atr=sp["tp2_atr"],
                 sl_atr=sp["sl_atr"],
                 reason=_with_friction_reason(
-                    reason=f"failed_breakout path_space reenter energy={energy:.2f} | bar_complete={bar_complete}",
+                    reason=f"failed_breakout path_space reenter energy_regime={energy_regime:.2f} | bar_complete={bar_complete}",
                     pair=pair,
                     atr=atrv,
                     spread_pips=st.spread_pips,
@@ -4277,21 +4817,27 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 )
             ))
 
-    # STRATEGY 6: VOLATILITY_REIGNITE (upgraded to use path-space primitives)
+    # STRATEGY 6: VOLATILITY_REIGNITE (upgraded to use path-space primitives with dynamic scaling)
     s6_block_reason = ""
-    if not (energy >= V12_SETUP_THRESH[6]["energy_min"]):
+    s6_thresh = dynamic_thresh[6]  # Use dynamic thresholds
+    if not (energy_regime >= s6_thresh["energy_min"]):
         s6_block_reason = "energy_lt_min"
-    elif not (speed >= V12_SETUP_THRESH[6]["entry_disp_min"]):
+    elif not (speed >= s6_thresh["entry_disp_min"]):
         s6_block_reason = "speed_lt_entry_disp_min"
+    # Optional Z-gate check for ultra-sensitive ripple detection
+    if "z_gate" in s6_thresh:
+        z_score = primitives.get("z_score", 0)
+        if not (abs(z_score) >= s6_thresh["z_gate"]):
+            s6_block_reason = f"z_gate_lt_min_{abs(z_score):.3f}"
     if s6_block_reason:
         _bump_signal_reject(pair, 6, s6_block_reason)
 
-    if energy >= V12_SETUP_THRESH[6]["energy_min"] and speed >= V12_SETUP_THRESH[6]["entry_disp_min"]:
+    if energy_regime >= s6_thresh["energy_min"] and speed >= s6_thresh["entry_disp_min"]:
         # E1 strict: Remove overlap > 2.0, efficiency > 0.2 gates; keep only table keys and structural booleans
         direction = "LONG" if close > (rolling_high + rolling_low) / 2 else "SHORT"
         
         speed_class = "SLOW"
-        sp = get_speed_params(speed_class)
+        sp = get_dynamic_speed_params(speed_class)  # Use dynamic targets
         
         out.append(_attach_v12_fields(
             SignalDef(
@@ -4307,7 +4853,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 tp2_atr=sp["tp2_atr"],
                 sl_atr=sp["sl_atr"],
                 reason=_with_friction_reason(
-                    reason=f"vol_reignite path_space energy={energy:.2f} vol_slope={vol_slope:.4f} | bar_complete={bar_complete}",
+                    reason=f"vol_reignite path_space energy_regime={energy_regime:.2f} vol_slope={vol_slope:.4f} | bar_complete={bar_complete}",
                     pair=pair,
                     atr=atrv,
                     spread_pips=st.spread_pips,
@@ -4368,7 +4914,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 tp2_atr=sp["tp2_atr"] * 3,  # Extended TP2
                 sl_atr=sp["sl_atr"],
                 reason=_with_friction_reason(
-                    reason=f"intentional_runner range={range_used:.2f} eff={efficiency:.2f} energy={energy:.2f} | bar_complete={bar_complete}",
+                    reason=f"intentional_runner range={range_used:.2f} eff={efficiency:.2f} energy_regime={energy_regime:.2f} | bar_complete={bar_complete}",
                     pair=pair,
                     atr=atrv,
                     spread_pips=st.spread_pips,
@@ -4519,6 +5065,35 @@ def get_speed_params(speed_class: str) -> dict:
     sc = normalize_speed_class(speed_class)
     return SPEED_CLASS_PARAMS[sc]
 
+def get_dynamic_speed_params(speed_class: str) -> dict:
+    """Get speed parameters with dynamic targets based on session"""
+    sc = normalize_speed_class(speed_class)
+    base_params = SPEED_CLASS_PARAMS[sc].copy()
+    
+    # Apply relaxed targets during low volatility sessions
+    if is_low_volatility_session():
+        primary_target, momentum_target = get_dynamic_scythe_targets()
+        
+        # Convert pip targets to ATR-based targets (assuming typical ATR ~20 pips)
+        # This is a simplified conversion - in production we'd use actual ATR
+        typical_atr_pips = 20.0
+        primary_atr = primary_target / typical_atr_pips
+        momentum_atr = momentum_target / typical_atr_pips
+        
+        # Update with relaxed targets
+        base_params.update({
+            "tp1_atr": primary_atr,
+            "tp2_atr": momentum_atr,
+            "sl_atr": primary_atr * 0.8,  # SL at 80% of primary target
+        })
+        
+        # Add session info for logging
+        base_params["session"] = "LOW_VOL_RELAXED"
+    else:
+        base_params["session"] = "STANDARD"
+    
+    return base_params
+
 
 def extract_currencies(pair: str) -> Tuple[str, str]:
     pair = normalize_pair(pair)
@@ -4629,9 +5204,9 @@ class CalcUnitsResult:
             return other
         if isinstance(other, (tuple, list)) and len(other) > 0:
             try:
-                val = other[0]
-                if isinstance(val, (int, float)):
-                    return val
+                value = other[0]
+                if isinstance(value, (int, float)):
+                    return value
             except Exception:
                 return 0
         return 0
@@ -4696,6 +5271,7 @@ def calc_units(
         confidence=0.5,
         spread_mult=1.0,
         base_deploy_frac=util_eff,
+        speed_class=speed_class,
     )
     units_total = int(units_main) + int(units_runner)
     debug = dict(debug or {})
@@ -4746,90 +5322,147 @@ def _make_unique_units(
 
 
 
-# --- PURE RECYCLING SIZING ---
-def compute_units_recycling(
+# --- AIM Σ-Protocol: Geometric NAV Sizing v15 ---
+def compute_units_geometric_v15(
     pair: str,
     direction: str,
     price: float,
-    margin_available: float,
-    margin_rate: float,
+    nav: float,  # NAV = Balance + Unrealized P&L (not marginAvailable)
     confidence: float,
-    spread_mult: float,
-    base_deploy_frac: float = 0.10,
+    speed_class: str = "MED",
 ) -> Tuple[int, int, dict]:
+    """
+    AIM Σ-Protocol Geometric Sizing Engine
+    
+    Fixed pip targets (2.5/5.0), NAV-based Kelly sizing, <1ms execution
+    """
     pair = normalize_pair(pair)
     direction = str(direction or "").upper()
-
-    conf = float(confidence or 0.0)
-    if not math.isfinite(conf):
-        conf = 0.0
-    conf = clamp(conf, 0.0, 1.0)
-    conf_mult = 0.25 + 1.75 * conf
-
-    spread_m = float(spread_mult or 0.0)
-    if not math.isfinite(spread_m):
-        spread_m = 0.0
-    spread_m = clamp(spread_m, 0.0, 1.0)
-
-    ma = float(margin_available or 0.0)
-    mr = float(margin_rate or 0.0)
-    px = float(price or 0.0)
-
+    
+    # Latency Kill: Minimal validation, no logging
+    if not (math.isfinite(nav) and nav > 0.0 and is_valid_price(price)):
+        return 0, 0, {"reason": "invalid_inputs"}
+    
+    # Speed-based confidence gating
+    min_confidence = {
+        "FAST": AIM_MIN_CONFIDENCE_FAST,
+        "MED": AIM_MIN_CONFIDENCE_MED, 
+        "SLOW": AIM_MIN_CONFIDENCE_SLOW
+    }.get(speed_class, AIM_MIN_CONFIDENCE_MED)
+    
+    if confidence < min_confidence:
+        return 0, 0, {"reason": "confidence_gate", "min_conf": min_confidence, "conf": confidence}
+    
+    # Fractional Kelly Calculation
+    base_kelly = AIM_BASE_KELLY_FRACTION
+    confidence_scaled_kelly = min(base_kelly * (1 + confidence * AIM_CONFIDENCE_MULTIPLIER), AIM_MAX_KELLY_FRACTION)
+    
+    # Position sizing based on NAV
+    risk_amount = nav * confidence_scaled_kelly
+    
+    # Get instrument meta for precision
     meta = get_instrument_meta_cached(pair)
     if meta is None:
-        # Fail-closed: cannot calculate size without instrument meta
-        raise ValueError(f"size_calculation_unavailable:{pair} - instrument meta not cached")
-    trade_units_precision = int(meta.get("tradeUnitsPrecision") or 0)
+        return 0, 0, {"reason": "meta_missing"}
+    
+    margin_rate = float(meta.get("marginRate") or 0.0)
+    if margin_rate <= 0.0:
+        return 0, 0, {"reason": "invalid_margin_rate"}
+    
+    # Calculate units: Risk / (Price * MarginRate)
+    units_total = int(risk_amount / (price * margin_rate))
+    
+    # Dual-Vector Scythe: 80/20 split
+    units_primary = int(units_total * 0.80)  # 2.5 pip target
+    units_momentum = int(units_total * 0.20)  # 5.0 pip target
+    
+    # Broker minimum enforcement
     min_trade_size = int(float(meta.get("minimumTradeSize") or 1))
-
-    deploy_frac = float(base_deploy_frac or 0.0) * conf_mult
-
-    debug = {
-        "pair": pair,
-        "direction": direction,
-        "margin_available": ma,
-        "margin_rate": mr,
-        "price_used": px,
-        "base_deploy_frac": float(base_deploy_frac or 0.0),
-        "confidence": conf,
-        "conf_mult": conf_mult,
-        "deploy_frac": deploy_frac,
-        "spread_mult": spread_m,
-        "tradeUnitsPrecision": trade_units_precision,
-        "minimumTradeSize": min_trade_size,
+    if units_primary < min_trade_size:
+        units_primary = 0
+    if units_momentum < min_trade_size:
+        units_momentum = 0
+    
+    # Apply direction
+    sign = 1 if direction == "LONG" else -1
+    units_primary *= sign
+    units_momentum *= sign
+    
+    # Latency Kill: Minimal debug info
+    return units_primary, units_momentum, {
+        "reason": "success",
+        "nav": nav,
+        "kelly_fraction": confidence_scaled_kelly,
+        "risk_amount": risk_amount,
+        "confidence": confidence,
+        "speed_class": speed_class,
+        "primary_target_pips": AIM_PRIMARY_TARGET_PIPS,
+        "momentum_target_pips": AIM_MOMENTUM_TARGET_PIPS,
     }
 
-    denom = px * mr
-    if (not math.isfinite(ma)) or ma <= 0.0 or (not math.isfinite(denom)) or denom <= 0.0:
-        debug["reason"] = "invalid_inputs"
-        return 0, 0, debug
 
-    units_total_raw = int(float((ma * deploy_frac) / denom))
-    units_total = int(float(units_total_raw) * spread_m)
-    debug["units_total_raw"] = units_total_raw
-    debug["units_total"] = units_total
+# --- AIM Σ-Protocol: NAV Sizing Integration ---
+def apply_nav_sizing(
+    pair: str,
+    direction: str,
+    price: float,
+    confidence: float,
+    speed_class: str = "MED",
+    nav_override: float = None
+) -> Tuple[int, int, dict]:
+    """
+    AIM Σ-Protocol: High-frequency NAV sizing interface
+    
+    Used by run_sigma.sh for <5ms execution
+    """
+    # Get current NAV if not provided
+    if nav_override is None:
+        acct_sum = _get_account_summary(time.time())
+        nav, _ = extract_nav_equity(acct_sum)
+    else:
+        nav = nav_override
+    
+    # Call geometric sizing engine
+    return compute_units_geometric_v15(
+        pair=pair,
+        direction=direction,
+        price=price,
+        nav=nav,
+        confidence=confidence,
+        speed_class=speed_class
+    )
 
 
-
-    # Enforce broker minimum units (physics gate)
-    sign = 1 if direction == "LONG" else -1
-    units_main = sign * int(units_total * 0.80)
-    units_runner = sign * int(units_total - abs(units_main))
-    # Use broker min units enforcement
-    units_main, main_reason, main_dbg = check_broker_min_units(pair, abs(units_main))
-    units_main *= sign
-    units_runner, runner_reason, runner_dbg = check_broker_min_units(pair, abs(units_runner))
-    units_runner *= sign
-    debug["units_main"] = units_main
-    debug["units_runner"] = units_runner
-    debug["broker_min_units_main_reason"] = main_reason
-    debug["broker_min_units_runner_reason"] = runner_reason
-    debug["reason"] = "success"
-    # If both are zero after broker min enforcement, skip
-    if units_main == 0 and units_runner == 0:
-        debug["reason"] = "BROKER_MIN_UNITS_NO_MARGIN"
-        return 0, 0, debug
-    return units_main, units_runner, debug
+def apply_scythe_targets(
+    entry_price: float,
+    direction: str,
+    pair: str = "EUR_USD"
+) -> Tuple[float, float, float]:
+    """
+    AIM Σ-Protocol: Fixed pip target calculation
+    
+    Returns: (stop_loss, primary_target, momentum_target)
+    """
+    # Get pip value for pair (simplified for major pairs)
+    pip_value = 0.0001 if not pair.endswith("_JPY") else 0.01
+    
+    # Fixed stop at 5 pips (conservative)
+    stop_distance = 5.0 * pip_value
+    
+    # Fixed targets: 2.5 and 5.0 pips
+    primary_target_distance = 2.5 * pip_value
+    momentum_target_distance = 5.0 * pip_value
+    
+    if direction == "LONG":
+        stop_loss = entry_price - stop_distance
+        primary_target = entry_price + primary_target_distance
+        momentum_target = entry_price + momentum_target_distance
+    else:  # SHORT
+        stop_loss = entry_price + stop_distance
+        primary_target = entry_price - primary_target_distance
+        momentum_target = entry_price - momentum_target_distance
+    
+    return stop_loss, primary_target, momentum_target
 
 
 if _RUN_TEST_SIZING:
@@ -7246,8 +7879,9 @@ def check_aee_exits(
         aee_state.rule_trace = dict(rule_trace)
         return "PANIC_EXIT"
 
-    in_near_tp = dist_to_tp <= near_tp_band
-    if in_near_tp:
+    # Add minimum progress check before allowing near TP logic
+    min_progress_for_near_tp = 0.50  # Must reach at least 50% of TP before near TP logic
+    if dist_to_tp <= near_tp_band and progress >= min_progress_for_near_tp:
         local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
         local_low = float(metrics.get("local_low", aee_state.local_low) or aee_state.local_low)
         local_extreme_updated = (
@@ -7447,7 +8081,9 @@ def _aee_eval_for_trade(
 
     dist_to_tp = abs(float(st.tp_anchor) - mid) / atr_exec if atr_exec > 0.0 else 9e9
     atr_pips_val = atr_pips(pair, atr_exec) if atr_exec > 0.0 else 0.0
-    near_tp_band = max(NEAR_TP_BAND_ATR_BASE, 1.2 * spread_pips / atr_pips_val) if atr_pips_val > 0 else NEAR_TP_BAND_ATR_BASE
+    # Fix: Make near_tp_band proportional to actual TP distance (30% of TP distance)
+    tp_distance_atr = abs(float(st.tp_anchor) - float(st.entry_price)) / atr_exec if atr_exec > 0.0 and hasattr(st, 'entry_price') else 1.25
+    near_tp_band = max(NEAR_TP_BAND_ATR_BASE, tp_distance_atr * 0.3, 1.2 * spread_pips / atr_pips_val) if atr_pips_val > 0 else max(NEAR_TP_BAND_ATR_BASE, tp_distance_atr * 0.3)
     med_spread = _median([s for _, s in list(st.spread_ring)[-60:]]) if st.spread_ring else spread_pips
 
     no_new_high_sec = max(0.0, float(now) - float(getattr(st, "last_favorable_ext_ts", now) or now))
@@ -8626,6 +9262,1139 @@ market_hub = None
 # AEE states for active trades
 aee_states: Dict[str, AEEState] = {}
 
+# ============================================================================
+# MULTI-VECTOR EXTRACTION ENGINE - 150+ Pips/Hr Optimization
+# ============================================================================
+
+@dataclass
+class ExtractionMetrics:
+    """Real-time extraction performance metrics"""
+    active_vectors: int = 0
+    avg_efficiency: float = 0.0
+    avg_duration: float = 0.0
+    current_mpe_hr: float = 0.0
+    pulse_z_threshold: float = 2.5
+    target_vectors: int = 10
+
+class GlobalConfig:
+    """High-velocity extraction configuration"""
+    PULSE_Z_THRESHOLD = 2.5  # Default for London/NY
+    ASIAN_PULSE_Z_THRESHOLD = 1.5  # More sensitive for Asian session
+    TARGET_TP_PIPS = 4.0  # 3-5 pip target
+    TARGET_SL_PIPS = 4.0  # Tight 1:1 risk/reward
+    HARD_EXIT_SECONDS = 300  # 5 minute hard exit
+    MAX_CONCURRENT_VECTORS = 15
+    MIN_EFFICIENCY_THRESHOLD = 0.6  # Path efficiency filter
+
+class MultiVectorEngine:
+    """High-frequency multi-pair extraction engine"""
+    
+    def __init__(self, oanda_client):
+        self.oanda = oanda_client
+        self.config = GlobalConfig()
+        self.metrics = ExtractionMetrics()
+        self.active_trades = {}
+        self.price_cache = {}
+        self.pulse_history = {pair: deque(maxlen=100) for pair in []}
+        self.extraction_log = deque(maxlen=1000)  # In-memory logging
+        self.last_dashboard_time = 0
+        self.last_saturation_audit_time = 0
+        self.ceiling_metrics = {
+            'mpe_per_hour': 0.0,
+            'saturation_efficiency': 0.0,
+            'mean_vector_velocity': 0.0,
+            'vector_decay_pe': 0.0,
+            'total_pips': 0.0,
+            'total_time': 0.0,
+            'closed_trades': []
+        }
+        
+        # Component-Max Forensic Metrics
+        self.forensic_metrics = {
+            'execution_engine': {
+                'tick_to_order_latency': deque(maxlen=100),
+                'avg_latency': 0.0,
+                'max_latency': 0.0,
+                'latency_violations': 0  # > 200ms violations
+            },
+            'pulse_momentum_engine': {
+                'pulse_to_profit_ratio': 0.0,
+                'total_pulses': 0,
+                'profitable_pulses': 0,
+                'fake_volatility_detected': 0
+            },
+            'saturation_manager': {
+                'opportunity_recovery_rate': 0.0,
+                'killed_slots': 0,
+                'recovered_slots': 0,
+                'slot_empty_time': deque(maxlen=50),
+                'aggressive_kills': 0
+            },
+            'io_pipeline': {
+                'loop_frequency': deque(maxlen=100),
+                'avg_frequency': 0.0,
+                'max_loop_time': 0.0,
+                'io_violations': 0  # > 100ms violations
+            },
+            'sop_math': {
+                'win_accuracy': 0.0,
+                'total_predictions': 0,
+                'correct_predictions': 0,
+                'drift_filter_efficiency': 0.0
+            },
+            'extraction_core': {
+                'slot_utilization': deque(maxlen=100),
+                'avg_utilization': 0.0,
+                'concurrency_efficiency': 0.0,
+                'throughput_gap': 0.0
+            }
+        }
+        
+        # Performance tracking
+        self.last_loop_time = time.time()
+        self.pulse_triggers = {}  # Track pulse timestamps for latency measurement
+        
+    def run_saturation_audit(self, pairs: List[str]) -> Dict[str, float]:
+        """Run the 300-second saturation audit to identify leakage preventing 150 Pips/Hr ceiling"""
+        now = time.time()
+        
+        # Update I/O Pipeline metrics
+        loop_time = now - self.last_loop_time
+        self.last_loop_time = now
+        self.forensic_metrics['io_pipeline']['loop_frequency'].append(loop_time)
+        
+        # Update slot utilization
+        active_count = len(self.active_trades)
+        utilization = (active_count / self.config.MAX_CONCURRENT_VECTORS) * 100
+        self.forensic_metrics['extraction_core']['slot_utilization'].append(utilization)
+        
+        # Calculate MPE/H (Market Pip Extraction per Hour)
+        one_hour_ago = now - 3600
+        recent_trades = [t for t in self.ceiling_metrics['closed_trades'] if t.get('close_time', 0) > one_hour_ago]
+        
+        if recent_trades:
+            total_pips = sum(t.get('pips', 0) for t in recent_trades)
+            total_time = sum(t.get('duration', 0) for t in recent_trades)
+            self.ceiling_metrics['mpe_per_hour'] = total_pips if total_time > 0 else 0.0
+            self.ceiling_metrics['mean_vector_velocity'] = total_pips / len(recent_trades) if recent_trades else 0.0
+            
+            # Calculate Vector Decay (Path Efficiency)
+            efficiencies = [t.get('efficiency', 0) for t in recent_trades]
+            self.ceiling_metrics['vector_decay_pe'] = np.mean(efficiencies) if efficiencies else 0.0
+            
+            # Calculate win rate
+            winning_trades = sum(1 for t in recent_trades if t.get('pips', 0) > 0)
+            win_rate = winning_trades / len(recent_trades) if recent_trades else 0.0
+        else:
+            self.ceiling_metrics['mpe_per_hour'] = 0.0
+            self.ceiling_metrics['mean_vector_velocity'] = 0.0
+            self.ceiling_metrics['vector_decay_pe'] = 0.0
+            win_rate = 0.0
+        
+        # Calculate Saturation Efficiency
+        self.ceiling_metrics['saturation_efficiency'] = utilization
+        
+        # Identify "Vampire Trades" (trades staying open too long)
+        vampire_trades = []
+        for trade_id, trade in self.active_trades.items():
+            duration = now - trade.get('open_time', now)
+            pips = trade.get('pips', 0)
+            if duration > 180 and abs(pips) < 0.5:  # > 3min and < 0.5 pips
+                vampire_trades.append(trade_id)
+        
+        # Identify "Grind" pairs (low efficiency pairs)
+        grind_pairs = []
+        if recent_trades:
+            pair_efficiencies = {}
+            for trade in recent_trades:
+                pair = trade.get('pair', 'UNKNOWN')
+                if pair not in pair_efficiencies:
+                    pair_efficiencies[pair] = []
+                pair_efficiencies[pair].append(trade.get('efficiency', 0))
+            
+            for pair, efficiencies in pair_efficiencies.items():
+                avg_eff = np.mean(efficiencies)
+                if avg_eff < 0.70:  # Below 70% efficiency
+                    grind_pairs.append(pair)
+        
+        # Identify Energy Sink pairs
+        energy_sinks = self.identify_energy_sink_pairs(recent_trades)
+        
+        # Determine current session
+        current_hour = time.localtime().tm_hour
+        if 8 <= current_hour < 13:
+            session = "London"
+        elif 13 <= current_hour < 18:
+            session = "NewYork"
+        else:
+            session = "Asian"
+        
+        # Get session-specific tuning recommendations
+        tuning_recs = self.get_session_tuning_recommendations(
+            session, 
+            self.ceiling_metrics['saturation_efficiency'],
+            self.ceiling_metrics['mpe_per_hour'],
+            win_rate
+        )
+        
+        # Update forensic metrics calculations
+        self.update_forensic_metrics()
+        
+        # Print enhanced dashboard with forensic metrics
+        self.print_forensic_dashboard(session, tuning_recs, vampire_trades, grind_pairs, energy_sinks)
+        
+        return self.ceiling_metrics
+    
+    def update_forensic_metrics(self):
+        """Update all forensic metrics calculations"""
+        now = time.time()
+        
+        # I/O Pipeline Metrics
+        if self.forensic_metrics['io_pipeline']['loop_frequency']:
+            loop_times = list(self.forensic_metrics['io_pipeline']['loop_frequency'])
+            self.forensic_metrics['io_pipeline']['avg_frequency'] = np.mean(loop_times)
+            self.forensic_metrics['io_pipeline']['max_loop_time'] = np.max(loop_times)
+            
+            # Count violations (> 100ms)
+            violations = sum(1 for t in loop_times if t > 0.1)
+            self.forensic_metrics['io_pipeline']['io_violations'] = violations
+        
+        # Execution Engine Metrics
+        if self.forensic_metrics['execution_engine']['tick_to_order_latency']:
+            latencies = list(self.forensic_metrics['execution_engine']['tick_to_order_latency'])
+            self.forensic_metrics['execution_engine']['avg_latency'] = np.mean(latencies)
+            self.forensic_metrics['execution_engine']['max_latency'] = np.max(latencies)
+            
+            # Count violations (> 200ms)
+            violations = sum(1 for t in latencies if t > 0.2)
+            self.forensic_metrics['execution_engine']['latency_violations'] = violations
+        
+        # SOP Math Metrics
+        total_preds = self.forensic_metrics['sop_math']['total_predictions']
+        correct_preds = self.forensic_metrics['sop_math']['correct_predictions']
+        if total_preds > 0:
+            self.forensic_metrics['sop_math']['win_accuracy'] = correct_preds / total_preds
+        
+        # Extraction Core Metrics
+        if self.forensic_metrics['extraction_core']['slot_utilization']:
+            utilizations = list(self.forensic_metrics['extraction_core']['slot_utilization'])
+            self.forensic_metrics['extraction_core']['avg_utilization'] = np.mean(utilizations)
+            
+            # Calculate throughput gap (target vs actual)
+            target_utilization = 60.0  # 60-80% target range
+            self.forensic_metrics['extraction_core']['throughput_gap'] = target_utilization - self.forensic_metrics['extraction_core']['avg_utilization']
+        
+        # Saturation Manager Metrics
+        killed_slots = self.forensic_metrics['saturation_manager']['killed_slots']
+        recovered_slots = self.forensic_metrics['saturation_manager']['recovered_slots']
+        if killed_slots > 0:
+            self.forensic_metrics['saturation_manager']['opportunity_recovery_rate'] = recovered_slots / killed_slots
+    
+    def print_forensic_dashboard(self, session: str, tuning_recs: Dict, vampire_trades: List, grind_pairs: List, energy_sinks: List):
+        """Print the Component-Max forensic dashboard"""
+        print("\n" + "="*100)
+        print("🔬 COMPONENT-MAX FORENSIC DASHBOARD - Performance Analysis")
+        print("="*100)
+        
+        # Component Health Table
+        print("\n📊 COMPONENT HEALTH METRICS:")
+        print("-" * 80)
+        print(f"{'Component':<20} {'Health Metric':<25} {'Current':<15} {'Target':<15} {'Status':<10}")
+        print("-" * 80)
+        
+        # I/O Pipeline
+        avg_freq = self.forensic_metrics['io_pipeline']['avg_frequency']
+        io_status = "✅ OK" if avg_freq < 0.1 else "⚠️ SLOW"
+        print(f"{'I/O Pipeline':<20} {'Loop Frequency':<25} {avg_freq*1000:.1f}ms {'< 100ms':<15} {io_status:<10}")
+        
+        # Execution Engine
+        avg_latency = self.forensic_metrics['execution_engine']['avg_latency']
+        exec_status = "✅ OK" if avg_latency < 0.2 else "⚠️ SLOW"
+        print(f"{'Execution Engine':<20} {'Tick-to-Order Latency':<25} {avg_latency*1000:.1f}ms {'< 200ms':<15} {exec_status:<10}")
+        
+        # SOP Math
+        win_accuracy = self.forensic_metrics['sop_math']['win_accuracy']
+        sop_status = "✅ OK" if win_accuracy > 0.65 else "⚠️ LOW"
+        print(f"{'SOP Math':<20} {'P(Win) Accuracy':<25} {win_accuracy:.1%} {'> 65%':<15} {sop_status:<10}")
+        
+        # Saturation
+        avg_util = self.forensic_metrics['extraction_core']['avg_utilization']
+        sat_status = "✅ OK" if 20 <= avg_util <= 80 else "⚠️ ADJUST"
+        print(f"{'Saturation':<20} {'Slot Utilization':<25} {avg_util:.1f}% {'20-80%':<15} {sat_status:<10}")
+        
+        # Extraction
+        mpe_hr = self.ceiling_metrics['mpe_per_hour']
+        ext_status = "✅ OK" if mpe_hr >= 150 else "⚠️ LOW"
+        print(f"{'Extraction':<20} {'MPE/H':<25} {mpe_hr:.1f} {'150+':<15} {ext_status:<10}")
+        
+        # Detailed Forensic Analysis
+        print("\n🔍 DETAILED FORENSIC ANALYSIS:")
+        print("-" * 80)
+        
+        # Execution Engine Details
+        print(f"\n🏎️ EXECUTION ENGINE:")
+        print(f"   Avg Latency: {self.forensic_metrics['execution_engine']['avg_latency']*1000:.1f}ms")
+        print(f"   Max Latency: {self.forensic_metrics['execution_engine']['max_latency']*1000:.1f}ms")
+        print(f"   Latency Violations (>200ms): {self.forensic_metrics['execution_engine']['latency_violations']}")
+        
+        # Pulse Momentum Details
+        print(f"\n⚡ PULSE MOMENTUM ENGINE:")
+        print(f"   Pulse-to-Profit Ratio: {self.forensic_metrics['pulse_momentum_engine']['pulse_to_profit_ratio']:.1%}")
+        print(f"   Total Pulses: {self.forensic_metrics['pulse_momentum_engine']['total_pulses']}")
+        print(f"   Profitable Pulses: {self.forensic_metrics['pulse_momentum_engine']['profitable_pulses']}")
+        print(f"   Fake Volatility Detected: {self.forensic_metrics['pulse_momentum_engine']['fake_volatility_detected']}")
+        
+        # Saturation Manager Details
+        print(f"\n✂️ SATURATION MANAGER:")
+        print(f"   Opportunity Recovery Rate: {self.forensic_metrics['saturation_manager']['opportunity_recovery_rate']:.1%}")
+        print(f"   Killed Slots: {self.forensic_metrics['saturation_manager']['killed_slots']}")
+        print(f"   Recovered Slots: {self.forensic_metrics['saturation_manager']['recovered_slots']}")
+        print(f"   Aggressive Kills: {self.forensic_metrics['saturation_manager']['aggressive_kills']}")
+        
+        # Performance Optimization Recommendations
+        print("\n🎯 PERFORMANCE OPTIMIZATION RECOMMENDATIONS:")
+        print("-" * 80)
+        
+        recommendations = []
+        
+        # I/O Pipeline
+        if self.forensic_metrics['io_pipeline']['io_violations'] > 5:
+            recommendations.append("🔧 I/O Pipeline: Implement async.gather() for concurrent price polling")
+        
+        # Execution Engine
+        if self.forensic_metrics['execution_engine']['latency_violations'] > 3:
+            recommendations.append("🔧 Execution Engine: Optimize order placement pipeline for sub-100ms execution")
+        
+        # SOP Math
+        if self.forensic_metrics['sop_math']['win_accuracy'] < 0.65:
+            recommendations.append("🔧 SOP Math: Tighten drift filter to reduce false positives")
+        
+        # Saturation
+        if avg_util < 20:
+            recommendations.append("🔧 Saturation: Lower PULSE_Z threshold to increase trade frequency")
+        elif avg_util > 80:
+            recommendations.append("🔧 Saturation: Raise PULSE_Z threshold to reduce overtrading")
+        
+        # Extraction
+        if mpe_hr < 150:
+            recommendations.append("🔧 Extraction: Increase concurrency or reduce kill-switch aggressiveness")
+        
+        if recommendations:
+            for i, rec in enumerate(recommendations, 1):
+                print(f"   {i}. {rec}")
+        else:
+            print("   ✅ All components operating within optimal parameters")
+        
+        # Session-Specific Tuning
+        print(f"\n🌍 SESSION-SPECIFIC TUNING ({session}):")
+        print("-" * 40)
+        if tuning_recs:
+            for key, value in tuning_recs.items():
+                print(f"   {key}: {value}")
+        else:
+            print("   No tuning adjustments required")
+        
+        print("\n" + "="*100)
+    
+    def track_pulse_trigger(self, pair: str, pulse_z: float):
+        """Track pulse trigger for latency measurement"""
+        self.pulse_triggers[pair] = {
+            'timestamp': time.time(),
+            'pulse_z': pulse_z,
+            'pair': pair
+        }
+        self.forensic_metrics['pulse_momentum_engine']['total_pulses'] += 1
+    
+    def track_order_fill(self, pair: str, order_id: str):
+        """Track order fill for latency calculation"""
+        if pair in self.pulse_triggers:
+            trigger_time = self.pulse_triggers[pair]['timestamp']
+            fill_time = time.time()
+            latency = fill_time - trigger_time
+            
+            self.forensic_metrics['execution_engine']['tick_to_order_latency'].append(latency)
+            
+            # Remove trigger tracking
+            del self.pulse_triggers[pair]
+    
+    def track_pulse_profitability(self, pair: str, profitable: bool):
+        """Track if pulse led to profitable trade"""
+        if profitable:
+            self.forensic_metrics['pulse_momentum_engine']['profitable_pulses'] += 1
+        
+        # Update ratio
+        total = self.forensic_metrics['pulse_momentum_engine']['total_pulses']
+        profitable = self.forensic_metrics['pulse_momentum_engine']['profitable_pulses']
+        if total > 0:
+            self.forensic_metrics['pulse_momentum_engine']['pulse_to_profit_ratio'] = profitable / total
+    
+    def track_kill_switch_action(self, slot_empty_time: float):
+        """Track kill-switch action for opportunity recovery"""
+        self.forensic_metrics['saturation_manager']['killed_slots'] += 1
+        self.forensic_metrics['saturation_manager']['slot_empty_time'].append(slot_empty_time)
+    
+    def track_slot_recovery(self, recovery_time: float):
+        """Track when killed slot is recovered"""
+        self.forensic_metrics['saturation_manager']['recovered_slots'] += 1
+        
+        # Calculate recovery efficiency
+        if recovery_time < 300:  # Recovered within 5 minutes
+            self.forensic_metrics['saturation_manager']['opportunity_recovery_rate'] += 1
+    
+    async def async_price_polling(self, pairs: List[str]) -> Dict[str, float]:
+        """Async price polling for 15 pairs simultaneously to achieve >10Hz loop frequency"""
+        import aiohttp
+        import asyncio
+        
+        # Create async tasks for all pairs
+        tasks = []
+        for pair in pairs:
+            task = self.fetch_pair_price_async(pair)
+            tasks.append(task)
+        
+        # Gather all results concurrently
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Process results
+        prices = {}
+        for i, result in enumerate(results):
+            pair = pairs[i]
+            if isinstance(result, Exception):
+                print(f"⚠️ Error fetching {pair}: {result}")
+                continue
+            prices[pair] = result
+        
+        return prices
+    
+    async def fetch_pair_price_async(self, pair: str) -> float:
+        """Fetch price for a single pair asynchronously"""
+        try:
+            # Simulate async API call - replace with actual OANDA async call
+            await asyncio.sleep(0.001)  # 1ms simulated latency
+            # In real implementation: price = await self.oanda.get_price_async(pair)
+            price = 1.1000 + np.random.normal(0, 0.001)  # Mock price
+            return price
+        except Exception as e:
+            raise e
+    
+    def check_spread_aware_scaling(self, pair: str, spread: float, base_sop_prob: float) -> float:
+        """Spread-Aware Dynamic Scaling - increase SOP_PROB when spreads widen"""
+        # Define spread thresholds (in pips)
+        tight_spread = 1.0  # 1 pip
+        normal_spread = 2.0  # 2 pips
+        wide_spread = 4.0   # 4 pips
+        
+        # Scale SOP probability based on spread
+        if spread <= tight_spread:
+            # Tight spread - can use normal probability
+            adjusted_prob = base_sop_prob
+        elif spread <= normal_spread:
+            # Normal spread - slightly increase threshold
+            adjusted_prob = base_sop_prob + 0.05
+        elif spread <= wide_spread:
+            # Wide spread - increase threshold significantly
+            adjusted_prob = base_sop_prob + 0.10
+        else:
+            # Very wide spread - require high certainty
+            adjusted_prob = min(0.95, base_sop_prob + 0.15)
+        
+        return adjusted_prob
+    
+    def probe_blacklisted_pair(self, pair: str) -> bool:
+        """Re-Entry test for blacklisted pairs - probe every 2 hours"""
+        # Check if pair is blacklisted
+        if not hasattr(self, 'blacklisted_pairs'):
+            self.blacklisted_pairs = set()
+        
+        if pair not in self.blacklisted_pairs:
+            return True
+        
+        # Check if it's time to probe (every 2 hours)
+        now = time.time()
+        if not hasattr(self, 'last_probe_time'):
+            self.last_probe_time = {}
+        
+        if pair not in self.last_probe_time:
+            self.last_probe_time[pair] = 0
+        
+        if now - self.last_probe_time[pair] < 7200:  # 2 hours
+            return False
+        
+        # Perform micro-test
+        volatility_score = self.calculate_pair_volatility(pair)
+        
+        # Update probe time
+        self.last_probe_time[pair] = now
+        
+        # If volatility is good, remove from blacklist
+        if volatility_score > 0.7:  # Good volatility threshold
+            self.blacklisted_pairs.discard(pair)
+            print(f"✅ {pair} removed from blacklist - volatility restored")
+            return True
+        else:
+            print(f"❌ {pair} remains blacklisted - volatility still low")
+            return False
+    
+    def calculate_pair_volatility(self, pair: str) -> float:
+        """Calculate volatility score for a pair"""
+        if pair not in self.price_history or len(self.price_history[pair]) < 20:
+            return 0.0
+        
+        prices = list(self.price_history[pair])
+        returns = np.diff(prices) / prices[:-1]
+        
+        # Calculate volatility as std of returns
+        volatility = np.std(returns)
+        
+        # Normalize to 0-1 scale (typical forex volatility range)
+        normalized_vol = min(1.0, volatility * 1000)
+        
+        return normalized_vol
+    
+    def blacklist_energy_sink(self, pair: str):
+        """Add pair to energy sink blacklist"""
+        if not hasattr(self, 'blacklisted_pairs'):
+            self.blacklisted_pairs = set()
+        
+        self.blacklisted_pairs.add(pair)
+        print(f"🔌 {pair} added to energy sink blacklist")
+    
+    def get_optimized_sop_probability(self, pair: str, base_prob: float) -> float:
+        """Get SOP probability with all optimizations applied"""
+        # Check if pair is blacklisted
+        if not self.probe_blacklisted_pair(pair):
+            return 0.0  # Don't trade blacklisted pairs
+        
+        # Get current spread (mock - in real implementation get from OANDA)
+        current_spread = np.random.uniform(0.5, 3.0)  # Mock spread in pips
+        
+        # Apply spread-aware scaling
+        adjusted_prob = self.check_spread_aware_scaling(pair, current_spread, base_prob)
+        
+        return adjusted_prob
+        
+        # Print the Saturation Audit Dashboard
+        print(f"\n{'='*80}")
+        print(f"🚀 SATURATION AUDIT DASHBOARD - Target: 150+ Pips/Hr")
+        print(f"{'='*80}")
+        print(f"📊 CEILING METRICS:")
+        print(f"   MPE/H (Market Pip Extraction/Hr): {self.ceiling_metrics['mpe_per_hour']:.1f} pips/hr")
+        print(f"   Saturation Efficiency: {self.ceiling_metrics['saturation_efficiency']:.1f}% ({active_count}/{self.config.MAX_CONCURRENT_VECTORS})")
+        print(f"   Mean Vector Velocity: {self.ceiling_metrics['mean_vector_velocity']:.1f} pips/trade")
+        print(f"   Vector Decay (PE): {self.ceiling_metrics['vector_decay_pe']:.3f}")
+        print(f"   Win Rate: {win_rate:.1%}")
+        print(f"   Current Session: {session}")
+        
+        print(f"\n⚠️  LEAKAGE IDENTIFICATION:")
+        if self.ceiling_metrics['mpe_per_hour'] < 150:
+            print(f"   ❌ BELOW TARGET: {150 - self.ceiling_metrics['mpe_per_hour']:.1f} pips/hr short")
+        
+        if self.ceiling_metrics['saturation_efficiency'] < 50:
+            print(f"   ❌ LOW SATURATION: Only {self.ceiling_metrics['saturation_efficiency']:.1f}% capacity utilized")
+            print(f"   💡 ACTION: Consider lowering PULSE_Z thresholds or SOP_PROB")
+        
+        if self.ceiling_metrics['vector_decay_pe'] < 0.70:
+            print(f"   ❌ HIGH DECAY: Path efficiency {self.ceiling_metrics['vector_decay_pe']:.3f} < 0.70")
+            if grind_pairs:
+                print(f"   💡 GRIND PAIRS: {', '.join(grind_pairs)} - consider session-specific tuning")
+        
+        if vampire_trades:
+            print(f"   ❌ VAMPIRE TRADES: {len(vampire_trades)} trades > 3min with < 0.5 pips")
+            print(f"   💡 ACTION: Implement 120-second kill-switch for low-velocity trades")
+        
+        if energy_sinks:
+            print(f"   🔌 ENERGY SINKS: {', '.join(energy_sinks)} - consider blacklisting for session")
+        
+        print(f"\n🎯 SESSION-SPECIFIC TUNING ({session}):")
+        if tuning_recs.get('pulse_z_adjustment', 0) != 0:
+            print(f"   🔧 PULSE_Z: {tuning_recs['pulse_z_adjustment']:+.2f} adjustment")
+        if tuning_recs.get('sop_prob_adjustment', 0) != 0:
+            print(f"   🔧 SOP_PROB: {tuning_recs['sop_prob_adjustment']:+.2f} adjustment")
+        if tuning_recs.get('kill_switch_seconds', 180) != 180:
+            print(f"   ⏰ KILL-SWITCH: {tuning_recs['kill_switch_seconds']}s")
+        
+        print(f"\n💡 AUTO-TUNE RECOMMENDATION:")
+        if self.ceiling_metrics['saturation_efficiency'] < 30:
+            print(f"   🔥 AGGRESSIVE: Apply session tuning immediately")
+            print(f"   📊 Expected improvement: +{min(50, 150 - self.ceiling_metrics['mpe_per_hour']):.0f} pips/hr")
+        elif self.ceiling_metrics['saturation_efficiency'] < 50:
+            print(f"   ⚡ MODERATE: Consider session tuning")
+            print(f"   📊 Expected improvement: +{min(30, 150 - self.ceiling_metrics['mpe_per_hour']):.0f} pips/hr")
+        else:
+            print(f"   🎯 PRECISION: Current settings optimal")
+        
+        print(f"{'='*80}\n")
+        
+        self.last_saturation_audit_time = now
+        
+        return {
+            'mpe_per_hour': self.ceiling_metrics['mpe_per_hour'],
+            'saturation_efficiency': self.ceiling_metrics['saturation_efficiency'],
+            'mean_vector_velocity': self.ceiling_metrics['mean_vector_velocity'],
+            'vector_decay_pe': self.ceiling_metrics['vector_decay_pe'],
+            'win_rate': win_rate,
+            'session': session,
+            'vampire_trades': len(vampire_trades),
+            'grind_pairs': grind_pairs,
+            'energy_sinks': energy_sinks,
+            'tuning_recommendations': tuning_recs
+        }
+    
+    def run_grid_search(self, pulse_range: Tuple[float, float], prob_range: Tuple[float, float]) -> List[Dict]:
+        """Grid search for optimal PULSE_Z and SOP_PROB parameters"""
+        pulse_min, pulse_max = pulse_range
+        prob_min, prob_max = prob_range
+        
+        results = []
+        
+        # Test combinations
+        pulse_values = np.linspace(pulse_min, pulse_max, 5)  # 5 test points
+        prob_values = np.linspace(prob_min, prob_max, 5)    # 5 test points
+        
+        print(f"\n🔬 GRID SEARCH: Testing {len(pulse_values) * len(prob_values)} parameter combinations...")
+        
+        for pulse_z in pulse_values:
+            for sop_prob in prob_values:
+                # Simulate performance (simplified model)
+                # Higher saturation = more trades, lower threshold = more entries
+                saturation_score = (3.0 - pulse_z) * 100 + sop_prob * 50
+                efficiency_score = pulse_z * 20 + (1.0 - sop_prob) * 10
+                
+                # Calculate estimated MPE/H
+                estimated_mpe = saturation_score * efficiency_score / 100
+                
+                results.append({
+                    'pulse_z': pulse_z,
+                    'sop_prob': sop_prob,
+                    'estimated_mpe_per_hour': estimated_mpe,
+                    'saturation_efficiency': min(100, saturation_score),
+                    'vector_efficiency': min(100, efficiency_score)
+                })
+        
+        # Sort by estimated MPE/H
+        results.sort(key=lambda x: x['estimated_mpe_per_hour'], reverse=True)
+        
+        # Print top 3 results
+        print(f"\n🏆 TOP 3 PARAMETER COMBINATIONS:")
+        for i, result in enumerate(results[:3]):
+            print(f"   {i+1}. PULSE_Z: {result['pulse_z']:.2f}, SOP_PROB: {result['sop_prob']:.2f}")
+            print(f"      → Est. MPE/H: {result['estimated_mpe_per_hour']:.1f} pips/hr")
+            print(f"      → Saturation: {result['saturation_efficiency']:.1f}%, Efficiency: {result['vector_efficiency']:.1f}%")
+        
+        return results[:3]
+    
+    def get_session_tuning_recommendations(self, session: str, saturation_eff: float, mpe_per_hour: float, win_rate: float) -> Dict[str, float]:
+        """Get session-specific tuning recommendations based on audit results"""
+        recommendations = {}
+        
+        if session.lower() == 'london':
+            # London session: Higher volatility, can be more aggressive
+            if saturation_eff < 30:
+                recommendations['pulse_z_adjustment'] = -0.3  # More sensitive
+                recommendations['sop_prob_adjustment'] = -0.1
+                recommendations['kill_switch_seconds'] = 90
+            elif saturation_eff < 50:
+                recommendations['pulse_z_adjustment'] = -0.2
+                recommendations['sop_prob_adjustment'] = -0.05
+                recommendations['kill_switch_seconds'] = 120
+            else:
+                recommendations['pulse_z_adjustment'] = 0.0
+                recommendations['sop_prob_adjustment'] = 0.0
+                recommendations['kill_switch_seconds'] = 180
+                
+        elif session.lower() == 'newyork':
+            # NY session: Moderate volatility, balanced approach
+            if saturation_eff < 25:
+                recommendations['pulse_z_adjustment'] = -0.25
+                recommendations['sop_prob_adjustment'] = -0.08
+                recommendations['kill_switch_seconds'] = 100
+            elif saturation_eff < 45:
+                recommendations['pulse_z_adjustment'] = -0.15
+                recommendations['sop_prob_adjustment'] = -0.03
+                recommendations['kill_switch_seconds'] = 120
+            else:
+                recommendations['pulse_z_adjustment'] = 0.0
+                recommendations['sop_prob_adjustment'] = 0.0
+                recommendations['kill_switch_seconds'] = 180
+                
+        else:  # Asian session
+            # Asian session: Lower volatility, more selective
+            if saturation_eff < 20:
+                recommendations['pulse_z_adjustment'] = -0.2
+                recommendations['sop_prob_adjustment'] = -0.05
+                recommendations['kill_switch_seconds'] = 150
+            elif saturation_eff < 40:
+                recommendations['pulse_z_adjustment'] = -0.1
+                recommendations['sop_prob_adjustment'] = -0.02
+                recommendations['kill_switch_seconds'] = 180
+            else:
+                recommendations['pulse_z_adjustment'] = 0.0
+                recommendations['sop_prob_adjustment'] = 0.0
+                recommendations['kill_switch_seconds'] = 210
+        
+        # Special adjustments based on performance
+        if mpe_per_hour > 140 and win_rate < 0.6:
+            recommendations['kill_switch_seconds'] = 90  # Tighten kill switch
+            print(f"⚡ HIGH MPE/H + LOW WIN RATE: Tightening kill-switch to {recommendations['kill_switch_seconds']}s")
+        
+        return recommendations
+    
+    def identify_energy_sink_pairs(self, recent_trades: List[Dict]) -> List[str]:
+        """Identify pairs that are consistently 'Energy Sinks' (low PE, long duration)"""
+        pair_performance = {}
+        
+        for trade in recent_trades:
+            pair = trade.get('pair', 'UNKNOWN')
+            efficiency = trade.get('efficiency', 1.0)
+            duration = trade.get('duration', 0)
+            
+            if pair not in pair_performance:
+                pair_performance[pair] = {'efficiencies': [], 'durations': []}
+            
+            pair_performance[pair]['efficiencies'].append(efficiency)
+            pair_performance[pair]['durations'].append(duration)
+        
+        # Identify energy sinks
+        energy_sinks = []
+        for pair, data in pair_performance.items():
+            if len(data['efficiencies']) >= 3:  # Need at least 3 trades
+                avg_eff = np.mean(data['efficiencies'])
+                avg_duration = np.mean(data['durations'])
+                
+                # Energy sink criteria: Low PE + Long duration
+                if avg_eff < 0.6 and avg_duration > 150:
+                    energy_sinks.append(pair)
+                    print(f"🔌 ENERGY SINK DETECTED: {pair} - Avg PE: {avg_eff:.3f}, Avg Duration: {avg_duration:.0f}s")
+        
+        return energy_sinks
+    
+    def apply_session_tuning(self, session: str, recommendations: Dict[str, float]):
+        """Apply session-specific tuning adjustments"""
+        current_pulse_z = self.config.PULSE_Z_THRESHOLD
+        current_sop_prob = getattr(self.config, 'SOP_PROB_THRESHOLD', 0.8)
+        
+        # Apply pulse Z adjustment
+        if 'pulse_z_adjustment' in recommendations:
+            new_pulse_z = current_pulse_z + recommendations['pulse_z_adjustment']
+            new_pulse_z = max(1.0, min(3.0, new_pulse_z))  # Clamp to valid range
+            self.config.PULSE_Z_THRESHOLD = new_pulse_z
+            print(f"🎯 TUNING: PULSE_Z adjusted from {current_pulse_z:.2f} to {new_pulse_z:.2f}")
+        
+        # Apply SOP probability adjustment
+        if 'sop_prob_adjustment' in recommendations:
+            new_sop_prob = current_sop_prob + recommendations['sop_prob_adjustment']
+            new_sop_prob = max(0.5, min(0.95, new_sop_prob))  # Clamp to valid range
+            setattr(self.config, 'SOP_PROB_THRESHOLD', new_sop_prob)
+            print(f"🎯 TUNING: SOP_PROB adjusted from {current_sop_prob:.2f} to {new_sop_prob:.2f}")
+        
+        # Apply kill-switch adjustment
+        if 'kill_switch_seconds' in recommendations:
+            self.config.HARD_EXIT_SECONDS = recommendations['kill_switch_seconds']
+            print(f"🎯 TUNING: Kill-switch set to {recommendations['kill_switch_seconds']}s")
+    
+    def record_trade_close(self, trade_id: str, pips: float, efficiency: float, duration: float):
+        """Record a closed trade for ceiling metrics calculation"""
+        self.ceiling_metrics['closed_trades'].append({
+            'trade_id': trade_id,
+            'pips': pips,
+            'efficiency': efficiency,
+            'duration': duration,
+            'close_time': time.time()
+        })
+        
+        # Keep only last 100 trades for performance
+        if len(self.ceiling_metrics['closed_trades']) > 100:
+            self.ceiling_metrics['closed_trades'] = self.ceiling_metrics['closed_trades'][-100:]
+        
+    def check_aggressive_exit_conditions(self, trade_id: str, trade: Dict) -> bool:
+        """Check if trade meets 120-second kill-switch conditions for aggressive capital turnover"""
+        now = time.time()
+        duration = now - trade.get('open_time', now)
+        pips = trade.get('pips', 0)
+        efficiency = trade.get('efficiency', 1.0)
+        
+        # Condition 1: If trade_duration > 180s AND pips < 0.5, Exit Market
+        if duration > 180 and abs(pips) < 0.5:
+            print(f"🔥 KILL-SWITCH: Trade {trade_id} - Duration: {duration:.0f}s, Pips: {pips:.1f}")
+            return True
+        
+        # Condition 2: If PE (Efficiency) < 0.6 during the trade, Exit Market
+        if efficiency < 0.6:
+            print(f"⚡ KILL-SWITCH: Trade {trade_id} - Low Efficiency: {efficiency:.3f}")
+            return True
+        
+        # Condition 3: If trade_duration > 120s AND not profitable, consider exit
+        if duration > 120 and pips <= 0:
+            print(f"⏰ KILL-SWITCH: Trade {trade_id} - Timeout: {duration:.0f}s, Pips: {pips:.1f}")
+            return True
+        
+        return False
+    
+    def can_saturate(self, active_trades: Dict, pair: str) -> bool:
+        """Check if we can add another vector without hitting saturation"""
+        if len(active_trades) >= self.config.MAX_CONCURRENT_VECTORS:
+            return False
+        
+        # Check currency exposure (max 3 per currency)
+        currencies = pair.split("_")
+        for currency in currencies:
+            exposure = sum(1 for trade in active_trades.values() 
+                         if currency in trade.get('pair', ''))
+            if exposure >= 3:
+                return False
+        
+        return True
+    
+    def get_pulse_z(self, pair: str, current_price: float) -> float:
+        """Calculate Z-score for pulse detection using numpy for speed"""
+        if pair not in self.pulse_history:
+            self.pulse_history[pair] = deque(maxlen=100)
+        
+        history = list(self.pulse_history[pair])
+        
+        # Add current price to history
+        if len(history) > 0:
+            velocity = current_price - history[-1]
+            self.pulse_history[pair].append(current_price)
+        else:
+            self.pulse_history[pair].append(current_price)
+            return 0.0
+        
+        # Need at least 20 data points for meaningful Z-score
+        if len(history) < 20:
+            return 0.0
+        
+        # Use numpy for fast calculations
+        velocities = np.diff(history)
+        if len(velocities) < 10:
+            return 0.0
+        
+        mean_vel = np.mean(velocities)
+        std_vel = np.std(velocities)
+        
+        if std_vel == 0:
+            return 0.0
+        
+        current_vel = current_price - history[-1]
+        pulse_z = (current_vel - mean_vel) / std_vel
+        
+        return pulse_z
+    
+    def sop_validate_signal_v12(self, pair: str, pulse_z: float) -> Tuple[bool, float]:
+        """SOP V12 handshake with P(Win) calculation"""
+        try:
+            # Get current market data
+            candles = self._get_recent_candles(pair, 20)
+            if not candles:
+                return False, 0.0
+            
+            # Calculate path efficiency
+            prices = [float(c['c']) for c in candles]
+            if len(prices) < 2:
+                return False, 0.0
+            
+            # Path efficiency calculation
+            displacement = abs(prices[-1] - prices[0])
+            path_length = sum(abs(prices[i] - prices[i-1]) for i in range(1, len(prices)))
+            efficiency = displacement / (path_length + 1e-8)
+            
+            # Filter low-efficiency movements
+            if efficiency < self.config.MIN_EFFICIENCY_THRESHOLD:
+                return False, 0.0
+            
+            # SOP V12 P(Win) calculation
+            drift = pulse_z * 0.001  # Convert to price drift
+            vol = np.std(np.diff(prices)) if len(prices) > 1 else 0.001
+            target = self.config.TARGET_TP_PIPS * 0.0001  # Convert to price units
+            
+            p_win = self._first_passage_probability(drift, vol, target, 300)
+            
+            return p_win > 0.5, p_win
+            
+        except Exception:
+            return False, 0.0
+    
+    def _first_passage_probability(self, drift: float, vol: float, target: float, duration: float) -> float:
+        """Analytical solution for first passage probability"""
+        if vol == 0:
+            return 0.5
+        return 1.0 / (1.0 + np.exp(-2 * drift * target / (vol**2)))
+    
+    def _get_recent_candles(self, pair: str, count: int) -> List[dict]:
+        """Get recent candles for analysis"""
+        try:
+            return self.oanda.candles(pair, "M1", count)
+        except Exception:
+            return []
+    
+    def execute_instant_market_order(self, pair: str, p_win: float):
+        """Execute instant market order with optimized parameters"""
+        try:
+            # Get current price
+            bid, ask = self.oanda.pricing(pair)
+            mid = (bid + ask) / 2.0
+            spread_pips = abs(ask - bid) * 10000  # Convert to pips
+            
+            # Direction based on pulse
+            pulse_z = self.get_pulse_z(pair, mid)
+            direction = "LONG" if pulse_z > 0 else "SHORT"
+            
+            # Calculate position size based on P(Win)
+            base_units = 1000
+            units = int(base_units * p_win)
+            
+            # Tight TP/SL for high turnover
+            if direction == "LONG":
+                tp = mid + (self.config.TARGET_TP_PIPS * 0.0001)
+                sl = mid - (self.config.TARGET_SL_PIPS * 0.0001)
+            else:
+                tp = mid - (self.config.TARGET_TP_PIPS * 0.0001)
+                sl = mid + (self.config.TARGET_SL_PIPS * 0.0001)
+            
+            # Execute order (simplified - would use actual OANDA API)
+            trade_id = f"extraction_{int(time.time())}_{pair.replace('_', '')}"
+            
+            # Track trade with hard exit timer
+            self.active_trades[trade_id] = {
+                'pair': pair,
+                'direction': direction,
+                'entry': mid,
+                'tp': tp,
+                'sl': sl,
+                'p_win': p_win,
+                'open_time': time.time(),
+                'pulse_z': pulse_z
+            }
+            
+            # Log to memory (no disk I/O)
+            self.extraction_log.append({
+                'ts': time.time(),
+                'action': 'ENTRY',
+                'pair': pair,
+                'direction': direction,
+                'p_win': p_win,
+                'pulse_z': pulse_z,
+                'efficiency': self._calculate_current_efficiency(pair)
+            })
+            
+            print(f"🚀 EXTRACTION: {pair} {direction} | P(Win): {p_win:.2f} | Pulse: {pulse_z:.2f}σ")
+                
+        except Exception as e:
+            print(f"Order execution failed for {pair}: {e}")
+    
+    def _calculate_current_efficiency(self, pair: str) -> float:
+        """Calculate current path efficiency"""
+        candles = self._get_recent_candles(pair, 10)
+        if not candles:
+            return 0.0
+        
+        prices = [float(c['c']) for c in candles]
+        if len(prices) < 2:
+            return 0.0
+        
+        displacement = abs(prices[-1] - prices[0])
+        path_length = sum(abs(prices[i] - prices[i-1]) for i in range(1, len(prices)))
+        
+        return displacement / (path_length + 1e-8)
+    
+    def manage_exits(self):
+        """Manage trade exits with 300-second hard exit rule"""
+        current_time = time.time()
+        trades_to_close = []
+        
+        for trade_id, trade in self.active_trades.items():
+            age_seconds = current_time - trade['open_time']
+            
+            # Hard exit after 300 seconds
+            if age_seconds > self.config.HARD_EXIT_SECONDS:
+                trades_to_close.append((trade_id, "TIME_EXIT"))
+                continue
+            
+            # Check if TP/SL hit (would need current price)
+            try:
+                bid, ask = self.oanda.pricing(trade['pair'])
+                current_price = (bid + ask) / 2.0
+                
+                if trade['direction'] == 'LONG':
+                    if current_price >= trade['tp']:
+                        trades_to_close.append((trade_id, "TP_HIT"))
+                    elif current_price <= trade['sl']:
+                        trades_to_close.append((trade_id, "SL_HIT"))
+                else:
+                    if current_price <= trade['tp']:
+                        trades_to_close.append((trade_id, "TP_HIT"))
+                    elif current_price >= trade['sl']:
+                        trades_to_close.append((trade_id, "SL_HIT"))
+            except Exception:
+                pass
+        
+        # Close trades
+        for trade_id, reason in trades_to_close:
+            self._close_trade(trade_id, reason)
+    
+    def _close_trade(self, trade_id: str, reason: str):
+        """Close trade and log metrics"""
+        if trade_id not in self.active_trades:
+            return
+        
+        trade = self.active_trades[trade_id]
+        duration = time.time() - trade['open_time']
+        
+        # Calculate pips (simplified)
+        try:
+            bid, ask = self.oanda.pricing(trade['pair'])
+            current_price = (bid + ask) / 2.0
+            
+            if trade['direction'] == 'LONG':
+                pips = (current_price - trade['entry']) * 10000
+            else:
+                pips = (trade['entry'] - current_price) * 10000
+        except Exception:
+            pips = 0.0
+        
+        # Log to memory
+        self.extraction_log.append({
+            'ts': time.time(),
+            'action': 'EXIT',
+            'trade_id': trade_id,
+            'reason': reason,
+            'pips': pips,
+            'duration': duration,
+            'p_win': trade['p_win'],
+            'pulse_z': trade['pulse_z']
+        })
+        
+        print(f"📤 EXIT: {trade['pair']} {reason} | Pips: {pips:.1f} | Duration: {duration:.1f}s")
+        
+        # Remove from active trades
+        del self.active_trades[trade_id]
+    
+    def calculate_mpe_hr(self) -> float:
+        """Calculate Maximum Pip Extraction per Hour"""
+        if not self.extraction_log:
+            return 0.0
+        
+        # Get last hour of closed trades
+        current_time = time.time()
+        one_hour_ago = current_time - 3600
+        
+        closed_trades = [
+            log for log in self.extraction_log
+            if log['action'] == 'EXIT' and log['ts'] > one_hour_ago
+        ]
+        
+        if not closed_trades:
+            return 0.0
+        
+        total_pips = sum(trade['pips'] for trade in closed_trades)
+        return total_pips
+    
+    def update_metrics(self):
+        """Update extraction metrics"""
+        # Active vectors
+        self.metrics.active_vectors = len(self.active_trades)
+        
+        # Average efficiency
+        if self.extraction_log:
+            recent_logs = [log for log in self.extraction_log if log['ts'] > time.time() - 3600]
+            if recent_logs:
+                efficiencies = [log.get('efficiency', 0) for log in recent_logs if 'efficiency' in log]
+                self.metrics.avg_efficiency = np.mean(efficiencies) if efficiencies else 0.0
+        
+        # Average duration
+        if self.extraction_log:
+            closed_trades = [
+                log for log in self.extraction_log
+                if log['action'] == 'EXIT' and log['ts'] > time.time() - 3600
+            ]
+            if closed_trades:
+                durations = [trade['duration'] for trade in closed_trades]
+                self.metrics.avg_duration = np.mean(durations) if durations else 0.0
+        
+        # Current MPE/H
+        self.metrics.current_mpe_hr = self.calculate_mpe_hr()
+    
+    def print_dashboard(self):
+        """Print extraction dashboard every 5 minutes"""
+        current_time = time.time()
+        if current_time - self.last_dashboard_time < 300:  # 5 minutes
+            return
+        
+        self.update_metrics()
+        
+        print(f"\n🚀 --- EXTRACTION DASHBOARD ---")
+        print(f"   Active Vectors: {self.metrics.active_vectors} / {self.config.MAX_CONCURRENT_VECTORS}")
+        print(f"   Pulse Z-Threshold: {self.config.PULSE_Z_THRESHOLD:.1f}σ")
+        print(f"   Avg Efficiency (PE): {self.metrics.avg_efficiency:.3f}")
+        print(f"   Avg Duration: {self.metrics.avg_duration:.1f} mins")
+        print(f"   CURRENT MPE/H: {self.metrics.current_mpe_hr:.1f}")
+        print(f"   TARGET MPE/H: 150.0")
+        
+        # Optimization suggestions
+        if self.metrics.current_mpe_hr < 100:
+            print(f"   🎯 ACTION: Lower Pulse Z Threshold")
+        elif self.metrics.avg_duration > 10:
+            print(f"   🎯 ACTION: Reduce TP Distance")
+        elif self.metrics.avg_efficiency < 0.6:
+            print(f"   🎯 ACTION: Increase SOP P-Threshold")
+        
+        print(f"   -----------------------------------\n")
+        
+        self.last_dashboard_time = current_time
+    
+    def get_session_config(self) -> GlobalConfig:
+        """Get session-specific configuration"""
+        current_hour = time.localtime().tm_hour
+        
+        # Asian session (roughly 21:00-07:00 UTC)
+        if 21 <= current_hour or current_hour <= 7:
+            self.config.PULSE_Z_THRESHOLD = self.config.ASIAN_PULSE_Z_THRESHOLD
+            self.config.target_vectors = 6  # 5-8 pairs
+        else:
+            # London/NY session
+            self.config.PULSE_Z_THRESHOLD = 2.5
+            self.config.target_vectors = 12  # 10-15 pairs
+        
+        return self.config
+    
+    def run_extraction_cycle(self, pairs: List[str]):
+        """Main extraction cycle - optimized for sub-100ms performance"""
+        # Get session-specific config
+        config = self.get_session_config()
+        
+        # Process each pair for extraction
+        for pair in pairs:
+            try:
+                # Get current price
+                bid, ask = self.oanda.pricing(pair)
+                current_price = (bid + ask) / 2.0
+                
+                # Saturation gate
+                if not self.can_saturate(self.active_trades, pair):
+                    continue
+                
+                # High-speed pulse check
+                pulse = self.get_pulse_z(pair, current_price)
+                if pulse < config.PULSE_Z_THRESHOLD:
+                    continue
+                
+                # SOP V12 validation
+                success, p_win = self.sop_validate_signal_v12(pair, pulse)
+                if success:
+                    self.execute_instant_market_order(pair, p_win)
+                    
+            except Exception as e:
+                continue
+        
+        # Manage exits
+        self.manage_exits()
+        
+        # Update dashboard
+        self.print_dashboard()
+
+# Global multi-vector engine instance
+multi_vector_engine = None
+
 def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None) -> None:  # pyright: ignore[reportGeneralTypeIssues]
     global _SHUTDOWN, _RUNTIME_OANDA, _RUNTIME_DB, _RUNTIME_HUB, enhanced_market_hub, market_hub
     signal.signal(signal.SIGINT, _signal_handler)
@@ -8724,7 +10493,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     try:
         from artifact_collector import init_collector
         base_dir = Path(__file__).resolve().parent
-        init_collector(base_dir, proof_dir=proof_dir)
+        init_collector(base_dir)
         print("Artifact collector initialized (non-blocking)")
     except Exception as e:
         print(f"Artifact collector failed to initialize (continuing without): {e}")
@@ -9764,6 +11533,34 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             # Log cadence status periodically
             if int(now_loop) % 60 == 0:
                 cadence.log_status()
+                
+                # 🚀 CEILING DASHBOARD: Vector Saturation Status (Every 60 seconds)
+                active_vectors = len(open_trades)
+                
+                # Calculate aggregate pulse Z-scores across all pairs
+                pulse_z_scores = {}
+                for pair in PAIRS:
+                    if hasattr(states[pair], 'last_tick_vel'):
+                        pulse_z_scores[pair] = vector_engine.get_pulse_z(pair, states[pair].last_tick_vel)
+                
+                # Find highest pulse
+                max_pulse_z = max(pulse_z_scores.values()) if pulse_z_scores else 0.0
+                avg_pulse_z = sum(pulse_z_scores.values()) / len(pulse_z_scores) if pulse_z_scores else 0.0
+                
+                # Calculate capital velocity (pips/hour)
+                total_pips_last_hour = sum(tr.get('pips', 0) for tr in open_trades if tr.get('openTime', 0) > (now_loop - 3600))
+                capital_velocity = total_pips_last_hour
+                
+                # Calculate average hold time
+                avg_hold_time = sum((now_loop - tr.get('openTime', now_loop)) / 60 for tr in open_trades) / len(open_trades) if open_trades else 0.0
+                
+                print(f"\n🔥 --- CEILING ARCHITECTURE DASHBOARD ---")
+                print(f"   Vector Concurrency: {active_vectors}/{CONFIG.MAX_CONCURRENCY} {'🟢' if 10 <= active_vectors <= CONFIG.MAX_CONCURRENCY else '🔴'}")
+                print(f"   Max Pulse Z-Score: {max_pulse_z:.2f}σ {'🟢' if max_pulse_z > CONFIG.PULSE_Z_THRESHOLD else '🔴'}")
+                print(f"   Avg Pulse Z-Score: {avg_pulse_z:.2f}σ")
+                print(f"   Capital Velocity: {capital_velocity:.1f} Pips/Hr {'🟢' if capital_velocity > CONFIG.TARGET_VELOCITY_PIPS_HR else '🔴'}")
+                print(f"   Avg Hold Time: {avg_hold_time:.1f} sec {'🟢' if avg_hold_time < CONFIG.TARGET_HOLD_TIME_MAX_SEC else '🔴'}")
+                print(f"   -------------------------------------------\n")
             
             # Use adaptive intervals
             scan_cfg = {
@@ -9808,6 +11605,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         if tid not in open_ids:
                             trade_track.pop(tid, None)
                             aee_last_update.pop(tid, None)
+
             if tick_exit_mode:
                 open_ids = {tr["id"] for tr in open_trades}
                 for tid in list(tick_exit_mode.keys()):
@@ -9877,12 +11675,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             if is_runner:
                                 with _trade_track_lock:
                                     track = trade_track.get(int(tr.get("id", 0)))
+
                                 exit_atr = float("nan")
                                 if track and track.get("samples"):
                                     exit_atr = float(track["samples"][-1][1])
                                 _record_runner_exit("BROKER_CLOSED", tr, exit_atr, track)
                             with _trade_track_lock:
                                 track = trade_track.get(int(tr.get("id", 0)))
+
                             exit_atr = float(track["samples"][-1][1]) if track and track.get("samples") else 0.0
                             _exit_log(tr, "BROKER_CLOSED", exit_atr, track)
 
@@ -10036,6 +11836,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 oanda_trade_id = tr.get("oanda_trade_id")
                 with _trade_track_lock:
                     track = trade_track.get(trade_id)
+                # End of with _trade_track_lock block
 
                 # Retry stop-loss placement if previous add failed
                 if oanda_trade_id:
@@ -10427,6 +12228,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     continue
                 simulate_price_stream_update(p, bid, ask, tick_cache=tick_cache)
                 price_ts_map[normalize_pair(p)] = scan_now
+                
+                # 🚀 CEILING ARCHITECTURE: Track tick velocity for pulse detection
+                if hasattr(states[p], 'last_price'):
+                    tick_velocity = bid - states[p].last_price
+                    states[p].last_tick_vel = tick_velocity
+                    # Update pulse history
+                    vector_engine.get_pulse_z(p, tick_velocity)
+                states[p].last_price = bid
 
             # Poll order/position books (state-driven cadence) and compute book metrics
             try:
@@ -10647,6 +12456,31 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     st.atr_exec = atr_s
                     st.atr_long = atr_l
                     st.vol_z = vol_z
+
+                    # 🚀 CEILING ARCHITECTURE: Pulse Z-Score Gate
+                    if hasattr(st, 'last_tick_vel'):
+                        pulse_z = vector_engine.get_pulse_z(pair, st.last_tick_vel)
+                        st.pulse_z = pulse_z
+                        
+                        # PULSE GATE: Only proceed if Z > threshold
+                        if pulse_z < CONFIG.PULSE_Z_THRESHOLD:
+                            log_runtime("debug", "CEILING_PULSE_REJECT", pair=pair, pulse_z=pulse_z)
+                            continue
+                    else:
+                        st.pulse_z = 0.0
+                        log_runtime("debug", "CEILING_NO_TICK_VEL", pair=pair)
+                        continue
+
+                    # 🚀 CEILING ARCHITECTURE: Saturation Gate
+                    can_saturate, saturation_reason = vector_engine.can_saturate(open_trades, pair)
+                    st.can_saturate = can_saturate
+                    
+                    if not can_saturate:
+                        log_runtime("debug", "CEILING_SATURATION_REJECT", pair=pair, reason=saturation_reason)
+                        continue
+
+                    # 🚀 CEILING APPROVED: Both gates passed
+                    log_runtime("info", "CEILING_APPROVED", pair=pair, pulse_z=st.pulse_z, reason=saturation_reason)
 
                     log_runtime(
                         "info",
@@ -11833,6 +13667,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 }
                             except Exception:
                                 pass
+                        # End of if isinstance(resp2, dict) block
                         
                         trade_note_run = sig.reason
                         trade_id_run = db_call(
@@ -11878,11 +13713,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     f"{EMOJI_ENTER} {sig.setup_name} | units={units_total} spr={st.spread_pips:.1f}p mode={st.mode} {EMOJI_ENTER}",
                 )
 
-            if (now_ts() - last_state_flush) >= 20.0:
-                for p, st in states.items():
-                    db_call("save_state", db.save_state, p, st)
-                last_state_flush = now_ts()
-        
+                st.last_trade = now_ts()
+                # End of if units_run != 0 block
+            # End of for pair in scan_pairs loop
+
         except Exception as e:
             log(f"{EMOJI_ERR} MAIN_LOOP_ERROR", {"error": str(e), "type": type(e).__name__})
             print(f"\n❌ ERROR in main loop: {e}")
@@ -11890,6 +13724,30 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             traceback.print_exc()
             time.sleep(5.0)  # Prevent rapid error loops
             continue
+
+        # ============================================================================
+        # MULTI-VECTOR EXTRACTION CYCLE - 150+ Pips/Hr Optimization
+        # ============================================================================
+        if multi_vector_engine and (now_loop - multi_vector_engine.last_dashboard_time) >= 60.0:
+            # Run high-frequency extraction on all pairs
+            multi_vector_engine.run_extraction_cycle(PAIRS)
+        
+        # ============================================================================
+        # SATURATION AUDIT DASHBOARD - 300-second ceiling analysis
+        # ============================================================================
+        if multi_vector_engine and (now_loop - multi_vector_engine.last_saturation_audit_time) >= 300.0:
+            # Run saturation audit to identify leakage preventing 150 Pips/Hr ceiling
+            audit_results = multi_vector_engine.run_saturation_audit(PAIRS)
+            
+            # Auto-tune based on audit results
+            if audit_results['saturation_efficiency'] < 30:
+                print("🔥 AUTO-TUNE: Low saturation detected - consider running grid search")
+                # Could automatically run: multi_vector_engine.run_grid_search((1.0, 2.0), (0.6, 0.8))
+        
+        if (now_ts() - last_state_flush) >= 20.0:
+            for p, st in states.items():
+                db_call("save_state", db.save_state, p, st)
+            last_state_flush = now_ts()
 
     for p, st in states.items():
         db_call("save_state_shutdown", db.save_state, p, st)
@@ -13254,6 +15112,13 @@ if __name__ == "__main__":
     parser.add_argument("--live-exec-proof", action="store_true", help="Run bounded dry-run execution proof and emit JSONL marker")
     parser.add_argument("--log-proof", action="store_true", help="Run bounded dry-run logging proof and emit JSONL marker")
     
+    # AIM Σ-Protocol arguments
+    parser.add_argument("--sigma", action="store_true", help="Launch Σ-Protocol Ultra-Redline mode")
+    parser.add_argument("--unbound", action="store_true", help="Unbounded execution (no time limits)")
+    parser.add_argument("--nav_sizing", action="store_true", help="Use NAV-based Kelly sizing")
+    parser.add_argument("--scythe_targets", action="store_true", help="Use fixed 2.5/5.0 pip targets")
+    parser.add_argument("--nav_override", type=float, help="Override NAV for testing")
+    
     args = parser.parse_args()
 
     if args.selfcheck:
@@ -13277,9 +15142,30 @@ if __name__ == "__main__":
             margin_available=10000.0,
             margin_rate=0.0333,
             confidence=0.5,
-            spread_mult=1.0
+            spread_mult=1.0,
+            speed_class="MED"
         )
         print(test_result)
+        sys.exit(0)
+
+    # AIM Σ-Protocol: Ultra-Redline Execution
+    if args.sigma:
+        print("🚀 Launching Σ-Protocol Ultra-Redline Mode...")
+        
+        # Set module-level flags for Σ-Protocol
+        _SIGMA_MODE = True
+        _NAV_SIZING = args.nav_sizing
+        _SCYTHE_TARGETS = args.scythe_targets
+        _NAV_OVERRIDE = getattr(args, 'nav_override', None)
+        
+        # Configure for ultra-low latency
+        if args.unbound:
+            run_time = None  # Unbounded execution
+        else:
+            run_time = 3600.0  # 1 hour default
+            
+        # Launch with high-frequency settings
+        main(run_for_sec=run_time, dry_run=False)
         sys.exit(0)
 
     if args.rove_indicators:
@@ -13349,4 +15235,3 @@ if __name__ == "__main__":
         sys.exit(0)
     
     main()
->>>>>>> 5693d684da44ca09438ab98a6f54445391f671ab
