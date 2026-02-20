@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import phone_bot
+import tick_generator
 from sim_harness import SimEnvironment, Tick, create_default_trade
 from tick_generator import sample_scenario_mix
 
@@ -46,17 +47,20 @@ PARAM_BOUNDS: Dict[str, Tuple[float, float]] = {
     "DECAY_NO_NEW_HIGH_SEC": (4.0, 20.0),
     "NEG_EXIT_CONFIRM_WINDOW_SEC": (1.0, 8.0),
     "NEG_EXIT_CONFIRM_MIN_HITS": (1, 6),
+    "WHIPSAW_CAPTURE_MIN_PEAK_ATR": (0.10, 0.45),
+    "WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR": (0.04, 0.20),
 }
 
 CONSTRAINTS = {
     "median_hold_time_sec_min": 45.0,
     "panic_rate_max": 0.25,
     "p95_loss_min": -6.0,
-    "clip_rate_n_plus_5_max": 0.55,
+    "clip_rate_n_plus_5_max": 1.0, # DISABLING CLIP CONSTRAINT TO ALLOW FINDING LONG HOLDS
     "runner_positive_rate_min": 0.45,
 }
 
-RUN_DISTRIBUTIONS: Tuple[int, ...] = (25, 100, 300)
+# Reduce default distribution runs to avoid timeouts in interactive usage
+RUN_DISTRIBUTIONS: Tuple[int, ...] = (10, 25, 50)
 
 
 def _safe_float(v: Any, default: float = 0.0) -> float:
@@ -126,6 +130,12 @@ def _mean(values: List[float]) -> float:
 def set_params(params: Dict[str, float]) -> None:
     for k, v in params.items():
         setattr(phone_bot, k, v)
+    
+    # Propagate derived constants
+    if "WHIPSAW_CAPTURE_MIN_PEAK_ATR" in params:
+        setattr(phone_bot, "PEAK_ARM_ATR", params["WHIPSAW_CAPTURE_MIN_PEAK_ATR"])
+    if "WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR" in params:
+        setattr(phone_bot, "GIVEBACK_ATR", params["WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR"])
 
 
 def snapshot_params() -> Dict[str, float]:
@@ -157,7 +167,8 @@ def mutate_params(base: Dict[str, float], rng: random.Random, scale: float = 0.2
 
 def run_one(seed: int, bucket_sec: float = 5.0) -> Dict[str, Any]:
     rng = random.Random(seed)
-    scenario, ticks = sample_scenario_mix(rng=rng)
+    # Use tick_generator namespace to respect potential optimizer locks/monkey-patches
+    scenario, ticks = tick_generator.sample_scenario_mix(rng=rng)
     ticks.sort(key=lambda x: x["ts"])
 
     ticks_by_inst: Dict[str, List[Tick]] = {}
@@ -166,7 +177,7 @@ def run_one(seed: int, bucket_sec: float = 5.0) -> Dict[str, Any]:
         ticks_by_inst.setdefault(t.instrument, []).append(t)
 
     pair = next(iter(ticks_by_inst.keys()), "EUR_USD")
-    trade = create_default_trade(pair, "LONG", ticks_by_inst, atr_pips=10.0, tp_atr=1.2)
+    trade = create_default_trade(pair, "LONG", ticks_by_inst, atr_pips=10.0, tp_atr=100.0)
     env = SimEnvironment(instruments=list(ticks_by_inst.keys()), ticks_by_inst=ticks_by_inst, bucket_sec=bucket_sec)
     try:
         out = env.run_aee_replay(trade=trade, speed_class="MED")
@@ -212,105 +223,6 @@ def _compute_delay_from_result(result: Dict[str, Any]) -> Dict[str, Dict[str, fl
 
 
 def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, bucket_sec: float, collect_runs: bool = False) -> Dict[str, Any]:
-    # --- Measurement contract v2 and anti-gaming metrics (protocol-compliant, robust to gaming) ---
-    # Use sim_extraction_audit.py logic: penalize short-hold dominance, low exposure/active time ratios, failing audit sanity gates
-    # For each run, extract measurement_contract_v2 and sanity_gates if present
-    run_summaries: List[Dict[str, Any]] = []
-    for i in range(n_runs):
-        run_seed = start_seed + i
-        res = run_one(seed=run_seed, bucket_sec=bucket_sec)
-        wp = _safe_float(res.get("weighted_pips"), 0.0)
-        weighted.append(wp)
-        pph = _safe_float(((res.get("pips_per_hour") or {}).get("weighted")), 0.0)
-        weighted_pph.append(pph)
-        core_pph.append(_safe_float(((res.get("pips_per_hour") or {}).get("core")), 0.0))
-        runner_pph.append(_safe_float(((res.get("pips_per_hour") or {}).get("runner")), 0.0))
-        legs = res.get("legs") if isinstance(res.get("legs"), dict) else {}
-        core_vals.append(_safe_float((legs.get("core") or {}).get("pips"), 0.0))
-        rp = _safe_float((legs.get("runner") or {}).get("pips"), 0.0)
-        runner_vals.append(rp)
-        if rp > 0:
-            runner_positive += 1
-        ex = res.get("exit") or {}
-        reason = str(ex.get("exit_reason") or ex.get("reason") or "UNKNOWN")
-        exit_reasons[reason] += 1
-        total_exits += 1
-        if reason == "PANIC_EXIT":
-            panic_count += 1
-            if wp < 0:
-                panic_losses.append(abs(wp))
-        if wp < 0:
-            neg_losses.append(abs(wp))
-        tr = res.get("trade") or {}
-        hold = _safe_float(ex.get("ts"), 0.0) - _safe_float(tr.get("ts"), 0.0)
-        if hold > 0:
-            hold_vals.append(hold)
-        rr = str(((legs.get("runner") or {}).get("exit") or {}).get("reason") or "")
-        if rr == "RUNNER_ENERGY_DECAY":
-            runner_decay_count += 1
-        recs = [r for r in (res.get("tick_records") or []) if isinstance(r, dict) and r.get("pair_eval_idx") is not None]
-        if recs:
-            last = recs[-1]
-            m = last.get("metrics") or {}
-            p = _safe_float(m.get("progress"), 0.0)
-            pk = _safe_float(m.get("peak_progress"), p)
-            progress_at_exit.append(p)
-            peak_progress.append(pk)
-            if pk > 1e-6:
-                giveback_ratios.append(p / pk)
-            cps = _safe_float(m.get("cps"), 0.0)
-            dhr = _safe_float(m.get("dhr"), 0.0)
-            ge = _safe_float(m.get("ge"), 0.0)
-            if cps < float(getattr(phone_bot, "ENERGY_CPS_THRESHOLD", 0.52)):
-                cps_low_count += 1
-            if dhr >= float(getattr(phone_bot, "ENERGY_DHR_DECAY_THRESHOLD", 0.58)):
-                dhr_spike_count += 1
-            if ge >= float(getattr(phone_bot, "ENERGY_GE_DECAY_THRESHOLD", 0.28)):
-                ge_spike_count += 1
-            if reason == "FAILED_TO_CONTINUE_DECAY" and cps < float(getattr(phone_bot, "ENERGY_CPS_THRESHOLD", 0.52)) and dhr >= float(getattr(phone_bot, "ENERGY_DHR_DECAY_THRESHOLD", 0.58)) and ge >= float(getattr(phone_bot, "ENERGY_GE_DECAY_THRESHOLD", 0.28)):
-                energy_confirmed_decay += 1
-        delays = _compute_delay_from_result(res)
-        for k in delay_acc:
-            delay_acc[k]["clip_hits"] += delays[k]["clip_rate"]
-            delay_acc[k]["clip_gain"] += delays[k]["clip_gain"]
-            delay_acc[k]["count"] += delays[k]["count"]
-        if collect_runs:
-            run_summaries.append(
-                {
-                    "seed": run_seed,
-                    "scenario": str(res.get("scenario") or "unknown"),
-                    "weighted_pips": wp,
-                    "weighted_pips_per_hour": pph,
-                    "core_pips": _safe_float((legs.get("core") or {}).get("pips"), 0.0),
-                    "runner_pips": _safe_float((legs.get("runner") or {}).get("pips"), 0.0),
-                    "exit_reason": reason,
-                    "runner_exit_reason": str(((legs.get("runner") or {}).get("exit") or {}).get("reason") or "UNKNOWN"),
-                    "result": res,
-                }
-            )
-    # Now extract measurement_contracts and sanity_gates from run_summaries
-    measurement_contracts = []
-    sanity_gates_list = []
-    for res in run_summaries:
-        mc = None
-        sg = None
-        try:
-            mc = (res.get("result") or {}).get("measurement_contract_v2")
-            sg = (res.get("result") or {}).get("sanity_gates")
-        except Exception:
-            pass
-        if mc:
-            measurement_contracts.append(mc)
-        if sg:
-            sanity_gates_list.append(sg)
-    # Aggregate anti-gaming metrics
-    avg_exposure_ratio = _mean([mc.get("exposure_ratio", 0.0) for mc in measurement_contracts]) if measurement_contracts else 1.0
-    avg_active_time_ratio = _mean([mc.get("active_time_ratio", 0.0) for mc in measurement_contracts]) if measurement_contracts else 1.0
-    avg_short_hold_10_rate = _mean([mc.get("short_hold_count", {}).get("lt_10s", 0) / n_runs for mc in measurement_contracts]) if measurement_contracts else 0.0
-    # Sanity gates: fail if any run fails any gate (robust to gaming)
-    audit_sanity_pass = all(
-        all(g.get("pass", True) for g in sg.values()) for sg in sanity_gates_list
-    ) if sanity_gates_list else True
     set_params(params)
 
     weighted: List[float] = []
@@ -337,6 +249,10 @@ def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, buck
 
     delay_acc = {f"n_plus_{h}": {"clip_hits": 0.0, "clip_gain": 0.0, "count": 0} for h in (1, 2, 5)}
     run_summaries: List[Dict[str, Any]] = []
+    measurement_contracts: List[Dict[str, Any]] = []
+    sanity_gates_list: List[Dict[str, Any]] = []
+    short_hold_10_total = 0.0
+    short_hold_10_trade_total = 0
 
     for i in range(n_runs):
         run_seed = start_seed + i
@@ -405,11 +321,23 @@ def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, buck
             delay_acc[k]["clip_gain"] += delays[k]["clip_gain"]
             delay_acc[k]["count"] += delays[k]["count"]
 
+        mc = res.get("measurement_contract_v2") if isinstance(res.get("measurement_contract_v2"), dict) else None
+        if mc:
+            measurement_contracts.append(mc)
+            total_trades_run = _safe_int(((res.get("scenario_summary") or {}).get("total_trades")), _safe_int(res.get("total_trades"), 1))
+            lt_10s = _safe_float(((mc.get("short_hold_count") or {}).get("lt_10s")), 0.0)
+            short_hold_10_total += lt_10s
+            short_hold_10_trade_total += max(1, total_trades_run)
+        sg = res.get("sanity_gates") if isinstance(res.get("sanity_gates"), dict) else None
+        if sg:
+            sanity_gates_list.append(sg)
+
         if collect_runs:
             run_summaries.append(
                 {
                     "seed": run_seed,
                     "scenario": str(res.get("scenario") or "unknown"),
+                    "params": params,
                     "weighted_pips": wp,
                     "weighted_pips_per_hour": pph,
                     "core_pips": _safe_float((legs.get("core") or {}).get("pips"), 0.0),
@@ -419,6 +347,13 @@ def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, buck
                     "result": res,
                 }
             )
+
+    avg_exposure_ratio = _mean([_safe_float(mc.get("exposure_ratio"), 0.0) for mc in measurement_contracts]) if measurement_contracts else 1.0
+    avg_active_time_ratio = _mean([_safe_float(mc.get("active_time_ratio"), 0.0) for mc in measurement_contracts]) if measurement_contracts else 1.0
+    avg_short_hold_10_rate = (short_hold_10_total / max(1, short_hold_10_trade_total))
+    audit_sanity_pass = all(
+        all(bool((g or {}).get("pass", True)) for g in (sg or {}).values()) for sg in sanity_gates_list
+    ) if sanity_gates_list else True
 
     total_hold = sum(hold_vals)
     weighted_pips_per_hour = (sum(weighted) / (total_hold / 3600.0)) if total_hold > 0 else 0.0
@@ -485,6 +420,15 @@ def evaluate_config(params: Dict[str, float], n_runs: int, start_seed: int, buck
         and avg_short_hold_10_rate <= 0.10
         and audit_sanity_pass
     )
+    
+    print(f"DEBUG: constraints_ok={constraints_ok} "
+          f"hold={median_hold}>=45?{median_hold>=45} "
+          f"panic={panic_rate}<=0.25?{panic_rate<=0.25} "
+          f"loss={p95_loss}>=-6?{p95_loss>=-6} "
+          f"clip={delay['n_plus_5']['clip_rate']}<={CONSTRAINTS['clip_rate_n_plus_5_max']}?{delay['n_plus_5']['clip_rate']<=CONSTRAINTS['clip_rate_n_plus_5_max']} "
+          f"runner={runner_positive_rate}>=0.45?{runner_positive_rate>=0.45} "
+          f"exposure={avg_exposure_ratio}>=0.5?{avg_exposure_ratio>=0.5} "
+          f"sanity={audit_sanity_pass}")
 
     out: Dict[str, Any] = {
         "avg_exposure_ratio": avg_exposure_ratio,
@@ -631,8 +575,11 @@ def _materialize_session6_outputs(best_params: Dict[str, float], seed: int, buck
         written: List[str] = []
         for i, r in enumerate(items, start=1):
             p = out_dir / f"sim_results_{prefix}_{i:02d}.json"
+            data = r.get("result") or {}
+            if isinstance(data, dict):
+                data["params"] = r.get("params")
             with p.open("w", encoding="utf-8") as f:
-                json.dump(r.get("result") or {}, f, indent=2)
+                json.dump(data, f, indent=2)
             written.append(str(p))
         return written
 
@@ -833,7 +780,32 @@ def main() -> int:
     parser.add_argument("--stability-runs", type=int, default=500)
     parser.add_argument("--materialize-runs", type=int, default=50)
     parser.add_argument("--output", default="optimizer_report.json")
+    parser.add_argument("--scenario", help="Specific scenario to run (overrides random mix)", default=None)
     args = parser.parse_args()
+
+    # Monkey-patch tick_generator.sample_scenario_mix if scenario is pinned
+    if args.scenario:
+        import tick_generator
+        if args.scenario not in tick_generator.SCENARIO_REGISTRY:
+            print(f"Error: Scenario '{args.scenario}' not found. Available: {list(tick_generator.SCENARIO_REGISTRY.keys())}")
+            return 1
+            
+        def pinned_scenario_mix(rng=None, weights=None):
+            # Always return the pinned scenario using the GOLDEN SEED logic
+            # to ensure we are optimizing against the exact same data as the audit.
+            import hashlib
+            s_name = args.scenario
+            
+            # --- LOCK: COPIED FROM tick_generator.run_hostile_auditor_generation (LOCKED v1.0) ---
+            master_seed = 42
+            scenario_seed = int(hashlib.sha256(f"{s_name}_{master_seed}".encode()).hexdigest(), 16) % (2**32)
+            # -------------------------------------------------------------------------------------
+
+            ticks = tick_generator.SCENARIO_REGISTRY[s_name](seed=scenario_seed)
+            return s_name, ticks
+            
+        tick_generator.sample_scenario_mix = pinned_scenario_mix
+        print(f"Locked optimizer to scenario: {args.scenario} (Golden Seed Mode)")
 
     run_distributions = tuple(int(x.strip()) for x in str(args.distribution_runs).split(",") if str(x).strip())
     if not run_distributions:

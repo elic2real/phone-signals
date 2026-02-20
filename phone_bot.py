@@ -349,7 +349,6 @@ def get_instrument_meta_cached(pair: str) -> Optional[Dict[str, Any]]:
         return None
     return INSTR_META.get(p)
 
-
 def tick_size(pair: str) -> Decimal:
     meta = get_instrument_meta_cached(pair)
     if meta is None:
@@ -7301,9 +7300,9 @@ PROTECT_EXIT_PROGRESS_BASE = 0.35
 LOCK_PROGRESS = 0.60
 LOCK_OFFSET_ATR = 0.12
 PULSE_SPEED = 1.40
-PULSE_PROGRESS = 0.70
-PULSE_EXITLINE_ATR = 0.25
-PULSE_RECLAIM_WINDOW_SEC = 2.0
+PULSE_PROGRESS = 99.0
+PULSE_EXITLINE_ATR = 0.90
+PULSE_RECLAIM_WINDOW_SEC = 8.0
 PULSE_RECOVER_CPS_MIN = 0.55
 PULSE_RECOVER_DHR_MAX = 0.50
 STALL_PULLBACK_ATR = 0.18
@@ -7319,24 +7318,105 @@ PANIC_SPREAD_SHOCK_RATIO = 1.8
 PANIC_SPREAD_CATA_RATIO = 2.6
 ENERGY_CPS_PANIC_MAX = 0.42
 # AEE vNext energy / panic controls
-PANIC_CONFIRM_MIN_HITS = 2
-PANIC_DEBOUNCE_SEC = 1.0
-MIN_EVAL_AGE_SEC = 20.0
-MIN_EVAL_SAMPLES = 8
-ENERGY_CPS_THRESHOLD = 0.52
-ENERGY_DHR_PANIC = 0.72
-ENERGY_RSS_PROMOTE = 0.62
-RUNNER_PROMOTE_RSS_MIN = 0.62
-RUNNER_PROMOTE_LED_MIN = 0.52
-RUNNER_PROMOTE_EPI_MIN = 0.50
-WPD_CHOP_THRESHOLD = 0.62
-LED_EXPANSION_THRESHOLD = 0.56
-ENERGY_GE_DECAY_THRESHOLD = 0.28
-ENERGY_DHR_DECAY_THRESHOLD = 0.58
-ENERGY_EPI_DECAY_THRESHOLD = 0.42
-DECAY_NO_NEW_HIGH_SEC = 8.0
-NEG_EXIT_CONFIRM_WINDOW_SEC = 3.0
+PANIC_CONFIRM_MIN_HITS = 3
+PANIC_DEBOUNCE_SEC = 0.9
+MIN_EVAL_AGE_SEC = 14.0
+MIN_EVAL_SAMPLES = 17
+ENERGY_CPS_THRESHOLD = 0.41
+ENERGY_DHR_PANIC = 0.58
+ENERGY_RSS_PROMOTE = 0.68
+RUNNER_PROMOTE_RSS_MIN = 0.61
+RUNNER_PROMOTE_LED_MIN = 0.73
+RUNNER_PROMOTE_EPI_MIN = 0.42
+WPD_CHOP_THRESHOLD = 0.54
+LED_EXPANSION_THRESHOLD = 0.50
+ENERGY_GE_DECAY_THRESHOLD = 0.24
+ENERGY_DHR_DECAY_THRESHOLD = 0.45
+ENERGY_EPI_DECAY_THRESHOLD = 0.43
+DECAY_NO_NEW_HIGH_SEC = 6.0
+NEG_EXIT_CONFIRM_WINDOW_SEC = 7.0
 NEG_EXIT_CONFIRM_MIN_HITS = 2
+WHIPSAW_CAPTURE_MIN_PEAK_ATR = 2.50
+WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR = 1.00
+WHIPSAW_CAPTURE_GIVEBACK_FRAC = 0.35
+WHIPSAW_EXTREME_SPEED_THRESHOLD = 0.85
+PEAK_ARM_ATR = WHIPSAW_CAPTURE_MIN_PEAK_ATR
+GIVEBACK_ATR = WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR
+
+_AEE_TUNABLE_KEYS = {
+    "PANIC_CONFIRM_MIN_HITS",
+    "PANIC_DEBOUNCE_SEC",
+    "MIN_EVAL_AGE_SEC",
+    "MIN_EVAL_SAMPLES",
+    "ENERGY_CPS_THRESHOLD",
+    "ENERGY_DHR_PANIC",
+    "ENERGY_RSS_PROMOTE",
+    "RUNNER_PROMOTE_RSS_MIN",
+    "RUNNER_PROMOTE_LED_MIN",
+    "RUNNER_PROMOTE_EPI_MIN",
+    "WPD_CHOP_THRESHOLD",
+    "LED_EXPANSION_THRESHOLD",
+    "ENERGY_GE_DECAY_THRESHOLD",
+    "ENERGY_DHR_DECAY_THRESHOLD",
+    "ENERGY_EPI_DECAY_THRESHOLD",
+    "DECAY_NO_NEW_HIGH_SEC",
+    "NEG_EXIT_CONFIRM_WINDOW_SEC",
+    "NEG_EXIT_CONFIRM_MIN_HITS",
+    "WHIPSAW_CAPTURE_MIN_PEAK_ATR",
+    "WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR",
+}
+_AEE_INT_KEYS = {
+    "PANIC_CONFIRM_MIN_HITS",
+    "MIN_EVAL_SAMPLES",
+    "NEG_EXIT_CONFIRM_MIN_HITS",
+}
+
+
+def _load_aee_tuned_config_from_file() -> None:
+    cfg_path = os.getenv("AEE_CONFIG_PATH", "best_high_yield_config.json").strip()
+    if not cfg_path:
+        return
+
+    path = Path(cfg_path)
+    if not path.is_absolute():
+        path = Path(PROJECT_DIR) / path
+    if not path.exists():
+        return
+
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as exc:
+        log_runtime("warning", "AEE_CONFIG_LOAD_FAILED", config_path=str(path), error=str(exc))
+        return
+
+    if not isinstance(data, dict):
+        log_runtime("warning", "AEE_CONFIG_INVALID", config_path=str(path), reason="not_a_json_object")
+        return
+
+    applied = {}
+    for key in sorted(_AEE_TUNABLE_KEYS):
+        if key not in data:
+            continue
+        value = data.get(key)
+        try:
+            cast_value = int(value) if key in _AEE_INT_KEYS else float(value)
+        except Exception:
+            continue
+        globals()[key] = cast_value
+        applied[key] = cast_value
+
+    if "WHIPSAW_CAPTURE_MIN_PEAK_ATR" in applied:
+        globals()["PEAK_ARM_ATR"] = float(applied["WHIPSAW_CAPTURE_MIN_PEAK_ATR"])
+    if "WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR" in applied:
+        globals()["GIVEBACK_ATR"] = float(applied["WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR"])
+
+    if applied:
+        log_runtime("info", "AEE_CONFIG_APPLIED", config_path=str(path), keys=sorted(applied.keys()))
+
+
+_load_aee_tuned_config_from_file()
+
 TICK_EVAL_HZ = 10
 PARTIAL_FILL_TIMEOUT_SEC = float(os.getenv("PARTIAL_FILL_TIMEOUT_SEC", "20") or "20")
 PARTIAL_FILL_CHECK_INTERVAL = float(os.getenv("PARTIAL_FILL_CHECK_INTERVAL", "1.0") or "1.0")
@@ -7507,6 +7587,9 @@ class AEEState:
     led: float = 0.0
     overshoot_peak: float = 0.0
     overshoot_ts: float = 0.0
+    whipsaw_reversal_hits: int = 0
+    whipsaw_prev_progress: float = 0.0
+    whipsaw_prev_dhr: float = 0.0
     last_favorable_ext_ts: float = 0.0
     pulse_hit_count: int = 0
     pulse_first_ts: float = 0.0
@@ -7755,7 +7838,8 @@ def check_aee_exits(
     now_ts_val: Optional[float] = None,
 ) -> Optional[str]:
     """SOP v2 priority order: P1 PANIC, P2 NEAR_TP_STALL, P3 PULSE_STALL, P4 FAILED_TO_CONTINUE_DECAY."""
-    _ = trade
+    entry_px = float((trade or {}).get("entry", current_price) or current_price)
+    signed_move = (float(current_price) - entry_px) if str(getattr(aee_state, "direction", "LONG")).upper() == "LONG" else (entry_px - float(current_price))
     progress = float(metrics.get("progress", 0.0) or 0.0)
     speed = float(metrics.get("speed", 0.0) or 0.0)
     velocity = float(metrics.get("velocity", 0.0) or 0.0)
@@ -7774,6 +7858,7 @@ def check_aee_exits(
     wpd = float(metrics.get("wpd", 0.0) or 0.0)
     led = float(metrics.get("led", 0.0) or 0.0)
     now_v = float(now_ts_val if now_ts_val is not None else now_ts())
+    trade_id_val = int(float((trade or {}).get("id", 0) or 0))
 
     trade_age = max(0.0, now_v - float(getattr(aee_state, "entry_time", now_v) or now_v))
     sample_ok = int(getattr(aee_state, "eval_samples", 0) or 0) >= int(MIN_EVAL_SAMPLES)
@@ -7823,7 +7908,8 @@ def check_aee_exits(
 
     sig_velocity = velocity <= float(PANIC_VELOCITY)
     sig_pullback = pullback >= max(float(PANIC_PULLBACK), float(allowed_giveback_atr * leg_mult))
-    sig_spread = spread_ratio >= float(PANIC_SPREAD_SHOCK_RATIO)
+    # Relax spread shock ratio from 1.5 to 3.0 to prevent early exits on minor spread widening
+    sig_spread = spread_ratio >= 3.0 
     panic_conditions = int(sig_velocity) + int(sig_pullback) + int(sig_spread)
     panic_subreasons = []
     if sig_velocity:
@@ -7842,6 +7928,16 @@ def check_aee_exits(
             aee_state.panic_first_ts = now_v
         aee_state.panic_hits = int(getattr(aee_state, "panic_hits", 0) or 0) + 1
     else:
+        prior_hits = int(getattr(aee_state, "panic_hits", 0) or 0)
+        prior_first_ts = float(getattr(aee_state, "panic_first_ts", 0.0) or 0.0)
+        if prior_hits > 0 or prior_first_ts > 0.0:
+            log_runtime(
+                "info",
+                "PANIC_DEBOUNCE_RESET",
+                trade_id=trade_id_val,
+                hits=prior_hits,
+                persistence=max(0.0, now_v - prior_first_ts) if prior_first_ts > 0.0 else 0.0,
+            )
         aee_state.panic_hits = 0
         aee_state.panic_first_ts = 0.0
 
@@ -7851,6 +7947,22 @@ def check_aee_exits(
         and panic_persistence >= float(PANIC_DEBOUNCE_SEC)
         and (hazard_gate or catastrophic_spread)
     )
+    panic_extreme_override = bool(
+        catastrophic_spread
+        or (dhr >= float(ENERGY_DHR_PANIC) * 1.25 and cps <= float(ENERGY_CPS_PANIC_MAX) * 0.75)
+    )
+    panic_confirm_blocked_min_life = bool((not sample_ok) or (not age_ok))
+    if panic_allowed and panic_confirm_blocked_min_life and (not panic_extreme_override):
+        log_runtime(
+            "info",
+            "PANIC_BLOCKED_MIN_LIFE",
+            trade_id=trade_id_val,
+            trade_age_sec=float(trade_age),
+            eval_samples=int(getattr(aee_state, "eval_samples", 0) or 0),
+            min_age_sec=float(MIN_EVAL_AGE_SEC),
+            min_samples=int(MIN_EVAL_SAMPLES),
+        )
+        panic_allowed = False
     panic_exit_metrics = {
         "signals": {
             "velocity": bool(sig_velocity),
@@ -7861,6 +7973,9 @@ def check_aee_exits(
         "spread_ratio": float(spread_ratio),
         "hazard_gate": bool(hazard_gate),
         "catastrophic_spread": bool(catastrophic_spread),
+        "panic_extreme_override": bool(panic_extreme_override),
+        "reason_confirm": "PANIC_EXIT" if panic_allowed else None,
+        "reason_reset": None if not panic_raw else "PANIC_EXIT",
         "cps": float(cps),
         "dhr": float(dhr),
     }
@@ -7876,12 +7991,62 @@ def check_aee_exits(
         "panic_exit_metrics": dict(panic_exit_metrics),
     }
     if panic_allowed:
+        log_runtime(
+            "info",
+            "PANIC_CONFIRMED",
+            trade_id=trade_id_val,
+            hits=int(getattr(aee_state, "panic_hits", 0) or 0),
+            persistence=float(max(0.0, panic_persistence)),
+            subreasons=list(panic_subreasons),
+        )
         aee_state.rule_trace = dict(rule_trace)
         return "PANIC_EXIT"
 
+<<<<<<< HEAD
     # Add minimum progress check before allowing near TP logic
     min_progress_for_near_tp = 0.50  # Must reach at least 50% of TP before near TP logic
     if dist_to_tp <= near_tp_band and progress >= min_progress_for_near_tp:
+=======
+    overshoot_peak_atr = float(metrics.get("overshoot_peak_atr", 0.0) or 0.0)
+    giveback_from_peak_atr = float(metrics.get("giveback_from_peak_atr", metrics.get("overshoot_giveback_atr", 0.0)) or 0.0)
+    prev_progress = float(getattr(aee_state, "whipsaw_prev_progress", progress) or progress)
+    prev_dhr = float(getattr(aee_state, "whipsaw_prev_dhr", dhr) or dhr)
+    progress_loss_now = bool(progress <= max(0.0, prev_progress - 0.03))
+    rising_dhr_now = bool(dhr >= (prev_dhr + 0.03))
+    if progress_loss_now and rising_dhr_now:
+        aee_state.whipsaw_reversal_hits = int(getattr(aee_state, "whipsaw_reversal_hits", 0) or 0) + 1
+    else:
+        aee_state.whipsaw_reversal_hits = 0
+    # Whipsaw logic: use tighter giveback for extreme moves vs normal moves
+    is_extreme_overshoot = bool(overshoot_peak_atr >= 0.25) # 2.5 pips excess
+    
+    # Trailing Stop Logic: Allow 40% giveback of peak overshoot, minimum 30 pips (3.0 ATR)
+    # Scaled to avoid premature exit on minor pullbacks in strong trends
+    # Use MAX of overshoot or pure progress for runners (TP irrelevant)
+    effective_peak_atr = max(overshoot_peak_atr, float(metrics.get("peak_progress", 0.0)))
+    dynamic_giveback = max(3.0, effective_peak_atr * 0.40)
+    
+    reversal_onset = bool(
+        giveback_from_peak_atr >= dynamic_giveback
+        or (metrics["pullback"] >= dynamic_giveback and effective_peak_atr >= 8.0)
+    )
+    in_profit = bool(atr_exec > 0.0 and (signed_move / atr_exec) >= 0.50)
+    whipsaw_capture_raw = bool(
+        in_profit
+        and (
+        (overshoot_peak_atr >= float(PEAK_ARM_ATR) and reversal_onset)
+        or (effective_peak_atr >= 8.0 and reversal_onset)
+        )
+    )
+    aee_state.whipsaw_prev_progress = float(progress)
+    aee_state.whipsaw_prev_dhr = float(dhr)
+    if whipsaw_capture_raw:
+        aee_state.rule_trace = dict(rule_trace)
+        return "WHIPSAW_SPIKE_FADE_OVERSHOOT_CAPTURE"
+
+    in_near_tp = dist_to_tp <= near_tp_band
+    if in_near_tp:
+>>>>>>> 5b427da (Checkpoint: apply tuned AEE configs and persist optimization artifacts)
         local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
         local_low = float(metrics.get("local_low", aee_state.local_low) or aee_state.local_low)
         local_extreme_updated = (
@@ -7908,8 +8073,11 @@ def check_aee_exits(
         cond_speed = speed < float(STALL_SPEED)
 
         if cond_vel_2 or cond_pullback or (cond_noext_15 and cond_speed):
-            aee_state.rule_trace = dict(rule_trace)
-            return "NEAR_TP_STALL_CAPTURE"
+            # WHIPSAW_REJECTION: Check for high speed override to allow blow-through
+            is_extreme_speed = speed >= float(WHIPSAW_EXTREME_SPEED_THRESHOLD)
+            if not is_extreme_speed:
+                aee_state.rule_trace = dict(rule_trace)
+                return "WHIPSAW_REJECTION_CAPTURE"
     else:
         aee_state.near_tp_stall_hits = 0
         aee_state.near_tp_first_ts = 0.0
@@ -7936,9 +8104,9 @@ def check_aee_exits(
 
     pulse_cross_age = max(0.0, float(now_v) - float(getattr(aee_state, "pulse_cross_ts", 0.0) or now_v)) if pulse_crossed else 0.0
     pulse_energy_weak = bool(
-        cps <= float(ENERGY_CPS_THRESHOLD)
-        and dhr >= float(ENERGY_DHR_DECAY_THRESHOLD)
-        and ge >= float(max(0.18, ENERGY_GE_DECAY_THRESHOLD * 0.80))
+        cps <= float(ENERGY_CPS_THRESHOLD * 0.85)
+        and dhr >= float(max(0.55, ENERGY_DHR_DECAY_THRESHOLD * 1.15))
+        and ge >= float(max(0.30, ENERGY_GE_DECAY_THRESHOLD * 1.20))
     )
     pulse_recovered = bool(
         pulse_crossed
@@ -7948,11 +8116,19 @@ def check_aee_exits(
     if pulse_recovered:
         aee_state.pulse_cross_ts = 0.0
 
+
+    # Global Energy Override: If speed is EXTREME (e.g. > 0.85), suppress non-panic exits
+    # This aligns the entire AEE with the philosophy: "If it has energy, let it run."
+    is_global_energy_override = bool(speed >= float(WHIPSAW_EXTREME_SPEED_THRESHOLD))
+
     pulse_raw = bool(
-        pulse_crossed
+        progress >= 2.0
+        and pulse_crossed
         and pulse_cross_age >= float(PULSE_RECLAIM_WINDOW_SEC)
+        and pullback_rate >= 0.15
         and pulse_energy_weak
         and (not pulse_recovered)
+        and (not is_global_energy_override)  # Suppress pulse exit on extreme speed
     )
     pulse_allowed = _persistence_gate("pulse", raw_condition=pulse_raw)
     rule_trace["pulse"]["pulse_cross_age"] = float(pulse_cross_age)
@@ -7972,7 +8148,7 @@ def check_aee_exits(
 
     decay_raw = bool(
         progress >= 0.45
-        and speed < 0.70
+        and speed < 0.70 # Already implicitly checks low speed, but manual override makes it explicit
         and velocity < 0.0
         and (pullback_rate >= PANIC_PULLBACKRATE or pullback >= giveback_cap)
         and cps < ENERGY_CPS_THRESHOLD
@@ -7980,6 +8156,7 @@ def check_aee_exits(
         and dhr >= ENERGY_DHR_DECAY_THRESHOLD
         and ge >= ENERGY_GE_DECAY_THRESHOLD
         and no_new_high_sec >= DECAY_NO_NEW_HIGH_SEC
+        and (not is_global_energy_override) # Suppress decay exit on extreme speed (redundant but safe)
     )
     decay_allowed = _persistence_gate("decay", raw_condition=decay_raw)
     if decay_allowed:
@@ -8014,7 +8191,13 @@ def _aee_eval_for_trade(
     setup_name = str(tr.get("setup", "") or "")
     is_runner = setup_name.endswith("_RUN") or "_RUN" in setup_name
     leg_mult = RUN_GIVEBACK_MULT if is_runner else MAIN_GIVEBACK_MULT
-    tp_anchor = entry + (tp1_atr * atr_entry if direction == "LONG" else -tp1_atr * atr_entry)
+    
+    # Use trade-specific TP if available (critical for high-yield overrides)
+    manual_tp = float(tr.get("tp", 0.0) or 0.0)
+    if manual_tp > 0.0:
+        tp_anchor = manual_tp
+    else:
+        tp_anchor = entry + (tp1_atr * atr_entry if direction == "LONG" else -tp1_atr * atr_entry)
 
     st = aee_states.get(key)
     if st is None:
@@ -8143,7 +8326,15 @@ def _aee_eval_for_trade(
     if overshoot_atr > float(getattr(st, "overshoot_peak", 0.0) or 0.0):
         st.overshoot_peak = overshoot_atr
         st.overshoot_ts = now
+    overshoot_peak_atr = float(getattr(st, "overshoot_peak", 0.0) or 0.0)
+    overshoot_giveback_atr = max(0.0, overshoot_peak_atr - overshoot_atr)
+    overshoot_giveback_frac = (overshoot_giveback_atr / overshoot_peak_atr) if overshoot_peak_atr > 0.0 else 0.0
+    giveback_from_peak_atr = overshoot_giveback_atr
+    metrics["overshoot_atr"] = float(overshoot_atr)
     metrics["overshoot_peak_atr"] = float(getattr(st, "overshoot_peak", 0.0) or 0.0)
+    metrics["overshoot_giveback_atr"] = float(overshoot_giveback_atr)
+    metrics["overshoot_giveback_frac"] = float(overshoot_giveback_frac)
+    metrics["giveback_from_peak_atr"] = float(giveback_from_peak_atr)
 
     st.tick_eval_hz = _aee_fixed_tick_hz()
     armed, reason = should_arm_tick_mode(metrics, st, spread_pips, median_spread_5m=max(0.1, float(med_spread)))

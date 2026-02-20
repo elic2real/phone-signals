@@ -644,17 +644,18 @@ def aggregate(audits: List[TradeAudit]) -> Dict[str, Any]:
         market_time_sec = max(0.0, total_replay_time_sec)
         wall_time_sec = max(0.0, total_replay_time_sec)
         total_exposure_sec = sum(a.hold_sec for a in audits)
-        # --- FIX: Compute active_time_sec as interval union (not per-trade sum) ---
-        # Build a list of (entry_ts, exit_ts) intervals for all trades
-        intervals = [(a.entry_ts, a.exit_ts) for a in audits if a.entry_ts > 0 and a.exit_ts > a.entry_ts]
-        intervals.sort()
-        merged = []
-        for start, end in intervals:
-            if not merged or start > merged[-1][1]:
-                merged.append([start, end])
-            else:
-                merged[-1][1] = max(merged[-1][1], end)
-        active_time_sec = sum(end - start for start, end in merged)
+        # --- FIX: active_time_sec is unique open seconds union across all trades ---
+        active_seconds: set[int] = set()
+        for a in audits:
+            start = float(a.entry_ts)
+            end = float(a.exit_ts)
+            if start <= 0.0 or end <= start:
+                continue
+            s0 = int(math.floor(start))
+            s1 = int(math.ceil(end))
+            for sec in range(s0, s1):
+                active_seconds.add(sec)
+        active_time_sec = float(len(active_seconds))
         short_hold_10 = sum(1 for a in audits if a.hold_sec < 10)
         short_hold_30 = sum(1 for a in audits if a.hold_sec < 30)
         short_hold_60 = sum(1 for a in audits if a.hold_sec < 60)
@@ -797,16 +798,17 @@ def aggregate(audits: List[TradeAudit]) -> Dict[str, Any]:
         # Exposure: sum of all hold_sec (overlapping trades double-counted)
         total_exposure_sec = sum(a.hold_sec for a in audits)
         # Active time: unique seconds with at least one open trade (no double-counting)
-        # Build a list of (entry, exit) intervals and merge
-        intervals = [(a.entry_ts, a.exit_ts) for a in audits if a.entry_ts > 0 and a.exit_ts > 0 and a.exit_ts > a.entry_ts]
-        intervals.sort()
-        merged = []
-        for start, end in intervals:
-            if not merged or start > merged[-1][1]:
-                merged.append([start, end])
-            else:
-                merged[-1][1] = max(merged[-1][1], end)
-        active_time_sec = sum(end - start for start, end in merged)
+        active_seconds: set[int] = set()
+        for a in audits:
+            start = float(a.entry_ts)
+            end = float(a.exit_ts)
+            if start <= 0.0 or end <= start:
+                continue
+            s0 = int(math.floor(start))
+            s1 = int(math.ceil(end))
+            for sec in range(s0, s1):
+                active_seconds.add(sec)
+        active_time_sec = float(len(active_seconds))
         # Anti-gaming: count short holds (e.g., < 10s, < 30s, < 60s)
         short_hold_10 = sum(1 for a in audits if a.hold_sec < 10)
         short_hold_30 = sum(1 for a in audits if a.hold_sec < 30)
@@ -950,12 +952,13 @@ def aggregate(audits: List[TradeAudit]) -> Dict[str, Any]:
         "active_time_ratio": active_time_ratio
     }
     # Build measurement_contract_v2 block
+    active_time_ratio_contract = float(active_time_sec / wall_time_sec) if wall_time_sec > 0 else 0.0
     measurement_contract_v2 = {
         "wall_time_sec": float(wall_time_sec),
         "total_exposure_sec": float(total_exposure_sec),
         "active_time_sec": float(active_time_sec),
         "exposure_ratio": float(exposure_ratio),
-        "active_time_ratio": float(active_time_sec / wall_time_sec) if wall_time_sec > 0 else 0.0,
+        "active_time_ratio": active_time_ratio_contract,
         "short_hold_count": {
             "lt_10s": int(short_hold_10),
             "lt_30s": int(short_hold_30),
@@ -968,12 +971,32 @@ def aggregate(audits: List[TradeAudit]) -> Dict[str, Any]:
             "max": max(hold_vals) if hold_vals else 0.0,
         },
     }
+    active_time_ratio_gate = active_time_ratio_contract
+    sanity_gates["active_time_ratio"] = {
+        "value": active_time_ratio_gate,
+        "pass": True,
+        "desc": "active_time_ratio must match measurement_contract_v2.active_time_ratio",
+    }
+    active_time_ratio_diff = abs(active_time_ratio_contract - active_time_ratio_gate)
+    audit_debug = {
+        "active_time_ratio_from_contract": active_time_ratio_contract,
+        "active_time_ratio_from_gate": active_time_ratio_gate,
+        "active_time_ratio_diff": active_time_ratio_diff,
+    }
+    if active_time_ratio_diff > 1e-9:
+        sanity_gates["active_time_ratio"]["pass"] = False
+        audit_debug["active_time_ratio_mismatch"] = {
+            "contract": active_time_ratio_contract,
+            "gate": active_time_ratio_gate,
+            "diff": active_time_ratio_diff,
+        }
 
 
     # Active time ratio gate and invariant check removed as per protocol. No longer enforced or reported.
 
     report = {
         "sanity_gates": sanity_gates,
+        "audit_debug": audit_debug,
         "total_market_seconds_all_legs": float(market_time_sec),
         "measurement_contract_v2": measurement_contract_v2,
         "AEE_SCORECARD": {

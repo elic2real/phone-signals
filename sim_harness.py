@@ -75,6 +75,7 @@ class SimOanda:
     def __init__(self, price_feed: SimPriceFeed, ticks_by_inst: Dict[str, List[Tick]]) -> None:
         self.price_feed = price_feed
         self.ticks_by_inst = ticks_by_inst
+        self._candle_cache: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
 
     def pricing(self, pair: str) -> Tuple[float, float]:
         t = self.price_feed.get_tick(pair)
@@ -94,7 +95,14 @@ class SimOanda:
         _ = price
         tf = str(granularity).upper()
         bucket_sec = {"M1": 60, "H1": 3600, "H4": 14400}.get(tf, 60)
-        candles = build_candles(self.ticks_by_inst.get(instrument, []), bucket_sec)
+        
+        cache_key = (instrument, tf)
+        if cache_key in self._candle_cache:
+            candles = self._candle_cache[cache_key]
+        else:
+            candles = build_candles(self.ticks_by_inst.get(instrument, []), bucket_sec)
+            self._candle_cache[cache_key] = candles
+            
         return candles[-int(count):]
 
 
@@ -127,7 +135,6 @@ class SimEnvironment:
 
         # Patch: Use centralized arbiter for all exit logic
         def arbiter_exit(trade, metrics, aee_state, current_price, *, survival_mode=False, runner_ctx=None, eval_mode="NORMAL", now_ts_val=None):
-            # Use the centralized arbiter from phone_bot
             pair = trade["pair"]
             direction = trade["dir"]
             bid = current_price if direction == "LONG" else current_price
@@ -136,8 +143,21 @@ class SimEnvironment:
             now = now_ts_val if now_ts_val is not None else self._current_ts
             spread_pips = phone_bot.to_pips(pair, ask - bid)
             speed_class = phone_bot.speed_class_from_setup_name(str(trade.get("setup", "")))
-            arbiter_result = phone_bot.final_exit_decision(trade, pair, direction, bid, ask, mid, now, spread_pips, speed_class)
-            return arbiter_result["reason"] if arbiter_result and arbiter_result.get("reason") else None
+            if hasattr(phone_bot, "final_exit_decision"):
+                arbiter_result = phone_bot.final_exit_decision(trade, pair, direction, bid, ask, mid, now, spread_pips, speed_class)
+                return arbiter_result["reason"] if arbiter_result and arbiter_result.get("reason") else None
+            if callable(self._orig_check_aee_exits):
+                return self._orig_check_aee_exits(
+                    trade,
+                    metrics,
+                    aee_state,
+                    current_price,
+                    survival_mode=survival_mode,
+                    runner_ctx=runner_ctx,
+                    eval_mode=eval_mode,
+                    now_ts_val=now_ts_val,
+                )
+            return None
         phone_bot.check_aee_exits = arbiter_exit
 
     def restore_live_wiring(self) -> None:
@@ -368,8 +388,10 @@ class SimEnvironment:
 
                 # core exits on native AEE reason (delay non-panic exits until min hold)
                 if core_open and rec["exit_reason"]:
-                    is_panic = str(rec["exit_reason"]) == "PANIC_EXIT"
-                    if (not is_panic) and trade_age_sec < min_hold_core:
+                    reason_s = str(rec["exit_reason"])
+                    # Allow PANIC and WHIPSAW exits to bypass min_hold
+                    is_urgent = reason_s == "PANIC_EXIT" or "WHIPSAW" in reason_s
+                    if (not is_urgent) and trade_age_sec < min_hold_core:
                         rec["exit_blocked_min_hold"] = True
                     else:
                         core_open = False
@@ -407,7 +429,8 @@ class SimEnvironment:
                 ge = float(metrics.get("ge", 0.0) or 0.0)
                 if runner_open and (not runner_promoted):
                     epi = float(metrics.get("epi", 0.0) or 0.0)
-                    runner_survival = float(metrics.get("rsp", 0.0) or 0.0)
+                    # DEFAULT TO 1.0 if not present (assume high survival prob if not calculated)
+                    runner_survival = float(metrics.get("rsp", 1.0) or 1.0)
                     regime = str(metrics.get("regime", "MIXED")).upper()
                     runner_energy_promote = (
                         rss >= float(getattr(phone_bot, "RUNNER_PROMOTE_RSS_MIN", phone_bot.ENERGY_RSS_PROMOTE))
@@ -424,7 +447,7 @@ class SimEnvironment:
                     # === CHANGE LIST PATCH: runner giveback logic (protocol-compliant) ===
                     giveback_from_peak = max(0.0, overshoot_peak_atr - max(0.0, float(metrics.get("overshoot_peak_atr", overshoot_peak_atr) or overshoot_peak_atr)))
                     epi = float(metrics.get("epi", 0.0) or 0.0)
-                    runner_survival = float(metrics.get("rsp", 0.0) or 0.0)
+                    runner_survival = float(metrics.get("rsp", 1.0) or 1.0)
                     # Canonical protocol: convex continuation, let runner breathe, but enforce hard giveback ceiling
                     giveback_thresh = 0.20
                     if overshoot_peak_atr >= 1.20:
@@ -452,7 +475,9 @@ class SimEnvironment:
                         runner_reason = "RUNNER_CAPTURE_FADE"
 
                     if runner_exit_now:
-                        if (runner_reason != "PANIC_EXIT") and trade_age_sec < min_hold_runner:
+                        # Allow immediate exit for PANIC or clear ENERGY_DECAY (loss of structure)
+                        is_urgent_runner = runner_reason == "PANIC_EXIT" or runner_reason == "RUNNER_ENERGY_DECAY"
+                        if (not is_urgent_runner) and trade_age_sec < min_hold_runner:
                             rec["runner_exit_blocked_min_hold"] = True
                         else:
                             runner_open = False
@@ -495,11 +520,9 @@ class SimEnvironment:
 
         # Core leg
         if core_open:
-            # If not PANIC, delay exit until min_hold is reached
-            last_tick = find_exit_tick(entry_ts + min_hold_core)
-            if last_tick is None:
-                # No tick after min_hold, use last available
-                last_tick = records[-1]
+            # If trade is still open at end of sim, close at the VERY END of the data
+            # (Don't artificially cut it short at min_hold unless there's no data)
+            last_tick = records[-1]
             core_open = False
             core_exit_ts = float(last_tick.get("ts"))
             core_exit_price = float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask"))
@@ -513,9 +536,7 @@ class SimEnvironment:
             }
         # Runner leg
         if runner_open:
-            last_tick = find_exit_tick(entry_ts + min_hold_runner)
-            if last_tick is None:
-                last_tick = records[-1]
+            last_tick = records[-1]
             runner_open = False
             runner_exit_ts = float(last_tick.get("ts"))
             runner_exit_price = float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask"))
@@ -618,7 +639,21 @@ class SimEnvironment:
         core_panic_recovery = panic_recovery(core_exit)
         runner_panic_recovery = panic_recovery(runner_exit)
 
-        exit_record = dict(core_exit or {})
+        import sys
+        if runner_exit:
+            print(f"DEBUG: runner_exit created. TS: {runner_exit.get('ts')}", file=sys.stderr)
+        else:
+            print("DEBUG: runner_exit is None", file=sys.stderr)
+
+        # Use the latest leg exit as the primary exit record to reflect true trade duration
+        core_ts = float(core_exit.get("ts", 0.0) or 0.0) if core_exit else 0.0
+        runner_ts = float(runner_exit.get("ts", 0.0) or 0.0) if runner_exit else 0.0
+        
+        if runner_exit and (runner_ts > core_ts):
+            exit_record = dict(runner_exit)
+        else:
+            exit_record = dict(core_exit or {})
+
         if exit_record:
             exit_record["exit_reason"] = str(exit_record.get("reason", "UNKNOWN"))
             exit_record["core_pips"] = core_pips

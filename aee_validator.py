@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any, Dict, List, Optional
 
 
@@ -12,27 +11,38 @@ PRIORITY_ORDER = ["PANIC_EXIT", "NEAR_TP_STALL_CAPTURE", "PULSE_STALL_CAPTURE", 
 
 class AEEValidator:
     def __init__(self, sim_results: Dict[str, Any]):
-        self.results = sim_results
-        self.logs = sim_results.get("logs", [])
-        self.tick_records = sim_results.get("tick_records", [])
-        self.trace_events = [e for e in self.logs if e.get("event") == "AEE_EVAL_TRACE"]
+        self.results = sim_results or {}
+        self.logs = self.results.get("logs", []) or []
+        self.tick_records = self.results.get("tick_records", []) or []
+        self.trace_events = [e for e in self.logs if (e or {}).get("event") == "AEE_EVAL_TRACE"]
 
-    def run_all_validations(self) -> dict:
-        # Placeholder: run all available validations and return a summary dict
-        results = {}
-        # Example: add cadence switching validation
-        results['cadence_switching'] = self.validate_cadence_switching()
-        # Add more validations as needed
-        return results
+    def run_all_validations(self) -> Dict[str, Any]:
+        return {
+            "cadence_switching": self.validate_cadence_switching(),
+            "priority_override": self.validate_priority_override(),
+            "exit_triggers": self.validate_exit_triggers(),
+        }
+
     def validate_cadence_switching(self) -> Dict[str, Any]:
         if len(self.trace_events) < 3:
             return {"error": "not_enough_trace_events"}
+
+        near_idx: List[int] = []
+        far_idx: List[int] = []
         for ev in self.trace_events:
-            payload = ev.get("payload", {})
-            pair_eval_idx = int(payload.get("pair_eval_idx", -1))
+            payload = ev.get("payload", {}) or {}
+            pair_eval_idx = int(payload.get("pair_eval_idx", -1) or -1)
+            if pair_eval_idx < 0:
+                continue
             metrics = payload.get("metrics", {}) or {}
             dist = float(metrics.get("dist_to_tp", 9e9) or 9e9)
             band = float(metrics.get("near_tp_band", 0.25) or 0.25)
+            if dist <= band:
+                near_idx.append(pair_eval_idx)
+            else:
+                far_idx.append(pair_eval_idx)
+
+        far_gaps = [far_idx[i + 1] - far_idx[i] for i in range(len(far_idx) - 1)]
         near_gaps = [near_idx[i + 1] - near_idx[i] for i in range(len(near_idx) - 1)]
         avg_far = (sum(far_gaps) / len(far_gaps)) if far_gaps else 0.0
         avg_near = (sum(near_gaps) / len(near_gaps)) if near_gaps else 0.0
@@ -53,7 +63,7 @@ class AEEValidator:
         checked: List[Dict[str, Any]] = []
 
         for ev in self.trace_events:
-            payload = ev.get("payload", {})
+            payload = ev.get("payload", {}) or {}
             chosen = payload.get("aee_chosen")
             truths = list(payload.get("aee_true", []) or [])
             if not chosen:
@@ -89,16 +99,16 @@ class AEEValidator:
         return {"checked": checked, "violations": violations, "summary": "PASS" if not violations else "FAIL"}
 
     def validate_exit_triggers(self) -> Dict[str, Any]:
-        exit_record = self.results.get("exit")
+        exit_record = self.results.get("exit") or {}
         if not exit_record:
             return {"error": "no_exit_detected"}
 
-        exit_idx = int(exit_record.get("idx", -1))
+        exit_idx = int(exit_record.get("idx", -1) or -1)
         exit_reason = str(exit_record.get("exit_reason", "UNKNOWN"))
         trace = None
         for ev in self.trace_events:
-            payload = ev.get("payload", {})
-            if int(payload.get("idx", -2)) == exit_idx:
+            payload = ev.get("payload", {}) or {}
+            if int(payload.get("idx", -2) or -2) == exit_idx:
                 trace = payload
                 break
 
@@ -125,5 +135,4 @@ class AEEValidator:
             "aee_chosen": trace.get("aee_chosen"),
             "pair_eval_idx": trace.get("pair_eval_idx"),
             "instrument": trace.get("instrument"),
-
-            "PANIC_EXIT": "velocity/pullback",
+        }
