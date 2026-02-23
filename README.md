@@ -31,9 +31,20 @@ Repository includes the production bot plus a **no-touch simulation harness** fo
 - `aee_validator.py` - post-run validation report generator
 - `quick_start.py` - one-command synthetic test flow
 
-## Run production bot
+## Run MVP locally/Termux
 
 ```bash
-python3 phone_bot.py
+PYTHONUNBUFFERED=1 timeout 25s python3 phone_bot.py
 ```
+
+## CHANGELOG (2026-02-23)
+
+- Root cause: unresolved merge-conflict artifacts in `phone_bot.py` introduced invalid syntax (`>>>>>>> ...`) and duplicate/dead pasted code blocks.
+- Fixed: removed conflict artifacts, restored valid Python flow, and removed unreachable duplicated dashboard code after a return path.
+- Hardened: restored single sizing entry path via `compute_units_recycling` compatibility wrapper to canonical geometric sizing, and fixed runtime-risk undefined symbol paths.
+- Guardrails: added `.pre-commit-config.yaml` and `.github/workflows/python-hygiene.yml` to block conflict markers and enforce repo-wide `py_compile` in local hooks and CI.
+- Proof commands used:
+	- `python3 -m py_compile phone_bot.py`
+	- repo-wide compile loop using `py_compile`
+	- bounded startup check: `PYTHONUNBUFFERED=1 timeout 25s python3 phone_bot.py`
 

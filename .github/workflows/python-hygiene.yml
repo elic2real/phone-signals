@@ -1,0 +1,45 @@
+name: Python Hygiene
+
+on:
+  pull_request:
+  push:
+    branches: [ master, main ]
+
+jobs:
+  syntax-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Reject merge conflict artifacts
+        run: |
+          if grep -RIn --exclude-dir=.git --include="*.py" -E "^(<<<<<<<\s|=======$|>>>>>>>\s)" .; then
+            echo "Merge conflict markers found"
+            exit 1
+          fi
+
+      - name: Compile all Python files
+        run: |
+          python - <<'PY'
+          import glob, py_compile
+          files = sorted(glob.glob('**/*.py', recursive=True))
+          for p in files:
+            if p.startswith('.venv/') or '/.venv/' in p:
+              continue
+            py_compile.compile(p, doraise=True)
+          print('py_compile: all python files passed')
+          PY
+
+      - name: Ruff (optional)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ruff || true
+          if command -v ruff >/dev/null 2>&1; then
+            ruff check . || true
+          fi

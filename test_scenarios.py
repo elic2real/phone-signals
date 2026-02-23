@@ -2,6 +2,7 @@ import pytest
 import csv
 import os
 import hashlib
+import sys
 from tick_generator import (
     SCENARIO_REGISTRY, 
     SCENARIO_VERSION, 

@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: reject-merge-conflict-markers
+        name: Reject merge conflict markers
+        entry: bash -c 'if grep -RIn --exclude-dir=.git --exclude-dir=.venv --include="*.py" -E "^(<<<<<<<\s|=======$|>>>>>>>\s)" .; then echo "Merge conflict markers detected"; exit 1; fi'
+        language: system
+        pass_filenames: false
+      - id: python-py-compile
+        name: Python syntax check (py_compile)
+        entry: bash -c 'python3 - <<"PY"
+import glob
+import py_compile
+import sys
+files = sorted(glob.glob("**/*.py", recursive=True))
+for path in files:
+    if path.startswith(".venv/") or "/.venv/" in path:
+        continue
+    py_compile.compile(path, doraise=True)
+print("py_compile: all python files passed")
+PY'
+        language: system
+        pass_filenames: false

@@ -575,9 +575,6 @@ def network_fault_selftest():
 
 
 if __name__ == "__main__":
-    import sys
-    import subprocess
-    
     # Handle command-line arguments
     if len(sys.argv) > 1:
         if sys.argv[1] == "--pathspace-selftest":

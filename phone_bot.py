@@ -34,7 +34,7 @@ from datetime import datetime, timezone
 from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_UP
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Set, Union
+from typing import Dict, List, Tuple, Set, Union
 
 import numpy as np
 
@@ -1612,8 +1612,6 @@ CONFIG = CeilingConfig()
 # ============================================================================
 # CEILING ARCHITECTURE: VECTOR SATURATION ENGINE (150+ Pips/Hour)
 # ============================================================================
-
-import statistics
 
 class VectorSaturationEngine:
     """
@@ -5045,19 +5043,23 @@ def normalize_speed_class(speed_class: str) -> str:
 
 
 def get_speed_weight(speed_class: str) -> float:
-    if speed_class == "FAST":
-        return SPEED_WEIGHT_FAST
-    if speed_class == "SLOW":
-        return SPEED_WEIGHT_SLOW
-    return SPEED_WEIGHT_MED
+    sc = normalize_speed_class(speed_class)
+    weight_map = {
+        "FAST": 1.15,
+        "MED": 1.00,
+        "SLOW": 0.85,
+    }
+    return float(weight_map.get(sc, 1.00))
 
 
 def get_split_ratios(speed_class: str) -> Tuple[float, float]:
-    if speed_class == "FAST":
-        return SPLIT_FAST
-    if speed_class == "SLOW":
-        return SPLIT_SLOW
-    return SPLIT_MED
+    sc = normalize_speed_class(speed_class)
+    split_map = {
+        "FAST": (0.85, 0.15),
+        "MED": (0.80, 0.20),
+        "SLOW": (0.75, 0.25),
+    }
+    return tuple(split_map.get(sc, (0.80, 0.20)))
 
 
 def get_speed_params(speed_class: str) -> dict:
@@ -5400,6 +5402,63 @@ def compute_units_geometric_v15(
     }
 
 
+def compute_units_recycling(
+    pair: str,
+    direction: str,
+    price: float,
+    margin_available: float,
+    margin_rate: float,
+    confidence: float,
+    spread_mult: float = 1.0,
+    base_deploy_frac: float = 0.20,
+    speed_class: str = "MED",
+) -> Tuple[int, int, dict]:
+    """Compatibility sizing wrapper preserving existing call sites.
+
+    Converts margin-available sizing inputs to an NAV proxy and routes through
+    the canonical geometric sizing engine.
+    """
+    pair = normalize_pair(pair)
+    direction = str(direction or "").upper()
+    sc = normalize_speed_class(speed_class)
+
+    if direction not in ("LONG", "SHORT"):
+        return 0, 0, {"reason": "invalid_direction", "direction": direction}
+
+    if not (math.isfinite(price) and price > 0.0):
+        return 0, 0, {"reason": "invalid_price", "price": price}
+
+    if not (math.isfinite(margin_available) and margin_available > 0.0):
+        return 0, 0, {"reason": "invalid_margin_available", "margin_available": margin_available}
+
+    mr = float(margin_rate) if math.isfinite(margin_rate) and margin_rate > 0.0 else 0.0333
+    deploy = clamp(float(base_deploy_frac or 0.0), 0.01, 0.95)
+    spread_scale = clamp(float(spread_mult or 1.0), 0.25, 2.0)
+    conf = clamp(float(confidence or 0.0), 0.0, 1.0)
+
+    nav_proxy = (float(margin_available) / mr) * deploy * spread_scale
+    units_main, units_runner, debug = compute_units_geometric_v15(
+        pair=pair,
+        direction=direction,
+        price=float(price),
+        nav=float(nav_proxy),
+        confidence=conf,
+        speed_class=sc,
+    )
+    debug = dict(debug or {})
+    debug.update(
+        {
+            "margin_available": float(margin_available),
+            "margin_rate": mr,
+            "base_deploy_frac": deploy,
+            "spread_mult": spread_scale,
+            "speed_class": sc,
+            "nav_proxy": float(nav_proxy),
+        }
+    )
+    return int(units_main), int(units_runner), debug
+
+
 # --- AIM Σ-Protocol: NAV Sizing Integration ---
 def apply_nav_sizing(
     pair: str,
@@ -5416,8 +5475,9 @@ def apply_nav_sizing(
     """
     # Get current NAV if not provided
     if nav_override is None:
-        acct_sum = _get_account_summary(time.time())
-        nav, _ = extract_nav_equity(acct_sum)
+        client = _require_runtime_oanda()
+        acct_sum = oanda_call("account_summary_nav", client.account_summary)
+        nav, _ = extract_nav_equity(acct_sum if isinstance(acct_sum, dict) else {})
     else:
         nav = nav_override
     
@@ -8002,11 +8062,6 @@ def check_aee_exits(
         aee_state.rule_trace = dict(rule_trace)
         return "PANIC_EXIT"
 
-<<<<<<< HEAD
-    # Add minimum progress check before allowing near TP logic
-    min_progress_for_near_tp = 0.50  # Must reach at least 50% of TP before near TP logic
-    if dist_to_tp <= near_tp_band and progress >= min_progress_for_near_tp:
-=======
     overshoot_peak_atr = float(metrics.get("overshoot_peak_atr", 0.0) or 0.0)
     giveback_from_peak_atr = float(metrics.get("giveback_from_peak_atr", metrics.get("overshoot_giveback_atr", 0.0)) or 0.0)
     prev_progress = float(getattr(aee_state, "whipsaw_prev_progress", progress) or progress)
@@ -8046,7 +8101,6 @@ def check_aee_exits(
 
     in_near_tp = dist_to_tp <= near_tp_band
     if in_near_tp:
->>>>>>> 5b427da (Checkpoint: apply tuned AEE configs and persist optimization artifacts)
         local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
         local_low = float(metrics.get("local_low", aee_state.local_low) or aee_state.local_low)
         local_extreme_updated = (
@@ -9834,9 +9888,7 @@ class MultiVectorEngine:
     
     async def async_price_polling(self, pairs: List[str]) -> Dict[str, float]:
         """Async price polling for 15 pairs simultaneously to achieve >10Hz loop frequency"""
-        import aiohttp
-        import asyncio
-        
+
         # Create async tasks for all pairs
         tasks = []
         for pair in pairs:
@@ -9963,73 +10015,6 @@ class MultiVectorEngine:
         adjusted_prob = self.check_spread_aware_scaling(pair, current_spread, base_prob)
         
         return adjusted_prob
-        
-        # Print the Saturation Audit Dashboard
-        print(f"\n{'='*80}")
-        print(f"🚀 SATURATION AUDIT DASHBOARD - Target: 150+ Pips/Hr")
-        print(f"{'='*80}")
-        print(f"📊 CEILING METRICS:")
-        print(f"   MPE/H (Market Pip Extraction/Hr): {self.ceiling_metrics['mpe_per_hour']:.1f} pips/hr")
-        print(f"   Saturation Efficiency: {self.ceiling_metrics['saturation_efficiency']:.1f}% ({active_count}/{self.config.MAX_CONCURRENT_VECTORS})")
-        print(f"   Mean Vector Velocity: {self.ceiling_metrics['mean_vector_velocity']:.1f} pips/trade")
-        print(f"   Vector Decay (PE): {self.ceiling_metrics['vector_decay_pe']:.3f}")
-        print(f"   Win Rate: {win_rate:.1%}")
-        print(f"   Current Session: {session}")
-        
-        print(f"\n⚠️  LEAKAGE IDENTIFICATION:")
-        if self.ceiling_metrics['mpe_per_hour'] < 150:
-            print(f"   ❌ BELOW TARGET: {150 - self.ceiling_metrics['mpe_per_hour']:.1f} pips/hr short")
-        
-        if self.ceiling_metrics['saturation_efficiency'] < 50:
-            print(f"   ❌ LOW SATURATION: Only {self.ceiling_metrics['saturation_efficiency']:.1f}% capacity utilized")
-            print(f"   💡 ACTION: Consider lowering PULSE_Z thresholds or SOP_PROB")
-        
-        if self.ceiling_metrics['vector_decay_pe'] < 0.70:
-            print(f"   ❌ HIGH DECAY: Path efficiency {self.ceiling_metrics['vector_decay_pe']:.3f} < 0.70")
-            if grind_pairs:
-                print(f"   💡 GRIND PAIRS: {', '.join(grind_pairs)} - consider session-specific tuning")
-        
-        if vampire_trades:
-            print(f"   ❌ VAMPIRE TRADES: {len(vampire_trades)} trades > 3min with < 0.5 pips")
-            print(f"   💡 ACTION: Implement 120-second kill-switch for low-velocity trades")
-        
-        if energy_sinks:
-            print(f"   🔌 ENERGY SINKS: {', '.join(energy_sinks)} - consider blacklisting for session")
-        
-        print(f"\n🎯 SESSION-SPECIFIC TUNING ({session}):")
-        if tuning_recs.get('pulse_z_adjustment', 0) != 0:
-            print(f"   🔧 PULSE_Z: {tuning_recs['pulse_z_adjustment']:+.2f} adjustment")
-        if tuning_recs.get('sop_prob_adjustment', 0) != 0:
-            print(f"   🔧 SOP_PROB: {tuning_recs['sop_prob_adjustment']:+.2f} adjustment")
-        if tuning_recs.get('kill_switch_seconds', 180) != 180:
-            print(f"   ⏰ KILL-SWITCH: {tuning_recs['kill_switch_seconds']}s")
-        
-        print(f"\n💡 AUTO-TUNE RECOMMENDATION:")
-        if self.ceiling_metrics['saturation_efficiency'] < 30:
-            print(f"   🔥 AGGRESSIVE: Apply session tuning immediately")
-            print(f"   📊 Expected improvement: +{min(50, 150 - self.ceiling_metrics['mpe_per_hour']):.0f} pips/hr")
-        elif self.ceiling_metrics['saturation_efficiency'] < 50:
-            print(f"   ⚡ MODERATE: Consider session tuning")
-            print(f"   📊 Expected improvement: +{min(30, 150 - self.ceiling_metrics['mpe_per_hour']):.0f} pips/hr")
-        else:
-            print(f"   🎯 PRECISION: Current settings optimal")
-        
-        print(f"{'='*80}\n")
-        
-        self.last_saturation_audit_time = now
-        
-        return {
-            'mpe_per_hour': self.ceiling_metrics['mpe_per_hour'],
-            'saturation_efficiency': self.ceiling_metrics['saturation_efficiency'],
-            'mean_vector_velocity': self.ceiling_metrics['mean_vector_velocity'],
-            'vector_decay_pe': self.ceiling_metrics['vector_decay_pe'],
-            'win_rate': win_rate,
-            'session': session,
-            'vampire_trades': len(vampire_trades),
-            'grind_pairs': grind_pairs,
-            'energy_sinks': energy_sinks,
-            'tuning_recommendations': tuning_recs
-        }
     
     def run_grid_search(self, pulse_range: Tuple[float, float], prob_range: Tuple[float, float]) -> List[Dict]:
         """Grid search for optimal PULSE_Z and SOP_PROB parameters"""
