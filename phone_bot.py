@@ -1,11 +1,3 @@
-from typing import Any, Optional
-def ffloat(x: Any, default: float = 0.0) -> float:
-    try:
-        if x is None:
-            return default
-        return float(x)
-    except Exception:
-        return default
 #!/usr/bin/env python3
 import os
 import sys
@@ -32,6 +24,15 @@ import numpy as np
 
 from phone_bot_logging import log_runtime, log_trade_event, log_metrics
 
+
+def ffloat(x: Any, default: float = 0.0) -> float:
+    """Safely convert x to float, returning default for None or unconvertible values."""
+    try:
+        if x is None:
+            return default
+        return float(x)
+    except Exception:
+        return default
 
 def get_candles(pair: str, tf: str, count: int) -> list:
     """Fetch normalized candles via runtime OANDA client."""
@@ -1322,7 +1323,6 @@ def get_pricing_stream() -> Optional[PricingStream]:
     return _pricing_stream
 
 # ============================================================================
-<<<<<<< HEAD
 # CEILING ARCHITECTURE: CONFIGURATION CLASS (Single Source of Truth)
 # ============================================================================
 
@@ -1416,11 +1416,11 @@ class VectorSaturationEngine:
         """
         try:
             # Get M1 candles for velocity calculation
-            candles = oanda_client.get_candles(symbol, "M1", 5)  # 5m Lookback
+            candles = get_candles(symbol, "M1", 5)  # 5m Lookback
             if not candles or len(candles) < 2:
                 return 0.0
             
-            closes = [float(c['mid']['c']) for c in candles]
+            closes = [float(c['c']) for c in candles]
             
             # Current velocity (last tick change)
             current_velocity = closes[-1] - closes[-2]
@@ -1447,9 +1447,6 @@ vector_engine = VectorSaturationEngine()
 
 # ============================================================================
 # MAIN EXECUTION LOOP
-=======
-# END PRICING STREAM
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 # ============================================================================
 
 # ============================================================================
@@ -5024,101 +5021,10 @@ def compute_units_recycling(
         debug["reason"] = "invalid_inputs"
         return 0, 0, debug
 
-<<<<<<< HEAD
-def compute_units_recycling(
-    pair: str,
-    direction: str,
-    price: float,
-    margin_available: float,
-    margin_rate: float,
-    confidence: float,
-    spread_mult: float = 1.0,
-    base_deploy_frac: float = 0.20,
-    speed_class: str = "MED",
-) -> Tuple[int, int, dict]:
-    """Compatibility sizing wrapper preserving existing call sites.
-
-    Converts margin-available sizing inputs to an NAV proxy and routes through
-    the canonical geometric sizing engine.
-    """
-    pair = normalize_pair(pair)
-    direction = str(direction or "").upper()
-    sc = normalize_speed_class(speed_class)
-
-    if direction not in ("LONG", "SHORT"):
-        return 0, 0, {"reason": "invalid_direction", "direction": direction}
-
-    if not (math.isfinite(price) and price > 0.0):
-        return 0, 0, {"reason": "invalid_price", "price": price}
-
-    if not (math.isfinite(margin_available) and margin_available > 0.0):
-        return 0, 0, {"reason": "invalid_margin_available", "margin_available": margin_available}
-
-    mr = float(margin_rate) if math.isfinite(margin_rate) and margin_rate > 0.0 else 0.0333
-    deploy = clamp(float(base_deploy_frac or 0.0), 0.01, 0.95)
-    spread_scale = clamp(float(spread_mult or 1.0), 0.25, 2.0)
-    conf = clamp(float(confidence or 0.0), 0.0, 1.0)
-
-    nav_proxy = (float(margin_available) / mr) * deploy * spread_scale
-    units_main, units_runner, debug = compute_units_geometric_v15(
-        pair=pair,
-        direction=direction,
-        price=float(price),
-        nav=float(nav_proxy),
-        confidence=conf,
-        speed_class=sc,
-    )
-    debug = dict(debug or {})
-    debug.update(
-        {
-            "margin_available": float(margin_available),
-            "margin_rate": mr,
-            "base_deploy_frac": deploy,
-            "spread_mult": spread_scale,
-            "speed_class": sc,
-            "nav_proxy": float(nav_proxy),
-        }
-    )
-    return int(units_main), int(units_runner), debug
-
-
-# --- AIM Σ-Protocol: NAV Sizing Integration ---
-def apply_nav_sizing(
-    pair: str,
-    direction: str,
-    price: float,
-    confidence: float,
-    speed_class: str = "MED",
-    nav_override: float = None
-) -> Tuple[int, int, dict]:
-    """
-    AIM Σ-Protocol: High-frequency NAV sizing interface
-    
-    Used by run_sigma.sh for <5ms execution
-    """
-    # Get current NAV if not provided
-    if nav_override is None:
-        client = _require_runtime_oanda()
-        acct_sum = oanda_call("account_summary_nav", client.account_summary)
-        nav, _ = extract_nav_equity(acct_sum if isinstance(acct_sum, dict) else {})
-    else:
-        nav = nav_override
-    
-    # Call geometric sizing engine
-    return compute_units_geometric_v15(
-        pair=pair,
-        direction=direction,
-        price=price,
-        nav=nav,
-        confidence=confidence,
-        speed_class=speed_class
-    )
-=======
     units_total_raw = int(float((ma * deploy_frac) / denom))
     units_total = int(float(units_total_raw) * spread_m)
     debug["units_total_raw"] = units_total_raw
     debug["units_total"] = units_total
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 
 
 
@@ -6985,16 +6891,8 @@ PROTECT_EXIT_PROGRESS_BASE = 0.35
 LOCK_PROGRESS = 0.60
 LOCK_OFFSET_ATR = 0.12
 PULSE_SPEED = 1.40
-<<<<<<< HEAD
-PULSE_PROGRESS = 99.0
-PULSE_EXITLINE_ATR = 0.90
-PULSE_RECLAIM_WINDOW_SEC = 8.0
-PULSE_RECOVER_CPS_MIN = 0.55
-PULSE_RECOVER_DHR_MAX = 0.50
-=======
 PULSE_PROGRESS = 0.70
 PULSE_EXITLINE_ATR = 0.25
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 STALL_PULLBACK_ATR = 0.18
 STALL_NOEXT_T = 15
 STALL_SPEED = 0.60
@@ -7004,7 +6902,6 @@ DECAY_PULLBACK = 0.25
 PANIC_VELOCITY = -0.80
 PANIC_PULLBACK = 0.60
 PANIC_PULLBACKRATE = 0.06
-<<<<<<< HEAD
 PANIC_SPREAD_SHOCK_RATIO = 1.8
 PANIC_SPREAD_CATA_RATIO = 2.6
 ENERGY_CPS_PANIC_MAX = 0.42
@@ -7108,8 +7005,6 @@ def _load_aee_tuned_config_from_file() -> None:
 
 _load_aee_tuned_config_from_file()
 
-=======
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 TICK_EVAL_HZ = 10
 PARTIAL_FILL_TIMEOUT_SEC = float(os.getenv("PARTIAL_FILL_TIMEOUT_SEC", "20") or "20")
 PARTIAL_FILL_CHECK_INTERVAL = float(os.getenv("PARTIAL_FILL_CHECK_INTERVAL", "1.0") or "1.0")
@@ -7263,7 +7158,6 @@ class AEEState:
     near_tp_last_ext_ts: float = 0.0
     near_tp_last_high: float = 0.0
     near_tp_last_low: float = 0.0
-<<<<<<< HEAD
     eval_samples: int = 0
     energy_streak: float = 0.0
     decay_streak: float = 0.0
@@ -7289,8 +7183,6 @@ class AEEState:
     decay_hit_count: int = 0
     decay_first_ts: float = 0.0
     rule_trace: Dict[str, Any] = field(default_factory=dict)
-=======
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 
 
 def _aee_is_mobile_runtime() -> bool:
@@ -7466,12 +7358,7 @@ def check_aee_exits(
     now_ts_val: Optional[float] = None,
 ) -> Optional[str]:
     """SOP v2 priority order: P1 PANIC, P2 NEAR_TP_STALL, P3 PULSE_STALL, P4 FAILED_TO_CONTINUE_DECAY."""
-<<<<<<< HEAD
-    entry_px = float((trade or {}).get("entry", current_price) or current_price)
-    signed_move = (float(current_price) - entry_px) if str(getattr(aee_state, "direction", "LONG")).upper() == "LONG" else (entry_px - float(current_price))
-=======
     _ = trade  # reserved for trade-aware checks per SOP contract
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
     progress = float(metrics.get("progress", 0.0) or 0.0)
     speed = float(metrics.get("speed", 0.0) or 0.0)
     velocity = float(metrics.get("velocity", 0.0) or 0.0)
@@ -7495,151 +7382,11 @@ def check_aee_exits(
         pass  # Use normal priority ordering below
     # NORMAL mode: use default thresholds
 
-<<<<<<< HEAD
-    spread_pips = float(metrics.get("spread_pips", 0.0) or 0.0)
-    med_spread = max(0.1, float(metrics.get("med_spread", spread_pips) or spread_pips or 0.1))
-    spread_ratio = spread_pips / med_spread if med_spread > 0 else 0.0
-
-    sig_velocity = velocity <= float(PANIC_VELOCITY)
-    sig_pullback = pullback >= max(float(PANIC_PULLBACK), float(allowed_giveback_atr * leg_mult))
-    # Relax spread shock ratio from 1.5 to 3.0 to prevent early exits on minor spread widening
-    sig_spread = spread_ratio >= 3.0 
-    panic_conditions = int(sig_velocity) + int(sig_pullback) + int(sig_spread)
-    panic_subreasons = []
-    if sig_velocity:
-        panic_subreasons.append("velocity_crash")
-    if sig_pullback:
-        panic_subreasons.append("deep_pullback")
-    if sig_spread:
-        panic_subreasons.append("spread_shock")
-
-    hazard_gate = dhr >= float(ENERGY_DHR_PANIC) and cps <= float(ENERGY_CPS_PANIC_MAX)
-    catastrophic_spread = spread_ratio >= float(PANIC_SPREAD_CATA_RATIO)
-    panic_raw = bool((panic_conditions >= 2 and hazard_gate) or catastrophic_spread)
-
-    if panic_raw:
-        if float(getattr(aee_state, "panic_first_ts", 0.0) or 0.0) <= 0.0:
-            aee_state.panic_first_ts = now_v
-        aee_state.panic_hits = int(getattr(aee_state, "panic_hits", 0) or 0) + 1
-    else:
-        prior_hits = int(getattr(aee_state, "panic_hits", 0) or 0)
-        prior_first_ts = float(getattr(aee_state, "panic_first_ts", 0.0) or 0.0)
-        if prior_hits > 0 or prior_first_ts > 0.0:
-            log_runtime(
-                "info",
-                "PANIC_DEBOUNCE_RESET",
-                trade_id=trade_id_val,
-                hits=prior_hits,
-                persistence=max(0.0, now_v - prior_first_ts) if prior_first_ts > 0.0 else 0.0,
-            )
-        aee_state.panic_hits = 0
-        aee_state.panic_first_ts = 0.0
-
-    panic_persistence = now_v - float(getattr(aee_state, "panic_first_ts", now_v) or now_v)
-    panic_allowed = (
-        int(getattr(aee_state, "panic_hits", 0) or 0) >= int(PANIC_CONFIRM_MIN_HITS)
-        and panic_persistence >= float(PANIC_DEBOUNCE_SEC)
-        and (hazard_gate or catastrophic_spread)
-    )
-    panic_extreme_override = bool(
-        catastrophic_spread
-        or (dhr >= float(ENERGY_DHR_PANIC) * 1.25 and cps <= float(ENERGY_CPS_PANIC_MAX) * 0.75)
-    )
-    panic_confirm_blocked_min_life = bool((not sample_ok) or (not age_ok))
-    if panic_allowed and panic_confirm_blocked_min_life and (not panic_extreme_override):
-        log_runtime(
-            "info",
-            "PANIC_BLOCKED_MIN_LIFE",
-            trade_id=trade_id_val,
-            trade_age_sec=float(trade_age),
-            eval_samples=int(getattr(aee_state, "eval_samples", 0) or 0),
-            min_age_sec=float(MIN_EVAL_AGE_SEC),
-            min_samples=int(MIN_EVAL_SAMPLES),
-        )
-        panic_allowed = False
-    panic_exit_metrics = {
-        "signals": {
-            "velocity": bool(sig_velocity),
-            "pullback": bool(sig_pullback),
-            "spread": bool(sig_spread),
-        },
-        "panic_signal_count": int(panic_conditions),
-        "spread_ratio": float(spread_ratio),
-        "hazard_gate": bool(hazard_gate),
-        "catastrophic_spread": bool(catastrophic_spread),
-        "panic_extreme_override": bool(panic_extreme_override),
-        "reason_confirm": "PANIC_EXIT" if panic_allowed else None,
-        "reason_reset": None if not panic_raw else "PANIC_EXIT",
-        "cps": float(cps),
-        "dhr": float(dhr),
-    }
-    aee_state.panic_subreasons = list(panic_subreasons)
-    aee_state.panic_exit_metrics = dict(panic_exit_metrics)
-
-    rule_trace["panic"] = {
-        "rule_hit_count": int(getattr(aee_state, "panic_hits", 0) or 0),
-        "rule_persistence": float(max(0.0, panic_persistence)),
-        "exit_allowed": bool(panic_allowed),
-        "raw_condition": bool(panic_raw),
-        "panic_subreasons": list(panic_subreasons),
-        "panic_exit_metrics": dict(panic_exit_metrics),
-    }
-    if panic_allowed:
-        log_runtime(
-            "info",
-            "PANIC_CONFIRMED",
-            trade_id=trade_id_val,
-            hits=int(getattr(aee_state, "panic_hits", 0) or 0),
-            persistence=float(max(0.0, panic_persistence)),
-            subreasons=list(panic_subreasons),
-        )
-        aee_state.rule_trace = dict(rule_trace)
-        return "PANIC_EXIT"
-
-    overshoot_peak_atr = float(metrics.get("overshoot_peak_atr", 0.0) or 0.0)
-    giveback_from_peak_atr = float(metrics.get("giveback_from_peak_atr", metrics.get("overshoot_giveback_atr", 0.0)) or 0.0)
-    prev_progress = float(getattr(aee_state, "whipsaw_prev_progress", progress) or progress)
-    prev_dhr = float(getattr(aee_state, "whipsaw_prev_dhr", dhr) or dhr)
-    progress_loss_now = bool(progress <= max(0.0, prev_progress - 0.03))
-    rising_dhr_now = bool(dhr >= (prev_dhr + 0.03))
-    if progress_loss_now and rising_dhr_now:
-        aee_state.whipsaw_reversal_hits = int(getattr(aee_state, "whipsaw_reversal_hits", 0) or 0) + 1
-    else:
-        aee_state.whipsaw_reversal_hits = 0
-    # Whipsaw logic: use tighter giveback for extreme moves vs normal moves
-    is_extreme_overshoot = bool(overshoot_peak_atr >= 0.25) # 2.5 pips excess
-    
-    # Trailing Stop Logic: Allow 40% giveback of peak overshoot, minimum 30 pips (3.0 ATR)
-    # Scaled to avoid premature exit on minor pullbacks in strong trends
-    # Use MAX of overshoot or pure progress for runners (TP irrelevant)
-    effective_peak_atr = max(overshoot_peak_atr, float(metrics.get("peak_progress", 0.0)))
-    dynamic_giveback = max(3.0, effective_peak_atr * 0.40)
-    
-    reversal_onset = bool(
-        giveback_from_peak_atr >= dynamic_giveback
-        or (metrics["pullback"] >= dynamic_giveback and effective_peak_atr >= 8.0)
-    )
-    in_profit = bool(atr_exec > 0.0 and (signed_move / atr_exec) >= 0.50)
-    whipsaw_capture_raw = bool(
-        in_profit
-        and (
-        (overshoot_peak_atr >= float(PEAK_ARM_ATR) and reversal_onset)
-        or (effective_peak_atr >= 8.0 and reversal_onset)
-        )
-    )
-    aee_state.whipsaw_prev_progress = float(progress)
-    aee_state.whipsaw_prev_dhr = float(dhr)
-    if whipsaw_capture_raw:
-        aee_state.rule_trace = dict(rule_trace)
-        return "WHIPSAW_SPIKE_FADE_OVERSHOOT_CAPTURE"
-
-=======
     # P1 PANIC_EXIT
     if velocity <= PANIC_VELOCITY or pullback >= PANIC_PULLBACK:
         return "PANIC_EXIT"
 
     # P2 NEAR_TP_STALL_CAPTURE (LOCKED)
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
     in_near_tp = dist_to_tp <= near_tp_band
     if in_near_tp:
         local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
@@ -7668,15 +7415,7 @@ def check_aee_exits(
         cond_speed = speed < float(STALL_SPEED)
 
         if cond_vel_2 or cond_pullback or (cond_noext_15 and cond_speed):
-<<<<<<< HEAD
-            # WHIPSAW_REJECTION: Check for high speed override to allow blow-through
-            is_extreme_speed = speed >= float(WHIPSAW_EXTREME_SPEED_THRESHOLD)
-            if not is_extreme_speed:
-                aee_state.rule_trace = dict(rule_trace)
-                return "WHIPSAW_REJECTION_CAPTURE"
-=======
             return "NEAR_TP_STALL_CAPTURE"
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
     else:
         aee_state.near_tp_stall_hits = 0
         aee_state.near_tp_first_ts = 0.0
@@ -7693,52 +7432,7 @@ def check_aee_exits(
         if aee_state.direction == "LONG" and current_price <= float(aee_state.pulse_exit_line):
             return "PULSE_STALL_CAPTURE"
         if aee_state.direction == "SHORT" and current_price >= float(aee_state.pulse_exit_line):
-<<<<<<< HEAD
-            pulse_crossed = True
-
-    if pulse_crossed and float(getattr(aee_state, "pulse_cross_ts", 0.0) or 0.0) <= 0.0:
-        aee_state.pulse_cross_ts = float(now_v)
-    if not pulse_crossed:
-        aee_state.pulse_cross_ts = 0.0
-
-    pulse_cross_age = max(0.0, float(now_v) - float(getattr(aee_state, "pulse_cross_ts", 0.0) or now_v)) if pulse_crossed else 0.0
-    pulse_energy_weak = bool(
-        cps <= float(ENERGY_CPS_THRESHOLD * 0.85)
-        and dhr >= float(max(0.55, ENERGY_DHR_DECAY_THRESHOLD * 1.15))
-        and ge >= float(max(0.30, ENERGY_GE_DECAY_THRESHOLD * 1.20))
-    )
-    pulse_recovered = bool(
-        pulse_crossed
-        and pulse_cross_age <= float(PULSE_RECLAIM_WINDOW_SEC)
-        and (velocity >= 0.0 or cps >= float(PULSE_RECOVER_CPS_MIN) or dhr <= float(PULSE_RECOVER_DHR_MAX))
-    )
-    if pulse_recovered:
-        aee_state.pulse_cross_ts = 0.0
-
-
-    # Global Energy Override: If speed is EXTREME (e.g. > 0.85), suppress non-panic exits
-    # This aligns the entire AEE with the philosophy: "If it has energy, let it run."
-    is_global_energy_override = bool(speed >= float(WHIPSAW_EXTREME_SPEED_THRESHOLD))
-
-    pulse_raw = bool(
-        progress >= 2.0
-        and pulse_crossed
-        and pulse_cross_age >= float(PULSE_RECLAIM_WINDOW_SEC)
-        and pullback_rate >= 0.15
-        and pulse_energy_weak
-        and (not pulse_recovered)
-        and (not is_global_energy_override)  # Suppress pulse exit on extreme speed
-    )
-    pulse_allowed = _persistence_gate("pulse", raw_condition=pulse_raw)
-    rule_trace["pulse"]["pulse_cross_age"] = float(pulse_cross_age)
-    rule_trace["pulse"]["pulse_recovered"] = bool(pulse_recovered)
-    rule_trace["pulse"]["pulse_energy_weak"] = bool(pulse_energy_weak)
-    if pulse_allowed:
-        aee_state.rule_trace = dict(rule_trace)
-        return "PULSE_STALL_CAPTURE"
-=======
             return "PULSE_STALL_CAPTURE"
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 
     # P4 FAILED_TO_CONTINUE_DECAY
     ctx_mult = 1.0
@@ -7753,20 +7447,7 @@ def check_aee_exits(
         and speed < 0.70 # Already implicitly checks low speed, but manual override makes it explicit
         and velocity < 0.0
         and (pullback_rate >= PANIC_PULLBACKRATE or pullback >= giveback_cap)
-<<<<<<< HEAD
-        and cps < ENERGY_CPS_THRESHOLD
-        and epi <= ENERGY_EPI_DECAY_THRESHOLD
-        and dhr >= ENERGY_DHR_DECAY_THRESHOLD
-        and ge >= ENERGY_GE_DECAY_THRESHOLD
-        and no_new_high_sec >= DECAY_NO_NEW_HIGH_SEC
-        and (not is_global_energy_override) # Suppress decay exit on extreme speed (redundant but safe)
-    )
-    decay_allowed = _persistence_gate("decay", raw_condition=decay_raw)
-    if decay_allowed:
-        aee_state.rule_trace = dict(rule_trace)
-=======
     ):
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
         return "FAILED_TO_CONTINUE_DECAY"
 
     return None
@@ -7900,32 +7581,6 @@ def _aee_eval_for_trade(
         runner_ctx = aee_runner_context(h1 if isinstance(h1, list) else [], h4 if isinstance(h4, list) else [])
     metrics["runner_ctx"] = runner_ctx
 
-<<<<<<< HEAD
-    # Energy vNext metrics (CPS/EPI/DHR/GE/RSS/WPD/LED)
-    energy_metrics = _aee_energy_metrics(st, metrics, now=now, spread_pips=spread_pips, med_spread=float(med_spread))
-    metrics.update(energy_metrics)
-
-    # Overshoot memory for whipsaw/runner handling
-    if direction == "LONG":
-        overshoot = max(0.0, mid - float(st.tp_anchor))
-    else:
-        overshoot = max(0.0, float(st.tp_anchor) - mid)
-    overshoot_atr = (overshoot / atr_exec) if atr_exec > 0.0 else 0.0
-    if overshoot_atr > float(getattr(st, "overshoot_peak", 0.0) or 0.0):
-        st.overshoot_peak = overshoot_atr
-        st.overshoot_ts = now
-    overshoot_peak_atr = float(getattr(st, "overshoot_peak", 0.0) or 0.0)
-    overshoot_giveback_atr = max(0.0, overshoot_peak_atr - overshoot_atr)
-    overshoot_giveback_frac = (overshoot_giveback_atr / overshoot_peak_atr) if overshoot_peak_atr > 0.0 else 0.0
-    giveback_from_peak_atr = overshoot_giveback_atr
-    metrics["overshoot_atr"] = float(overshoot_atr)
-    metrics["overshoot_peak_atr"] = float(getattr(st, "overshoot_peak", 0.0) or 0.0)
-    metrics["overshoot_giveback_atr"] = float(overshoot_giveback_atr)
-    metrics["overshoot_giveback_frac"] = float(overshoot_giveback_frac)
-    metrics["giveback_from_peak_atr"] = float(giveback_from_peak_atr)
-
-=======
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
     st.tick_eval_hz = _aee_fixed_tick_hz()
     armed, reason = should_arm_tick_mode(metrics, st, spread_pips, median_spread_5m=max(0.1, float(med_spread)))
     st.tick_armed = bool(armed)
@@ -9082,7 +8737,6 @@ market_hub = None
 # AEE states for active trades
 aee_states: Dict[str, AEEState] = {}
 
-<<<<<<< HEAD
 # ============================================================================
 # MULTI-VECTOR EXTRACTION ENGINE - 150+ Pips/Hr Optimization
 # ============================================================================
@@ -10147,8 +9801,6 @@ class MultiVectorEngine:
 # Global multi-vector engine instance
 multi_vector_engine = None
 
-=======
->>>>>>> cc3a7dc (Update phone_bot.py with latest changes)
 def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None) -> None:  # pyright: ignore[reportGeneralTypeIssues]
     global _SHUTDOWN, _RUNTIME_OANDA, _RUNTIME_DB, _RUNTIME_HUB, enhanced_market_hub, market_hub
     signal.signal(signal.SIGINT, _signal_handler)
