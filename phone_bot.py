@@ -4331,6 +4331,115 @@ SIGNAL_REJECT_LAST_LOG_TS: Dict[str, float] = {}
 SIGNAL_REJECT_SUMMARY_SEC = 60.0
 
 
+def decide_entry_state(pair: str, st: 'PairState', c_exec: list, tf_data: dict = None) -> tuple:
+    """
+    SINGLE SOURCE OF TRUTH for entry state decisions.
+    
+    Returns: (new_state, reasons[], score)
+    
+    This is the ONLY function that can decide entry state transitions.
+    All other logic must route through this function.
+    """
+    reasons = []
+    score = 0.0
+    
+    # Get current state and check timeout conditions first
+    current_state = st.state
+    now = now_ts()
+    state_age = now - st.state_since
+    
+    # === TIMEOUT HANDLING ===
+    if current_state == "ENTER":
+        if state_age >= ENTER_HOLD_SEC:
+            if st.last_trade >= st.state_since:
+                return ("SKIP", ["enter_timeout_with_trade"], 0.0)
+            else:
+                return ("WATCH", ["enter_timeout_no_trade"], 0.0)
+    
+    if current_state == "ARM_TICK_ENTRY":
+        arm = getattr(st, 'entry_arm', {})
+        if not arm:
+            return ("GET_READY", ["tick_arm_missing"], 0.0)
+        arm_ts = float(arm.get("ts", 0.0) or 0.0)
+        arm_expires = float(arm.get("expires_at", 0.0) or 0.0)
+        if arm_ts <= 0.0 or (arm_expires > 0.0 and now > arm_expires) or (now - arm_ts) > SIGNAL_STALE_TTL_SEC:
+            return ("GET_READY", ["tick_arm_expired"], 0.0)
+    
+    # === SIGNAL GENERATION ===
+    sigs = build_signals(pair, st, c_exec, tf_data)
+    
+    # === STATE DECISION LOGIC ===
+    if current_state == "SKIP":
+        # Skip -> Watch transition based on oversold/overbought
+        if st.wr <= -85.0 or st.wr >= 85.0:
+            reasons.append("extreme_wr")
+            score = abs(st.wr) / 100.0
+            return ("WATCH", reasons, score)
+        return ("SKIP", [], 0.0)
+    
+    elif current_state == "WATCH":
+        # Watch -> Get Ready based on signals
+        if sigs:
+            best_sig = max(sigs, key=lambda s: getattr(s, 'score', 0) or 0)
+            reasons.append(f"signal_{getattr(best_sig, 'setup_id', 'unknown')}")
+            score = getattr(best_sig, 'score', 0) or 0.0
+            return ("GET_READY", reasons, score)
+        return ("WATCH", [], 0.0)
+    
+    elif current_state == "GET_READY":
+        # Get Ready -> Enter based on signal persistence and conditions
+        if sigs:
+            best_sig = max(sigs, key=lambda s: getattr(s, 'score', 0) or 0)
+            # Check if signal is still valid and strong enough
+            if getattr(best_sig, 'score', 0) and getattr(best_sig, 'score', 0) >= 0.5:
+                reasons.append(f"strong_signal_{getattr(best_sig, 'setup_id', 'unknown')}")
+                score = getattr(best_sig, 'score', 0)
+                return ("ENTER", reasons, score)
+            else:
+                reasons.append("weak_signal_hold")
+                return ("GET_READY", reasons, score)
+        else:
+            # No signals, degrade back to Watch
+            return ("WATCH", ["signal_lost"], 0.0)
+    
+    elif current_state in ("MANAGING", "WAIT", "PASS"):
+        # These states are handled by AEE, not entry logic
+        return (current_state, ["aee_managed"], 0.0)
+    
+    # Default: keep current state
+    new_state = current_state
+    
+    # === TELEMETRY LOGGING ===
+    if reasons or new_state != current_state:
+        log_runtime("info", "ENTRY_DECISION", 
+                    pair=pair,
+                    prev_state=current_state,
+                    new_state=new_state,
+                    score=score,
+                    reasons=reasons,
+                    state_age=state_age)
+    
+    # === INVARIANT CHECKS ===
+    if sigs and current_state in ("SKIP", "WATCH"):
+        # If signals exist and thresholds pass, must reach GET_READY or ENTER within N cycles
+        cycles_in_state = getattr(st, f"{current_state.lower()}_cycles", 0)
+        if cycles_in_state > 5:  # Configurable threshold
+            log_runtime("warn", "ENTRY_INVARIANT_VIOLATION", 
+                        pair=pair,
+                        state=current_state,
+                        cycles=cycles_in_state,
+                        signal_count=len(sigs),
+                        reason="signals_not_promoting")
+    
+    if new_state == current_state and not reasons and current_state not in ("MANAGING", "WAIT", "PASS"):
+        log_runtime("debug", "ENTRY_SUPPRESS", 
+                    pair=pair,
+                    suppress_reason="no_change",
+                    thresholds={"wr": st.wr, "signal_count": len(sigs)})
+    
+    return (new_state, reasons, score)
+
+
 def _bump_signal_reject(pair: str, setup_id: int, reason: str) -> None:
     pair = normalize_pair(pair)
     bucket = SIGNAL_REJECT_COUNTS.setdefault(pair, {})
@@ -10373,40 +10482,6 @@ class MultiVectorEngine:
         
         return displacement / (path_length + 1e-8)
     
-    def manage_exits(self):
-        """Manage trade exits with 300-second hard exit rule"""
-        current_time = time.time()
-        trades_to_close = []
-        
-        for trade_id, trade in self.active_trades.items():
-            age_seconds = current_time - trade['open_time']
-            
-            # Hard exit after 300 seconds
-            if age_seconds > self.config.HARD_EXIT_SECONDS:
-                trades_to_close.append((trade_id, "TIME_EXIT"))
-                continue
-            
-            # Check if TP/SL hit (would need current price)
-            try:
-                bid, ask = self.oanda.pricing(trade['pair'])
-                current_price = (bid + ask) / 2.0
-                
-                if trade['direction'] == 'LONG':
-                    if current_price >= trade['tp']:
-                        trades_to_close.append((trade_id, "TP_HIT"))
-                    elif current_price <= trade['sl']:
-                        trades_to_close.append((trade_id, "SL_HIT"))
-                else:
-                    if current_price <= trade['tp']:
-                        trades_to_close.append((trade_id, "TP_HIT"))
-                    elif current_price >= trade['sl']:
-                        trades_to_close.append((trade_id, "SL_HIT"))
-            except Exception:
-                pass
-        
-        # Close trades
-        for trade_id, reason in trades_to_close:
-            self._close_trade(trade_id, reason)
     
     def _close_trade(self, trade_id: str, reason: str):
         """Close trade and log metrics"""
@@ -10562,8 +10637,7 @@ class MultiVectorEngine:
             except Exception as e:
                 continue
         
-        # Manage exits
-        self.manage_exits()
+        # All exit logic is now routed through check_aee_exits (AEE canonical path)
         
         # Update dashboard
         self.print_dashboard()
