@@ -40,7 +40,7 @@ SCENARIOS = [
 def run_scenario(scenario):
     out_file = f"temp_res_{scenario['name'].replace(' ', '_')}.json"
     cmd = [
-        "python3", "sim_harness.py",
+        sys.executable, "sim_harness.py",
         "--ticks", scenario['file'],
         "--pair", scenario['pair'],
         "--tp-atr", str(scenario['tp_atr']),

@@ -12,6 +12,7 @@ import sys
 import json
 import time
 import math
+import subprocess
 import gzip
 import shutil
 import signal
@@ -127,6 +128,10 @@ WEBHOOK_RETRY_DELAY = 1.0
 PUSH_ENABLED = False
 PUSH_SERVICE = ""
 PUSH_TOKEN = ""
+
+# Local mobile (Termux) notification configuration
+TERMUX_NOTIFICATIONS_ENABLED = False
+TERMUX_NOTIFICATION_TITLE_PREFIX = "Phone Bot"
 
 # Database transaction configuration
 DB_TRANSACTION_TIMEOUT = 30.0
@@ -327,9 +332,77 @@ def log(event, meta=None):
     meta = dict(meta or {})
     log_runtime("info", event, **meta)
 
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    raw = str(os.getenv(name, "")).strip().lower()
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    if raw in ("0", "false", "no", "off"):
+        return False
+    return bool(default)
+
+
+def _refresh_notification_settings() -> None:
+    global WEBHOOK_ENABLED, WEBHOOK_URL, WEBHOOK_RETRY_MAX, WEBHOOK_TIMEOUT, WEBHOOK_RETRY_DELAY
+    global PUSH_ENABLED, PUSH_SERVICE, PUSH_TOKEN
+    global TERMUX_NOTIFICATIONS_ENABLED, TERMUX_NOTIFICATION_TITLE_PREFIX
+
+    WEBHOOK_ENABLED = _env_bool("WEBHOOK_ENABLED", WEBHOOK_ENABLED)
+    WEBHOOK_URL = str(os.getenv("WEBHOOK_URL", WEBHOOK_URL)).strip()
+    WEBHOOK_RETRY_MAX = int(float(os.getenv("WEBHOOK_RETRY_MAX", WEBHOOK_RETRY_MAX)))
+    WEBHOOK_TIMEOUT = float(os.getenv("WEBHOOK_TIMEOUT", WEBHOOK_TIMEOUT))
+    WEBHOOK_RETRY_DELAY = float(os.getenv("WEBHOOK_RETRY_DELAY", WEBHOOK_RETRY_DELAY))
+
+    PUSH_ENABLED = _env_bool("PUSH_ENABLED", PUSH_ENABLED)
+    PUSH_SERVICE = str(os.getenv("PUSH_SERVICE", PUSH_SERVICE)).strip().lower()
+    PUSH_TOKEN = str(os.getenv("PUSH_TOKEN", PUSH_TOKEN)).strip()
+
+    mobile_default = bool(
+        os.getenv("TERMUX_VERSION") or os.getenv("MOBILE_MODE", "").strip().lower() in ("1", "true", "yes")
+    )
+    TERMUX_NOTIFICATIONS_ENABLED = _env_bool("TERMUX_NOTIFICATIONS_ENABLED", mobile_default)
+    TERMUX_NOTIFICATION_TITLE_PREFIX = str(
+        os.getenv("TERMUX_NOTIFICATION_TITLE_PREFIX", TERMUX_NOTIFICATION_TITLE_PREFIX)
+    ).strip() or "Phone Bot"
+
+
+def _send_termux_notification(event: str, message: str) -> bool:
+    if not TERMUX_NOTIFICATIONS_ENABLED:
+        return False
+    cmd = shutil.which("termux-notification")
+    if not cmd:
+        return False
+    title = f"{TERMUX_NOTIFICATION_TITLE_PREFIX} | {str(event or '')}".strip()
+    body = str(message or "")
+    try:
+        result = subprocess.run(
+            [cmd, "--title", title[:120], "--content", body[:400], "--priority", "high"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            return True
+        log_runtime(
+            "warning",
+            "TERMUX_NOTIFICATION_FAILED",
+            return_code=result.returncode,
+            stderr=(result.stderr or "")[:200],
+        )
+        return False
+    except Exception as e:
+        log_runtime("warning", "TERMUX_NOTIFICATION_ERROR", error=str(e))
+        return False
+
 # Notification adapter
 def notify(event, message):
-    log_runtime("info", f"NOTIFY: {event} - {message}")
+    event_s = str(event or "")
+    message_s = str(message or "")
+    log_runtime("info", f"NOTIFY: {event_s} - {message_s}")
+
+    _send_termux_notification(event_s, message_s)
+    send_webhook_notification("bot_event", {"event": event_s, "message": message_s}, "normal")
+    send_push_notification(event_s, message_s, "normal")
 
 # Price validation helper
 def is_valid_price(p):
@@ -357,6 +430,8 @@ def initialize_bot():
 
     if load_dotenv is not None:
         load_dotenv()
+
+    _refresh_notification_settings()
 
     api_key = str(os.getenv("OANDA_API_KEY", "")).strip()
     account_id = str(os.getenv("OANDA_ACCOUNT_ID", "")).strip()
@@ -1720,7 +1795,7 @@ BROKER_REJECT_LOG = "broker_rejections.log"
 def log_broker_reject(event_type: str, pair: str, details: Dict[str, Any]) -> None:
     """Log broker rejections/cancellations to a dedicated file for debugging."""
     pair = normalize_pair(pair)
-    timestamp = datetime.utcnow().isoformat() + " UTC"
+    timestamp = datetime.now(timezone.utc).isoformat()
     entry = {
         "ts": timestamp,
         "event": event_type,
@@ -7289,7 +7364,7 @@ def proof_write_event(event: dict) -> None:
     try:
         root = Path(__file__).parent / "proof_artifacts"
         root.mkdir(parents=True, exist_ok=True)
-        session = root / f"{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}_aee"
+        session = root / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_aee"
         session.mkdir(parents=True, exist_ok=True)
         out = session / "events.jsonl"
         payload = dict(event or {})
@@ -10087,8 +10162,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     os.environ["OANDA_ENV"] = "practice"
     
     # Create placeholder logs for TZ-0.9
-    (base_dir / "logs" / "trades.jsonl").touch()
-    (base_dir / "logs" / "metrics.jsonl").touch()
+    logs_dir = base_dir / "logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    (logs_dir / "trades.jsonl").touch()
+    (logs_dir / "metrics.jsonl").touch()
     # Initial local gates (with detailed failure reporting)
     tier0_gates = [
         ("TZ-0.1 Entrypoint Identity", tz_0_1_entrypoint_identity, []),
@@ -10235,8 +10312,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if candles_file.exists():
                     try:
                         data = json.loads(candles_file.read_text())
-                        candle_schema_available = True
-                        if isinstance(data, list) and len(data) > 0:
+                        candle_schema_available = isinstance(data, list) and len(data) > 0
+                        if candle_schema_available:
                             candle = data[0]
                             has_base = all(k in candle for k in ("complete", "volume"))
                             price_keys = ("o", "h", "l", "c")
@@ -10254,10 +10331,11 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if pricing_file.exists():
                     try:
                         data = json.loads(pricing_file.read_text())
-                        pricing_schema_available = True
+                        prices = data.get("prices") if isinstance(data, dict) else None
+                        pricing_schema_available = isinstance(prices, list) and len(prices) > 0
                         required = ["prices"]
                         pricing_schema_valid = all(k in data for k in required) if isinstance(data, dict) else False
-                        if "prices" in data and isinstance(data["prices"], list) and len(data["prices"]) > 0:
+                        if pricing_schema_available:
                             price_item = data["prices"][0]
                             has_basic = all(k in price_item for k in ("instrument", "time"))
                             has_top = ("bid" in price_item and "ask" in price_item)
@@ -11918,7 +11996,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 continue
             
             log_runtime("info", "DB_OK_PASSED", scan_type=scan_type, scan_pairs_count=len(scan_pairs))
-            run_tag = f"IND_RUN {datetime.utcnow().isoformat()}Z"
+            run_tag = f"IND_RUN {datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')}"
 
             # Batch fetch comprehensive multi-timeframe data for all scan pairs
             tf_data_cache = {}
@@ -13389,17 +13467,22 @@ def send_push_notification(title: str, message: str, priority: str = "normal") -
     Returns:
         True if sent successfully
     """
-    if not PUSH_ENABLED or not PUSH_SERVICE or not PUSH_TOKEN:
+    service = (PUSH_SERVICE or "").strip().lower()
+    if not PUSH_ENABLED or not service:
+        return False
+    if service not in ("termux",) and not PUSH_TOKEN:
         return False
     
     try:
-        if PUSH_SERVICE.lower() == "pushover":
+        if service == "termux":
+            return _send_termux_notification(title, message)
+        if service == "pushover":
             return send_pushover_notification(title, message, priority)
-        elif PUSH_SERVICE.lower() == "pushbullet":
+        elif service == "pushbullet":
             return send_pushbullet_notification(title, message)
         else:
             log(f"{EMOJI_WARN} UNSUPPORTED_PUSH_SERVICE", {
-                "service": PUSH_SERVICE
+                "service": service
             })
             return False
             
@@ -13573,7 +13656,12 @@ def get_notification_status() -> dict:
         "push": {
             "enabled": PUSH_ENABLED,
             "service": PUSH_SERVICE,
-            "configured": bool(PUSH_TOKEN and PUSH_SERVICE)
+            "configured": bool(PUSH_SERVICE and (PUSH_SERVICE == "termux" or PUSH_TOKEN))
+        },
+        "termux": {
+            "enabled": TERMUX_NOTIFICATIONS_ENABLED,
+            "command_available": bool(shutil.which("termux-notification")),
+            "title_prefix": TERMUX_NOTIFICATION_TITLE_PREFIX,
         }
     }
 

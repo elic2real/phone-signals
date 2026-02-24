@@ -37,6 +37,27 @@ Repository includes the production bot plus a **no-touch simulation harness** fo
 PYTHONUNBUFFERED=1 timeout 25s python3 phone_bot.py
 ```
 
+## Notifications (Termux)
+
+Phone alerts are emitted through the main `notify(...)` adapter and can dispatch to:
+- local Termux notifications (`termux-notification`)
+- webhook (`WEBHOOK_*` env)
+- push provider (`PUSH_*` env; supports `termux`, `pushover`, `pushbullet`)
+
+Minimal Termux setup:
+
+```bash
+pkg install termux-api
+export MOBILE_MODE=1
+export TERMUX_NOTIFICATIONS_ENABLED=1
+export TERMUX_NOTIFICATION_TITLE_PREFIX="Phone Bot"
+PYTHONUNBUFFERED=1 python3 phone_bot.py
+```
+
+Optional remote channels:
+- Webhook: `WEBHOOK_ENABLED=1`, `WEBHOOK_URL=...`
+- Push: `PUSH_ENABLED=1`, `PUSH_SERVICE=termux|pushover|pushbullet`, `PUSH_TOKEN=...` (not required for `termux`)
+
 ## CHANGELOG (2026-02-23)
 
 - Root cause: unresolved merge-conflict artifacts in `phone_bot.py` introduced invalid syntax (`>>>>>>> ...`) and duplicate/dead pasted code blocks.
