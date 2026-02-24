@@ -143,8 +143,9 @@ from datetime import datetime
 from dataclasses import dataclass, asdict
 from typing import Callable, Dict, List, Tuple
 
-# === SOURCE OF TRUTH VERSION ===
-SCENARIO_VERSION = "v1.0"
+# === SCENARIO SOURCE OF TRUTH (SOT) ===
+SCENARIO_SOT_VERSION = "2026-02-24-0000"
+SCENARIO_VERSION = SCENARIO_SOT_VERSION
 # ===============================
 
 
@@ -429,50 +430,6 @@ def scenario_whipsaw_spike_fade(seed: int = 123) -> List[Dict[str, float]]:
     return ticks
 
 
-def _OLD_scenario_whipsaw_spike_fade(seed: int = 123) -> List[Dict[str, float]]:
-    # Canonical whipsaw extraction: spike -> local peak -> reversal onset.
-    # Keep first strong spike late enough to avoid short replay artifacts.
-    n_ticks = 700
-    ts0 = 1640000000.0
-    base = 1.0860
-    ticks: List[Dict[str, float]] = []
-
-    for i in range(n_ticks):
-        ts = ts0 + i
-        if i < 220:
-            mid = base + 0.00004 * math.sin(i / 18.0)
-        elif i < 280:
-            # Strong spike up into a local liquidity sweep / extreme.
-            prog = (i - 220) / 60.0
-            mid = base + 0.00105 * prog + 0.00003 * math.sin(i / 8.0)
-        elif i < 340:
-            # Reversal onset: immediate giveback, not deep fade riding.
-            prog = (i - 280) / 60.0
-            mid = base + 0.00105 - 0.00055 * prog + 0.00002 * math.sin(i / 7.0)
-        elif i < 520:
-            # Stabilize above base with mild noise so exits near peak remain profitable.
-            mid = base + 0.00042 + 0.00005 * math.sin(i / 14.0)
-        elif i < 610:
-            # Secondary, smaller spike/reversal for robustness.
-            prog = (i - 520) / 90.0
-            mid = base + 0.00042 + 0.00035 * math.sin(prog * math.pi)
-        else:
-            mid = base + 0.00036 + 0.00003 * math.sin(i / 16.0)
-
-        spread = 0.00008 + (0.00002 if (280 <= i < 340 or 520 <= i < 610) else 0.0)
-        ticks.append(
-            {
-                "instrument": "EUR_USD",
-                "ts": ts,
-                "bid": round(mid - spread / 2.0, 5),
-                "ask": round(mid + spread / 2.0, 5),
-                "mid": round(mid, 5),
-            }
-        )
-
-    return ticks
-
-
 def scenario_slow_grind_break(seed: int = 123) -> List[Dict[str, float]]:
     """Low-energy grind that transitions into one-direction break."""
     cfg = InstrumentConfig(name="EUR_USD", initial_price=1.0825, volatility=0.00005, drift=0.00001)
@@ -584,6 +541,25 @@ SCENARIO_REGISTRY: Dict[str, Callable[[int], List[Dict[str, float]]]] = {
     "universal_energy_morph": scenario_universal_energy_morph,
 }
 
+# Scenario SOT header:
+# - Names are locked to SCENARIO_REGISTRY keys.
+# - Key parameters are locked by this map and scenario function bodies.
+# - Any changes to scenario names/shape/parameters MUST bump SCENARIO_SOT_VERSION.
+SCENARIO_SOT_PARAMS: Dict[str, Dict[str, float]] = {
+    "trend_continuation": {"n_ticks": 650, "volatility": 0.00022, "drift": 0.00009},
+    "panic_reversal": {"n_each": 320, "up_drift": 0.00008, "down_drift": -0.00009},
+    "spread_widening": {"n_ticks": 650, "stress_start": 210, "stress_end": 290},
+    "whipsaw_spike_fade": {"n_ticks": 700, "spike_start": 220, "spike_pips": 40.0},
+    "multi_whipsaw_sweep": {"n_ticks": 650, "spike_dur": 60, "fade_dur": 60},
+    "slow_grind_break": {"n_ticks": 650, "break_start": 420},
+    "high_energy_trend": {"n_ticks": 650, "volatility": 0.00030, "drift": 0.00002},
+    "low_energy_range": {"n_ticks": 650, "volatility": 0.00004, "drift": 0.000002},
+    "energy_transition": {"phase1_ticks": 600, "phase2_ticks": 600},
+    "energy_depletion": {"phase1_ticks": 600, "phase2_ticks": 600},
+    "random_walk": {"n_ticks": 650, "volatility": 0.00015, "drift": 0.000004},
+    "universal_energy_morph": {"phase_ticks": 600, "phases": 5},
+}
+
 def export_ticks_csv(ticks: List[Dict[str, float]], filepath: str, manifest: dict = None) -> None:
     # Write CSV
     with open(filepath, "w", newline="", encoding="utf-8") as f:
@@ -664,6 +640,17 @@ def _test_scenario_compliance():
         except Exception as e:
             print(f"[ERR ] {name}: {e}")
 
+
+def scenario_sot_self_test() -> None:
+    expected = set(SCENARIO_REGISTRY.keys())
+    declared = set(SCENARIO_SOT_PARAMS.keys())
+    print("SCENARIO_SOT_VERSION", SCENARIO_SOT_VERSION)
+    print("SCENARIO_NAMES", sorted(expected))
+    assert expected == declared, f"SOT mismatch registry={sorted(expected)} declared={sorted(declared)}"
+    for name in sorted(expected):
+        fn = SCENARIO_REGISTRY.get(name)
+        assert callable(fn), f"scenario missing callable: {name}"
+
 # --- Restored: sample_scenario_mix for harness compatibility ---
 def sample_scenario_mix(rng: random.Random | None = None, weights: Dict[str, float] | None = None) -> Tuple[str, List[Dict[str, float]]]:
     """Sample a scenario from the registry, optionally weighted."""
@@ -697,6 +684,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--generate", action="store_true", help="Generate Golden artifacts")
     parser.add_argument("--test", action="store_true", help="Run compliance tests")
+    parser.add_argument("--sot-self-test", action="store_true", help="Run scenario source-of-truth self-test")
     args = parser.parse_args()
 
     if args.generate:
@@ -704,6 +692,9 @@ if __name__ == "__main__":
     
     if args.test:
         _test_scenario_compliance()
+
+    if args.sot_self_test:
+        scenario_sot_self_test()
         
     if not args.generate and not args.test:
         print("No action specified. Use --generate to create golden files or --test to verify logic.")

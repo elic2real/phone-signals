@@ -27,7 +27,7 @@ from pathlib import Path
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from aee_validator import AEEValidator
-from tick_generator import export_ticks_csv, sample_scenario_mix
+from tick_generator import SCENARIO_REGISTRY, export_ticks_csv, sample_scenario_mix
 
 
 def _generate_ticks(rng: random.Random, scenario_weights: dict[str, float] | None = None) -> tuple[str, list[dict]]:
@@ -149,6 +149,55 @@ def run_batch_mode(runs: int, output_dir: Path, audit_file: Path, bucket_sec: fl
     return 0
 
 
+def run_sot_lock_check(seed: int) -> int:
+    expected_names = {
+        "trend_continuation",
+        "panic_reversal",
+        "spread_widening",
+        "whipsaw_spike_fade",
+        "multi_whipsaw_sweep",
+        "slow_grind_break",
+        "high_energy_trend",
+        "low_energy_range",
+        "energy_transition",
+        "energy_depletion",
+        "random_walk",
+        "universal_energy_morph",
+    }
+    actual_names = set(SCENARIO_REGISTRY.keys())
+    if actual_names != expected_names:
+        print("SOT_CHECK_FAIL scenario_names", sorted(actual_names))
+        return 2
+
+    rng = random.Random(seed)
+    for _ in range(10):
+        scenario, ticks = _generate_ticks(rng)
+        wall_time = (ticks[-1]["ts"] - ticks[0]["ts"]) if ticks else 0.0
+        if wall_time < 600:
+            print(f"SOT_CHECK_FAIL wall_time scenario={scenario} wall_time={wall_time:.2f}")
+            return 3
+
+    whipsaw_ticks = SCENARIO_REGISTRY["whipsaw_spike_fade"](seed=seed)
+    mids = [float(t["mid"]) for t in whipsaw_ticks]
+    spike_excursion_pips = ((max(mids) - min(mids)) / 0.0001) if mids else 0.0
+    if spike_excursion_pips < 25.0:
+        print(f"SOT_CHECK_FAIL whipsaw_spike_excursion_pips={spike_excursion_pips:.2f}")
+        return 4
+
+    print(
+        "SOT_CHECK_PASS",
+        json.dumps(
+            {
+                "seed": seed,
+                "scenario_count": len(actual_names),
+                "whipsaw_spike_excursion_pips": spike_excursion_pips,
+            },
+            indent=2,
+        ),
+    )
+    return 0
+
+
 def print_usage() -> None:
     print(
         "Usage:\n"
@@ -172,6 +221,9 @@ if __name__ == "__main__":
     p_batch.add_argument("--bucket-sec", type=float, default=5.0)
     p_batch.add_argument("--seed", type=int, default=123)
 
+    p_sot = sub.add_parser("sot-check", help="scenario source-of-truth lock checks")
+    p_sot.add_argument("--seed", type=int, default=123)
+
     args = parser.parse_args()
     if args.mode == "test" or args.mode is None:
         raise SystemExit(run_test_mode(bucket_sec=getattr(args, "bucket_sec", 5.0), seed=getattr(args, "seed", 123)))
@@ -185,6 +237,8 @@ if __name__ == "__main__":
                 seed=args.seed,
             )
         )
+    if args.mode == "sot-check":
+        raise SystemExit(run_sot_lock_check(seed=args.seed))
 
     print_usage()
     raise SystemExit(1)
