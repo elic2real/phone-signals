@@ -1439,7 +1439,11 @@ class VectorSaturationEngine:
             return pulse_z  # Target > 2.5 for instant entry
             
         except Exception as e:
-            print(f"[PULSE_MOMENTUM_ERROR] {symbol}: {e}")
+            log_throttled(
+                f"pulse_momentum_err:{symbol}",
+                "PULSE_MOMENTUM_ERROR",
+                {"symbol": symbol, "error": str(e)},
+            )
             return 0.0
 
 # Global Vector Saturation Engine

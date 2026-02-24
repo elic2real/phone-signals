@@ -24,6 +24,9 @@ jobs:
             exit 1
           fi
 
+      - name: Compile phone_bot.py
+        run: python -m py_compile phone_bot.py
+
       - name: Compile all Python files
         run: |
           python - <<'PY'
