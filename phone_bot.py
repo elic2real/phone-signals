@@ -1820,6 +1820,84 @@ LIVE_MODE = os.getenv("LIVE_MODE", "0").strip().lower() in ("1", "true", "yes")
 DRY_RUN_ONLY = os.getenv("DRY_RUN_ONLY", "1" if not LIVE_MODE else "0").strip().lower() in ("1", "true", "yes")
 ALLOW_ENTRIES = os.getenv("ALLOW_ENTRIES", "1").strip().lower() in ("1", "true", "yes")
 
+
+def self_heal_startup_config() -> dict:
+    """Self-heal mode: correct gating flags that would unintentionally block trading.
+
+    Three safeguards applied early at startup (before any decision logic):
+      1. DRY_RUN_ONLY is forced False when LIVE_MODE is True.
+      2. ALLOW_ENTRIES is forced True if it evaluates False.
+      3. STOP_TRADING.flag is removed if it exists at startup.
+
+    Returns a dict with effective values and actions taken (for logging/testing).
+    """
+    import logging as _logging
+
+    global DRY_RUN_ONLY, ALLOW_ENTRIES
+
+    actions: dict = {}
+
+    # 1. DRY_RUN_ONLY must be False when LIVE_MODE is True.
+    if LIVE_MODE and DRY_RUN_ONLY:
+        DRY_RUN_ONLY = False
+        os.environ["DRY_RUN_ONLY"] = "false"
+        actions["DRY_RUN_ONLY_overridden"] = True
+        _logging.warning(
+            "SELF_HEAL: DRY_RUN_ONLY was True but LIVE_MODE is enabled; "
+            "forcibly set DRY_RUN_ONLY=False to allow live trading."
+        )
+
+    # 2. ALLOW_ENTRIES must be True.
+    if not ALLOW_ENTRIES:
+        ALLOW_ENTRIES = True
+        os.environ["ALLOW_ENTRIES"] = "true"
+        actions["ALLOW_ENTRIES_overridden"] = True
+        _logging.warning(
+            "SELF_HEAL: ALLOW_ENTRIES was False; "
+            "auto-enabled ALLOW_ENTRIES=True to permit trade entries."
+        )
+
+    # 3. Remove STOP_TRADING.flag if present at startup.
+    # STOP_FLAG is defined at module level (os.path.join(PROJECT_DIR, "STOP_TRADING.flag")).
+    stop_flag_found = os.path.exists(STOP_FLAG)
+    actions["stop_flag_found"] = stop_flag_found
+    if stop_flag_found:
+        try:
+            os.remove(STOP_FLAG)
+            actions["stop_flag_removed"] = True
+            _logging.warning(
+                "SELF_HEAL: STOP_TRADING.flag was present at startup; "
+                "automatically removed to allow trading to proceed."
+            )
+        except Exception as _e:
+            actions["stop_flag_removed"] = False
+            actions["stop_flag_remove_error"] = str(_e)
+            _logging.error(
+                "SELF_HEAL: STOP_TRADING.flag found but could not be removed: %s; "
+                "trading may remain blocked.",
+                _e,
+            )
+
+    # Consolidated startup configuration summary.
+    _logging.info(
+        "STARTUP_CONFIG_SUMMARY LIVE_MODE=%s DRY_RUN_ONLY=%s ALLOW_ENTRIES=%s "
+        "stop_flag_found=%s stop_flag_removed=%s",
+        LIVE_MODE,
+        DRY_RUN_ONLY,
+        ALLOW_ENTRIES,
+        stop_flag_found,
+        actions.get("stop_flag_removed", False),
+    )
+
+    actions.update(
+        {
+            "LIVE_MODE": LIVE_MODE,
+            "DRY_RUN_ONLY": DRY_RUN_ONLY,
+            "ALLOW_ENTRIES": ALLOW_ENTRIES,
+        }
+    )
+    return actions
+
 SIGNAL_STALE_TTL_SEC = 12 * 60  # 720s
 ARM_ENTRY_DIST_ATR = 0.30
 ENTRY_BREAK_BUFFER_ATR = 0.10
@@ -9811,6 +9889,11 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         os.environ["DRY_RUN_ONLY"] = "true" if DRY_RUN_ONLY else "false"
 
     # ============================================================================
+    # SELF-HEAL MODE: correct gating flags before any decision logic runs.
+    # ============================================================================
+    self_heal_startup_config()
+
+    # ============================================================================
     # TIER-0 STARTUP INTEGRITY GATES (process must exit on any failure)
     # ============================================================================
     from tier0_gates import (
@@ -14353,6 +14436,83 @@ def _run_selfcheck() -> int:
     return 0
 
 
+def _run_selfheal_check() -> int:
+    """Minimal self-check that validates self_heal_startup_config() behavior.
+
+    Tests:
+      1. DRY_RUN_ONLY is forced False when LIVE_MODE is True.
+      2. ALLOW_ENTRIES is auto-enabled when it is False.
+      3. STOP_TRADING.flag is removed at startup when present.
+    """
+    global LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES
+
+    failures = []
+
+    # --- Test 1: DRY_RUN_ONLY overridden by LIVE_MODE ---
+    _saved = (LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES)
+    try:
+        LIVE_MODE = True
+        DRY_RUN_ONLY = True
+        ALLOW_ENTRIES = True
+        result = self_heal_startup_config()
+        if result.get("DRY_RUN_ONLY") is not False:
+            failures.append("TEST1 FAIL: DRY_RUN_ONLY not cleared when LIVE_MODE=True")
+        if not result.get("DRY_RUN_ONLY_overridden"):
+            failures.append("TEST1 FAIL: DRY_RUN_ONLY_overridden not set in result")
+    finally:
+        LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES = _saved
+
+    # --- Test 2: ALLOW_ENTRIES auto-enabled ---
+    _saved = (LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES)
+    try:
+        LIVE_MODE = False
+        DRY_RUN_ONLY = False
+        ALLOW_ENTRIES = False
+        result = self_heal_startup_config()
+        if result.get("ALLOW_ENTRIES") is not True:
+            failures.append("TEST2 FAIL: ALLOW_ENTRIES not set to True")
+        if not result.get("ALLOW_ENTRIES_overridden"):
+            failures.append("TEST2 FAIL: ALLOW_ENTRIES_overridden not set in result")
+    finally:
+        LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES = _saved
+
+    # --- Test 3: STOP_TRADING.flag removed ---
+    _saved = (LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES)
+    try:
+        LIVE_MODE = False
+        DRY_RUN_ONLY = False
+        ALLOW_ENTRIES = True
+        # Create the flag file that self_heal_startup_config will look for
+        with open(STOP_FLAG, "w"):
+            pass
+        result = self_heal_startup_config()
+        if os.path.exists(STOP_FLAG):
+            os.remove(STOP_FLAG)
+            failures.append("TEST3 FAIL: STOP_TRADING.flag not removed by self_heal_startup_config")
+        if not result.get("stop_flag_found"):
+            failures.append("TEST3 FAIL: stop_flag_found not True in result")
+        if not result.get("stop_flag_removed"):
+            failures.append("TEST3 FAIL: stop_flag_removed not True in result")
+    except Exception as _e:
+        if os.path.exists(STOP_FLAG):
+            try:
+                os.remove(STOP_FLAG)
+            except Exception:
+                pass
+        failures.append(f"TEST3 ERROR: {_e}")
+    finally:
+        LIVE_MODE, DRY_RUN_ONLY, ALLOW_ENTRIES = _saved
+
+    if failures:
+        for f in failures:
+            print(f"SELFHEAL_CHECK_FAIL: {f}", flush=True)
+        return 1
+
+    _append_proof_marker("selfheal-check", "ok")
+    print("SELFHEAL_CHECK_OK", flush=True)
+    return 0
+
+
 def _run_live_indicator_proof() -> int:
     """Run indicator path against live market data and emit proof marker."""
     _append_proof_marker("live-indicator-proof", "start")
@@ -14405,6 +14565,7 @@ if __name__ == "__main__":
     parser.add_argument("--test-sizing", action="store_true", help="Test sizing calculations and exit")
     parser.add_argument("--rove-indicators", action="store_true", help="Fetch candles, compute indicators, output JSONL per TF per pair")
     parser.add_argument("--selfcheck", action="store_true", help="Run compile/runtime self-check and exit")
+    parser.add_argument("--selfheal-check", action="store_true", help="Run self-heal startup config unit checks and exit")
     parser.add_argument("--live-indicator-proof", action="store_true", help="Run live indicator proof path and emit JSONL marker")
     parser.add_argument("--live-exec-proof", action="store_true", help="Run bounded dry-run execution proof and emit JSONL marker")
     parser.add_argument("--log-proof", action="store_true", help="Run bounded dry-run logging proof and emit JSONL marker")
@@ -14413,6 +14574,9 @@ if __name__ == "__main__":
 
     if args.selfcheck:
         sys.exit(_run_selfcheck())
+
+    if args.selfheal_check:
+        sys.exit(_run_selfheal_check())
 
     if args.live_indicator_proof:
         sys.exit(_run_live_indicator_proof())
