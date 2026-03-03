@@ -177,12 +177,9 @@ def generate_synthetic_ticks(
     ticks: List[Dict[str, float]] = []
     current = config.initial_price
 
-    # Add deterministic per-run offset to start_ts for uniqueness (robustness layer)
-    # If start_ts is exactly 1640000000.0, add offset based on os.environ["TICKGEN_RUN_INDEX"] if present
+    # Golden scenarios must be byte-for-byte deterministic across runs.
+    # Do not inject environment-based timestamp offsets into generated CSVs.
     ts_offset = 0.0
-    if start_ts == 1640000000.0:
-        run_index = int(os.environ.get("TICKGEN_RUN_INDEX", "0"))
-        ts_offset = run_index * 100000.0
     for i in range(n_ticks):
         vol = config.volatility
         for s, e, m in spikes:
