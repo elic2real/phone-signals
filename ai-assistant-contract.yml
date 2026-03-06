@@ -1,0 +1,21 @@
+version: 1
+boundaries:
+  orchestration:
+    file: phone_bot.py
+    responsibility:
+      - runtime orchestration
+      - broker integration
+      - state persistence and logging glue
+  entry:
+    file: entry_logic.py
+    responsibility:
+      - entry gate evaluation payloads
+      - confidence scoring and note persistence formatting
+  aee:
+    file: aee_engine.py
+    responsibility:
+      - per-leg policy selection
+      - active evaluate_with_leg_policy wrapper
+rules:
+  - no orphan entry decision logic outside entry_logic.py and phone_bot orchestrator callsites
+  - no orphan aee policy selection logic outside aee_engine.py and phone_bot orchestrator callsites

@@ -1,0 +1,2821 @@
+{
+  "patches": [
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1338.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 32,
+        "touch_count": 1237.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 756.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1202.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 32,
+        "touch_count": 1300.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 784.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 431.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 965.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 12,
+        "touch_count": 2087.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1375.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1202.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_USD|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 907.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1440.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1130.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 800.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1342.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1293.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 895.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 29,
+        "touch_count": 502.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1101.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 38,
+        "touch_count": 1932.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1278.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1266.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_USD|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1010.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1502.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1267.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 723.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 24,
+        "touch_count": 1233.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 32,
+        "touch_count": 1333.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 705.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 387.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 29,
+        "touch_count": 881.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 12,
+        "touch_count": 2199.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 32,
+        "touch_count": 1333.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1209.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_JPY|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 892.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1506.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1152.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 730.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 4,
+        "touch_count": 1177.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 18,
+        "touch_count": 1279.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 834.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 33,
+        "touch_count": 425.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 945.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 12,
+        "touch_count": 2022.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1267.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 30,
+        "touch_count": 1250.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CHF|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 853.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 7,
+        "touch_count": 1574.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1173.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 573.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1278.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1254.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 708.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 29,
+        "touch_count": 316.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 29,
+        "touch_count": 969.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 12,
+        "touch_count": 1976.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 0,
+        "touch_count": 1135.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 24,
+        "touch_count": 1199.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_USD|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1016.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 7,
+        "touch_count": 1595.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1187.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 558.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 32,
+        "touch_count": 1233.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1304.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 759.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 29,
+        "touch_count": 296.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 938.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 38,
+        "touch_count": 2245.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 32,
+        "touch_count": 1294.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1241.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "USD_CAD|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 901.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 38,
+        "touch_count": 1513.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1272.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 659.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1253.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1238.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 33,
+        "touch_count": 706.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 325.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 885.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 12,
+        "touch_count": 2090.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1154.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 1146.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_USD|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 976.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1384.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1099.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1008.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1391.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1329.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 890.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 633.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1189.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 4,
+        "aee.strictness_mult": 1.05,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 39,
+        "touch_count": 1810.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1261.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1247.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_GBP|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1099.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1506.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1142.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 806.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1303.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1299.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 707.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 33,
+        "touch_count": 512.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 1014.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 4,
+        "aee.strictness_mult": 1.05,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 39,
+        "touch_count": 2028.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1165.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1315.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_JPY|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1017.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1505.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1232.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 836.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1362.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1267.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 33,
+        "touch_count": 822.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 527.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1216.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 12,
+        "touch_count": 1929.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1143.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1152.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "GBP_JPY|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 1094.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 7,
+        "touch_count": 1536.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1254.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 655.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1230.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 23,
+        "touch_count": 1305.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 15,
+        "touch_count": 621.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 412.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 24,
+        "touch_count": 1008.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 34,
+        "touch_count": 1897.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1141.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1044.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_JPY|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1140.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q1|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q1|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q1|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q2|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q2|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q2|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q3|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q3|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q3|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q4|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q4|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "CHF_JPY|LONDON_Q4|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1381.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1153.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 861.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 30,
+        "touch_count": 1233.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 17,
+        "touch_count": 1301.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 767.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 33,
+        "touch_count": 632.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 1072.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1815.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1203.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 11,
+        "touch_count": 1304.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "EUR_CHF|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1009.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q1|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q1|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q1|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q2|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q2|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q2|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q3|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q3|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q3|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q4|VOL_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q4|VOL_MID",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "AUD_CAD|LONDON_Q4|VOL_HIGH",
+      "knobs": {},
+      "meta": {
+        "source": "fallback",
+        "cluster_id": null,
+        "touch_count": null
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q1|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1591.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q1|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1148.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 2,
+        "touch_count": 718.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1344.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1316.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 19,
+        "touch_count": 595.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q3|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 10,
+        "touch_count": 387.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q3|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 1,
+        "touch_count": 952.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q3|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.05
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 26,
+        "touch_count": 1937.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q4|VOL_LOW",
+      "knobs": {
+        "aee.fail_windows": 3,
+        "aee.strictness_mult": 0.95,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 20,
+        "touch_count": 1091.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q4|VOL_MID",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.3,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 22,
+        "touch_count": 1160.0
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.fail_windows": 7,
+        "aee.strictness_mult": 1.2,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "meta": {
+        "source": "cluster",
+        "cluster_id": 21,
+        "touch_count": 1052.0
+      }
+    }
+  ]
+}

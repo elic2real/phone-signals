@@ -1,0 +1,76 @@
+{
+  "version": "V4_PROMOTION_FAMILY_COMPRESSED_ASIA_ATR_LOW",
+  "generated_utc": "2026-03-05T12:48:53.122930+00:00",
+  "state_model": "pair|session|atr_bucket",
+  "inputs": {
+    "verify_source": "proof_artifacts/LANE_A_V3_FAMILY_VERIFY.json",
+    "targets_evaluated": 10,
+    "pass_count": 9,
+    "promotion_rule": "promote family buckets; isolate single failing target with pair override"
+  },
+  "patches": [
+    {
+      "level": "SESSION_FAMILY",
+      "key": "USD_FAMILY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "family_verify_top10",
+        "family": "USD_FAMILY",
+        "pass_targets": "5/5"
+      }
+    },
+    {
+      "level": "SESSION_FAMILY",
+      "key": "JPY_FAMILY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "family_verify_top10",
+        "family": "JPY_FAMILY",
+        "pass_targets": "3/4"
+      }
+    },
+    {
+      "level": "SESSION_FAMILY",
+      "key": "CHF_FAMILY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 0.85,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "family_verify_top10",
+        "family": "CHF_FAMILY",
+        "pass_targets": "1/1"
+      }
+    },
+    {
+      "level": "SESSION_PAIR",
+      "key": "NZD_JPY|ASIA|ATR_LOW",
+      "knobs": {},
+      "meta": {
+        "source": "family_verify_top10",
+        "scope": "pair_override",
+        "override_action": "revert_to_baseline",
+        "reason": "single failing JPY outlier in top10 family verify"
+      }
+    }
+  ],
+  "window": {
+    "type": "verify_top10",
+    "source": "proof_artifacts/LANE_A_V3_FAMILY_VERIFY.json"
+  }
+}

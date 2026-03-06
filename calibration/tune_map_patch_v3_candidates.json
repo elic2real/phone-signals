@@ -1,0 +1,196 @@
+{
+  "version": "V3_MIXED_CANDIDATES",
+  "state_model": "pair|session|atr_bucket",
+  "patches": [
+    {
+      "key": "GBP_USD|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.030753856616462016,
+        "avg_delta_capture_to_ceiling": 0.08312372847995052,
+        "avg_delta_extraction_per_hour": 5.0804613960948295,
+        "pass_shards": 4,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "USD_CHF|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 0.85,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c001",
+        "avg_delta_expected_extraction_atr": 0.055750537273198876,
+        "avg_delta_capture_to_ceiling": 0.028942131389545434,
+        "avg_delta_extraction_per_hour": 4.844414931622639,
+        "pass_shards": 3,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "NZD_USD|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.033748510596919024,
+        "avg_delta_capture_to_ceiling": 0.0413718436274456,
+        "avg_delta_extraction_per_hour": 4.758236548750794,
+        "pass_shards": 4,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "USD_JPY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.026981437790408583,
+        "avg_delta_capture_to_ceiling": 0.16167745995506022,
+        "avg_delta_extraction_per_hour": 4.601227229231094,
+        "pass_shards": 4,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "EUR_USD|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.017816882295559673,
+        "avg_delta_capture_to_ceiling": 0.033142505912426,
+        "avg_delta_extraction_per_hour": 4.3721460447574545,
+        "pass_shards": 3,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "AUD_USD|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.03601501037671445,
+        "avg_delta_capture_to_ceiling": 0.03018412385377209,
+        "avg_delta_extraction_per_hour": 4.518405201512029,
+        "pass_shards": 4,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "NZD_JPY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.031010383430226468,
+        "avg_delta_capture_to_ceiling": 0.07420932341067817,
+        "avg_delta_extraction_per_hour": 4.186432189478916,
+        "pass_shards": 3,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "USD_CAD|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.02253516044317163,
+        "avg_delta_capture_to_ceiling": 0.02889675714878949,
+        "avg_delta_extraction_per_hour": 4.2054673025175475,
+        "pass_shards": 3,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "AUD_JPY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.02372530603355854,
+        "avg_delta_capture_to_ceiling": 0.10441954259066866,
+        "avg_delta_extraction_per_hour": 4.205251812227545,
+        "pass_shards": 4,
+        "total_shards": 4
+      }
+    },
+    {
+      "key": "EUR_JPY|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "lane_a_v3_mixed_deterministic_runner",
+        "candidate": "c005",
+        "avg_delta_expected_extraction_atr": 0.017027188503351547,
+        "avg_delta_capture_to_ceiling": 0.14802272473293196,
+        "avg_delta_extraction_per_hour": 4.234504892503901,
+        "pass_shards": 3,
+        "total_shards": 4
+      }
+    }
+  ]
+}

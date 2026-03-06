@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "session": "ASIA",
+  "created_ts": 1772762962.3945348,
+  "expires_ts": 1772776800.0,
+  "overrides": [
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "USD_FAMILY|ASIA_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.strictness_mult": 0.9299999999999999
+      },
+      "meta": {
+        "base_knobs_hash": "980d76f181b2",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 1
+        },
+        "expires_ts": 1772776800.0
+      }
+    },
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "JPY_FAMILY|ASIA_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.strictness_mult": 0.9299999999999999
+      },
+      "meta": {
+        "base_knobs_hash": "0d2e25dbbbda",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 1
+        },
+        "expires_ts": 1772776800.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "cluster_count_processed": 22,
+  "cluster_ceilings": {
+    "7": {
+      "status": "ok",
+      "representative": "GBP_USD|ASIA_Q1|VOL_MID",
+      "pair": "GBP_USD",
+      "session": "ASIA",
+      "quarter": "Q1",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.0033992585531235583,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_7_GBP_USD_ASIA_Q1_SUMMARY.json"
+    },
+    "23": {
+      "status": "ok",
+      "representative": "GBP_JPY|ASIA_Q3|VOL_MID",
+      "pair": "GBP_JPY",
+      "session": "ASIA",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.005488639090570352,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_23_GBP_JPY_ASIA_Q3_SUMMARY.json"
+    },
+    "15": {
+      "status": "ok",
+      "representative": "EUR_CHF|ASIA_Q3|VOL_MID",
+      "pair": "EUR_CHF",
+      "session": "ASIA",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.004158902589912326,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_15_EUR_CHF_ASIA_Q3_SUMMARY.json"
+    },
+    "0": {
+      "status": "ok",
+      "representative": "EUR_CHF|NY_Q2|VOL_MID",
+      "pair": "EUR_CHF",
+      "session": "NY",
+      "quarter": "Q2",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.15,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "score": -1000000.0,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_0_EUR_CHF_NY_Q2_SUMMARY.json"
+    },
+    "4": {
+      "status": "ok",
+      "representative": "AUD_USD|ASIA_Q3|VOL_MID",
+      "pair": "AUD_USD",
+      "session": "ASIA",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.004345865041859425,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_4_AUD_USD_ASIA_Q3_SUMMARY.json"
+    },
+    "1": {
+      "status": "ok",
+      "representative": "NZD_USD|LONDON_Q4|VOL_MID",
+      "pair": "NZD_USD",
+      "session": "LONDON",
+      "quarter": "Q4",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.012964144243756377,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_1_NZD_USD_LONDON_Q4_SUMMARY.json"
+    },
+    "25": {
+      "status": "ok",
+      "representative": "USD_CHF|NY_Q3|VOL_MID",
+      "pair": "USD_CHF",
+      "session": "NY",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.15,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "score": -1000000.0,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_25_USD_CHF_NY_Q3_SUMMARY.json"
+    },
+    "24": {
+      "status": "ok",
+      "representative": "USD_JPY|LONDON_Q2|VOL_MID",
+      "pair": "USD_JPY",
+      "session": "LONDON",
+      "quarter": "Q2",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.019902448410722157,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_24_USD_JPY_LONDON_Q2_SUMMARY.json"
+    },
+    "14": {
+      "status": "ok",
+      "representative": "USD_CHF|ASIA_Q1|VOL_MID",
+      "pair": "USD_CHF",
+      "session": "ASIA",
+      "quarter": "Q1",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.0035919373399094833,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_14_USD_CHF_ASIA_Q1_SUMMARY.json"
+    },
+    "10": {
+      "status": "ok",
+      "representative": "AUD_USD|LONDON_Q1|VOL_MID",
+      "pair": "AUD_USD",
+      "session": "LONDON",
+      "quarter": "Q1",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.01489449333248593,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_10_AUD_USD_LONDON_Q1_SUMMARY.json"
+    },
+    "22": {
+      "status": "ok",
+      "representative": "EUR_JPY|LONDON_Q2|VOL_MID",
+      "pair": "EUR_JPY",
+      "session": "LONDON",
+      "quarter": "Q2",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.015192668956221914,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_22_EUR_JPY_LONDON_Q2_SUMMARY.json"
+    },
+    "32": {
+      "status": "ok",
+      "representative": "USD_CHF|NY_Q1|VOL_MID",
+      "pair": "USD_CHF",
+      "session": "NY",
+      "quarter": "Q1",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.15,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "score": -1000000.0,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_32_USD_CHF_NY_Q1_SUMMARY.json"
+    },
+    "21": {
+      "status": "ok",
+      "representative": "EUR_USD|NY_Q1|VOL_MID",
+      "pair": "EUR_USD",
+      "session": "NY",
+      "quarter": "Q1",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.15,
+        "extension_allow_energy_min": 1.0,
+        "promote_mfe_atr": 0.35,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "entry.tick.confirm_disp_atr": 0.35
+      },
+      "score": -1000000.0,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_21_EUR_USD_NY_Q1_SUMMARY.json"
+    },
+    "6": {
+      "status": "ok",
+      "representative": "AUD_USD|ASIA_Q4|VOL_MID",
+      "pair": "AUD_USD",
+      "session": "ASIA",
+      "quarter": "Q4",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.0034858871174617383,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_6_AUD_USD_ASIA_Q4_SUMMARY.json"
+    },
+    "17": {
+      "status": "ok",
+      "representative": "GBP_JPY|LONDON_Q1|VOL_MID",
+      "pair": "GBP_JPY",
+      "session": "LONDON",
+      "quarter": "Q1",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.01309994033822857,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_17_GBP_JPY_LONDON_Q1_SUMMARY.json"
+    },
+    "34": {
+      "status": "ok",
+      "representative": "USD_CHF|ASIA_Q4|VOL_MID",
+      "pair": "USD_CHF",
+      "session": "ASIA",
+      "quarter": "Q4",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.005321280906666007,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_34_USD_CHF_ASIA_Q4_SUMMARY.json"
+    },
+    "37": {
+      "status": "ok",
+      "representative": "AUD_USD|ASIA_Q4|VOL_MID",
+      "pair": "AUD_USD",
+      "session": "ASIA",
+      "quarter": "Q4",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.0034858871174617383,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_37_AUD_USD_ASIA_Q4_SUMMARY.json"
+    },
+    "20": {
+      "status": "ok",
+      "representative": "NZD_USD|ASIA_Q3|VOL_MID",
+      "pair": "NZD_USD",
+      "session": "ASIA",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.0034934649351038467,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_20_NZD_USD_ASIA_Q3_SUMMARY.json"
+    },
+    "11": {
+      "status": "ok",
+      "representative": "USD_CHF|ASIA_Q3|VOL_MID",
+      "pair": "USD_CHF",
+      "session": "ASIA",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.005132625194091647,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_11_USD_CHF_ASIA_Q3_SUMMARY.json"
+    },
+    "12": {
+      "status": "ok",
+      "representative": "AUD_JPY|ASIA_Q4|VOL_MID",
+      "pair": "AUD_JPY",
+      "session": "ASIA",
+      "quarter": "Q4",
+      "knobs": {
+        "aee.fail_windows": 2,
+        "aee.strictness_mult": 0.9,
+        "extension_allow_energy_min": 1.05,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.05,
+        "entry.tick.confirm_disp_atr": 0.2
+      },
+      "score": 0.0036975979738651725,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_12_AUD_JPY_ASIA_Q4_SUMMARY.json"
+    },
+    "2": {
+      "status": "ok",
+      "representative": "USD_CHF|LONDON_Q3|VOL_MID",
+      "pair": "USD_CHF",
+      "session": "LONDON",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.02167867904555071,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_2_USD_CHF_LONDON_Q3_SUMMARY.json"
+    },
+    "19": {
+      "status": "ok",
+      "representative": "EUR_JPY|LONDON_Q3|VOL_MID",
+      "pair": "EUR_JPY",
+      "session": "LONDON",
+      "quarter": "Q3",
+      "knobs": {
+        "aee.fail_windows": 6,
+        "aee.strictness_mult": 1.25,
+        "extension_allow_energy_min": 1.1,
+        "promote_mfe_atr": 0.25,
+        "entry.tick.base_max_dist_atr": 0.25,
+        "entry.tick.confirm_disp_atr": 0.1
+      },
+      "score": 0.024900538595559695,
+      "summary_path": "/home/elic/Documents/phone signals/proof_artifacts/cluster_runs/CLUSTER_19_EUR_JPY_LONDON_Q3_SUMMARY.json"
+    }
+  }
+}

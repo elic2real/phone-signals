@@ -1,0 +1,33 @@
+{
+  "lane_a": {
+    "owner": "codex-local",
+    "files": [
+      "tools/state_replay_metrics.py",
+      "tools/policy_sweep_cached.py",
+      "tools/build_tier0_patch_batch.py",
+      "tools/build_tier1_patch_from_cached.py",
+      "tools/promotion_gate.py"
+    ],
+    "artifact_prefix": "LANE_A_"
+  },
+  "lane_b": {
+    "owner": "external-ai",
+    "files": [
+      "phone_bot.py",
+      "entry_logic.py",
+      "aee_engine.py",
+      "tools/run_baseline_tune_probe.py",
+      "tools/funnel_report.py",
+      "tools/trade_rollback.py"
+    ],
+    "artifact_prefix": "LANE_B_"
+  },
+  "shared_requires_handoff": [
+    "tune_map_generate.py",
+    "tune_map.py",
+    "tune_apply.py",
+    "state_key.py",
+    "calibration/tune_map_patch.json",
+    "tunes/manual_overrides.json"
+  ]
+}

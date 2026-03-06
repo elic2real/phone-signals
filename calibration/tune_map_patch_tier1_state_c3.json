@@ -1,0 +1,455 @@
+{
+  "version": "TIER1_STATE_C3_ASIA_SPLIT",
+  "window": "cached_sweep_narrow",
+  "inputs": {
+    "sweep_output_file": "proof_artifacts/LANE_A_POLICY_SWEEP_R2.json",
+    "selected_top_n": 2,
+    "selected_sources": [
+      {
+        "candidate": "tier0_batch",
+        "patch": "calibration/tune_map_patch.json",
+        "patch_count": 10
+      },
+      {
+        "candidate": "tier1_batch",
+        "patch": "calibration/tune_map_patch_tier1.json",
+        "patch_count": 20
+      }
+    ]
+  },
+  "patches": [
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.28,
+        "entry.tick.dist_vel_k": 0.18,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Wed",
+        "evidence_n": 44480,
+        "expected_extraction_atr": 0.007147,
+        "narrow_source_candidate": "tier0_batch",
+        "narrow_source_patch": "calibration/tune_map_patch.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030264989031584906,
+          "delta_capture_to_ceiling": 0.041366604486350426,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.02,
+        "aee.near_tp_band_atr": 0.26
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Wed",
+        "evidence_n": 44480,
+        "expected_extraction_atr": 0.007147,
+        "narrow_source_candidate": "tier0_batch",
+        "narrow_source_patch": "calibration/tune_map_patch.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030264989031584906,
+          "delta_capture_to_ceiling": 0.041366604486350426,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=LONDON",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=LONDON|quarter=Q4|dow=Wed",
+        "evidence_n": 33598,
+        "expected_extraction_atr": -0.05771,
+        "narrow_source_candidate": "tier0_batch",
+        "narrow_source_patch": "calibration/tune_map_patch.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030264989031584906,
+          "delta_capture_to_ceiling": 0.041366604486350426,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=LONDON",
+      "knobs": {
+        "aee.strictness_mult": 1.08,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=LONDON|quarter=Q4|dow=Wed",
+        "evidence_n": 33598,
+        "expected_extraction_atr": -0.05771,
+        "narrow_source_candidate": "tier0_batch",
+        "narrow_source_patch": "calibration/tune_map_patch.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030264989031584906,
+          "delta_capture_to_ceiling": 0.041366604486350426,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_CAD",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.8
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 83051,
+        "ee": -0.04053866913892326,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_CAD",
+      "knobs": {
+        "aee.strictness_mult": 1.06,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 83051,
+        "ee": -0.04053866913892326,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_USD",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 82856,
+        "ee": -0.06157156460115027,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_USD",
+      "knobs": {
+        "aee.strictness_mult": 1.07,
+        "aee.near_tp_band_atr": 0.23,
+        "aee.fail_windows": 1,
+        "promote_mfe_atr": 0.28
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 82856,
+        "ee": -0.06157156460115027,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        },
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_JPY",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81370,
+        "ee": -0.07752317017328739,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_JPY",
+      "knobs": {
+        "aee.strictness_mult": 1.1,
+        "aee.near_tp_band_atr": 0.3
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81370,
+        "ee": -0.07752317017328739,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_JPY",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.8
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81072,
+        "ee": -0.006782140388691095,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_JPY",
+      "knobs": {
+        "aee.strictness_mult": 1.07,
+        "aee.near_tp_band_atr": 0.23,
+        "aee.fail_windows": 1,
+        "promote_mfe_atr": 0.28
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81072,
+        "ee": -0.006782140388691095,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        },
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=EUR_USD",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81066,
+        "ee": -0.0667255189317146,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=EUR_USD",
+      "knobs": {
+        "aee.strictness_mult": 1.1,
+        "aee.near_tp_band_atr": 0.3
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81066,
+        "ee": -0.0667255189317146,
+        "narrow_source_candidate": "tier1_batch",
+        "narrow_source_patch": "calibration/tune_map_patch_tier1.json",
+        "narrow_slice_deltas": {
+          "delta_expected_extraction_atr": 0.0030083899374900493,
+          "delta_capture_to_ceiling": 0.040016809489007994,
+          "covered_states": 81,
+          "total_states": 160
+        }
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=NZD_USD",
+      "knobs": {
+        "aee.strictness_mult": 1.07,
+        "aee.fail_windows": 1,
+        "aee.near_tp_band_atr": 0.23,
+        "promote_mfe_atr": 0.28
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=NZD_JPY",
+      "knobs": {
+        "aee.strictness_mult": 1.07,
+        "aee.fail_windows": 1,
+        "aee.near_tp_band_atr": 0.23,
+        "promote_mfe_atr": 0.28
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=EUR_AUD",
+      "knobs": {
+        "aee.strictness_mult": 1.07,
+        "aee.fail_windows": 1,
+        "aee.near_tp_band_atr": 0.23,
+        "promote_mfe_atr": 0.28
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=GBP_CAD",
+      "knobs": {
+        "aee.strictness_mult": 1.07,
+        "aee.fail_windows": 1,
+        "aee.near_tp_band_atr": 0.23,
+        "promote_mfe_atr": 0.28
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_CHF",
+      "knobs": {
+        "aee.strictness_mult": 0.98,
+        "aee.fail_windows": 2,
+        "aee.near_tp_band_atr": 0.25,
+        "promote_mfe_atr": 0.22,
+        "extension_allow_energy_min": 0.9
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=GBP_USD",
+      "knobs": {
+        "aee.strictness_mult": 0.98,
+        "aee.fail_windows": 2,
+        "aee.near_tp_band_atr": 0.25,
+        "promote_mfe_atr": 0.22,
+        "extension_allow_energy_min": 0.9
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=EUR_JPY",
+      "knobs": {
+        "aee.strictness_mult": 0.98,
+        "aee.fail_windows": 2,
+        "aee.near_tp_band_atr": 0.25,
+        "promote_mfe_atr": 0.22,
+        "extension_allow_energy_min": 0.9
+      },
+      "meta": {
+        "tier1_state_cycle": "C3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "version": "patch-20260304T195739Z",
+  "window": {
+    "source": "tier0_batch_from_state_audit"
+  },
+  "inputs": {
+    "top_groups_json": "/tmp/top10_groups.json",
+    "max_groups": 5
+  },
+  "patches": [
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.28,
+        "entry.tick.dist_vel_k": 0.18,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Wed",
+        "evidence_n": 44480,
+        "expected_extraction_atr": 0.007147
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.02,
+        "aee.near_tp_band_atr": 0.26
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Wed",
+        "evidence_n": 44480,
+        "expected_extraction_atr": 0.007147
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Mon",
+        "evidence_n": 42355,
+        "expected_extraction_atr": -0.04918
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.05,
+        "aee.near_tp_band_atr": 0.27
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Mon",
+        "evidence_n": 42355,
+        "expected_extraction_atr": -0.04918
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Tue",
+        "evidence_n": 42340,
+        "expected_extraction_atr": -0.020976
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.05,
+        "aee.near_tp_band_atr": 0.27
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Tue",
+        "evidence_n": 42340,
+        "expected_extraction_atr": -0.020976
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Thu",
+        "evidence_n": 39680,
+        "expected_extraction_atr": -0.068502
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.08,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Thu",
+        "evidence_n": 39680,
+        "expected_extraction_atr": -0.068502
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=LONDON",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=LONDON|quarter=Q4|dow=Wed",
+        "evidence_n": 33598,
+        "expected_extraction_atr": -0.05771
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=LONDON",
+      "knobs": {
+        "aee.strictness_mult": 1.08,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=LONDON|quarter=Q4|dow=Wed",
+        "evidence_n": 33598,
+        "expected_extraction_atr": -0.05771
+      }
+    }
+  ]
+}

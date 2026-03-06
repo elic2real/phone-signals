@@ -46,3 +46,61 @@ jobs:
           if command -v ruff >/dev/null 2>&1; then
             ruff check . || true
           fi
+
+      - name: Install parquet backend for QA tools
+        run: |
+          python -m pip install pyarrow
+
+      - name: Run mapping/calibration QA smoke checks
+        run: |
+          mkdir -p tunes calibration logs proof_artifacts
+          if [ ! -f tunes/tune_map_seed_v2.json ]; then
+            python tune_map_generate.py --tape data_tape_stitched --out tunes/tune_map_seed_v2.json || true
+          fi
+          python tools/qa_mapping_proof.py --seed tunes/tune_map_seed_v2.json
+          python tools/qa_statekey.py > /tmp/statekeys.txt
+          python tools/qa_handshake_schedule.py
+          : > /tmp/trades.empty.jsonl
+          python calibration_engine.py --from-logs /tmp/trades.empty.jsonl --dry-run
+
+      - name: Run reporting QA smoke checks (non-blocking on empty logs)
+        run: |
+          if [ -f logs/trades.jsonl ]; then
+            python tools/funnel_report.py --log logs/trades.jsonl --out proof_artifacts/funnel_report.ci.json
+            python tools/trade_rollback.py --log logs/trades.jsonl --last 5 --out proof_artifacts/ROLLBACK_5.ci.json
+          else
+            echo "logs/trades.jsonl not present; skipping report smoke checks"
+          fi
+
+      - name: Validate active artifact contract and vol specs
+        run: |
+          python tools/validate_active_artifacts.py --active-artifacts calibration/active/ACTIVE_ARTIFACTS.json
+
+      - name: Enforce dd-gate on replay artifacts (if present)
+        run: |
+          if [ -f proof_artifacts/V4_FAMILY_VERIFY_S1.json ] && [ -f proof_artifacts/V4_FAMILY_VERIFY_S2.json ] && \
+             python - <<'PY'
+          import json
+          from pathlib import Path
+          ok = True
+          for p in ("proof_artifacts/V4_FAMILY_VERIFY_S1.json", "proof_artifacts/V4_FAMILY_VERIFY_S2.json"):
+              o = json.loads(Path(p).read_text(encoding="utf-8"))
+              src = o.get("source") or {}
+              if "delta_vs_nopatch" not in o:
+                  ok = False
+              if not src.get("active_artifacts_sha256"):
+                  ok = False
+          raise SystemExit(0 if ok else 1)
+          PY
+          then
+            python tools/check_dd_gate.py \
+              --s1 proof_artifacts/V4_FAMILY_VERIFY_S1.json \
+              --s2 proof_artifacts/V4_FAMILY_VERIFY_S2.json \
+              --min-touched-targets 24 \
+              --min-vol-bucket-touched 4 \
+              --max-neg-ddcap-count -1 \
+              --max-neg-ddcap-frac 0.02 \
+              --min-worst-ddcap -0.002
+          else
+            echo "Replay artifacts not present or not dd-gate schema; skipping dd-gate enforcement in hygiene workflow"
+          fi

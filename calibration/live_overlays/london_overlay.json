@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "session": "LONDON",
+  "created_ts": 1772793304.2083642,
+  "expires_ts": 1772798400.0,
+  "overrides": [
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "USD_FAMILY|LONDON_Q1|VOL_HIGH",
+      "knobs": {
+        "aee.strictness_mult": 0.98
+      },
+      "meta": {
+        "base_knobs_hash": "60bad62316f1",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 50
+        },
+        "expires_ts": 1772798400.0
+      }
+    },
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "USD_FAMILY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.strictness_mult": 0.94
+      },
+      "meta": {
+        "base_knobs_hash": "60bad62316f1",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 299
+        },
+        "expires_ts": 1772798400.0
+      }
+    }
+  ]
+}

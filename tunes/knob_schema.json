@@ -1,0 +1,39 @@
+{
+  "allowlist": [
+    "entry.tick.base_max_dist_atr",
+    "entry.tick.dist_vel_k",
+    "entry.tick.require_pullback",
+    "entry.tick.pullback_atr_min",
+    "entry.tick.require_reclaim",
+    "entry.tick.reclaim_tolerance_atr",
+    "entry.tick.break_mode",
+    "entry.tick.break_soft_atr",
+    "entry.tick.break_soft_close_count",
+    "entry.tick.break_soft_mode",
+    "entry.tick.confirm_m1_closes",
+    "entry.tick.confirm_sec",
+    "entry.tick.confirm_disp_atr",
+    "promote_mfe_atr",
+    "extension_allow_energy_min",
+    "aee.strictness_mult",
+    "aee.near_tp_band_atr",
+    "aee.fail_windows"
+  ],
+  "clamps": {
+    "entry.tick.base_max_dist_atr": [0.05, 0.85],
+    "entry.tick.dist_vel_k": [0.0, 0.80],
+    "entry.tick.pullback_atr_min": [0.0, 1.2],
+    "entry.tick.reclaim_tolerance_atr": [0.0, 0.4],
+    "entry.tick.break_soft_atr": [0.0, 1.0],
+    "entry.tick.break_soft_close_count": [1, 5],
+    "entry.tick.confirm_m1_closes": [0, 5],
+    "entry.tick.confirm_sec": [0.0, 30.0],
+    "entry.tick.confirm_disp_atr": [0.0, 0.5],
+    "promote_mfe_atr": [0.0, 2.0],
+    "extension_allow_energy_min": [0.5, 2.0],
+    "aee.strictness_mult": [0.5, 1.8],
+    "aee.near_tp_band_atr": [0.05, 1.0],
+    "aee.fail_windows": [0, 5]
+  },
+  "version": "1.0"
+}

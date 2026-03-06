@@ -5,6 +5,9 @@ Tier-0 Gates Implementation Helper
 Functions to validate startup integrity and generate proof artifacts.
 All gates write to runtime.log and to proof_artifacts/<timestamp>/tier0_report.json.
 A manifest.sha256 will be generated at the end.
+
+CRITICAL: These gates are the last line of defense before trading with real money.
+Ensure all risk checks are comprehensive and fail-safe.
 """
 
 import os

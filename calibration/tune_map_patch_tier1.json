@@ -1,0 +1,321 @@
+{
+  "version": "patch-20260304T202844Z-tier1",
+  "window": {
+    "source": "tier1_refine_over_tier0"
+  },
+  "inputs": {
+    "rank_file": "/tmp/tier1_rank.json"
+  },
+  "patches": [
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.28,
+        "entry.tick.dist_vel_k": 0.18,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Wed",
+        "evidence_n": 44480,
+        "expected_extraction_atr": 0.007147
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.02,
+        "aee.near_tp_band_atr": 0.26
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Wed",
+        "evidence_n": 44480,
+        "expected_extraction_atr": 0.007147
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Mon",
+        "evidence_n": 42355,
+        "expected_extraction_atr": -0.04918
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.05,
+        "aee.near_tp_band_atr": 0.27
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Mon",
+        "evidence_n": 42355,
+        "expected_extraction_atr": -0.04918
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.5
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Tue",
+        "evidence_n": 42340,
+        "expected_extraction_atr": -0.020976
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.05,
+        "aee.near_tp_band_atr": 0.27
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Tue",
+        "evidence_n": 42340,
+        "expected_extraction_atr": -0.020976
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Thu",
+        "evidence_n": 39680,
+        "expected_extraction_atr": -0.068502
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=ASIA",
+      "knobs": {
+        "aee.strictness_mult": 1.08,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=ASIA|quarter=Q4|dow=Thu",
+        "evidence_n": 39680,
+        "expected_extraction_atr": -0.068502
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_GLOBAL",
+      "key": "session=LONDON",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=LONDON|quarter=Q4|dow=Wed",
+        "evidence_n": 33598,
+        "expected_extraction_atr": -0.05771
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_GLOBAL",
+      "key": "session=LONDON",
+      "knobs": {
+        "aee.strictness_mult": 1.08,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "parent_key_used": "GLOBAL",
+        "state_group": "session=LONDON|quarter=Q4|dow=Wed",
+        "evidence_n": 33598,
+        "expected_extraction_atr": -0.05771
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_CAD",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.8
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 83051,
+        "ee": -0.04053866913892326
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_CAD",
+      "knobs": {
+        "aee.strictness_mult": 1.06,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 83051,
+        "ee": -0.04053866913892326
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_USD",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 82856,
+        "ee": -0.06157156460115027
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_USD",
+      "knobs": {
+        "aee.strictness_mult": 1.1,
+        "aee.near_tp_band_atr": 0.3
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 82856,
+        "ee": -0.06157156460115027
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_JPY",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81370,
+        "ee": -0.07752317017328739
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=AUD_JPY",
+      "knobs": {
+        "aee.strictness_mult": 1.1,
+        "aee.near_tp_band_atr": 0.3
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81370,
+        "ee": -0.07752317017328739
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_JPY",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.26,
+        "entry.tick.dist_vel_k": 0.16,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 3.8
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81072,
+        "ee": -0.006782140388691095
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=USD_JPY",
+      "knobs": {
+        "aee.strictness_mult": 1.06,
+        "aee.near_tp_band_atr": 0.28
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81072,
+        "ee": -0.006782140388691095
+      }
+    },
+    {
+      "mode": "ENTRY",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=EUR_USD",
+      "knobs": {
+        "entry.tick.base_max_dist_atr": 0.24,
+        "entry.tick.dist_vel_k": 0.14,
+        "entry.tick.confirm_m1_closes": 2,
+        "entry.tick.confirm_sec": 4.0
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81066,
+        "ee": -0.0667255189317146
+      }
+    },
+    {
+      "mode": "AEE",
+      "level": "SESSION_PAIR",
+      "key": "session=ASIA|pair=EUR_USD",
+      "knobs": {
+        "aee.strictness_mult": 1.1,
+        "aee.near_tp_band_atr": 0.3
+      },
+      "meta": {
+        "tier": "tier1",
+        "n": 81066,
+        "ee": -0.0667255189317146
+      }
+    }
+  ]
+}

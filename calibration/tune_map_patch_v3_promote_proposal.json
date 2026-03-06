@@ -1,0 +1,34 @@
+{
+  "version": "V3_PROMOTION_PROPOSAL_ASIA_ATR_LOW",
+  "generated_utc": "2026-03-05T06:25:39.492843+00:00",
+  "patches": [
+    {
+      "key": "*|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 1.05,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "compressed_from_10_v3_candidates",
+        "scope": "parent"
+      }
+    },
+    {
+      "key": "USD_CHF|ASIA|ATR_LOW",
+      "knobs": {
+        "entry.tick.confirm_disp_atr": 0.1,
+        "entry.tick.base_max_dist_atr": 0.2,
+        "promote_mfe_atr": 0.15,
+        "extension_allow_energy_min": 0.85,
+        "aee.fail_windows": 1
+      },
+      "meta": {
+        "source": "compressed_from_10_v3_candidates",
+        "scope": "outlier_override"
+      }
+    }
+  ]
+}
