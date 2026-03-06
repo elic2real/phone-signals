@@ -16,10 +16,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from layer8_runtime import RuntimeOrchestrator, ExecutionDisallowed
 
-class ExecutionDisallowed(Exception):
-    """Raised when broker execution is attempted"""
-    pass
-
 def test_guardrail():
     """Test the execution guardrail"""
     print("🛡️ Testing execution guardrail...")
