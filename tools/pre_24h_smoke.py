@@ -99,7 +99,7 @@ def main() -> int:
         if t < start or t > end + 5:
             continue
         kind = str(e.get("kind") or e.get("event") or "")
-        if kind in {"TUNE_MATCH", "ENTRY_EVAL", "ENTRY_GATE_EVAL", "ENTRY_ATTEMPT", "ORDER_SUBMITTED", "ORDER_FILLED", "ORDER_REJECTED"}:
+        if kind in {"TUNE_MATCH", "ENTRY_EVAL", "ENTRY_GATE_EVAL", "ENTRY_ARMED", "ENTRY_ATTEMPT", "ORDER_SUBMITTED", "ORDER_FILLED", "ORDER_REJECTED"}:
             stage[kind] += 1
             pair = str(e.get("pair", ""))
             by_pair[pair][kind] += 1
@@ -123,10 +123,12 @@ def main() -> int:
             promote_blocked[str(e.get("reason") or "unknown")] += 1
 
     eval_n = stage.get("ENTRY_GATE_EVAL", 0)
+    armed_n = stage.get("ENTRY_ARMED", 0)
     att_n = stage.get("ENTRY_ATTEMPT", 0)
     sub_n = stage.get("ORDER_SUBMITTED", 0)
     fill_n = stage.get("ORDER_FILLED", 0)
-    conv_eval_attempt = (att_n / eval_n) if eval_n else 0.0
+    conv_eval_armed = (armed_n / eval_n) if eval_n else 0.0
+    conv_armed_sub = (sub_n / armed_n) if armed_n else 0.0
     conv_attempt_sub = (sub_n / att_n) if att_n else 0.0
     conv_sub_fill = (fill_n / sub_n) if sub_n else 0.0
 
@@ -134,7 +136,9 @@ def main() -> int:
         "window": {"start_ts": start, "end_ts": end, "minutes": args.minutes},
         "counts": dict(stage),
         "conversion": {
-            "eval_to_attempt": conv_eval_attempt,
+            "eval_to_armed": conv_eval_armed,
+            "armed_to_submitted": conv_armed_sub,
+            "eval_to_attempt_legacy": (att_n / eval_n) if eval_n else 0.0,
             "attempt_to_submitted": conv_attempt_sub,
             "submitted_to_filled": conv_sub_fill,
         },
