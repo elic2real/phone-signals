@@ -1,8 +1,8 @@
 {
   "version": 1,
   "session": "LONDON",
-  "created_ts": 1772793304.2083642,
-  "expires_ts": 1772798400.0,
+  "created_ts": 1772809360.3889961,
+  "expires_ts": 1772820000.0,
   "overrides": [
     {
       "level": "SESSION_FAMILY_VOL_QTR",
@@ -25,9 +25,66 @@
     },
     {
       "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "USD_FAMILY|LONDON_Q2|VOL_MID",
+      "knobs": {
+        "aee.strictness_mult": 0.98
+      },
+      "meta": {
+        "base_knobs_hash": "aeaad3fdb8cc",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 50
+        },
+        "expires_ts": 1772798400.0
+      }
+    },
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
       "key": "USD_FAMILY|LONDON_Q2|VOL_HIGH",
       "knobs": {
-        "aee.strictness_mult": 0.94
+        "aee.strictness_mult": 0.96
+      },
+      "meta": {
+        "base_knobs_hash": "aeaad3fdb8cc",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 323
+        },
+        "expires_ts": 1772798400.0
+      }
+    },
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "JPY_FAMILY|LONDON_Q2|VOL_HIGH",
+      "knobs": {
+        "aee.strictness_mult": 0.96
+      },
+      "meta": {
+        "base_knobs_hash": "9333d4571b34",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 109
+        },
+        "expires_ts": 1772798400.0
+      }
+    },
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "USD_FAMILY|LONDON_Q2|VOL_LOW",
+      "knobs": {
+        "aee.strictness_mult": 0.96
       },
       "meta": {
         "base_knobs_hash": "60bad62316f1",
@@ -37,9 +94,28 @@
         ],
         "window": {
           "trades": 0,
-          "evals": 299
+          "evals": 197
         },
         "expires_ts": 1772798400.0
+      }
+    },
+    {
+      "level": "SESSION_FAMILY_VOL_QTR",
+      "key": "USD_FAMILY|LONDON_Q4|VOL_HIGH",
+      "knobs": {
+        "aee.strictness_mult": 0.98
+      },
+      "meta": {
+        "base_knobs_hash": "60bad62316f1",
+        "reason": [
+          "FALLBACK_LOW",
+          "EVAL_WINDOW"
+        ],
+        "window": {
+          "trades": 0,
+          "evals": 50
+        },
+        "expires_ts": 1772820000.0
       }
     }
   ]
