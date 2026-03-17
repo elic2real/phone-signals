@@ -15,6 +15,7 @@ Includes:
 import argparse
 import csv
 import json
+import os
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -260,12 +261,31 @@ class SimEnvironment:
 
         records: List[Dict[str, Any]] = []
 
+        # Configurable leg split (default 80/20).
+        core_weight = float(os.getenv("SIM_CORE_WEIGHT", "0.80") or "0.80")
+        core_weight = max(0.1, min(0.95, core_weight))
+        runner_weight = 1.0 - core_weight
+
+        # Optional offline-only experimental exits.
+        split_strike_enabled = os.getenv("SIM_SPLIT_STRIKE", "0").strip().lower() in ("1", "true", "yes")
+        split_strike_pips = float(os.getenv("SIM_STRIKE1_PIPS", "0.5") or "0.5")
+        kinematic_enabled = os.getenv("SIM_KINEMATIC_EXIT", "0").strip().lower() in ("1", "true", "yes")
+        kinematic_drop_frac = float(os.getenv("SIM_KINEMATIC_DROP_FRAC", "0.40") or "0.40")
+        kinematic_min_peak = float(os.getenv("SIM_KINEMATIC_MIN_PEAK", "0.20") or "0.20")
+        kinematic_min_age_sec = float(os.getenv("SIM_KINEMATIC_MIN_AGE_SEC", "10.0") or "10.0")
+        core_ttl_enabled = os.getenv("SIM_CORE_TTL_ENABLED", "0").strip().lower() in ("1", "true", "yes")
+        core_ttl_sec = float(phone_bot.get_speed_params(speed_class).get("ttl_main", 500) or 500)
+        runner_ttl_enabled = os.getenv("SIM_RUNNER_TTL_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+        runner_ttl_sec = float(phone_bot.get_speed_params(speed_class).get("ttl_run", 800) or 800)
+
         # 80/20 legs
         core_open = True
         runner_open = True
         core_exit: Optional[Dict[str, Any]] = None
         runner_exit: Optional[Dict[str, Any]] = None
         runner_promoted = False
+        runner_be_armed = False
+        peak_speed = 0.0
         overshoot_peak_atr = 0.0
 
         next_bucket_ts: Optional[float] = None
@@ -385,6 +405,153 @@ class SimEnvironment:
                     overshoot_peak_atr = max(overshoot_peak_atr, max(0.0, overshoot / atr_exec))
 
                 trade_age_sec = max(0.0, float(ts) - entry_ts)
+                speed_now = max(0.0, float(metrics.get("speed", 0.0) or 0.0))
+                if speed_now > peak_speed:
+                    peak_speed = speed_now
+
+                def current_pnl_pips(px: float) -> float:
+                    pip = float(phone_bot.pip_size(trade["pair"]))
+                    if pip <= 0:
+                        return 0.0
+                    if direction == "LONG":
+                        return (px - entry_price) / pip
+                    return (entry_price - px) / pip
+
+                # Broker-like hard limit execution: TP/SL fills override soft AEE exits.
+                aee_state = aee_eval.get("state")
+                tp_anchor = None
+                try:
+                    tp_anchor = float(getattr(aee_state, "tp_anchor", float("nan")) or float("nan"))
+                except Exception:
+                    tp_anchor = float("nan")
+                if not (isinstance(tp_anchor, float) and tp_anchor == tp_anchor):
+                    try:
+                        tp_anchor = float(trade.get("tp", float("nan")) or float("nan"))
+                    except Exception:
+                        tp_anchor = float("nan")
+
+                sl_price = None
+                try:
+                    sl_price = float(trade.get("sl", float("nan")) or float("nan"))
+                except Exception:
+                    sl_price = float("nan")
+                if not (isinstance(sl_price, float) and sl_price == sl_price):
+                    try:
+                        sl_price = float(getattr(aee_state, "sl_price", float("nan")) or float("nan"))
+                    except Exception:
+                        sl_price = float("nan")
+                if not (isinstance(sl_price, float) and sl_price == sl_price):
+                    try:
+                        sl_atr = float(phone_bot.get_speed_params(speed_class).get("sl_atr", 1.0) or 1.0)
+                    except Exception:
+                        sl_atr = 1.0
+                    atr_for_sl = float(trade.get("atr_entry", 0.0) or 0.0)
+                    if atr_for_sl > 0.0:
+                        if direction == "LONG":
+                            sl_price = float(entry_price - (sl_atr * atr_for_sl))
+                        else:
+                            sl_price = float(entry_price + (sl_atr * atr_for_sl))
+
+                hard_reason = None
+                if isinstance(tp_anchor, float) and tp_anchor == tp_anchor:
+                    if direction == "LONG":
+                        if float(tick.bid) >= float(tp_anchor):
+                            hard_reason = "TP_HIT"
+                    else:
+                        if float(tick.ask) <= float(tp_anchor):
+                            hard_reason = "TP_HIT"
+
+                if hard_reason is None and isinstance(sl_price, float) and sl_price == sl_price:
+                    if direction == "LONG":
+                        # Long stop should trigger on bid crossing down to/through SL.
+                        if float(tick.bid) <= float(sl_price):
+                            hard_reason = "SL_HIT"
+                    else:
+                        # Short stop should trigger on ask crossing up to/through SL.
+                        if float(tick.ask) >= float(sl_price):
+                            hard_reason = "SL_HIT"
+
+                if hard_reason is not None:
+                    if core_open:
+                        core_open = False
+                        core_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": hard_reason,
+                            "metrics": metrics,
+                        }
+                    if runner_open:
+                        runner_open = False
+                        runner_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": hard_reason,
+                            "metrics": metrics,
+                            "overshoot_peak_atr": overshoot_peak_atr,
+                        }
+
+                # Split-strike: harvest core quickly, arm runner breakeven.
+                if split_strike_enabled and core_open:
+                    cur_pips = current_pnl_pips(float(tick.mid))
+                    if cur_pips >= split_strike_pips:
+                        core_open = False
+                        core_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": "SPLIT_STRIKE_1",
+                            "metrics": metrics,
+                        }
+                        runner_be_armed = True
+
+                # Kinematic exit: flatten when speed decays sharply from local peak.
+                if (
+                    kinematic_enabled
+                    and peak_speed >= kinematic_min_peak
+                    and trade_age_sec >= kinematic_min_age_sec
+                    and speed_now <= peak_speed * (1.0 - kinematic_drop_frac)
+                ):
+                    if core_open:
+                        core_open = False
+                        core_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": "KINEMATIC_EXIT",
+                            "metrics": metrics,
+                        }
+                    if runner_open:
+                        runner_open = False
+                        runner_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": "KINEMATIC_EXIT",
+                            "metrics": metrics,
+                            "overshoot_peak_atr": overshoot_peak_atr,
+                        }
+
+                # Runner breakeven protection once split-strike has fired.
+                if runner_open and runner_be_armed:
+                    cur_pips = current_pnl_pips(float(tick.mid))
+                    if cur_pips <= 0.0:
+                        runner_open = False
+                        runner_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "reason": "RUNNER_BREAKEVEN_STOP",
+                            "metrics": metrics,
+                            "overshoot_peak_atr": overshoot_peak_atr,
+                        }
 
                 # core exits on native AEE reason (delay non-panic exits until min hold)
                 if core_open and rec["exit_reason"]:
@@ -411,16 +578,28 @@ class SimEnvironment:
                                 "ge": float(metrics.get("ge", 0.0) or 0.0),
                                 "velocity": float(metrics.get("velocity", 0.0) or 0.0),
                             }
-                        self.logs.append(
-                            "AEE_DECISION_ORDER_ACTION",
-                            {
-                                "ts": ts,
-                                "pair_eval_idx": rec["pair_eval_idx"],
-                                "aee_chosen_rule": rec["exit_reason"],
-                                "order_action": "CLOSE_CORE",
-                                "instrument": inst,
-                            },
-                        )
+                            self.logs.append(
+                                "AEE_DECISION_ORDER_ACTION",
+                                {
+                                    "ts": ts,
+                                    "pair_eval_idx": rec["pair_eval_idx"],
+                                    "aee_chosen_rule": rec["exit_reason"],
+                                    "order_action": "CLOSE_CORE",
+                                    "instrument": inst,
+                                },
+                            )
+
+                # Core TTL kill-switch for capital velocity (leg-local).
+                if core_open and core_ttl_enabled and trade_age_sec >= core_ttl_sec:
+                    core_open = False
+                    core_exit = {
+                        "pair_eval_idx": rec["pair_eval_idx"],
+                        "idx": rec["idx"],
+                        "ts": ts,
+                        "price": tick.bid if direction == "LONG" else tick.ask,
+                        "reason": "CORE_TTL_EXPIRED",
+                        "metrics": metrics,
+                    }
 
                 # runner promotion
                 rss = float(metrics.get("rss", 0.0) or 0.0)
@@ -441,6 +620,19 @@ class SimEnvironment:
                     runner_overshoot_promote = overshoot_peak_atr >= 0.45 and rss >= 0.55 and runner_survival >= 0.50
                     if regime != "CHOP" and (runner_energy_promote or runner_overshoot_promote):
                         runner_promoted = True
+
+                # Runner TTL kill-switch for capital velocity (leg-local, not shared AEE).
+                if runner_open and runner_ttl_enabled and trade_age_sec >= runner_ttl_sec:
+                    runner_open = False
+                    runner_exit = {
+                        "pair_eval_idx": rec["pair_eval_idx"],
+                        "idx": rec["idx"],
+                        "ts": ts,
+                        "price": tick.bid if direction == "LONG" else tick.ask,
+                        "reason": "RUNNER_TTL_EXPIRED",
+                        "metrics": metrics,
+                        "overshoot_peak_atr": overshoot_peak_atr,
+                    }
 
                 # runner exits after promotion
                 if runner_open and runner_promoted:
@@ -560,7 +752,7 @@ class SimEnvironment:
 
         core_pips = pnl_pips(float(core_exit.get("price", entry_price) if core_exit else entry_price))
         runner_pips = pnl_pips(float(runner_exit.get("price", entry_price) if runner_exit else entry_price))
-        total_weighted_pips = 0.8 * core_pips + 0.2 * runner_pips
+        total_weighted_pips = core_weight * core_pips + runner_weight * runner_pips
 
         def leg_stats(leg_exit: Optional[Dict[str, Any]]) -> Dict[str, Any]:
             if not leg_exit:
@@ -638,12 +830,6 @@ class SimEnvironment:
 
         core_panic_recovery = panic_recovery(core_exit)
         runner_panic_recovery = panic_recovery(runner_exit)
-
-        import sys
-        if runner_exit:
-            print(f"DEBUG: runner_exit created. TS: {runner_exit.get('ts')}", file=sys.stderr)
-        else:
-            print("DEBUG: runner_exit is None", file=sys.stderr)
 
         # Use the latest leg exit as the primary exit record to reflect true trade duration
         core_ts = float(core_exit.get("ts", 0.0) or 0.0) if core_exit else 0.0
@@ -935,27 +1121,33 @@ def create_default_trade(pair: str, direction: str, ticks_by_inst: Dict[str, Lis
     first = ticks[0]
     last = ticks[-1]
     
-    # Detect actual price direction
+    # Respect caller-provided direction for deterministic A/B replay.
+    requested_direction = str(direction or "LONG").upper()
+    if requested_direction not in ("LONG", "SHORT"):
+        requested_direction = "LONG"
+
+    # Keep observed path direction as telemetry only (must not override requested).
     first_mid = (first.bid + first.ask) / 2
     last_mid = (last.bid + last.ask) / 2
-    
     if last_mid > first_mid:
-        actual_direction = "LONG"
+        observed_direction = "LONG"
     elif last_mid < first_mid:
-        actual_direction = "SHORT"
+        observed_direction = "SHORT"
     else:
-        actual_direction = direction  # Use provided direction if no movement
+        observed_direction = "FLAT"
     
     atr_entry = float(phone_bot.pip_size(pair)) * float(atr_pips)
-    entry = first.ask if actual_direction == "LONG" else first.bid
-    tp = entry + (tp_atr * atr_entry if actual_direction == "LONG" else -tp_atr * atr_entry)
+    entry = first.ask if requested_direction == "LONG" else first.bid
+    tp = entry + (tp_atr * atr_entry if requested_direction == "LONG" else -tp_atr * atr_entry)
 
     return {
         "id": 1,
         "ts": first.ts,
         "pair": pair,
-        "setup": "SIM_RUN",
-        "dir": actual_direction,  # Use detected direction
+        "setup": "SIM_MAIN",
+        "dir": requested_direction,
+        "requested_direction": requested_direction,
+        "observed_path_direction": observed_direction,
         "mode": "SIM",
         "units": 1000,
         "entry": entry,
