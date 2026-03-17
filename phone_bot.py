@@ -20710,7 +20710,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 pair=pair,
                                 direction=sig.direction,
                                 entry_family=str(getattr(sig, "entry_family", "") or "UNKNOWN"),
-                                trade_type=str(getattr(sig, "trade_type", "") or "RUNNER"),
+                                trade_type="RUNNER",
                                 target_profile=target_profile_run,
                             )
                             db_open_trades.append({"id": trade_id_run, "pair": pair, "setup": sig.setup_name + "_RUN", "dir": sig.direction, "parent_entry_id": parent_entry_id, "oanda_trade_id": tid2})
@@ -20789,7 +20789,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                     "result": "FILLED",
                                     "setup": sig.setup_name + "_RUN",
                                     "entry_family": str(getattr(sig, "entry_family", "") or ""),
-                                    "trade_type": str(getattr(sig, "trade_type", "") or ""),
+                                    "trade_type": "RUNNER",
                                     "target_profile": str(strategy_ctx_run.get("target_profile", "")),
                                     "strategy_key": str(strategy_ctx_run.get("strategy_key", "")),
                                     "speed_class": speed_class,
