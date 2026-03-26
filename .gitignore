@@ -1,6 +1,8 @@
 # Python cache/build
 __pycache__/
+pycache/
 *.py[cod]
+*.pyc
 *.pyd
 *.so
 .pytest_cache/
@@ -13,6 +15,7 @@ venv/
 
 # Local DB / locks / runtime state
 *.db
+.sqlite
 *.sqlite
 *.sqlite3
 *.lock
@@ -29,6 +32,12 @@ phone_bot.lock
 *secret*
 !control/github_secret_sweep_report.json
 *token*
+*credential*
+credentials.json
+credentials*.json
+config.local
+config.local.*
+*.local.json
 
 # Logs and transient run output
 *.log
@@ -38,6 +47,8 @@ logs/
 runs/
 artifacts/
 proof_artifacts/
+sim_results/
+test_with_active_tune.json
 proof_artifacts_*.json
 
 # Local/editor/OS
@@ -51,6 +62,7 @@ proof_artifacts_*.json
 *.diff
 
 # Large data and compiled artifact trees
+compiled_*
 compiled_*/
 data_tape*/
 sim_outputs*/
