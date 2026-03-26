@@ -1,10 +1,12 @@
 {
-  "generated_at": "2026-03-26T13:48:35.158193+00:00",
-  "status": "PREP_COMPLETE_PENDING_PUSH",
+  "generated_at": "2026-03-26T06:53:31-07:00",
+  "status": "PUBLISH_BRANCH_PUSHED",
+  "published_branch": "publish/clean-backup-20260326",
+  "published_commit": "5da68f0",
   "included_summary": [
-    "Canonical source code (*.py) and core runtime scripts",
-    "Control reports and governance artifacts under control/",
-    "Docs/tests/config/templates and CI/meta files"
+    "Canonical source-safe files for backup baseline",
+    "Control audit and publish manifests under control/",
+    "Safe local config templates (.env.example, config.example.json)"
   ],
   "excluded_summary": [
     "Local env/caches/logs/databases",
@@ -13,7 +15,8 @@
   ],
   "manual_review_needed": [
     "Any REVIEW_NEEDED paths in control/github_repo_audit.json",
-    "Any secret-pattern hits in control/github_secret_sweep_report.json"
+    "Any secret-pattern hits in control/github_secret_sweep_report.json",
+    "Run git fsck and resolve gc.log empty-object warning before long-term archival confidence"
   ],
-  "next_step": "Run selective-stage commit and push commands from control/github_push_report.json once reviewed."
+  "next_step": "Open PR for publish/clean-backup-20260326 and review diff before merge."
 }
