@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-03-26T13:48:35.158193+00:00",
+  "status": "PREP_COMPLETE_PENDING_PUSH",
+  "included_summary": [
+    "Canonical source code (*.py) and core runtime scripts",
+    "Control reports and governance artifacts under control/",
+    "Docs/tests/config/templates and CI/meta files"
+  ],
+  "excluded_summary": [
+    "Local env/caches/logs/databases",
+    "Large compiled/proof/data tape artifacts",
+    "Generated decision ledgers and bulky JSON/CSV/Parquet outputs"
+  ],
+  "manual_review_needed": [
+    "Any REVIEW_NEEDED paths in control/github_repo_audit.json",
+    "Any secret-pattern hits in control/github_secret_sweep_report.json"
+  ],
+  "next_step": "Run selective-stage commit and push commands from control/github_push_report.json once reviewed."
+}

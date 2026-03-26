@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-03-26T13:48:35.158193+00:00",
+  "remote_detected": true,
+  "remote": [
+    "origin\thttps://github.com/elic2real/phone-signals.git (fetch)",
+    "origin\thttps://github.com/elic2real/phone-signals.git (push)"
+  ],
+  "push_executed": false,
+  "reason_not_executed": "Awaiting user confirmation for selective staging/commit on publish branch and potential auth prompts.",
+  "next_commands": [
+    "git switch -c publish/clean-backup-20260326",
+    "git add .gitignore README.md .env.example config.example.json control/github_* run_mvp_phase2*.py run_mvp_phase3*.py phone_bot.py phone_bot_logging.py entry_logic.py aee_engine.py priority_engine.py requirements.txt .github",
+    "git commit -m \"Initial clean MVP/project backup baseline\"",
+    "git push -u origin publish/clean-backup-20260326"
+  ]
+}
