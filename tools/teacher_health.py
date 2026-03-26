@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 
 def _iter(path: Path):
@@ -16,6 +17,22 @@ def _iter(path: Path):
                 yield json.loads(line)
             except Exception:
                 continue
+
+def _to_epoch(ts) -> float | None:
+    if ts is None:
+        return None
+    if isinstance(ts, (int, float)):
+        return float(ts)
+    s = str(ts).strip()
+    if not s:
+        return None
+    try:
+        # Handle Zulu timestamps.
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        return datetime.fromisoformat(s).timestamp()
+    except Exception:
+        return None
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -46,11 +63,12 @@ def main() -> int:
                 state_complete_ok_list.append(False)
             if kind == "TEACH_HEARTBEAT":
                 trade_id = str(e.get("trade_id", ""))
-                ts = e.get("ts_utc")
+                ts = _to_epoch(e.get("ts_utc"))
                 if trade_id and ts:
                     if trade_id in last_heartbeat_per_trade:
-                        interval = ts - last_heartbeat_per_trade[trade_id]
-                        heartbeat_intervals.append(interval)
+                        interval = float(ts) - float(last_heartbeat_per_trade[trade_id])
+                        if interval >= 0:
+                            heartbeat_intervals.append(interval)
                     last_heartbeat_per_trade[trade_id] = ts
 
     total_evals = emitted + skipped_incomplete

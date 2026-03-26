@@ -4,6 +4,7 @@ import sys
 import json
 import time
 import math
+import asyncio
 import gzip
 import shutil
 import signal
@@ -12,6 +13,7 @@ import sqlite3
 import threading
 import statistics
 import subprocess
+import inspect
 
 from collections import deque, defaultdict
 from dataclasses import dataclass, field
@@ -27,6 +29,10 @@ import aee_engine   # split-boundary module import (audit visibility)
 import tune_map     # mapping module import (audit visibility)
 import tune_apply   # tune apply module import (audit visibility)
 import state_key    # state key module import (audit visibility)
+import runtime_calibration  # runtime calibration integration (audit visibility)
+import simple_sizing_model  # simple mechanical sizing model
+import runtime_settings  # frozen runtime settings for live priority/sizing
+import aee_live_doctrine  # live doctrine action-class shadow engine
 
 from phone_bot_logging import log_runtime, log_trade_event, log_metrics
 from entry_logic import (
@@ -41,6 +47,7 @@ from tune_apply import TuneApply
 from outcome_accelerator import should_force_close, oa_event
 from active_artifacts import load_active_artifacts
 from vol_bucket_spec import bucket_from_rank, cuts_for_session, load_vol_bucket_spec, validate_vol_bucket_spec
+from aee_live_doctrine import LiveDoctrineEngine
 
 # Notification system
 import hashlib
@@ -53,6 +60,11 @@ _NOTIFY_QUEUE = queue.Queue()
 _NOTIFY_WORKER = None
 _NOTIFY_SHUTDOWN = False
 _PREFLIGHT_CHECKED = False
+_SESSION_TEMPLATE_CACHE: Dict[str, dict] = {}
+_RUNTIME_SETTINGS_CACHE: Dict[str, dict] = {}
+_STRATEGY_OVERRIDES: Dict[str, Dict[str, Any]] = {}
+_STRATEGY_OVERRIDES_META: Dict[str, Any] = {}
+_TRADE_STRATEGY_CONTEXT: Dict[int, Dict[str, Any]] = {}
 
 def _now_ms():
     return int(time.time() * 1000)
@@ -65,6 +77,490 @@ def _env_int(name: str, default: int) -> int:
         return int(os.getenv(name, str(default)).strip())
     except:
         return default
+
+
+def _load_session_template_report(pair: str, session_name: str) -> Optional[dict]:
+    pair_norm = normalize_pair(pair).lower()
+    sess_norm = str(session_name or "").strip().lower()
+    key = f"{pair_norm}__{sess_norm}"
+    if key in _SESSION_TEMPLATE_CACHE:
+        return _SESSION_TEMPLATE_CACHE[key]
+    path = Path(__file__).parent / "compiled_session_templates" / key / "session_template_report.json"
+    if not path.exists():
+        _SESSION_TEMPLATE_CACHE[key] = None
+        return None
+    try:
+        data = json.loads(path.read_text())
+        if not isinstance(data, dict) or data.get("status") != "PASS":
+            _SESSION_TEMPLATE_CACHE[key] = None
+            return None
+        _SESSION_TEMPLATE_CACHE[key] = data
+        return data
+    except Exception:
+        _SESSION_TEMPLATE_CACHE[key] = None
+        return None
+
+
+def _load_runtime_settings(pair: str, session_name: str) -> Optional[dict]:
+    pair_norm = normalize_pair(pair).lower()
+    sess_norm = str(session_name or "").strip().lower()
+    key = f"{pair_norm}__{sess_norm}"
+    if key in _RUNTIME_SETTINGS_CACHE:
+        return _RUNTIME_SETTINGS_CACHE[key]
+    data = runtime_settings.load_runtime_settings(pair, session_name)
+    if not isinstance(data, dict) or data.get("status") != "PASS":
+        _RUNTIME_SETTINGS_CACHE[key] = None
+        return None
+    _RUNTIME_SETTINGS_CACHE[key] = data
+    return data
+
+
+def _preferred_action_bonus(action: str) -> float:
+    action = str(action or "").lower()
+    if action == "expand":
+        return 0.12
+    if action == "refine":
+        return 0.06
+    if action == "repair":
+        return -0.04
+    return 0.0
+
+
+def _trade_target_distance_atr(tr: dict, direction: str, fallback_tp1_atr: float) -> float:
+    try:
+        entry = float(tr.get("entry", 0.0) or 0.0)
+        tp = float(tr.get("tp", 0.0) or 0.0)
+        atr_entry = float(tr.get("atr_entry", 0.0) or 0.0)
+        if entry > 0.0 and tp > 0.0 and atr_entry > 0.0:
+            return abs(tp - entry) / atr_entry
+    except Exception:
+        pass
+    return float(fallback_tp1_atr or 0.0)
+
+
+def _as_dict(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _target_profile_from_distance(distance_pips: float) -> str:
+    if not math.isfinite(float(distance_pips)) or float(distance_pips) <= 0.0:
+        return "T0_0"
+    return f"T{float(distance_pips):.1f}".replace(".", "_")
+
+
+def _distance_from_target_profile(target_profile: str) -> Optional[float]:
+    txt = str(target_profile or "").strip().upper()
+    if not txt.startswith("T"):
+        return None
+    num = txt[1:].replace("_", ".")
+    try:
+        val = float(num)
+    except Exception:
+        return None
+    if not math.isfinite(val) or val <= 0.0:
+        return None
+    return val
+
+
+def _strategy_key(entry_family: str, trade_type: str, target_profile: str) -> str:
+    return f"{str(entry_family or '').upper()}|{str(trade_type or '').upper()}|{str(target_profile or '').upper()}"
+
+
+def _infer_entry_family_from_setup(setup_name: str) -> str:
+    s = str(setup_name or "").upper()
+    if "FAILED_BREAKOUT_FADE" in s:
+        return "PULLBACK_RECLAIM"
+    if "EXHAUSTION_SNAPBACK" in s or "LIQUIDITY_SWEEP" in s:
+        return "OSCILLATION_BOUNCE"
+    if "COMPRESSION_EXPANSION" in s:
+        return "BREAK"
+    if "CONTINUATION" in s or "VOL_REIGNITE" in s or "INTENTIONAL_RUNNER" in s:
+        return "BIAS_ALIGNMENT_CONTINUATION"
+    return "UNKNOWN"
+
+
+def _compute_target_profile(pair: str, entry: float, tp: float, fallback_distance: float = 0.0) -> str:
+    dist = float(fallback_distance or 0.0)
+    try:
+        if math.isfinite(float(entry)) and math.isfinite(float(tp)) and float(entry) > 0.0 and float(tp) > 0.0:
+            dist = abs(float(to_pips(pair, float(tp) - float(entry))))
+    except Exception:
+        pass
+    return _target_profile_from_distance(dist)
+
+
+def _load_strategy_runtime_overrides() -> None:
+    global _STRATEGY_OVERRIDES, _STRATEGY_OVERRIDES_META
+    cfg_path = os.getenv("AEE_STRATEGY_OVERRIDES_PATH", "strategy_runtime_overrides.json").strip() or "strategy_runtime_overrides.json"
+    path = Path(cfg_path)
+    if not path.is_absolute():
+        path = Path(PROJECT_DIR) / path
+    if not path.exists():
+        _STRATEGY_OVERRIDES = {}
+        _STRATEGY_OVERRIDES_META = {"path": str(path), "loaded": False, "reason": "missing"}
+        log_runtime("warning", "AEE_STRATEGY_OVERRIDES_MISSING", path=str(path))
+        return
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        table = dict((raw.get("strategy_overrides") or {}))
+        parsed: Dict[str, Dict[str, Any]] = {}
+        for k, v in table.items():
+            if not isinstance(v, dict):
+                continue
+            parsed[str(k).strip().lower()] = {
+                "harvest_trigger_pips": float(v.get("harvest_trigger_pips", 0.0) or 0.0),
+                "giveback_trigger_pips": float(v.get("giveback_trigger_pips", 0.0) or 0.0),
+                "panic_trigger_pips": float(v.get("panic_trigger_pips", 0.0) or 0.0),
+            }
+        _STRATEGY_OVERRIDES = parsed
+        _STRATEGY_OVERRIDES_META = {
+            "path": str(path),
+            "loaded": True,
+            "count": len(parsed),
+            "mtime": path.stat().st_mtime,
+        }
+        log_runtime("info", "AEE_STRATEGY_OVERRIDES_LOADED", path=str(path), count=len(parsed))
+        emit_trade_kind("AEE_STRATEGY_OVERRIDES_LOADED", {**build_event_envelope(kind="AEE_STRATEGY_OVERRIDES_LOADED"), "path": str(path), "count": len(parsed)})
+    except Exception as exc:
+        _STRATEGY_OVERRIDES = {}
+        _STRATEGY_OVERRIDES_META = {"path": str(path), "loaded": False, "reason": str(exc)}
+        log_runtime("error", "AEE_STRATEGY_OVERRIDES_LOAD_FAILED", path=str(path), error=str(exc))
+
+
+def _register_trade_strategy_context(trade_id: Any, *, pair: str, direction: str, entry_family: str, trade_type: str, target_profile: str) -> Dict[str, Any]:
+    try:
+        tid = int(trade_id)
+    except Exception:
+        return {}
+    family = str(entry_family or "UNKNOWN").upper()
+    ttype = str(trade_type or "HARVESTER").upper()
+    tprof = str(target_profile or "T0_0").upper()
+    skey = _strategy_key(family, ttype, tprof)
+    ctx = {
+        "pair": str(pair or ""),
+        "direction": str(direction or "").upper(),
+        "entry_family": family,
+        "trade_type": ttype,
+        "target_profile": tprof,
+        "strategy_key": skey,
+    }
+    _TRADE_STRATEGY_CONTEXT[tid] = ctx
+    return ctx
+
+
+def _resolve_trade_strategy_context(tr: dict, *, pair: str, direction: str, leg_type: str) -> Dict[str, Any]:
+    try:
+        tid = int(tr.get("id", 0) or 0)
+    except Exception:
+        tid = 0
+    existing = _TRADE_STRATEGY_CONTEXT.get(tid, {}) if tid else {}
+    entry_family = str(tr.get("entry_family") or existing.get("entry_family") or _infer_entry_family_from_setup(tr.get("setup", "")) or "UNKNOWN").upper()
+    trade_type = str(tr.get("trade_type") or existing.get("trade_type") or leg_type or "HARVESTER").upper()
+    target_profile = str(tr.get("target_profile") or existing.get("target_profile") or "").upper()
+    if not target_profile:
+        target_profile = _compute_target_profile(
+            pair,
+            float(tr.get("entry", 0.0) or 0.0),
+            float(tr.get("tp", 0.0) or 0.0),
+            fallback_distance=0.0,
+        )
+    strategy = _strategy_key(entry_family, trade_type, target_profile)
+    resolved = {
+        "entry_family": entry_family,
+        "trade_type": trade_type,
+        "target_profile": target_profile,
+        "strategy_key": strategy,
+    }
+    if tid:
+        _TRADE_STRATEGY_CONTEXT[tid] = {**existing, **resolved, "pair": pair, "direction": str(direction or "").upper()}
+    return resolved
+
+
+def _lookup_strategy_override(strategy_meta: Dict[str, Any], direction: str) -> Dict[str, Any]:
+    strategy_key = str(strategy_meta.get("strategy_key", "") or "").strip()
+    key_norm = strategy_key.lower()
+    if key_norm in _STRATEGY_OVERRIDES:
+        return {"match_key": strategy_key, **dict(_STRATEGY_OVERRIDES[key_norm])}
+
+    # Backward-compat: existing file uses side:mode:distance
+    trade_type = str(strategy_meta.get("trade_type", "HARVESTER") or "HARVESTER").strip().lower()
+    target_profile = str(strategy_meta.get("target_profile", "") or "")
+    dist = _distance_from_target_profile(target_profile)
+    if dist is None:
+        return {}
+    dist_text = f"{dist:g}"
+    legacy = f"{str(direction or '').lower()}:{trade_type}:{dist_text}".lower()
+    if legacy in _STRATEGY_OVERRIDES:
+        return {"match_key": legacy, **dict(_STRATEGY_OVERRIDES[legacy])}
+    return {}
+
+
+def _runtime_aee_profile(
+    pair: str,
+    session_name: str,
+    quarter_name: str,
+    direction: str,
+    target_distance: float,
+) -> dict:
+    settings = _load_runtime_settings(pair, session_name)
+    if not isinstance(settings, dict):
+        log_runtime("warning", "AEE_PROFILE_FALLBACK", pair=pair, session=session_name, reason="no_runtime_settings")
+        return {
+            "aee_mode": "fallback",
+            "strictness_mult": 1.0,
+            "near_tp_band_atr": 0.25,
+            "harvester_time_fraction": 0.45,
+            "first_partial_fraction": 0.45,
+            "first_partial_trigger_r": 1.25,
+            "stop_time_fraction": 0.50,
+            "add_on_enabled": False,
+            "add_on_risk_percent": 1.0,
+            "add_on_min_parent_r": 0.75,
+            "add_on_min_continuation": 0.60,
+            "family_source": "no_runtime_settings",
+        }
+    best_zone = runtime_settings.best_zone_runtime(
+        settings,
+        quarter_name,
+        direction,
+        float(target_distance or 0.0),
+    )
+    pair_runtime = dict((settings.get("pair_runtime") or {}).get(str(direction).upper(), {}) or {})
+    family_cfg = dict((settings.get("trade_family") or {}) or {})
+    aee_cfg = dict((settings.get("aee") or {}) or {})
+    partial_cfg = dict((family_cfg.get("partial_close_profile") or {}).get(str((best_zone or {}).get("speed_class") or "").upper(), {}) or {})
+    zone_partial = dict((best_zone or {}).get("preferred_partial_close_profile", {}) or {})
+    if zone_partial:
+        partial_cfg = {**partial_cfg, **zone_partial}
+    add_on_cfg = dict(family_cfg.get("add_on_profile", {}) or {})
+    zone_mode = str((best_zone or {}).get("aee_mode", aee_cfg.get("default_mode", "fallback")) or "fallback").lower()
+    fallback_profile = dict(aee_cfg.get("fallback_profile", {}) or {})
+    full_profile = dict(aee_cfg.get("full_profile", {}) or {})
+    zone_fallback_profile = dict((best_zone or {}).get("fallback_profile", {}) or {})
+    improvable = float((best_zone or {}).get("aee_improvable_rate", 0.0) or 0.0)
+    pair_wr = float(pair_runtime.get("template_entry_win_rate", 0.0) or 0.0)
+    zone_wr = float((best_zone or {}).get("template_entry_win_rate", 0.0) or pair_wr)
+    strictness_mult = 1.0
+    if zone_wr >= 0.70:
+        strictness_mult *= 0.92
+    elif zone_wr < 0.56:
+        strictness_mult *= 1.10
+    if improvable >= 0.25:
+        strictness_mult *= 0.95
+    elif improvable <= 0.05:
+        strictness_mult *= 1.05
+    strictness_mult = max(0.80, min(1.25, strictness_mult))
+    near_tp_band = 0.25
+    try:
+        near_tp_band = max(
+            0.18,
+            min(
+                0.45,
+                float(partial_cfg.get("stop_time_fraction", 0.50) or 0.50) * 0.45,
+            ),
+        )
+    except Exception:
+        near_tp_band = 0.25
+    if zone_mode == "fallback":
+        effective_fallback = {**fallback_profile, **zone_fallback_profile}
+        strictness_mult *= float(effective_fallback.get("strictness_mult", 1.15) or 1.15)
+        strictness_mult = max(0.90, min(1.35, strictness_mult))
+        near_tp_band = float(effective_fallback.get("near_tp_band_atr", 0.18) or 0.18)
+    else:
+        if full_profile:
+            strictness_mult *= float(full_profile.get("strictness_mult", 1.0) or 1.0)
+            near_tp_band = max(near_tp_band, float(full_profile.get("near_tp_band_atr", near_tp_band) or near_tp_band))
+    profile_base = ({**fallback_profile, **zone_fallback_profile} if zone_mode == "fallback" else full_profile)
+    return {
+        "aee_mode": zone_mode,
+        "strictness_mult": strictness_mult,
+        "near_tp_band_atr": near_tp_band,
+        "harvester_time_fraction": float(partial_cfg.get("harvester_time_fraction", profile_base.get("harvester_time_fraction", 0.45)) or profile_base.get("harvester_time_fraction", 0.45) or 0.45),
+        "first_partial_fraction": float(partial_cfg.get("first_partial_fraction", profile_base.get("first_partial_fraction", 0.45)) or profile_base.get("first_partial_fraction", 0.45) or 0.45),
+        "first_partial_trigger_r": float(partial_cfg.get("first_partial_trigger_r", profile_base.get("first_partial_trigger_r", 1.25)) or profile_base.get("first_partial_trigger_r", 1.25) or 1.25),
+        "stop_time_fraction": float(partial_cfg.get("stop_time_fraction", profile_base.get("stop_time_fraction", 0.50)) or profile_base.get("stop_time_fraction", 0.50) or 0.50),
+        "add_on_enabled": bool(profile_base.get("add_on_enabled", add_on_cfg.get("enabled", False))),
+        "add_on_risk_percent": float(profile_base.get("add_on_risk_percent", add_on_cfg.get("add_on_risk_percent", 1.0)) or 1.0),
+        "add_on_min_parent_r": float(profile_base.get("add_on_min_parent_r", add_on_cfg.get("min_parent_r_multiple", 0.75)) or 0.75),
+        "add_on_min_continuation": float(profile_base.get("add_on_min_continuation", add_on_cfg.get("min_continuation_strength", 0.60)) or 0.60),
+        "family_source": (
+            f"{zone_mode}:{pair}|{session_name}|{quarter_name}|{direction}|"
+            f"{float(target_distance or 0.0):.2f}|"
+            f"{(best_zone or {}).get('fallback_template_source', 'self')}"
+        ),
+    }
+
+
+PAIR_PARENT_CAP = int(os.getenv("PAIR_PARENT_CAP", "5") or "5")
+SAME_PAIR_LINEAR_PENALTY = float(os.getenv("SAME_PAIR_LINEAR_PENALTY", "0.12") or "0.12")
+
+
+def _actionable_state_rank(state: str) -> int:
+    return {
+        "ARM_TICK_ENTRY": 4,
+        "GET_READY": 3,
+        "ENTER": 2,
+        "WATCH": 1,
+    }.get(str(state or ""), 0)
+
+
+def _grade_risk_percent(grade: str) -> float:
+    grade = str(grade or "").upper()
+    return {
+        "A": 3.0,
+        "B": 2.0,
+        "C": 1.5,
+        "D": 0.5,
+        "E": 0.0,
+    }.get(grade, 1.5)
+
+
+def _is_major_pair(pair: str) -> bool:
+    return normalize_pair(pair) in {
+        "EUR_USD", "GBP_USD", "USD_JPY", "USD_CHF", "USD_CAD", "AUD_USD", "NZD_USD", "EUR_JPY",
+    }
+
+
+def _pair_parent_count(open_trades: List[dict], pair: str) -> int:
+    pair = normalize_pair(pair)
+    return len(
+        {
+            str(tr.get("parent_entry_id", tr.get("note", tr.get("oanda_trade_id", tr.get("id", "")))) or "")
+            for tr in open_trades
+            if normalize_pair(tr.get("pair")) == pair and str(tr.get("state", "OPEN")).upper() == "OPEN"
+        }
+        - {""}
+    )
+
+
+def _pair_family_directions(open_trades: List[dict], pair: str) -> set[str]:
+    pair = normalize_pair(pair)
+    return {
+        str(tr.get("dir", "")).upper()
+        for tr in open_trades
+        if normalize_pair(tr.get("pair")) == pair and str(tr.get("state", "OPEN")).upper() == "OPEN"
+    } - {""}
+
+
+def _pair_family_unrealized_pnl(open_pos: List[dict], pair: str, direction: str, price_map: Optional[Dict[str, Tuple[float, float]]] = None) -> float:
+    pair = normalize_pair(pair)
+    direction = str(direction or "").upper()
+    bid = ask = None
+    if price_map:
+        px = price_map.get(pair)
+        if px and isinstance(px, (list, tuple)) and len(px) >= 2:
+            try:
+                # Handle both list/tuple and dict-like price structures
+                if isinstance(px, dict):
+                    bid = float(px.get('bid', 0))
+                    ask = float(px.get('ask', 0))
+                else:
+                    bid, ask = float(px[0]), float(px[1])
+            except (ValueError, TypeError, IndexError, KeyError):
+                bid = ask = None
+    total = 0.0
+    for pos in open_pos:
+        instr = normalize_pair(pos.get("instrument"))
+        if instr != pair:
+            continue
+        if direction == "LONG":
+            units = int(float(pos.get("long", {}).get("units", "0") or "0"))
+            avg = float(pos.get("long", {}).get("averagePrice", "nan") or "nan")
+            px = bid
+            if units > 0 and px is not None and math.isfinite(avg):
+                total += (px - avg) * units
+        elif direction == "SHORT":
+            units = abs(int(float(pos.get("short", {}).get("units", "0") or "0")))
+            avg = float(pos.get("short", {}).get("averagePrice", "nan") or "nan")
+            px = ask
+            if units > 0 and px is not None and math.isfinite(avg):
+                total += (avg - px) * units
+    return float(total)
+
+
+def _historical_grade_from_metrics(
+    win_rate: float,
+    trades_per_hour: float,
+    utilization: float,
+    recycling_utilization: float,
+) -> str:
+    wr = max(0.0, min(1.0, float(win_rate or 0.0)))
+    tph = max(0.0, float(trades_per_hour or 0.0))
+    util = max(0.0, float(utilization or 0.0))
+    recycle = max(0.0, float(recycling_utilization or 0.0))
+    if wr >= 0.60 and tph >= 0.60 and util >= 0.15 and recycle >= 0.20:
+        return "A"
+    if wr >= 0.53 and tph >= 0.20 and util >= 0.05:
+        return "B"
+    return "C"
+
+
+def _zone_grade(zone: Optional[dict]) -> str:
+    if not isinstance(zone, dict):
+        return "C"
+    return _historical_grade_from_metrics(
+        float(zone.get("template_entry_win_rate", 0.0) or 0.0),
+        float(zone.get("template_actual_trades_per_hour", zone.get("template_selected_density_per_hour", 0.0)) or 0.0),
+        float(zone.get("template_utilization_ratio", 0.0) or 0.0),
+        float(zone.get("template_recycling_utilization_ratio", 0.0) or 0.0),
+    )
+
+
+def _pair_grade(pair_tpl: Optional[dict]) -> str:
+    if not isinstance(pair_tpl, dict):
+        return "C"
+    return _historical_grade_from_metrics(
+        float(pair_tpl.get("template_entry_win_rate", 0.0) or 0.0),
+        float(pair_tpl.get("template_trades_per_hour", 0.0) or 0.0),
+        float(pair_tpl.get("template_utilization_ratio", 0.0) or 0.0),
+        float(pair_tpl.get("template_recycling_utilization_ratio", 0.0) or 0.0),
+    )
+
+
+def _grade_bonus(grade: str) -> float:
+    grade = str(grade or "").upper()
+    if grade == "A":
+        return 0.10
+    if grade == "B":
+        return 0.04
+    return -0.03
+
+
+def _template_richness(template: Optional[dict], quarter: str, direction: str) -> dict:
+    if not isinstance(template, dict):
+        return {"a_count": 0, "b_count": 0, "best_a_run": 0, "richness_score": 0.0}
+    zones = [
+        z for z in (template.get("zones") or [])
+        if str(z.get("quarter")) == str(quarter)
+        and str(z.get("direction", "")).upper() == str(direction).upper()
+    ]
+    try:
+        zones.sort(key=lambda z: float(z.get("target_distance", 0.0) or 0.0))
+    except Exception:
+        pass
+    a_count = 0
+    b_count = 0
+    best_run = 0
+    cur_run = 0
+    for zone in zones:
+        grade = _zone_grade(zone)
+        if grade == "A":
+            a_count += 1
+            cur_run += 1
+            best_run = max(best_run, cur_run)
+        else:
+            cur_run = 0
+            if grade == "B":
+                b_count += 1
+    richness_score = min(1.0, (0.45 * min(4, a_count) + 0.35 * min(3, best_run) + 0.20 * min(4, b_count)) / 3.0)
+    return {
+        "a_count": a_count,
+        "b_count": b_count,
+        "best_a_run": best_run,
+        "richness_score": round(richness_score, 4),
+    }
+
+
 
 def _notify_throttle_ok(key: str, min_interval_sec: float) -> bool:
     now = time.time()
@@ -79,16 +575,16 @@ def _notify_preflight() -> dict:
     global _PREFLIGHT_CHECKED
     if _PREFLIGHT_CHECKED:
         return {"ok": True}
-    
+
     desktop_bin = os.getenv("NOTIFY_DESKTOP_BIN", "notify-send")
     termux_bin = os.getenv("NOTIFY_TERMUX_BIN", "termux-notification")
-    
+
     result = {
         "desktop": {"bin": desktop_bin, "found": False},
         "termux": {"bin": termux_bin, "found": False},
         "ok": True
     }
-    
+
     # Check desktop binary
     try:
         subprocess.run(["which", desktop_bin], capture_output=True, check=True)
@@ -97,7 +593,7 @@ def _notify_preflight() -> dict:
         result["desktop"]["found"] = False
         if _env_bool("NOTIFY_REQUIRE_DESKTOP", "0"):
             result["ok"] = False
-    
+
     # Check Termux binary
     try:
         subprocess.run(["which", termux_bin], capture_output=True, check=True)
@@ -106,12 +602,12 @@ def _notify_preflight() -> dict:
         result["termux"]["found"] = False
         if _env_bool("NOTIFY_REQUIRE_TERMUX", "0"):
             result["ok"] = False
-    
+
     if not result["ok"]:
         log_runtime("error", "NOTIFY_PREFLIGHT_FAIL", **result)
     else:
         log_runtime("info", "NOTIFY_PREFLIGHT_OK", **result)
-    
+
     _PREFLIGHT_CHECKED = True
     return result
 
@@ -119,17 +615,17 @@ def _notify_worker():
     """Background worker that flushes notifications"""
     retry_count = _env_int("NOTIFY_RETRY_COUNT", 2)
     retry_backoff_ms = _env_int("NOTIFY_RETRY_BACKOFF_MS", 250)
-    
+
     while not _NOTIFY_SHUTDOWN:
         try:
             # Get notification from queue with timeout
             payload = _NOTIFY_QUEUE.get(timeout=1.0)
-            
+
             # Attempt each backend
             for backend in ["desktop", "termux"]:
-                bin_name = os.getenv(f"NOTIFY_{backend.upper()}_BIN", 
+                bin_name = os.getenv(f"NOTIFY_{backend.upper()}_BIN",
                                    "notify-send" if backend == "desktop" else "termux-notification")
-                
+
                 attempt = {
                     "backend": backend,
                     "bin": bin_name,
@@ -140,14 +636,14 @@ def _notify_worker():
                     "err_tail": None,
                     "attempt_ts_ms": _now_ms()
                 }
-                
+
                 # Build command
                 if backend == "desktop":
                     cmd = [bin_name, payload.get("title", ""), payload.get("body", "")]
                 else:  # termux
-                    cmd = [bin_name, "--title", payload.get("title", ""), 
+                    cmd = [bin_name, "--title", payload.get("title", ""),
                           "--content", payload.get("body", "")]
-                
+
                 # Try with retries
                 for attempt_num in range(retry_count + 1):
                     try:
@@ -159,10 +655,10 @@ def _notify_worker():
                         )
                         attempt["rc"] = result.returncode
                         attempt["ok"] = result.returncode == 0
-                        
+
                         if result.returncode != 0:
                             attempt["err_tail"] = result.stderr.decode('utf-8', errors='ignore')[-100:]
-                        
+
                         break
                     except FileNotFoundError:
                         attempt["err_tail"] = "binary_not_found"
@@ -175,16 +671,16 @@ def _notify_worker():
                         attempt["err_tail"] = str(e)[-100:]
                         if attempt_num < retry_count:
                             time.sleep(retry_backoff_ms / 1000.0)
-                
+
                 # Log the attempt
                 log_runtime("info", "NOTIFY_BACKEND_ATTEMPT", **attempt)
-                
+
                 # If required and failed, log warning
                 if not attempt["ok"] and _env_bool(f"NOTIFY_REQUIRE_{backend.upper()}", "0"):
                     log_runtime("warning", "NOTIFY_REQUIRED_BACKEND_FAILED", **attempt)
-            
+
             _NOTIFY_QUEUE.task_done()
-            
+
         except queue.Empty:
             continue
         except Exception as e:
@@ -193,7 +689,7 @@ def _notify_worker():
 def _ensure_notify_worker():
     """Start the notification worker thread if needed"""
     global _NOTIFY_WORKER
-    if _NOTIFY_WORKER is None and _env_bool("NOTIFY_ENABLE_SEND", "0"):
+    if _NOTIFY_WORKER is None and _env_bool("NOTIFY_ENABLE_SEND", "1"):
         _NOTIFY_WORKER = threading.Thread(target=_notify_worker, daemon=True)
         _NOTIFY_WORKER.start()
         log_runtime("info", "NOTIFY_WORKER_STARTED")
@@ -206,29 +702,32 @@ def notify(kind: str, title: str, body: str = "", data: dict | None = None,
     Single source of truth for notifications.
     Always emits NOTIFY_SEND and queues for backend delivery.
     """
-    # Build payload
-    payload = {
-        "ts_ms": _now_ms(),
-        "kind": kind,
-        "title": title,
-        "body": body,
-        "urgency": urgency,
-        "data": data or {},
-    }
-    
-    # Apply throttling if specified
-    if throttle_key and throttle_sec is not None:
-        if not _notify_throttle_ok(throttle_key, throttle_sec):
-            return
-    
-    # Always log the event
-    log_runtime("info", f"NOTIFY_SEND | {json.dumps(payload)}")
-    log_runtime("info", f"NOTIFY: {title} :: {body}")
-    
-    # Queue for backend delivery if enabled
-    if _env_bool("NOTIFY_ENABLE_SEND", "0"):
-        _ensure_notify_worker()
-        _NOTIFY_QUEUE.put(payload)
+    try:
+        # Build payload
+        payload = {
+            "ts_ms": _now_ms(),
+            "kind": kind,
+            "title": title,
+            "body": body,
+            "urgency": urgency,
+            "data": data or {},
+        }
+
+        # Apply throttling if specified
+        if throttle_key and throttle_sec is not None:
+            if not _notify_throttle_ok(throttle_key, throttle_sec):
+                return
+
+        # Always log the event
+        log_runtime("info", f"NOTIFY_SEND | {json.dumps(payload)}")
+        log_runtime("info", f"NOTIFY: {title} :: {body}")
+
+        # Queue for backend delivery if enabled
+        if _env_bool("NOTIFY_ENABLE_SEND", "1"):
+            _ensure_notify_worker()
+            _NOTIFY_QUEUE.put(payload)
+    except Exception as e:
+        log_runtime("error", "NOTIFY_ERROR", error=str(e), kind=kind, title=title)
 
 
 def ffloat(x: Any, default: float = 0.0) -> float:
@@ -239,6 +738,21 @@ def ffloat(x: Any, default: float = 0.0) -> float:
         return float(x)
     except Exception:
         return default
+
+
+def fmt_float(value: Any, ndigits: int = 2, default: str = "NA") -> str:
+    """Format floats safely, returning default if value is missing or invalid."""
+    try:
+        if value is None:
+            return default
+        return f"{float(value):.{ndigits}f}"
+    except Exception:
+        return default
+
+
+def pair_tag(pair: str, direction: str) -> str:
+    return f"{pair}_{direction}"
+
 
 def get_candles(pair: str, tf: str, count: int) -> list:
     """Fetch normalized candles via runtime OANDA client."""
@@ -536,8 +1050,7 @@ def log(event, meta=None):
 
 def build_event_envelope(
     *,
-    kind: str,
-    pair: str = "",
+    kind: strst",
     direction: str = "",
     trade_id: Any = None,
     broker_trade_id: Any = None,
@@ -574,6 +1087,11 @@ def emit_trade_kind(kind: str, payload: Optional[dict] = None) -> None:
     evt = dict(payload or {})
     evt.setdefault("kind", str(kind))
     log_trade_event(evt)
+
+
+def build_entry_group_id(pair: str, setup_name: str, direction: str) -> str:
+    """Stable entry group id for lifecycle events and dedupe."""
+    return f"{str(pair or '')}:{str(setup_name or '')}:{str(direction or '')}:{int(now_ts()*1000)}"
 
 
 def _load_runtime_tunes() -> None:
@@ -655,7 +1173,63 @@ def _load_runtime_tunes() -> None:
         emit_trade_kind("MANUAL_OVERRIDE_LOADED", {**build_event_envelope(kind="MANUAL_OVERRIDE_LOADED"), **manual})
 
 
-def _resolve_tune_context(pair: str, sig: Any, st: Any, speed_class: str) -> dict:
+def _resolve_tune_context(
+    pair: str,
+    sig: Any,
+    st: Any,
+    speed_class: str,
+    *,
+    emit_events: bool = False,
+    allow_apply: bool = False,
+    update_ctx: bool = False,
+) -> dict:
+    # First try runtime calibration (compiled research output)
+    try:
+        config = _RUNTIME_CALIBRATION.get_current_config(pair, now_ts())
+        if config and config.get("source") != "conservative_fallback":
+            # Use compiled config
+            knobs = {}
+            
+            # Extract entry filters if available
+            entry_filters = config.get("entry_filters", {})
+            if entry_filters:
+                knobs.update(entry_filters)
+                
+            # Extract management settings if available
+            management = config.get("management", {})
+            if management:
+                # Map management settings to AEE knobs
+                if "panic_multiplier" in management:
+                    knobs["aee.panic_multiplier"] = management["panic_multiplier"]
+                if "stall_timeout_minutes" in management:
+                    knobs["aee.stall_timeout_minutes"] = management["stall_timeout_minutes"]
+                    
+            # Add basic AEE settings if not present
+            if "aee.strictness_mult" not in knobs:
+                knobs["aee.strictness_mult"] = 1.0
+                
+            resolved = {
+                "knobs": knobs,
+                "source_level": "COMPILED",
+                "source_key": f"{pair}|{compute_session(now_ts())}|{compute_quarter(now_ts(), compute_session(now_ts()))}",
+                "tune_hash": config.get("calibration_hash", "compiled"),
+                "tier_index": 0,
+            }
+            
+            if emit_events:
+                log_runtime(
+                    "info",
+                    "COMPILED_CAL_USED",
+                    pair=pair,
+                    source=config.get("source", "unknown"),
+                    keys=list(knobs.keys()),
+                )
+                
+            return resolved
+    except Exception as e:
+        log_runtime("warning", "COMPILED_CAL_FAILED", pair=pair, error=str(e))
+        
+    # Fallback to original tune_apply system
     mode = "ENTRY"
     strategy_id = str(getattr(sig, "setup_id", "") or "")
     entry_type = str(getattr(sig, "setup_name", "") or "")
@@ -719,141 +1293,146 @@ def _resolve_tune_context(pair: str, sig: Any, st: Any, speed_class: str) -> dic
     resolved = _TUNE_APPLIER.resolve(mode=mode, state_keys=keys)
     now_u = now_ts()
     cal_key = f"{session_quarter}|{family}|{vol_bucket}"
-    touch_rec = _CAL_STATS.setdefault(
-        cal_key,
-        {
-            "session": session,
-            "session_quarter": session_quarter,
-            "family": family,
-            "vol_bucket": vol_bucket,
-            "mapped_strictness": float((resolved.get("knobs", {}) or {}).get("aee.strictness_mult", 1.0) or 1.0),
-            "current_strictness": float((resolved.get("knobs", {}) or {}).get("aee.strictness_mult", 1.0) or 1.0),
-            "touch_seq": 0,
-            "eval_ts": deque(maxlen=2000),
-            "decision_ts": 0.0,
-        },
-    )
-    touch_rec["touch_seq"] = int(touch_rec.get("touch_seq", 0) or 0) + 1
-    touch_rec["eval_ts"].append(float(now_u))
-    _SESSION_TOUCH_TS[session].append(float(now_u))
+    touch_rec = None
+    if emit_events:
+        touch_rec = _CAL_STATS.setdefault(
+            cal_key,
+            {
+                "session": session,
+                "session_quarter": session_quarter,
+                "family": family,
+                "vol_bucket": vol_bucket,
+                "mapped_strictness": float((resolved.get("knobs", {}) or {}).get("aee.strictness_mult", 1.0) or 1.0),
+                "current_strictness": float((resolved.get("knobs", {}) or {}).get("aee.strictness_mult", 1.0) or 1.0),
+                "touch_seq": 0,
+                "eval_ts": deque(maxlen=2000),
+                "decision_ts": 0.0,
+            },
+        )
+        touch_rec["touch_seq"] = int(touch_rec.get("touch_seq", 0) or 0) + 1
+        touch_rec["eval_ts"].append(float(now_u))
+        _SESSION_TOUCH_TS[session].append(float(now_u))
     source_level = str(resolved.get("source_level", "") or "")
     tier = "BASELINE" if source_level == "NONE" else ("PAIR" if source_level in {"FULL", "MID", "COARSE", "SESSION_PAIR"} else "FAMILY")
-    log_runtime(
-        "info",
-        "TUNE_MATCH",
-        pair=str(pair),
-        family=family,
-        session=session,
-        session_quarter=session_quarter,
-        atr_bucket=atr_bucket,
-        vol_bucket=vol_bucket,
-        matched_level=source_level,
-        key_matched=str(resolved.get("source_key", "") or ""),
-        tier=tier,
-        tier_index=int(resolved.get("tier_index", -1) or -1),
-        knobs_hash=str(resolved.get("tune_hash", "") or ""),
-        knobs_count=len(resolved.get("knobs", {}) or {}),
-    )
-    emit_trade_kind(
-        "TUNE_MATCH",
-        {
-            **build_event_envelope(
-                kind="TUNE_MATCH",
-                pair=pair,
-                direction=str(getattr(sig, "direction", "")),
-                state_key_core_str=core,
-                state_key_full_str=full,
-                source_level=source_level,
-                source_key=str(resolved.get("source_key", "") or ""),
-                tune_hash=str(resolved.get("tune_hash", "") or ""),
-                patch_version=str(resolved.get("patch_version", "") or ""),
-                manual_version=str(resolved.get("manual_version", "") or ""),
-            ),
-            "family": family,
-            "session": session,
-            "session_quarter": session_quarter,
-            "atr_bucket": atr_bucket,
-            "vol_bucket": vol_bucket,
-            "matched_level": source_level,
-            "matched_key": str(resolved.get("source_key", "") or ""),
-            "tier": tier,
-            "tier_index": int(resolved.get("tier_index", -1) or -1),
-            "knobs_hash": str(resolved.get("tune_hash", "") or ""),
-            "knobs_count": len(resolved.get("knobs", {}) or {}),
-        },
-    )
-    emit_trade_kind(
-        "CAL_TOUCH",
-        {
-            **build_event_envelope(
-                kind="CAL_TOUCH",
-                pair=pair,
-                direction=str(getattr(sig, "direction", "")),
-                state_key_core_str=core,
-                state_key_full_str=full,
-                source_level=source_level,
-                source_key=str(resolved.get("source_key", "") or ""),
-                tune_hash=str(resolved.get("tune_hash", "") or ""),
-            ),
-            "session": session,
-            "session_quarter": session_quarter,
-            "family": family,
-            "vol_bucket": vol_bucket,
-            "matched_level": source_level,
-            "key_matched": str(resolved.get("source_key", "") or ""),
-            "knobs_hash": str(resolved.get("tune_hash", "") or ""),
-            "touch_seq": int(touch_rec["touch_seq"]),
-        },
-    )
-    log_runtime(
-        "info",
-        "CAL_TOUCH",
-        pair=pair,
-        session=session,
-        session_quarter=session_quarter,
-        family=family,
-        vol_bucket=vol_bucket,
-        matched_level=source_level,
-        key_matched=str(resolved.get("source_key", "") or ""),
-        touch_seq=int(touch_rec["touch_seq"]),
-    )
-    # Apply live overlay after mapped resolution and before any downstream modulators.
-    overlay = _LIVE_OVERLAYS.get(session) or _load_overlay(session)
-    _LIVE_OVERLAYS[session] = overlay
-    ov_new_val = None
-    for ov in overlay.get("overrides", []) or []:
-        if str(ov.get("key", "") or "") == f"{family}|{session_quarter}|{vol_bucket}":
-            ov_knobs = ov.get("knobs") or {}
-            if isinstance(ov_knobs, dict):
-                resolved_knobs = resolved.get("knobs", {}) or {}
-                old_val = float(resolved_knobs.get("aee.strictness_mult", 1.0) or 1.0)
-                resolved_knobs.update(ov_knobs)
-                resolved["knobs"] = resolved_knobs
-                ov_new_val = float(resolved_knobs.get("aee.strictness_mult", old_val) or old_val)
-                if abs(ov_new_val - old_val) > 1e-12:
-                    ov_sha = hashlib.sha256(json.dumps(ov, sort_keys=True).encode("utf-8")).hexdigest()
-                    emit_trade_kind(
-                        "CAL_APPLIED",
-                        {
-                            **build_event_envelope(
-                                kind="CAL_APPLIED",
-                                pair=pair,
-                                direction=str(getattr(sig, "direction", "")),
-                                state_key_core_str=core,
-                                state_key_full_str=full,
-                                source_level=source_level,
-                                source_key=str(resolved.get("source_key", "") or ""),
-                            ),
-                            "cal_key": cal_key,
-                            "old_value": old_val,
-                            "new_value": ov_new_val,
-                            "overlay_sha": ov_sha,
-                            "expires_ts": float(ov.get("meta", {}).get("expires_ts", overlay.get("expires_ts", 0.0)) or 0.0),
-                        },
-                    )
-            break
+    if emit_events:
+        log_runtime(
+            "info",
+            "TUNE_MATCH",
+            pair=str(pair),
+            family=family,
+            session=session,
+            session_quarter=session_quarter,
+            atr_bucket=atr_bucket,
+            vol_bucket=vol_bucket,
+            matched_level=source_level,
+            key_matched=str(resolved.get("source_key", "") or ""),
+            tier=tier,
+            tier_index=int(resolved.get("tier_index", -1) or -1),
+            knobs_hash=str(resolved.get("tune_hash", "") or ""),
+            knobs_count=len(resolved.get("knobs", {}) or {}),
+        )
+        emit_trade_kind(
+            "TUNE_MATCH",
+            {
+                **build_event_envelope(
+                    kind="TUNE_MATCH",
+                    pair=pair,
+                    direction=str(getattr(sig, "direction", "")),
+                    state_key_core_str=core,
+                    state_key_full_str=full,
+                    source_level=source_level,
+                    source_key=str(resolved.get("source_key", "") or ""),
+                    tune_hash=str(resolved.get("tune_hash", "") or ""),
+                    patch_version=str(resolved.get("patch_version", "") or ""),
+                    manual_version=str(resolved.get("manual_version", "") or ""),
+                ),
+                "family": family,
+                "session": session,
+                "session_quarter": session_quarter,
+                "atr_bucket": atr_bucket,
+                "vol_bucket": vol_bucket,
+                "matched_level": source_level,
+                "matched_key": str(resolved.get("source_key", "") or ""),
+                "key_matched": str(resolved.get("source_key", "") or ""),
+                "tier": tier,
+                "tier_index": int(resolved.get("tier_index", -1) or -1),
+                "knobs_hash": str(resolved.get("tune_hash", "") or ""),
+                "knobs_count": len(resolved.get("knobs", {}) or {}),
+            },
+        )
+        emit_trade_kind(
+            "CAL_TOUCH",
+            {
+                **build_event_envelope(
+                    kind="CAL_TOUCH",
+                    pair=pair,
+                    direction=str(getattr(sig, "direction", "")),
+                    state_key_core_str=core,
+                    state_key_full_str=full,
+                    source_level=source_level,
+                    source_key=str(resolved.get("source_key", "") or ""),
+                    tune_hash=str(resolved.get("tune_hash", "") or ""),
+                ),
+                "session": session,
+                "session_quarter": session_quarter,
+                "family": family,
+                "vol_bucket": vol_bucket,
+                "matched_level": source_level,
+                "key_matched": str(resolved.get("source_key", "") or ""),
+                "knobs_hash": str(resolved.get("tune_hash", "") or ""),
+                "touch_seq": int((touch_rec or {}).get("touch_seq", 0)),
+            },
+        )
+        log_runtime(
+            "info",
+            "CAL_TOUCH",
+            pair=pair,
+            session=session,
+            session_quarter=session_quarter,
+            family=family,
+            vol_bucket=vol_bucket,
+            matched_level=source_level,
+            key_matched=str(resolved.get("source_key", "") or ""),
+            touch_seq=int((touch_rec or {}).get("touch_seq", 0)),
+        )
+    # Apply live overlay after mapped resolution and before downstream modulators.
+    if allow_apply:
+        overlay = _LIVE_OVERLAYS.get(session) or _load_overlay(session)
+        _LIVE_OVERLAYS[session] = overlay
+        ov_new_val = None
+        for ov in overlay.get("overrides", []) or []:
+            if str(ov.get("key", "") or "") == f"{family}|{session_quarter}|{vol_bucket}":
+                ov_knobs = ov.get("knobs") or {}
+                if isinstance(ov_knobs, dict):
+                    resolved_knobs = resolved.get("knobs", {}) or {}
+                    old_val = float(resolved_knobs.get("aee.strictness_mult", 1.0) or 1.0)
+                    resolved_knobs.update(ov_knobs)
+                    resolved["knobs"] = resolved_knobs
+                    ov_new_val = float(resolved_knobs.get("aee.strictness_mult", old_val) or old_val)
+                    if emit_events and abs(ov_new_val - old_val) > 1e-12:
+                        ov_sha = hashlib.sha256(json.dumps(ov, sort_keys=True).encode("utf-8")).hexdigest()
+                        emit_trade_kind(
+                            "CAL_APPLIED",
+                            {
+                                **build_event_envelope(
+                                    kind="CAL_APPLIED",
+                                    pair=pair,
+                                    direction=str(getattr(sig, "direction", "")),
+                                    state_key_core_str=core,
+                                    state_key_full_str=full,
+                                    source_level=source_level,
+                                    source_key=str(resolved.get("source_key", "") or ""),
+                                ),
+                                "cal_key": cal_key,
+                                "old_value": old_val,
+                                "new_value": ov_new_val,
+                                "overlay_sha": ov_sha,
+                                "expires_ts": float(ov.get("meta", {}).get("expires_ts", overlay.get("expires_ts", 0.0)) or 0.0),
+                            },
+                        )
+                break
     # Apply bounded session-scoped auto-tune overlay after calibration overlay.
-    if _AUTO_TUNE_ENABLED:
+    if allow_apply and _AUTO_TUNE_ENABLED:
         auto = _AUTO_TUNE_STATE.get(session, {})
         if auto:
             rk = resolved.get("knobs", {}) or {}
@@ -866,20 +1445,22 @@ def _resolve_tune_context(pair: str, sig: Any, st: Any, speed_class: str) -> dic
             rk["entry.tick.base_max_dist_atr"] = float(new_base)
             rk["entry.tick.confirm_disp_atr"] = float(new_conf)
             resolved["knobs"] = rk
-    emit_trade_kind(
-        "STATEKEY_COMPUTED",
-        {
-            **build_event_envelope(
-                kind="STATEKEY_COMPUTED",
-                pair=pair,
-                direction=str(getattr(sig, "direction", "")),
-                state_key_core_str=core,
-                state_key_full_str=full,
-            ),
-            "mode": mode,
-        },
-    )
-    _TUNE_CTX.update(
+    if emit_events:
+        emit_trade_kind(
+            "STATEKEY_COMPUTED",
+            {
+                **build_event_envelope(
+                    kind="STATEKEY_COMPUTED",
+                    pair=pair,
+                    direction=str(getattr(sig, "direction", "")),
+                    state_key_core_str=core,
+                    state_key_full_str=full,
+                ),
+                "mode": mode,
+            },
+        )
+    if update_ctx:
+        _TUNE_CTX.update(
         {
             "source_level": resolved.get("source_level", ""),
             "source_key": resolved.get("source_key", ""),
@@ -896,32 +1477,12 @@ def _resolve_tune_context(pair: str, sig: Any, st: Any, speed_class: str) -> dic
             "source": (resolved.get("meta", {}) or {}).get("source"),
         }
     )
-    emit_trade_kind(
-        "TUNE_APPLIED",
-        {
-            **build_event_envelope(
-                kind="TUNE_APPLIED",
-                pair=pair,
-                direction=str(getattr(sig, "direction", "")),
-                state_key_core_str=core,
-                state_key_full_str=full,
-                source_level=resolved.get("source_level", ""),
-                source_key=resolved.get("source_key", ""),
-                tune_hash=resolved.get("tune_hash", ""),
-                patch_version=resolved.get("patch_version", ""),
-                manual_version=resolved.get("manual_version", ""),
-            ),
-            "knobs_eff": resolved.get("knobs", {}),
-            "entry_knobs_eff": resolved.get("knobs", {}),
-        },
-    )
-    if str(resolved.get("source_level", "")) == "NONE":
-        _SESSION_FALLBACK_TS[session].append(float(now_u))
+    if emit_events:
         emit_trade_kind(
-            "FALLBACK_USED",
+            "TUNE_APPLIED",
             {
                 **build_event_envelope(
-                    kind="FALLBACK_USED",
+                    kind="TUNE_APPLIED",
                     pair=pair,
                     direction=str(getattr(sig, "direction", "")),
                     state_key_core_str=core,
@@ -932,36 +1493,57 @@ def _resolve_tune_context(pair: str, sig: Any, st: Any, speed_class: str) -> dic
                     patch_version=resolved.get("patch_version", ""),
                     manual_version=resolved.get("manual_version", ""),
                 ),
-                "reason": "tune_source_none",
-                "mode": mode,
-                "keys": keys,
                 "knobs_eff": resolved.get("knobs", {}),
+                "entry_knobs_eff": resolved.get("knobs", {}),
             },
         )
-    for c in resolved.get("clamped", []) or []:
-        emit_trade_kind("TUNE_CLAMPED", {**build_event_envelope(kind="TUNE_CLAMPED", pair=pair), **c})
-    if resolved.get("manual_applied_keys"):
-        log_runtime("info", "MANUAL_OVERRIDE_APPLIED", keys=resolved.get("manual_applied_keys", []))
-        emit_trade_kind(
-            "MANUAL_OVERRIDE_APPLIED",
-            {
-                **build_event_envelope(
-                    kind="MANUAL_OVERRIDE_APPLIED",
-                    pair=pair,
-                    direction=str(getattr(sig, "direction", "")),
-                    state_key_core_str=core,
-                    state_key_full_str=full,
-                    source_level=resolved.get("source_level", ""),
-                    source_key=resolved.get("source_key", ""),
-                    tune_hash=resolved.get("tune_hash", ""),
-                    patch_version=resolved.get("patch_version", ""),
-                    manual_version=resolved.get("manual_version", ""),
-                ),
-                "keys": resolved.get("manual_applied_keys", []),
-            },
-        )
+        if str(resolved.get("source_level", "")) == "NONE":
+            _SESSION_FALLBACK_TS[session].append(float(now_u))
+            emit_trade_kind(
+                "FALLBACK_USED",
+                {
+                    **build_event_envelope(
+                        kind="FALLBACK_USED",
+                        pair=pair,
+                        direction=str(getattr(sig, "direction", "")),
+                        state_key_core_str=core,
+                        state_key_full_str=full,
+                        source_level=resolved.get("source_level", ""),
+                        source_key=resolved.get("source_key", ""),
+                        tune_hash=resolved.get("tune_hash", ""),
+                        patch_version=resolved.get("patch_version", ""),
+                        manual_version=resolved.get("manual_version", ""),
+                    ),
+                    "reason": "tune_source_none",
+                    "mode": mode,
+                    "keys": keys,
+                    "knobs_eff": resolved.get("knobs", {}),
+                },
+            )
+        for c in resolved.get("clamped", []) or []:
+            emit_trade_kind("TUNE_CLAMPED", {**build_event_envelope(kind="TUNE_CLAMPED", pair=pair), **c})
+        if resolved.get("manual_applied_keys"):
+            log_runtime("info", "MANUAL_OVERRIDE_APPLIED", keys=resolved.get("manual_applied_keys", []))
+            emit_trade_kind(
+                "MANUAL_OVERRIDE_APPLIED",
+                {
+                    **build_event_envelope(
+                        kind="MANUAL_OVERRIDE_APPLIED",
+                        pair=pair,
+                        direction=str(getattr(sig, "direction", "")),
+                        state_key_core_str=core,
+                        state_key_full_str=full,
+                        source_level=resolved.get("source_level", ""),
+                        source_key=resolved.get("source_key", ""),
+                        tune_hash=resolved.get("tune_hash", ""),
+                        patch_version=resolved.get("patch_version", ""),
+                        manual_version=resolved.get("manual_version", ""),
+                    ),
+                    "keys": resolved.get("manual_applied_keys", []),
+                },
+            )
     # Lightweight calibration decision loop (proof-safe: can run on eval counts only).
-    if _CALIBRATION_ENABLED:
+    if emit_events and allow_apply and _CALIBRATION_ENABLED and touch_rec is not None:
         win_ts = [t for t in touch_rec["eval_ts"] if (now_u - float(t)) <= _CAL_WINDOW_SEC]
         evals = len(win_ts)
         last_dec = float(touch_rec.get("decision_ts", 0.0) or 0.0)
@@ -1184,7 +1766,7 @@ _RUNTIME_DB: Any = None
 _RUNTIME_HUB: Any = None
 _AEE_ENGINE = AEEEngine()
 AEE_PROOF_LOGS = os.environ.get("AEE_PROOF_LOGS", "0") == "1"
-MANUAL_TEACHER_MODE = os.environ.get("MANUAL_TEACHER_MODE", "0") == "1"
+MANUAL_TEACHER_MODE = os.environ.get("MANUAL_TEACHER_MODE", "1") == "1"
 MANUAL_CLOSE_MODE = os.environ.get("MANUAL_CLOSE_MODE", "0") == "1"
 TEACH_HEARTBEAT_MODE = os.environ.get("TEACH_HEARTBEAT_MODE", "0") == "1"
 TEACH_HEARTBEAT_INTERVAL_SEC = int(os.environ.get("TEACH_HEARTBEAT_INTERVAL_SEC", "30"))
@@ -1192,11 +1774,35 @@ TEACH_MIN_EMIT_INTERVAL_SEC = int(os.environ.get("TEACH_MIN_EMIT_INTERVAL_SEC", 
 _MANUAL_TEACHER_LAST = {}  # trade_id -> dict of last emitted values for gating
 _TEACH_HEARTBEAT_LAST_TS = {}  # trade_id -> last heartbeat ts
 _MANUAL_TEACHER_SUPPRESSED = {}  # trade_id -> suppressed emit count since last emit
+_AEE_TUNE_APPLIED_LAST: Dict[str, Dict[str, str]] = {}  # "{trade_id}:{leg}" -> {"policy","tune_hash","state_key","source_key"}
 _TEACHER_EMIT_SKIPPED_INCOMPLETE = 0
 _TEACHER_EMIT_EMITTED = 0
 _TEACH_SESSION_ID = datetime.now(timezone.utc).strftime("teach-%Y%m%dT%H%M%SZ")
 _TEACHER_HEALTH_LAST_LOG = 0
+_EXPECTED_CLOSE_INTENTS: Dict[str, Dict[str, Any]] = {}
+_EXPECTED_CLOSE_INTENT_TTL_SEC = float(os.environ.get("EXPECTED_CLOSE_INTENT_TTL_SEC", "180"))
+_PAIR_SIDE_CLOSE_RECENT: Dict[str, Dict[str, Any]] = {}
+_PAIR_SIDE_CLOSE_RECENT_TTL_SEC = float(os.environ.get("PAIR_SIDE_CLOSE_RECENT_TTL_SEC", "180"))
+_PAIR_SIDE_CLOSE_INFLIGHT: Dict[str, Dict[str, Any]] = {}
+_PAIR_SIDE_CLOSE_INFLIGHT_LOCK = threading.Lock()
+_PAIR_SIDE_CLOSE_INFLIGHT_TTL_SEC = float(os.environ.get("PAIR_SIDE_CLOSE_INFLIGHT_TTL_SEC", "6"))
+_PAIR_SIDE_CLOSE_RECENT_SUPPRESS_SEC = float(os.environ.get("PAIR_SIDE_CLOSE_RECENT_SUPPRESS_SEC", "1.5"))
+NONLOCAL_CLOSE_REASONS: Set[str] = {
+    "BROKER_STOP_LOSS_CONFIRMED",
+    "BROKER_TAKE_PROFIT_CONFIRMED",
+    "PAIR_SIDE_ALREADY_FLAT",
+    "BROKER_FLAT_CONFIRMED",
+    "HUMAN_MANUAL_CLOSE_CONFIRMED",
+    "NONLOCAL_CLOSE_CONFIRMED",
+    # Backward-compat aliases for historical rows.
+    "BROKER_STOP_LOSS_CLOSE",
+    "BROKER_TAKE_PROFIT_CLOSE",
+    "HUMAN_MANUAL_CLOSE",
+    "EXTERNAL_CLOSE_DETECTED",
+}
 _TUNE_APPLIER = TuneApply(seed_path=os.getenv("TUNE_MAP_SEED_PATH", "").strip() or None)
+_RUNTIME_CALIBRATION = runtime_calibration.RuntimeCalibration()
+_SIMPLE_SIZING_MODEL = simple_sizing_model.SimpleSizingModel()
 _TUNE_CTX = {
     "source_level": "",
     "source_key": "",
@@ -1215,6 +1821,13 @@ _PROOF_FORCE_DECISION_TICKS = os.getenv("PROOF_FORCE_DECISION_TICKS", "0").strip
 _PROOF_FORCE_CAL_APPLY = os.getenv("PROOF_FORCE_CAL_APPLY", "0").strip() in ("1", "true", "TRUE", "yes", "YES")
 _SMOKE_MODE = os.getenv("SMOKE_MODE", "0").strip() in ("1", "true", "TRUE", "yes", "YES")
 _SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH = os.getenv("SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH", "0").strip() in ("1", "true", "TRUE", "yes", "YES")
+MOMENTUM_OVERRIDE_THRESHOLD = float(os.getenv("MOMENTUM_OVERRIDE_THRESHOLD", "0.65") or "0.65")
+ENABLE_SHORT_ENTRIES = os.getenv("ENABLE_SHORT_ENTRIES", "1").strip().lower() in ("1", "true", "yes")
+GET_READY_MAX_WEAK_SCANS = max(1, int(os.getenv("GET_READY_MAX_WEAK_SCANS", "3") or "3"))
+# Directional TP calibration from entry-driven feasibility audit.
+SHORT_TP1_ATR_FAST = float(os.getenv("SHORT_TP1_ATR_FAST", "0.22") or "0.22")
+SHORT_TP1_ATR_MED = float(os.getenv("SHORT_TP1_ATR_MED", "0.33") or "0.33")
+DISABLE_SHORT_SLOW = os.getenv("DISABLE_SHORT_SLOW", "1").strip().lower() in ("1", "true", "yes")
 _CALIBRATION_ENABLED = os.getenv("CALIBRATION_ENABLED", "1").strip() in ("1", "true", "TRUE", "yes", "YES")
 _CAL_WINDOW_SEC = 30 * 60
 _CAL_MIN_EVALS = 50
@@ -1442,7 +2055,7 @@ def db_call(label: str, fn, *args, **kwargs):
 
 def oanda_call(label: str, fn, *args, allow_error_dict: bool = False, max_retries: int = 3, budget_aware: bool = False, **kwargs):
     """Canonical OANDA boundary wrapper with retry/backoff; requires initialized runtime.
-    
+
     Args:
         label: Call label for logging
         fn: OANDA client function to call
@@ -1611,7 +2224,7 @@ def compute_features(pair, pricing_stream, candle_cache, book_cache):
     path_10s = compute_path_metrics(pair, pricing_stream, 10)
     path_30s = compute_path_metrics(pair, pricing_stream, 30)
     path_60s = compute_path_metrics(pair, pricing_stream, 60)
-    
+
     # Fail-closed gate for path metrics
     if not path_10s or not path_30s or not path_60s:
         log_runtime("warn", "FEATURES_INVALID_NO_PATH", pair=pair)
@@ -1624,7 +2237,7 @@ def compute_features(pair, pricing_stream, candle_cache, book_cache):
             path_10s={}, path_30s={}, path_60s={}, book=book_cache.get(pair, {}),
             ok=False, reason="no_path_metrics"
         )
-    
+
     # Book features
     book = book_cache.get(pair, {})
     return FeatureSet(
@@ -1654,7 +2267,7 @@ def compute_features(pair, pricing_stream, candle_cache, book_cache):
         ok=True,
         reason=""
     )
-    
+
 # Indicator computation helpers (single source of truth)
 def compute_atr_price(candles, n):
     if len(candles) < n:
@@ -1936,12 +2549,15 @@ class OandaClient:
         if body:
             payload = body
         else:
-            payload = {"longUnits": "0", "shortUnits": "0"}
             if str(side).lower().startswith("l"):
-                payload["longUnits"] = units
+                payload = {"longUnits": units}
             else:
-                payload["shortUnits"] = units
+                payload = {"shortUnits": units}
         return self._put(f"/v3/accounts/{self.account_id}/positions/{normalize_pair(instrument)}/close", payload)
+
+    def close_trade(self, trade_id: str, units: str = "ALL") -> dict:
+        payload = {"units": str(units)}
+        return self._put(f"/v3/accounts/{self.account_id}/trades/{trade_id}/close", payload)
 
     def set_trade_stop_loss(self, trade_id: str, price: float) -> dict:
         body = {"stopLoss": {"price": str(price)}}
@@ -1997,32 +2613,32 @@ class PathSpaceState:
     current_price: float = 0.0
     entry_price: Optional[float] = None
     direction: Optional[str] = None  # LONG/SHORT
-    
+
     # Path-space primitives (canonical calculations only)
     path_len: float = 0.0  # Σ |ΔPᵢ| over window
     displacement: float = 0.0  # |P - Entry| or |P - P_start|
     efficiency: float = 0.0  # |ΔP| / PathLen
     overlap: float = 0.0  # PathLen / |ΔP| (churn proxy)
     progress: float = 0.0  # |P - Entry| / ATR
-    
+
     # Energy and momentum
     energy: float = 0.0  # |P - P_k| / ATR (k = reference point)
     speed: float = 0.0  # |ΔP_recent| / ATR over window
     velocity: float = 0.0  # Speed_now - Speed_prev
-    
+
     # Extrema tracking
     rolling_high: float = float('-inf')
     rolling_low: float = float('inf')
     pullback: float = 0.0  # Retrace from rolling extrema / ATR
-    
+
     # Time and persistence
     last_update: float = 0.0
     time_at_level: float = 0.0  # TimeSpent(level)
-    
+
     # Volatility
     atr: float = 0.0  # Noise scale from ATR_M1(14)
     vol_slope: float = 0.0  # ΔATR_M1 (volatility slope)
-    
+
     # History windows
     price_history: deque = field(default_factory=lambda: deque(maxlen=100))
     displacement_history: deque = field(default_factory=lambda: deque(maxlen=20))
@@ -2031,16 +2647,16 @@ class PathSpaceState:
 
 class PathSpaceEngine:
     """Canonical engine for path-space primitive calculations"""
-    
+
     def __init__(self, window_seconds: int = 300):
         self.window_seconds = window_seconds
         self.states: Dict[str, PathSpaceState] = {}
-    
+
     def update_price(self, pair: str, price: float, atr: float, timestamp: Optional[float] = None) -> PathSpaceState:
         """Update price and recalculate all primitives"""
         if timestamp is None:
             timestamp = time.time()
-            
+
         state = self.states.get(pair)
         if state is None:
             state = PathSpaceState()
@@ -2049,18 +2665,18 @@ class PathSpaceEngine:
             state.last_update = timestamp
             self.states[pair] = state
             return state
-        
+
         # Calculate displacement
         prev_price = state.current_price
         delta_p = abs(price - prev_price)
-        
+
         # Update histories
         state.price_history.append(price)
         state.atr_history.append(atr)
-        
+
         # Update path length (sum of absolute displacements)
         state.path_len += delta_p
-        
+
         # Calculate displacement from entry or start
         if state.entry_price is not None:
             state.displacement = abs(price - state.entry_price)
@@ -2069,61 +2685,61 @@ class PathSpaceEngine:
             if len(state.price_history) > 1:
                 start_price = state.price_history[0]
                 state.displacement = abs(price - start_price)
-        
+
         # Calculate efficiency
         if state.path_len > 0:
             state.efficiency = state.displacement / state.path_len
             state.overlap = state.path_len / max(state.displacement, 0.0001)
-        
+
         # Update rolling extrema
         if price > state.rolling_high:
             state.rolling_high = price
         if price < state.rolling_low:
             state.rolling_low = price
-        
+
         # Calculate pullback from extrema
         if state.direction == "LONG" and state.rolling_high > float('-inf'):
             state.pullback = (state.rolling_high - price) / atr
         elif state.direction == "SHORT" and state.rolling_low < float('inf'):
             state.pullback = (price - state.rolling_low) / atr
-        
+
         # Calculate progress
         if state.entry_price is not None and atr > 0:
             state.progress = abs(price - state.entry_price) / atr
-        
+
         # Calculate energy (displacement from reference point)
         if len(state.price_history) >= 5:  # Reduced from 20 for testing
             ref_price = state.price_history[0]  # Use first price as reference
             state.energy = abs(price - ref_price) / atr
-        
+
         # Calculate speed (recent displacement rate)
         if len(state.price_history) >= 10 and atr > 0:
             recent_window = min(10, len(state.price_history))
             recent_disp = abs(price - state.price_history[-recent_window])
             state.speed = recent_disp / atr
-            
+
             # Store speed history for velocity calculation
             state.speed_history.append(state.speed)
-            
+
             # Calculate velocity (change in speed)
             if len(state.speed_history) >= 2:
                 state.velocity = state.speed_history[-1] - state.speed_history[-2]
-        
+
         # Calculate volatility slope
         if len(state.atr_history) >= 3:
             state.vol_slope = state.atr_history[-1] - state.atr_history[-3]
-        
+
         # Update time tracking
         if abs(price - state.current_price) < 0.00001:  # Same price level
             state.time_at_level += (timestamp - state.last_update)
         else:
             state.time_at_level = 0.0
-        
+
         # Update state
         state.current_price = price
         state.atr = atr
         state.last_update = timestamp
-        
+
         # LOG METRICS - SINGLE SOURCE OF TRUTH
         metrics_obj = {
             "pair": pair,
@@ -2133,7 +2749,7 @@ class PathSpaceEngine:
             "atr_price": atr,
             "atr_pips": atr_pips(pair, atr),
             "spread_pips": 0.0,  # Will be updated by caller
-            
+
             # Path-space primitives (minimum required)
             "dp": delta_p,
             "path_len": state.path_len,
@@ -2145,35 +2761,35 @@ class PathSpaceEngine:
             "pullback": state.pullback,
             "local_high": state.rolling_high,
             "local_low": state.rolling_low,
-            
+
             # Additional fields
             "time_at_level": state.time_at_level,
             "vol_slope": state.vol_slope
         }
-        
+
         # Log metrics to metrics.jsonl
         log_metrics(metrics_obj)
-        
+
         return state
-    
+
     def set_entry(self, pair: str, entry_price: float, direction: str) -> None:
         """Set entry parameters for trade"""
         state = self.states.get(pair)
         if state is None:
             state = PathSpaceState()
             self.states[pair] = state
-        
+
         state.entry_price = entry_price
         state.direction = direction.upper()
         state.rolling_high = entry_price if direction == "LONG" else float('-inf')
         state.rolling_low = entry_price if direction == "SHORT" else float('inf')
-    
+
     def get_primitives(self, pair: str) -> Dict[str, float]:
         """Get all primitives for a pair"""
         state = self.states.get(pair)
         if state is None:
             return {}
-        
+
         return {
             "current_price": state.current_price,
             "entry_price": state.entry_price or 0.0,
@@ -2192,7 +2808,7 @@ class PathSpaceEngine:
             "atr": state.atr,
             "vol_slope": state.vol_slope,
         }
-    
+
     def reset(self, pair: str) -> None:
         """Reset state for a pair"""
         if pair in self.states:
@@ -2225,7 +2841,7 @@ class TickData:
 
 class PricingStream:
     """Continuous pricing stream for tick-grade data"""
-    
+
     def __init__(self, pairs: List[str], max_buffer: int = 1000):
         self.pairs = pairs
         self.max_buffer = max_buffer
@@ -2234,38 +2850,49 @@ class PricingStream:
         self.running = False
         self.thread: Optional[threading.Thread] = None
         self.oanda_client = None
-        
+
     def start(self, oanda_client):
         """Start the pricing stream"""
         if self.running:
             return
-            
+
         self.oanda_client = oanda_client
         self.running = True
         self.thread = threading.Thread(target=self._stream_loop, daemon=True)
         self.thread.start()
         log(f"{EMOJI_INFO} PRICING_STREAM_STARTED", {"pairs": self.pairs})
-        
+
     def stop(self):
         """Stop the pricing stream"""
         self.running = False
         if self.thread:
             self.thread.join(timeout=5)
         log(f"{EMOJI_INFO} PRICING_STREAM_STOPPED", {"pairs": self.pairs})
-        
+
     def _stream_loop(self):
         """Main streaming loop - polls pricing endpoint continuously"""
         poll_interval = 0.5  # 500ms for high-frequency data
+        loop_count = 0
+
+        log(f"{EMOJI_INFO} PRICING_STREAM_LOOP_START", {"pairs": self.pairs, "interval": poll_interval})
         
         while self.running and self.oanda_client:
             try:
+                loop_count += 1
+                if loop_count % 20 == 0:  # Log every 10 seconds
+                    log(f"{EMOJI_INFO} PRICING_STREAM_LOOP_HEARTBEAT", {"loop_count": loop_count, "running": self.running})
+                
                 for pair in self.pairs:
                     bid, ask = self.oanda_client.pricing(pair)
+                    if loop_count == 1:  # Log raw OANDA response for first call
+                        log(f"{EMOJI_INFO} OANDA_PRICING_RESPONSE", {"pair": pair, "bid": bid, "ask": ask, "valid": [is_valid_price(bid), is_valid_price(ask)]})
                     if is_valid_price(bid) and is_valid_price(ask):
                         self._add_tick(pair, float(bid), float(ask))
+                        if loop_count == 1:  # Log first successful price
+                            log(f"{EMOJI_INFO} FIRST_PRICE_RECEIVED", {"pair": pair, "bid": bid, "ask": ask})
                 time.sleep(poll_interval)
             except Exception as e:
-                log(f"{EMOJI_WARN} PRICING_STREAM_ERROR", {"error": str(e)})
+                log(f"{EMOJI_WARN} PRICING_STREAM_ERROR", {"error": str(e), "pair": pair if 'pair' in locals() else "unknown"})
                 time.sleep(1)
 
     def _add_tick(self, pair: str, bid: float, ask: float):
@@ -2276,7 +2903,7 @@ class PricingStream:
         mid = (bid + ask) / 2
         spread = ask - bid
         spread_pips = float(Decimal(str(spread)) / pip_size(pair))
-        
+
         tick = TickData(
             ts=now_ts(),
             bid=bid,
@@ -2285,39 +2912,39 @@ class PricingStream:
             spread=spread,
             spread_pips=spread_pips
         )
-        
+
         # Update buffer and latest
         self.tick_buffers[pair].append(tick)
         self.latest_ticks[pair] = tick
-        
+
     def get_latest_tick(self, pair: str) -> Optional[TickData]:
         """Get the most recent tick for a pair"""
         return self.latest_ticks.get(pair)
-        
+
     def get_recent_ticks(self, pair: str, count: int = 100) -> List[TickData]:
         """Get the most recent N ticks for a pair"""
         buffer = self.tick_buffers.get(pair)
         if not buffer:
             return []
         return list(buffer)[-count:]
-        
+
     def get_tick_statistics(self, pair: str, window_seconds: float = 60.0) -> dict:
         """Calculate tick statistics over a time window"""
         ticks = self.get_recent_ticks(pair)
         if not ticks:
             return {}
-            
+
         # Filter by time window
         cutoff = now_ts() - window_seconds
         recent = [t for t in ticks if t.ts >= cutoff]
-        
+
         if not recent:
             return {}
-            
+
         # Calculate statistics
         spreads = [t.spread_pips for t in recent]
         mids = [t.mid for t in recent]
-        
+
         return {
             "tick_count": len(recent),
             "avg_spread_pips": sum(spreads) / len(spreads),
@@ -2336,17 +2963,18 @@ def get_pricing_stream() -> Optional[PricingStream]:
 
 # ============================================================================
 # Concurrency Limits
-MAX_CONCURRENCY: int = 15
-MAX_EXPOSURE_PER_CURRENCY: int = 3
+NO_TRADE_LIMITERS = os.getenv("NO_TRADE_LIMITERS", "1").strip().lower() in ("1", "true", "yes")
+MAX_CONCURRENCY: int = int(os.getenv("MAX_CONCURRENCY", "1000000") or "1000000") if NO_TRADE_LIMITERS else 15
+MAX_EXPOSURE_PER_CURRENCY: int = int(os.getenv("MAX_EXPOSURE_PER_CURRENCY", "1000000") or "1000000") if NO_TRADE_LIMITERS else 3
 
 # Global and Per-Pair Trade Caps
-MAX_OPEN_TRADES_GLOBAL: int = int(os.getenv("MAX_OPEN_TRADES_GLOBAL", "60") or "60")
-MAX_OPEN_TRADES_PER_PAIR: int = int(os.getenv("MAX_OPEN_TRADES_PER_PAIR", "6") or "6")
-FIFO_SAFE_MODE: bool = os.getenv("FIFO_SAFE_MODE", "1").strip().lower() in ("1", "true", "yes")
+MAX_OPEN_TRADES_GLOBAL: int = int(os.getenv("MAX_OPEN_TRADES_GLOBAL", "1000000") or "1000000") if NO_TRADE_LIMITERS else int(os.getenv("MAX_OPEN_TRADES_GLOBAL", "60") or "60")
+MAX_OPEN_TRADES_PER_PAIR: int = PAIR_PARENT_CAP
+FIFO_SAFE_MODE: bool = os.getenv("FIFO_SAFE_MODE", "0").strip().lower() in ("1", "true", "yes")
 
 # Order Rate Limiting
-MAX_ORDERS_PER_MIN: int = int(os.getenv("MAX_ORDERS_PER_MIN", "60") or "60")
-ENTRY_DEDUP_TTL_SEC: int = int(os.getenv("ENTRY_DEDUP_TTL_SEC", "120") or "120")
+MAX_ORDERS_PER_MIN: int = int(os.getenv("MAX_ORDERS_PER_MIN", "1000000") or "1000000") if NO_TRADE_LIMITERS else int(os.getenv("MAX_ORDERS_PER_MIN", "60") or "60")
+ENTRY_DEDUP_TTL_SEC: int = int(os.getenv("ENTRY_DEDUP_TTL_SEC", "0") or "0") if NO_TRADE_LIMITERS else int(os.getenv("ENTRY_DEDUP_TTL_SEC", "120") or "120")
 
 # CEILING ARCHITECTURE: CONFIGURATION CLASS (Single Source of Truth)
 # ============================================================================
@@ -2354,24 +2982,24 @@ ENTRY_DEDUP_TTL_SEC: int = int(os.getenv("ENTRY_DEDUP_TTL_SEC", "120") or "120")
 @dataclass
 class CeilingConfig:
     """Central configuration for Vector Saturation Engine"""
-    
+
     # Concurrency Limits
     MAX_CONCURRENCY: int = 15
     MAX_EXPOSURE_PER_CURRENCY: int = 3
-    
+
     # Pulse Detection Thresholds
     PULSE_Z_THRESHOLD: float = 2.5
     REGIME_Z_THRESHOLD: float = 1.5
-    
+
     # Performance Targets
     TARGET_VELOCITY_PIPS_HR: float = 150.0
     TARGET_EFFICIENCY_MIN: float = 0.85
     TARGET_HOLD_TIME_MAX_SEC: float = 120.0
-    
+
     # Risk Management
     SPREAD_COST_MULTIPLIER: float = 3.0
     SOP_PROBABILITY_FLOOR: float = 0.55
-    
+
     # High-Frequency Targets (5-pip extraction)
     TARGET_PIPS_TP: float = 5.0
     TARGET_PIPS_SL: float = 5.0
@@ -2388,12 +3016,12 @@ class VectorSaturationEngine:
     High-frequency pulse-momentum engine for maximum capital turnover.
     Replaces conservative trend-following with statistical micro-explosions.
     """
-    
+
     def __init__(self, config: CeilingConfig = CONFIG):
         self.config = config
         self.pulse_history = {}  # Key: Pair, Value: List[TickVelocities]
         self.max_history = 60  # Keep last 60 tick velocities
-        
+
     def get_pulse_z(self, pair: str, current_tick_vel: float) -> float:
         """
         Calculates the Z-Score of the current pulse against the noise floor.
@@ -2401,39 +3029,42 @@ class VectorSaturationEngine:
         """
         if pair not in self.pulse_history:
             self.pulse_history[pair] = []
-        
+
         hist = self.pulse_history[pair]
         hist.append(current_tick_vel)
-        
+
         # Maintain rolling window
         if len(hist) > self.max_history:
             hist.pop(0)
-        
+
         if len(hist) < 20:  # Need sufficient history for meaningful Z-score
             return 0.0
-        
+
         mean = statistics.mean(hist)
         std = statistics.stdev(hist)
         return (current_tick_vel - mean) / std if std > 0 else 0.0
-    
+
     def can_saturate(self, open_trades: list, new_pair: str) -> Tuple[bool, str]:
         """
         THE SATURATION GATE: Multi-pair exposure management.
         Ensures we extract 150+ pips across the matrix, not just one pair.
         """
+        if NO_TRADE_LIMITERS:
+            return True, "SATURATION_OK"
+
         # Absolute Concurrency Cap
         if len(open_trades) >= self.config.MAX_CONCURRENCY:
             return False, f"CAP_REACHED_{self.config.MAX_CONCURRENCY}_TRADES"
-        
+
         # Correlation Shield: Limit exposure per currency
         currencies = new_pair.split("_")
         for ccy in currencies:
             exposure = sum(1 for t in open_trades if ccy in t.get('instrument', ''))
             if exposure >= self.config.MAX_EXPOSURE_PER_CURRENCY:
                 return False, f"EXPOSURE_CAP_{ccy}_{self.config.MAX_EXPOSURE_PER_CURRENCY}_TRADES"
-        
+
         return True, "SATURATION_OK"
-    
+
     def get_pulse_momentum(self, symbol: str, oanda_client) -> float:
         """
         Measures the Z-Score of the last 3 ticks against the last 5 minutes.
@@ -2444,25 +3075,25 @@ class VectorSaturationEngine:
             candles = get_candles(symbol, "M1", 5)  # 5m Lookback
             if not candles or len(candles) < 2:
                 return 0.0
-            
+
             closes = [float(c['c']) for c in candles]
-            
+
             # Current velocity (last tick change)
             current_velocity = closes[-1] - closes[-2]
-            
+
             # Historical velocities for noise floor
             velocities = [closes[i] - closes[i-1] for i in range(1, len(closes))]
-            
+
             if len(velocities) < 2:
                 return 0.0
-            
+
             avg_velocity = statistics.mean(velocities)
             std_velocity = statistics.stdev(velocities)
-            
+
             # PULSE Z-SCORE
             pulse_z = (current_velocity - avg_velocity) / std_velocity if std_velocity > 0 else 0
             return pulse_z  # Target > 2.5 for instant entry
-            
+
         except Exception as e:
             log_runtime("warning", "PULSE_MOMENTUM_ERROR", symbol=str(symbol), error=str(e))
             return 0.0
@@ -2492,13 +3123,13 @@ class StateTransition:
 
 class StateMachine:
     """Formal state machine with alert integration and logging"""
-    
+
     # Valid states
     STATES = {
-        "PASS", "SKIP", "WAIT", "WATCH", 
+        "PASS", "SKIP", "WAIT", "WATCH",
         "GET_READY", "ARM_TICK_ENTRY", "ENTER", "MANAGING"
     }
-    
+
     # State transition matrix (allowed transitions)
     # ...existing code...
     ALLOWED_TRANSITIONS = {
@@ -2512,19 +3143,19 @@ class StateMachine:
         "ENTER": {"MANAGING", "WATCH", "SKIP"},
         "MANAGING": {"WAIT", "WATCH", "PASS", "SKIP"}
     }
-    
+
     def __init__(self):
         self.current_states: Dict[str, str] = {}  # pair -> state
         self.state_history: Dict[str, List[StateTransition]] = {}  # pair -> history
         self.state_entry_time: Dict[str, float] = {}  # pair -> entry timestamp
         self._lock = threading.Lock()
-        
+
     def get_state(self, pair: str) -> str:
         """Get current state for a pair"""
         with self._lock:
             return self.current_states.get(pair, "PASS")
-            
-    def set_state(self, pair: str, state: str, strategy: Optional[str] = None, 
+
+    def set_state(self, pair: str, state: str, strategy: Optional[str] = None,
                   direction: Optional[str] = None, reason: Optional[str] = None,
                   metadata: Optional[dict] = None):
         """Set state for a pair (only for initialization)"""
@@ -2532,37 +3163,37 @@ class StateMachine:
             if state not in self.STATES:
                 log(f"{EMOJI_WARN} INVALID_STATE", {"pair": pair, "state": state})
                 return
-                
+
             self.current_states[pair] = state
             self.state_entry_time[pair] = now_ts()
             if pair not in self.state_history:
                 self.state_history[pair] = []
-                
+
     def transition(self, pair: str, to_state: str, strategy: Optional[str] = None,
                    direction: Optional[str] = None, reason: Optional[str] = None,
                    metadata: Optional[dict] = None) -> bool:
         """Transition to a new state with alerts and logging"""
         with self._lock:
             from_state = self.current_states.get(pair, "PASS")
-            
+
             # Validate transition
             if to_state not in self.STATES:
                 log(f"{EMOJI_WARN} INVALID_STATE", {"pair": pair, "state": to_state})
                 return False
-                
+
             if from_state not in self.ALLOWED_TRANSITIONS:
                 log(f"{EMOJI_WARN} INVALID_FROM_STATE", {"pair": pair, "state": from_state})
                 return False
-                
+
             if to_state not in self.ALLOWED_TRANSITIONS[from_state]:
-                log(f"{EMOJI_WARN} INVALID_TRANSITION", 
+                log(f"{EMOJI_WARN} INVALID_TRANSITION",
                     {"pair": pair, "from": from_state, "to": to_state})
                 return False
-                
+
             # Skip if already in target state
             if from_state == to_state:
                 return False
-                
+
             # Record transition
             transition = StateTransition(
                 ts=now_ts(),
@@ -2574,35 +3205,35 @@ class StateMachine:
                 reason=reason,
                 metadata=metadata
             )
-            
+
             # Update state
             self.current_states[pair] = to_state
             self.state_entry_time[pair] = transition.ts
-            
+
             if pair not in self.state_history:
                 self.state_history[pair] = []
             self.state_history[pair].append(transition)
-            
+
             # Emit alerts based on transition
             self._emit_alert(transition)
-            
+
             # Log transition
             self._log_transition(transition)
-            
+
             return True
-            
+
     def get_state_duration(self, pair: str) -> float:
         """Get duration in current state"""
         with self._lock:
             entry_time = self.state_entry_time.get(pair, now_ts())
             return now_ts() - entry_time
-            
+
     def get_last_transition(self, pair: str) -> Optional[StateTransition]:
         """Get the most recent transition for a pair"""
         with self._lock:
             history = self.state_history.get(pair, [])
             return history[-1] if history else None
-            
+
     def _emit_alert(self, transition: StateTransition):
         """Emit appropriate alert based on state transition"""
         try:
@@ -2612,11 +3243,11 @@ class StateMachine:
                 from sys import modules
                 if 'phone_bot' in modules:
                     alert_watch_triggered(
-                        transition.pair, 
+                        transition.pair,
                         transition.strategy or "UNKNOWN",
                         transition.metadata.get('signal_strength', 0.0) if transition.metadata else 0.0
                     )
-                    
+
             elif transition.to_state == "GET_READY":
                 entry_conditions = transition.metadata or {}
                 alert_get_ready(
@@ -2624,7 +3255,7 @@ class StateMachine:
                     transition.strategy or "UNKNOWN",
                     entry_conditions
                 )
-                    
+
             elif transition.to_state == "ENTER":
                 alert_enter_placed(
                     transition.pair,
@@ -2632,7 +3263,7 @@ class StateMachine:
                     transition.direction or "UNKNOWN",
                     transition.metadata.get('order_id', 'UNKNOWN') if transition.metadata else 'UNKNOWN'
                 )
-                    
+
             elif transition.from_state == "ENTER" and transition.to_state == "MANAGING":
                 alert_trade_entered(
                     transition.pair,
@@ -2640,11 +3271,11 @@ class StateMachine:
                     transition.direction or "UNKNOWN",
                     transition.metadata.get('trade_id', 'UNKNOWN') if transition.metadata else 'UNKNOWN'
                 )
-                    
+
         except Exception as e:
-            log(f"{EMOJI_WARN} ALERT_EMIT_FAILED", 
+            log(f"{EMOJI_WARN} ALERT_EMIT_FAILED",
                 {"pair": transition.pair, "error": str(e)})
-                
+
     def _log_transition(self, transition: StateTransition):
         """Log state transition using unified logging system"""
         try:
@@ -2701,13 +3332,13 @@ def normalize_oanda_env(env: str) -> str:
 
 def extract_nav_from_account(acct_sum: dict) -> Tuple[float, str]:
     """Parse NAV (netAssetValue) from account summary response.
-    
+
     OANDA returns netAssetValue as the current portfolio value.
     Falls back to balance if NAV not available.
     """
     if not isinstance(acct_sum, dict):
         return float("nan"), "invalid"
-    
+
     account_obj = acct_sum.get("account")
     if isinstance(account_obj, dict):
         # Try NAV first (most accurate for current portfolio value)
@@ -2722,7 +3353,7 @@ def extract_nav_from_account(acct_sum: dict) -> Tuple[float, str]:
                 return float(account_obj["balance"]), "nested_account_balance"
             except Exception:
                 pass
-    
+
     # Top level fallbacks
     if "netAssetValue" in acct_sum:
         try:
@@ -2734,7 +3365,7 @@ def extract_nav_from_account(acct_sum: dict) -> Tuple[float, str]:
             return float(acct_sum["balance"]), "top_level_balance"
         except Exception:
             pass
-    
+
     return float("nan"), "missing"
 
 
@@ -2807,13 +3438,37 @@ WATCH_SCAN_SEC = float(os.getenv("WATCH_SCAN_SEC", "60") or "60")  # 1 minute fo
 FOCUS_SCAN_SEC = float(os.getenv("FOCUS_SCAN_SEC", "5") or "5")    # 5 seconds for GET_READY/ENTER
 EXIT_SCAN_SEC = float(os.getenv("EXIT_SCAN_SEC", "2") or "2")      # Every 2 seconds for open trades
 EXIT_REFRESH_SEC = float(os.getenv("EXIT_REFRESH_SEC", "20") or "20")
+# Force periodic AEE decisions across all open trades, independent of pair state.
+AEE_FORCE_SCAN_SEC = float(os.getenv("AEE_FORCE_SCAN_SEC", "0.20") or "0.20")
+# Young trades get an even tighter scan window to avoid broker-SL owning the lifecycle.
+AEE_FORCE_SCAN_YOUNG_SEC = float(os.getenv("AEE_FORCE_SCAN_YOUNG_SEC", "0.10") or "0.10")
+AEE_FORCE_SCAN_YOUNG_AGE_SEC = float(os.getenv("AEE_FORCE_SCAN_YOUNG_AGE_SEC", "30") or "30")
+# Reconciliation ownership guardrails: do not classify fresh fills as manual close
+# on a single flat snapshot before AEE gets first evaluation.
+AEE_RECON_POST_FILL_GRACE_SEC = float(os.getenv("AEE_RECON_POST_FILL_GRACE_SEC", "12") or "12")
+AEE_RECON_FLAT_CONFIRM_POLLS = int(os.getenv("AEE_RECON_FLAT_CONFIRM_POLLS", "3") or "3")
+AEE_RECON_FLAT_CONFIRM_SEC = float(os.getenv("AEE_RECON_FLAT_CONFIRM_SEC", "6") or "6")
+# Profit-capture bridge test mode is optional; production doctrine should come from evaluator rules.
+AEE_PROFIT_CAPTURE_BRIDGE_MODE = os.getenv("AEE_PROFIT_CAPTURE_BRIDGE_MODE", "0").strip().lower() in ("1", "true", "yes")
+AEE_PROFIT_CAPTURE_MIN_ATR = float(os.getenv("AEE_PROFIT_CAPTURE_MIN_ATR", "0.12") or "0.12")
+# Doctrine split: green-side exits are time-unlocked; red-side exits may use a small observation window.
+AEE_MIN_HOLD_GREEN_SEC = float(os.getenv("AEE_MIN_HOLD_GREEN_SEC", "0") or "0")
+AEE_MIN_HOLD_RED_SEC = float(os.getenv("AEE_MIN_HOLD_RED_SEC", "0.5") or "0.5")
+# Legacy alias kept for compatibility with older env packs.
+AEE_PROFIT_CAPTURE_MIN_HOLD_SEC = float(os.getenv("AEE_PROFIT_CAPTURE_MIN_HOLD_SEC", str(AEE_MIN_HOLD_GREEN_SEC)) or str(AEE_MIN_HOLD_GREEN_SEC))
 
 # Main loop sleep (override via env)
 LOOP_SLEEP_SEC = float(os.getenv("LOOP_SLEEP_SEC", "0.2") or "0.2")
 OUTCOME_ACCELERATOR = os.getenv("OUTCOME_ACCELERATOR", "0").strip().lower() in ("1", "true", "yes")
 OA_MIN_HOLD_SEC = float(os.getenv("OA_MIN_HOLD_SEC", "180") or "180")
 OA_MAX_HOLD_SEC = float(os.getenv("OA_MAX_HOLD_SEC", "1200") or "1200")
-NO_THROTTLE_MODE = os.getenv("NO_THROTTLE_MODE", "0").strip().lower() in ("1", "true", "yes")
+NO_THROTTLE_MODE = NO_TRADE_LIMITERS or (os.getenv("NO_THROTTLE_MODE", "0").strip().lower() in ("1", "true", "yes"))
+PC1_PROOF_ENTRY_ONLY_MODE = os.getenv(
+    "PC1_PROOF_ENTRY_ONLY_MODE",
+    "1" if NO_THROTTLE_MODE else "0",
+).strip().lower() in ("1", "true", "yes")
+FORCE_FIXED_RISK_PERCENT = os.getenv("FORCE_FIXED_RISK_PERCENT", "1").strip().lower() in ("1", "true", "yes")
+FIXED_RISK_PERCENT = float(os.getenv("FIXED_RISK_PERCENT", "2.0") or "2.0")
 
 # Legacy compatibility constant (rate limiting removed)
 MAX_HTTP_PER_MIN = 120
@@ -2862,7 +3517,7 @@ MIN_ATR_PIPS_EXEC_JPY = 0.05     # Increased to filter noise (was 0.01)
 # No MAX_UNITS_PER_TRADE - size controlled by margin utilization percentage
 
 TF_EXEC = normalize_granularity(os.getenv("TF_EXEC", "S5") or "S5")        # Entry/exit timing
-TF_TREND = normalize_granularity(os.getenv("TF_TREND", "M15") or "M15")      # Trend analysis  
+TF_TREND = normalize_granularity(os.getenv("TF_TREND", "M15") or "M15")      # Trend analysis
 TF_GLOBAL = normalize_granularity(os.getenv("TF_GLOBAL", "H1") or "H1")       # Market context
 TF_POSITION = normalize_granularity(os.getenv("TF_POSITION", "H4") or "H4")   # Position management
 # Session detection for strategy timing (no trading restrictions)
@@ -2871,7 +3526,7 @@ SESSION_DETECTION = os.getenv("SESSION_DETECTION", "1").strip().lower() in ("1",
 # Session definitions (UTC times)
 TRADING_SESSIONS = {
     "SYDNEY": {"open": "21:00", "close": "06:00", "days": range(5)},  # Sun-Thu
-    "TOKYO": {"open": "23:00", "close": "08:00", "days": range(5)},   # Sun-Thu  
+    "TOKYO": {"open": "23:00", "close": "08:00", "days": range(5)},   # Sun-Thu
     "LONDON": {"open": "07:00", "close": "16:00", "days": range(5)},  # Mon-Fri
     "NEW_YORK": {"open": "12:00", "close": "21:00", "days": range(5)}, # Mon-Fri
 }
@@ -2887,6 +3542,7 @@ LIVE_MODE = os.getenv("LIVE_MODE", "0").strip().lower() in ("1", "true", "yes")
 # Back-compat: derive from LIVE_MODE unless explicitly overridden by env.
 DRY_RUN_ONLY = os.getenv("DRY_RUN_ONLY", "1" if not LIVE_MODE else "0").strip().lower() in ("1", "true", "yes")
 ALLOW_ENTRIES = os.getenv("ALLOW_ENTRIES", "1").strip().lower() in ("1", "true", "yes")
+MANAGE_ONLY = os.getenv("MANAGE_ONLY", "0").strip().lower() in ("1", "true", "yes")
 
 
 def self_heal_startup_config() -> dict:
@@ -2894,7 +3550,7 @@ def self_heal_startup_config() -> dict:
 
     Three safeguards applied early at startup (before any decision logic):
       1. DRY_RUN_ONLY is forced False when LIVE_MODE is True.
-      2. ALLOW_ENTRIES is forced True if it evaluates False.
+      2. ALLOW_ENTRIES is forced True if it evaluates False, unless MANAGE_ONLY is set.
       3. STOP_TRADING.flag is removed if it exists at startup.
 
     Returns a dict with effective values and actions taken (for logging/testing).
@@ -2915,8 +3571,8 @@ def self_heal_startup_config() -> dict:
             "forcibly set DRY_RUN_ONLY=False to allow live trading."
         )
 
-    # 2. ALLOW_ENTRIES must be True.
-    if not ALLOW_ENTRIES:
+    # 2. ALLOW_ENTRIES must be True unless explicitly running manage-only.
+    if not ALLOW_ENTRIES and not MANAGE_ONLY:
         ALLOW_ENTRIES = True
         os.environ["ALLOW_ENTRIES"] = "true"
         actions["ALLOW_ENTRIES_overridden"] = True
@@ -2924,6 +3580,8 @@ def self_heal_startup_config() -> dict:
             "SELF_HEAL: ALLOW_ENTRIES was False; "
             "auto-enabled ALLOW_ENTRIES=True to permit trade entries."
         )
+    elif MANAGE_ONLY:
+        actions["MANAGE_ONLY_active"] = True
 
     # 3. Remove STOP_TRADING.flag if present at startup.
     # STOP_FLAG is defined at module level (os.path.join(PROJECT_DIR, "STOP_TRADING.flag")).
@@ -2967,10 +3625,10 @@ def self_heal_startup_config() -> dict:
     return actions
 
 SIGNAL_STALE_TTL_SEC = 12 * 60  # 720s
-ARM_ENTRY_DIST_ATR = 0.30
-ENTRY_BREAK_BUFFER_ATR = 0.10
-ENTRY_RECLAIM_BUFFER_ATR = 0.05
-ENTRY_CONFIRM_DISP_ATR = 0.20
+ARM_ENTRY_DIST_ATR = 0.90
+ENTRY_BREAK_BUFFER_ATR = 0.00
+ENTRY_RECLAIM_BUFFER_ATR = 0.02
+ENTRY_CONFIRM_DISP_ATR = 0.00
 
 REASON_DRY_RUN = "DRY_RUN"
 REASON_ENTRIES_DISABLED = "ALLOW_ENTRIES_FALSE"
@@ -3043,6 +3701,10 @@ TICK_ENTRY_ENABLED = os.getenv("TICK_ENTRY_ENABLED", "1").strip().lower() in ("1
 ENTRY_ARM_TTL_SEC = SIGNAL_STALE_TTL_SEC
 ENTRY_PULLBACK_ATR = float(os.getenv("ENTRY_PULLBACK_ATR", "0.30") or "0.30")
 ENTRY_RESUME_ATR = float(os.getenv("ENTRY_RESUME_ATR", "0.10") or "0.10")
+ENTRY_RECLAIM_SOFT_CONFIRM_ATR = float(os.getenv("ENTRY_RECLAIM_SOFT_CONFIRM_ATR", "0.06") or "0.06")
+ENTRY_RESUME_CONFIRM_ATR = float(os.getenv("ENTRY_RESUME_CONFIRM_ATR", "0.00") or "0.00")
+ENTRY_RESUME_SOFT_CONFIRM_ATR = float(os.getenv("ENTRY_RESUME_SOFT_CONFIRM_ATR", "0.08") or "0.08")
+PC1_SUPPRESS_CONTINUATION = os.getenv("PC1_SUPPRESS_CONTINUATION", "0").strip().lower() in ("1", "true", "yes")
 TICK_EXIT_ENABLED = os.getenv("TICK_EXIT_ENABLED", "1").strip().lower() in ("1", "true", "yes")
 EXIT_SCAN_TICK_SEC = float(os.getenv("EXIT_SCAN_TICK_SEC", "0.5") or "0.5")
 EXIT_PRICE_REFRESH_TICK_SEC = float(os.getenv("EXIT_PRICE_REFRESH_TICK_SEC", "0.5") or "0.5")
@@ -3051,6 +3713,29 @@ ENTRY_SPRINT_OVERRIDE = os.getenv("ENTRY_SPRINT_OVERRIDE", "0").strip().lower() 
 _ENTRY_SPRINT_OVERRIDE_ANNOUNCED = False
 SIGNAL_SPRINT_OVERRIDE = os.getenv("SIGNAL_SPRINT_OVERRIDE", "0").strip().lower() in ("1", "true", "yes")
 _SIGNAL_SPRINT_OVERRIDE_ANNOUNCED = False
+
+# PC1 Entry Contract (Simple 4-Family Entry Engine)
+PC1_ENTRY_CONTRACT_ENABLED = os.getenv("PC1_ENTRY_CONTRACT_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+PC1_ENTRY_MACRO_WINDOW = int(os.getenv("PC1_ENTRY_MACRO_WINDOW", "24") or "24")
+PC1_ENTRY_MICRO_WINDOW = int(os.getenv("PC1_ENTRY_MICRO_WINDOW", "6") or "6")
+PC1_ENTRY_ZONE_WINDOW = int(os.getenv("PC1_ENTRY_ZONE_WINDOW", "24") or "24")
+PC1_ENTRY_MAX_PRICE_AGE_SEC = float(os.getenv("PC1_ENTRY_MAX_PRICE_AGE_SEC", "120") or "120")
+PC1_ENTRY_STALE_SETUP_SEC = float(os.getenv("PC1_ENTRY_STALE_SETUP_SEC", "300") or "300")
+PC1_ENTRY_BREAK_FRESH_MAX_ATR = float(os.getenv("PC1_ENTRY_BREAK_FRESH_MAX_ATR", "1.60") or "1.60")
+PC1_ENTRY_BREAK_BUFFER_ATR = float(os.getenv("PC1_ENTRY_BREAK_BUFFER_ATR", "0.00") or "0.00")
+PC1_ENTRY_BREAK_NEAR_EDGE_ATR = float(os.getenv("PC1_ENTRY_BREAK_NEAR_EDGE_ATR", "0.12") or "0.12")
+PC1_ENTRY_RECLAIM_ZONE_ATR = float(os.getenv("PC1_ENTRY_RECLAIM_ZONE_ATR", "0.25") or "0.25")
+PC1_ENTRY_RECLAIM_RESUME_ATR = float(os.getenv("PC1_ENTRY_RECLAIM_RESUME_ATR", "0.00") or "0.00")
+PC1_ENTRY_RECLAIM_SOFT_ZONE_ATR = float(os.getenv("PC1_ENTRY_RECLAIM_SOFT_ZONE_ATR", "0.08") or "0.08")
+PC1_ENTRY_BOUNCE_EDGE_ATR = float(os.getenv("PC1_ENTRY_BOUNCE_EDGE_ATR", "0.34") or "0.34")
+PC1_ENTRY_CONT_ZONE_ATR = float(os.getenv("PC1_ENTRY_CONT_ZONE_ATR", "0.35") or "0.35")
+PC1_ENTRY_CONT_EXHAUST_MAX_ATR = float(os.getenv("PC1_ENTRY_CONT_EXHAUST_MAX_ATR", "1.80") or "1.80")
+PC1_ENTRY_REIGNITE_MIN_BAR_ATR = float(os.getenv("PC1_ENTRY_REIGNITE_MIN_BAR_ATR", "0.28") or "0.28")
+PC1_ENTRY_TREND_MIN_ATR = float(os.getenv("PC1_ENTRY_TREND_MIN_ATR", "0.18") or "0.18")
+PC1_ENTRY_SPREAD_LIMIT_BREAK = float(os.getenv("PC1_ENTRY_SPREAD_LIMIT_BREAK", "2.8") or "2.8")
+PC1_ENTRY_SPREAD_LIMIT_RECLAIM = float(os.getenv("PC1_ENTRY_SPREAD_LIMIT_RECLAIM", "2.6") or "2.6")
+PC1_ENTRY_SPREAD_LIMIT_BOUNCE = float(os.getenv("PC1_ENTRY_SPREAD_LIMIT_BOUNCE", "2.4") or "2.4")
+PC1_ENTRY_SPREAD_LIMIT_CONT = float(os.getenv("PC1_ENTRY_SPREAD_LIMIT_CONT", "2.8") or "2.8")
 
 # Alert System Configuration
 ALERT_SYSTEM_ENABLED = os.getenv("ALERT_SYSTEM_ENABLED", "1").strip().lower() in ("1", "true", "yes")
@@ -3068,17 +3753,17 @@ SETUP_SPEED_CLASS = {
 
 SPEED_CLASS_PARAMS = {
     "FAST": {
-        "tp1_atr": 0.40, "tp2_atr": 1.60, "sl_atr": 0.85,
+        "tp1_atr": 0.32, "tp2_atr": 1.28, "sl_atr": 0.85,
         "ttl_main": 240, "ttl_run": 360,
         "pg_t_frac": 0.5, "pg_atr": 0.30,
     },
     "MED": {
-        "tp1_atr": 0.55, "tp2_atr": 2.10, "sl_atr": 1.10,
+        "tp1_atr": 0.44, "tp2_atr": 1.68, "sl_atr": 1.10,
         "ttl_main": 500, "ttl_run": 800,
         "pg_t_frac": 0.375, "pg_atr": 0.25,  # 375% = 180/480
     },
     "SLOW": {
-        "tp1_atr": 0.35, "tp2_atr": 1.20, "sl_atr": 1.25,
+        "tp1_atr": 0.28, "tp2_atr": 0.96, "sl_atr": 1.25,
         "ttl_main": 1200, "ttl_run": 1800,
         "pg_t_frac": 0.3, "pg_atr": 0.20,  # 30% = 270/900
     },
@@ -3125,6 +3810,9 @@ STOP_FLAG = os.path.join(PROJECT_DIR, "STOP_TRADING.flag")
 LOG_PATH = os.path.join(PROJECT_DIR, "phone_bot.log")
 MAX_LOG_SIZE = 2 * 1024 * 1024
 
+# Load per-strategy AEE runtime overrides once at startup.
+_load_strategy_runtime_overrides()
+
 BOT_ID = os.getenv("PHONE_BOT_ID", "phone-bot").strip() or "phone-bot"
 MAX_RISK_USD_PER_TRADE = float(os.getenv("MAX_RISK_USD_PER_TRADE", "0") or "0")
 MIN_FREE_DISK_MB = float(os.getenv("MIN_FREE_DISK_MB", "0") or "0")
@@ -3132,20 +3820,21 @@ MIN_FREE_DISK_MB = float(os.getenv("MIN_FREE_DISK_MB", "0") or "0")
 LEGACY_MIN_TRADE_SIZE_DO_NOT_USE = 1  # Deprecated legacy constant. Do not use.
 
 # Economic Viability Gate constants
-ENTRY_BUFFER_PIPS = 0.5  # Buffer for entry slippage
-EXIT_BUFFER_PIPS = 0.5   # Buffer for exit slippage
+ENTRY_BUFFER_PIPS = 0.15  # Buffer for entry slippage
+EXIT_BUFFER_PIPS = 0.15   # Buffer for exit slippage
 COST_MULT = 1.10          # TP must be 1.10x the round-trip cost
+FRICTION_SEVERITY_MULT = float(os.getenv("FRICTION_SEVERITY_MULT", "0.60") or "0.60")
 SMOKE_FRICTION_RELAX_MULT = float(os.getenv("SMOKE_FRICTION_RELAX_MULT", "1.0") or "1.0")
 
 def check_economic_viability(pair: str, spread_pips: float, payoff_pips_min: float) -> Tuple[bool, str, dict]:
     """
     Universal Economic Viability Gate: Block trades that can't beat round-trip friction.
-    
+
     Args:
         pair: Currency pair
         spread_pips: Current spread in pips
         payoff_pips_min: Strategy's earliest required "must-achieve" payoff proxy in pips
-        
+
     Returns:
         (ok: bool, reason: str, debug: dict)
         reason is one of:
@@ -3161,7 +3850,7 @@ def check_economic_viability(pair: str, spread_pips: float, payoff_pips_min: flo
             "error": "invalid_inputs"
         }
         return False, "FRICTION_INVALID_INPUT", debug
-    
+
     if spread_pips < 0 or payoff_pips_min < 0:
         debug = {
             "spread_pips": spread_pips,
@@ -3169,15 +3858,16 @@ def check_economic_viability(pair: str, spread_pips: float, payoff_pips_min: flo
             "error": "negative_values"
         }
         return False, "FRICTION_INVALID_INPUT", debug
-    
+
     # Compute friction
     cost_pips = spread_pips + ENTRY_BUFFER_PIPS + EXIT_BUFFER_PIPS
     cost_mult_eff = COST_MULT
     if _SMOKE_MODE and SMOKE_FRICTION_RELAX_MULT > 0.0:
         # Bounded smoke-only friction relaxation to validate placement path.
         cost_mult_eff = max(0.70, min(COST_MULT, COST_MULT * SMOKE_FRICTION_RELAX_MULT))
-    min_required = cost_pips * cost_mult_eff
-    
+    friction_severity_mult_eff = max(0.50, min(1.50, FRICTION_SEVERITY_MULT))
+    min_required = cost_pips * cost_mult_eff * friction_severity_mult_eff
+
     debug = {
         "spread_pips": spread_pips,
         "entry_buffer_pips": ENTRY_BUFFER_PIPS,
@@ -3185,11 +3875,13 @@ def check_economic_viability(pair: str, spread_pips: float, payoff_pips_min: flo
         "cost_pips": cost_pips,
         "cost_mult": COST_MULT,
         "cost_mult_eff": cost_mult_eff,
+        "friction_severity_mult": FRICTION_SEVERITY_MULT,
+        "friction_severity_mult_eff": friction_severity_mult_eff,
         "smoke_mode": bool(_SMOKE_MODE),
         "payoff_pips_min": payoff_pips_min,
         "min_required": min_required
     }
-    
+
     # Check if payoff covers friction
     if payoff_pips_min >= min_required:
         log_runtime("info", "FRICTION_OK", pair=pair, **debug)
@@ -3202,11 +3894,11 @@ def check_economic_viability(pair: str, spread_pips: float, payoff_pips_min: flo
 def check_broker_min_units(pair: str, desired_units: int) -> Tuple[int, str, dict]:
     """
     Broker Min Units Gate: Ensure units meet broker minimum.
-    
+
     Args:
         pair: Currency pair
         desired_units: Computed desired units
-        
+
     Returns:
         (final_units, reason, debug_info)
     """
@@ -3220,12 +3912,12 @@ def check_broker_min_units(pair: str, desired_units: int) -> Tuple[int, str, dic
         }
         return desired_units, "BROKER_MIN_UNITS_UNKNOWN", debug
     broker_min_units = int(float(meta.get("minimumTradeSize", 1)))
-    
+
     debug: Dict[str, object] = {
         "desired_units": desired_units,
         "broker_min_units": broker_min_units,
     }
-    
+
     if desired_units < broker_min_units:
         # Try to bump to min units
         final_units = broker_min_units
@@ -3233,7 +3925,7 @@ def check_broker_min_units(pair: str, desired_units: int) -> Tuple[int, str, dic
         debug["action"] = "bumped_to_min"
         log_runtime("info", "BROKER_MIN_UNITS_BUMP", pair=pair, **debug)
         return final_units, "bumped_to_min_units", debug
-    
+
     debug["final_units"] = desired_units
     debug["action"] = "no_change"
     return desired_units, "units_ok", debug
@@ -3246,12 +3938,15 @@ _ORDER_TIMESTAMPS: List[float] = []
 _ENTRY_ID_TIMESTAMPS: Dict[str, float] = {}
 
 # Order rejection cooldown tracking (per pair)
-ORDER_REJECT_BLOCK: Dict[str, float] = {}
+ORDER_REJECT_BLOCK: Dict[str, dict] = {}
 # Order reject cooldown (seconds)
-ORDER_REJECT_COOLDOWN_SEC = float(os.getenv("ORDER_REJECT_COOLDOWN_SEC", "30") or "30")
+ORDER_REJECT_COOLDOWN_SEC = float(os.getenv("ORDER_REJECT_COOLDOWN_SEC", "0") or "0") if NO_TRADE_LIMITERS else float(os.getenv("ORDER_REJECT_COOLDOWN_SEC", "30") or "30")
 # Stop loss placement retry (seconds/attempts)
 SL_RETRY_MAX = int(os.getenv("SL_RETRY_MAX", "3") or "3")
 SL_RETRY_BASE_SEC = float(os.getenv("SL_RETRY_BASE_SEC", "1.5") or "1.5")
+# Exit retry backoff for failed closes.
+EXIT_RETRY_BASE_SEC = float(os.getenv("EXIT_RETRY_BASE_SEC", "5") or "5")
+EXIT_RETRY_MAX_SEC = float(os.getenv("EXIT_RETRY_MAX_SEC", "60") or "60")
 
 # Thread locks for shared state
 _trade_track_lock = threading.Lock()
@@ -3274,37 +3969,57 @@ TICK_WINDOW_SEC = float(os.getenv("TICK_WINDOW_SEC", "60") or "60")
 _api_calls_this_hour: int = 0
 _hour_start_time: float = 0.0
 _last_api_budget_log: float = 0.0
-HOURLY_API_LIMIT: int = int(os.getenv("HOURLY_API_LIMIT", "500") or "500")
-API_BUDGET_RESERVE_CORE: int = int(os.getenv("API_BUDGET_RESERVE_CORE", "3") or "3")
-
 # Optional low-call hourly scan mode
 HOURLY_SCAN_MODE = os.getenv("HOURLY_SCAN_MODE", "0").strip().lower() in ("1", "true", "yes")
 HOURLY_SCAN_INTERVAL_SEC = float(os.getenv("HOURLY_SCAN_INTERVAL_SEC", "3600") or "3600")
-if HOURLY_SCAN_MODE and HOURLY_API_LIMIT <= 0:
-    HOURLY_API_LIMIT = 10
+
+
+def _resolve_hourly_api_limit() -> int:
+    raw = (os.getenv("HOURLY_API_LIMIT", "") or "").strip()
+    if raw:
+        try:
+            parsed = int(raw)
+        except Exception:
+            parsed = 500
+        if HOURLY_SCAN_MODE and parsed <= 0:
+            return 10
+        return parsed
+
+    # The internal hourly budget is useful for explicit low-call scan mode, but
+    # it self-throttles normal multi-pair entry runs and prevents live-path
+    # evaluation from reaching order placement.
+    if HOURLY_SCAN_MODE:
+        return 10
+    if len(PAIRS) >= 6 or (ALLOW_ENTRIES and not MANAGE_ONLY):
+        return 0
+    return 500
+
+
+HOURLY_API_LIMIT: int = _resolve_hourly_api_limit()
+API_BUDGET_RESERVE_CORE: int = int(os.getenv("API_BUDGET_RESERVE_CORE", "3") or "3")
 
 
 def _check_api_budget() -> bool:
     """Check if we have API budget remaining for this hour."""
     global _api_calls_this_hour, _hour_start_time, _last_api_budget_log
-    
+
     now = now_ts()
 
     if HOURLY_API_LIMIT <= 0:
         return True
-    
+
     # Reset counter at the start of each hour
     if (now - _hour_start_time) >= 3600:
         _api_calls_this_hour = 0
         _hour_start_time = now
         log("API_BUDGET_RESET", {"limit": HOURLY_API_LIMIT})
-    
+
     if _api_calls_this_hour >= HOURLY_API_LIMIT:
         if (now - _last_api_budget_log) >= 60.0:
             log("API_BUDGET_LIMIT_REACHED", {"calls": _api_calls_this_hour, "limit": HOURLY_API_LIMIT})
             _last_api_budget_log = now
         return False
-    
+
     return True
 
 def _api_budget_remaining() -> Optional[int]:
@@ -3361,8 +4076,12 @@ def block_pair_exits(pair: str, reason: str, duration_sec: float = 60.0) -> None
 
 
 def _signal_handler(signum, frame):
-    global _SHUTDOWN
+    global _SHUTDOWN, _pricing_stream
     _SHUTDOWN = True
+    # Stop pricing stream on shutdown
+    if _pricing_stream:
+        _pricing_stream.stop()
+        log_runtime("info", "PRICING_STREAM_STOPPED_ON_SHUTDOWN", {})
 
 
 def parse_time_oanda(t) -> float:
@@ -3507,18 +4226,18 @@ class RateLimiter:
 # Adaptive Exit Engine (AEE) - Core functions (Updated for Path-Space)
 def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles: List[dict]) -> dict:
     """Calculate all AEE metrics for trade using path-space primitives"""
-    
+
     pair = trade.get("pair", "")
     entry = _safe_float(trade.get("entry"))
     direction = str(trade.get("dir", "") or "")
     current_price = _safe_float(current_price)
     atr = _safe_float(atr)
-    
+
     # Use enhanced market data hub for path-space primitives
     try:
         # Get path primitives from enhanced hub
         primitives = _require_runtime_hub().get_path_primitives(pair, entry, direction, atr)
-        
+
         if primitives:
             # Extract path-space metrics
             progress = primitives.get("progress", 0.0)
@@ -3530,38 +4249,38 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
             efficiency = primitives.get("efficiency", 0.0)
             overlap = primitives.get("overlap", 0.0)
             data_quality = primitives.get("data_quality", DataQuality.DEGRADED)
-            
+
             # Calculate additional AEE fields
             # Get AEE state if available
             aee_state = None
             hub = _require_runtime_hub()
             if hasattr(hub, 'get_aee_state'):
                 aee_state = hub.get_aee_state(pair)
-            
+
             # Calculate distance to TP if TP anchor exists
             dist_to_tp_atr = 0.0
             near_tp_band_atr = 0.0
             if aee_state and aee_state.tp_anchor and aee_state.tp_anchor > 0:
                 dist_to_tp_atr = abs(aee_state.tp_anchor - current_price) / atr
                 near_tp_band_atr = 1.0 if dist_to_tp_atr < 0.3 else 0.0
-            
+
             # Get tick management state
             tick_mode = False
             armed_by = "none"
             if aee_state:
                 tick_mode = aee_state.tick_mode
                 armed_by = aee_state.armed_by
-            
+
             # Get phase
             phase = "NONE"
             if aee_state:
                 phase = aee_state.phase.value if hasattr(aee_state.phase, 'value') else str(aee_state.phase)
-            
+
             # Get exit line if pulse logic uses it
             exit_line = None
             if aee_state and aee_state.pulse_exit_line:
                 exit_line = aee_state.pulse_exit_line
-            
+
             result = {
                 "progress": progress,
                 "speed": speed,
@@ -3573,7 +4292,7 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
                 "overlap": overlap,
                 "data_quality": data_quality,
                 "source": "path_space",
-                
+
                 # AEE / tick management fields
                 "phase": phase,
                 "tick_mode": tick_mode,
@@ -3582,17 +4301,17 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
                 "near_tp_band_atr": near_tp_band_atr,
                 "exit_line": exit_line
             }
-            
+
             log_metrics(result)
-            
+
             return result
     except Exception as e:
         # Fallback to candle-based calculation if path-space fails
         log_runtime("warning", f"AEE_PATH_SPACE_FALLBACK {pair}", error=str(e))
-    
+
     # Fallback: Original candle-based calculation
     progress = abs(current_price - entry) / atr if atr > 0 else 0.0
-    
+
     # Speed: |Δprice(last 3-5 bars)| / ATR
     speed_bars = min(5, max(0, len(candles) - 1))
     if speed_bars >= 3:
@@ -3602,7 +4321,7 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
         speed = price_change / atr if atr > 0 else 0
     else:
         speed = 0
-    
+
     # Velocity: Speed_now - Speed_prev
     if len(candles) >= 10:
         c5 = _safe_float(candles[-5].get("c"))
@@ -3612,7 +4331,7 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
         velocity = speed - speed_prev
     else:
         velocity = 0
-    
+
     # Pullback: |Price - LocalHigh/Low| / ATR
     if len(candles) >= 20:
         highs = [_safe_float(c.get("h")) for c in candles[-20:]]
@@ -3624,12 +4343,12 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
     else:
         local_high = current_price
         local_low = current_price
-    
+
     if direction == "LONG":
         pullback = (local_high - current_price) / atr if atr > 0 else 0
     else:
         pullback = (current_price - local_low) / atr if atr > 0 else 0
-    
+
     return {
         "progress": progress,
         "speed": speed,
@@ -3646,17 +4365,17 @@ def calculate_aee_metrics(trade: dict, current_price: float, atr: float, candles
 
 def simulate_price_stream_update(pair: str, bid: float, ask: float, tick_cache: Optional[dict] = None):
     """Simulate price stream update for enhanced market data hub."""
-    
+
     # Validate prices
     if not (is_valid_price(bid) and is_valid_price(ask)):
         return
-    
+
     if bid > ask:
         return
-    
+
     # Calculate spread
     spread_pips = to_pips(pair, ask - bid) if math.isfinite(ask) and math.isfinite(bid) else 0
-    
+
     # Create price event
     event = PriceEvent(
         t_exchange=broker_now_ts(),
@@ -3669,7 +4388,7 @@ def simulate_price_stream_update(pair: str, bid: float, ask: float, tick_cache: 
         source="stream",
         quality=DataQuality.OK
     )
-    
+
     # Add to enhanced market hub
     _require_runtime_hub().add_price_event(pair, event)
 
@@ -3707,7 +4426,7 @@ def williams_r(candles: List[dict], n: int) -> float:
     """Compute Williams %R."""
     if not candles or n <= 0 or len(candles) < n:
         return float("nan")
-    
+
     # Extract values with NaN checks
     highs = []
     lows = []
@@ -3720,24 +4439,24 @@ def williams_r(candles: List[dict], n: int) -> float:
                 lows.append(low)
         except (KeyError, ValueError, TypeError):
             return float("nan")
-    
+
     # Need valid data
     if not highs or not lows:
         return float("nan")
-    
+
     try:
         cl = float(candles[-1]["c"])
         if not math.isfinite(cl):
             return float("nan")
     except (KeyError, ValueError, TypeError):
         return float("nan")
-    
+
     hh = max(highs)
     ll = min(lows)
-    
+
     if hh == ll:
         return -50.0
-    
+
     wr = -100.0 * ((hh - cl) / (hh - ll))
     return wr if math.isfinite(wr) else float("nan")
 
@@ -3764,7 +4483,7 @@ def _book_poll_interval(state: str, cadence: Optional["AdaptiveCadence"] = None)
     """Dynamic polling interval for order/position books based on state."""
     if cadence:
         return cadence.get_interval("books_sec")
-    
+
     s = str(state or "").upper()
     if s in ("WATCH", "GET_READY", "ENTER", "MANAGING", "ARM_TICK_ENTRY"):
         return 15.0
@@ -3993,7 +4712,15 @@ def log_trade_attempt(
     bar_complete: bool = True,
     bar_age_ms: float = 0.0,
 ) -> None:
-    tune_ctx = _resolve_tune_context(pair, sig, st, speed_class)
+    tune_ctx = _resolve_tune_context(
+        pair,
+        sig,
+        st,
+        speed_class,
+        emit_events=False,
+        allow_apply=False,
+        update_ctx=False,
+    )
     session = str(tune_ctx.get("session", compute_session(now_ts())) or compute_session(now_ts()))
     session_quarter = str(tune_ctx.get("session_quarter", f"{session}_{compute_quarter(now_ts(), session)}") or f"{session}_{compute_quarter(now_ts(), session)}")
     vol_bucket = str(tune_ctx.get("vol_bucket", "VOL_MID") or "VOL_MID")
@@ -4032,6 +4759,45 @@ def log_trade_attempt(
             "entry_sprint_override_pack": "conversion_wedge_v1" if override_active else "",
         },
     )
+    
+    # PROACTIVE LOGGING: Explicit Entry Trace for all attempts, successful or not
+    emit_trade_kind(
+        "ENTRY_TRACE",
+        {
+            **build_event_envelope(
+                kind="ENTRY_TRACE",
+                pair=pair,
+                direction=getattr(sig, "direction", ""),
+                entry_group_id=entry_id,
+                leg_type=leg,
+                state_key_core_str=tune_ctx.get("state_key_core_str", ""),
+                state_key_full_str=tune_ctx.get("state_key_full_str", ""),
+                source_level=tune_ctx.get("source_level", ""),
+                source_key=tune_ctx.get("source_key", ""),
+                tune_hash=tune_ctx.get("tune_hash", ""),
+                patch_version=tune_ctx.get("patch_version", ""),
+                manual_version=tune_ctx.get("manual_version", ""),
+            ),
+            "session": session,
+            "session_quarter": session_quarter,
+            "vol_bucket": vol_bucket,
+            "pocket_key": pocket_key,
+            "cluster_id": tune_ctx.get("cluster_id"),
+            "source": tune_ctx.get("source"),
+            "speed_class": speed_class,
+            "decision": gate_decision,
+            "block_reason": reason if gate_decision != "ALLOW" else "",
+            "gate_status": gate_status,
+            "entry_trigger": extra.get("entry_trigger") if isinstance(extra, dict) else None,
+            "priority_score": float(getattr(sig, "priority_score", 0.0) or 0.0),
+            "historical_grade": str(getattr(sig, "historical_grade", "C") or "C"),
+            "market_richness": float(getattr(sig, "market_richness", 0.0) or 0.0),
+            "spread_pips": spread_pips,
+            "bar_complete": bar_complete,
+            "bar_age_ms": bar_age_ms,
+        }
+    )
+
     emit_trade_kind(
         "ENTRY_EVAL",
         {
@@ -4123,41 +4889,47 @@ def log_trade_attempt(
     if isinstance(extra, dict):
         payload.update(extra)
     log_trade_event(payload)
-    emit_trade_kind(
-        "ENTRY_ATTEMPT",
-        {
-            **build_event_envelope(
-                kind="ENTRY_ATTEMPT",
-                pair=pair,
-                direction=getattr(sig, "direction", ""),
-                entry_group_id=entry_id,
-                leg_type=leg,
-                state_key_core_str=tune_ctx.get("state_key_core_str", ""),
-                state_key_full_str=tune_ctx.get("state_key_full_str", ""),
-                source_level=tune_ctx.get("source_level", ""),
-                source_key=tune_ctx.get("source_key", ""),
-                tune_hash=tune_ctx.get("tune_hash", ""),
-                patch_version=tune_ctx.get("patch_version", ""),
-                manual_version=tune_ctx.get("manual_version", ""),
-            ),
-            "decision": decision,
-            "reason": reason,
-            "state_from": state_from,
-            "state_to": state_to,
-            "speed_class": speed_class,
-            "session": session,
-            "session_quarter": session_quarter,
-            "vol_bucket": vol_bucket,
-            "pocket_key": pocket_key,
-            "cluster_id": tune_ctx.get("cluster_id"),
-            "source": tune_ctx.get("source"),
-            "bar_complete": bar_complete,
-            "bar_age_ms": bar_age_ms,
-            "m_norm": m_norm,
-            "spread_pips": spread_pips,
-            "disp_atr": disp_atr,
-        },
-    )
+    evt_kind: Optional[str] = None
+    if decision_norm == "PLACE":
+        evt_kind = "ENTRY_ATTEMPT"
+    elif decision_norm == "ARM":
+        evt_kind = "ENTRY_ARMED"
+    if evt_kind:
+        emit_trade_kind(
+            evt_kind,
+            {
+                **build_event_envelope(
+                    kind=evt_kind,
+                    pair=pair,
+                    direction=getattr(sig, "direction", ""),
+                    entry_group_id=entry_id,
+                    leg_type=leg,
+                    state_key_core_str=tune_ctx.get("state_key_core_str", ""),
+                    state_key_full_str=tune_ctx.get("state_key_full_str", ""),
+                    source_level=tune_ctx.get("source_level", ""),
+                    source_key=tune_ctx.get("source_key", ""),
+                    tune_hash=tune_ctx.get("tune_hash", ""),
+                    patch_version=tune_ctx.get("patch_version", ""),
+                    manual_version=tune_ctx.get("manual_version", ""),
+                ),
+                "decision": decision,
+                "reason": reason,
+                "state_from": state_from,
+                "state_to": state_to,
+                "speed_class": speed_class,
+                "session": session,
+                "session_quarter": session_quarter,
+                "vol_bucket": vol_bucket,
+                "pocket_key": pocket_key,
+                "cluster_id": tune_ctx.get("cluster_id"),
+                "source": tune_ctx.get("source"),
+                "bar_complete": bar_complete,
+                "bar_age_ms": bar_age_ms,
+                "m_norm": m_norm,
+                "spread_pips": spread_pips,
+                "disp_atr": disp_atr,
+            },
+        )
 
 
 def box_range(candles: List[dict], bars: int, use_prev: bool = True) -> Tuple[float, float, float]:
@@ -4178,13 +4950,13 @@ def ema(data: List[float], period: int) -> float:
     """Calculate EMA for given period."""
     if not data or period <= 0:
         return float('nan')
-    
+
     multiplier = 2 / (period + 1)
     ema_val = data[0]
-    
+
     for val in data[1:]:
         ema_val = (val * multiplier) + (ema_val * (1 - multiplier))
-    
+
     return ema_val
 
 
@@ -4300,6 +5072,7 @@ def _apply_entry_sprint_override(knobs: dict) -> dict:
             "entry.tick.break_mode": "SOFT",
             "entry.tick.break_soft_mode": "WICK",
             "entry.tick.break_soft_atr": 0.0,
+            "entry.tick.prebreak_atr": 0.10,
             "entry.tick.break_soft_close_count": 0,
             "entry.tick.confirm_m1_closes": 0,
             "entry.tick.confirm_sec": 0.0,
@@ -4315,6 +5088,7 @@ def _apply_entry_sprint_override(knobs: dict) -> dict:
 
 _REQUIRED_TICK_KNOBS = (
     "entry.tick.break_mode",
+    "entry.tick.prebreak_atr",
     "entry.tick.confirm_m1_closes",
     "entry.tick.confirm_sec",
     "entry.tick.require_pullback",
@@ -4325,13 +5099,66 @@ _REQUIRED_TICK_KNOBS = (
 )
 
 
+_REQUIRED_TICK_KNOB_DEFAULTS = {
+    "entry.tick.break_mode": "SOFT",
+    "entry.tick.prebreak_atr": 0.10,
+    "entry.tick.confirm_m1_closes": 0,
+    "entry.tick.confirm_sec": 0.0,
+    "entry.tick.require_pullback": False,
+    "entry.tick.require_reclaim": False,
+    "entry.tick.base_max_dist_atr": ARM_ENTRY_DIST_ATR,
+    "entry.tick.dist_vel_k": 0.50,
+    "entry.tick.max_dist_atr_cap": 1.00,
+}
+
+
+def _hydrate_required_tick_knobs(knobs: dict) -> dict:
+    out = dict(knobs or {})
+    for name in _REQUIRED_TICK_KNOBS:
+        if name not in out:
+            out[name] = _REQUIRED_TICK_KNOB_DEFAULTS.get(name)
+    # Keep live entry permissive so the priority engine, sizing, and AEE can
+    # do the actual filtering rather than strict trigger micro-rules.
+    out["entry.tick.break_mode"] = "SOFT"
+    out["entry.tick.prebreak_atr"] = max(
+        float(out.get("entry.tick.prebreak_atr", _REQUIRED_TICK_KNOB_DEFAULTS["entry.tick.prebreak_atr"]) or 0.0),
+        float(_REQUIRED_TICK_KNOB_DEFAULTS["entry.tick.prebreak_atr"]),
+    )
+    out["entry.tick.confirm_m1_closes"] = 0
+    out["entry.tick.confirm_sec"] = 0.0
+    out["entry.tick.require_pullback"] = False
+    out["entry.tick.require_reclaim"] = False
+    out["entry.tick.base_max_dist_atr"] = max(
+        float(out.get("entry.tick.base_max_dist_atr", ARM_ENTRY_DIST_ATR) or ARM_ENTRY_DIST_ATR),
+        ARM_ENTRY_DIST_ATR,
+    )
+    out["entry.tick.dist_vel_k"] = max(float(out.get("entry.tick.dist_vel_k", 0.0) or 0.0), 0.50)
+    out["entry.tick.max_dist_atr_cap"] = max(float(out.get("entry.tick.max_dist_atr_cap", 1.0) or 1.0), 1.00)
+    return out
+
+
 def _missing_required_tick_knobs(knobs: dict) -> list[str]:
     k = knobs or {}
     return [name for name in _REQUIRED_TICK_KNOBS if name not in k]
 
 
-def _exit_log(tr: dict, reason: str, exit_atr: float, track: Optional[dict]) -> None:
+def _exit_log(
+    tr: dict,
+    reason: str,
+    exit_atr: float,
+    track: Optional[dict],
+    snapshot: Optional[dict] = None,
+) -> None:
     setup_name = str(tr.get("setup", ""))
+    try:
+        tr_id_int = int(tr.get("id", 0) or 0)
+    except Exception:
+        tr_id_int = 0
+    strategy_ctx = _TRADE_STRATEGY_CONTEXT.get(tr_id_int, {}) if tr_id_int > 0 else {}
+    entry_family = str(tr.get("entry_family") or strategy_ctx.get("entry_family") or _infer_entry_family_from_setup(setup_name) or "UNKNOWN").upper()
+    trade_type_meta = str(tr.get("trade_type") or strategy_ctx.get("trade_type") or ("RUNNER" if "_RUN" in setup_name.upper() else "HARVESTER") or "HARVESTER").upper()
+    target_profile = str(tr.get("target_profile") or strategy_ctx.get("target_profile") or _compute_target_profile(str(tr.get("pair", "")), float(tr.get("entry", 0.0) or 0.0), float(tr.get("tp", 0.0) or 0.0), fallback_distance=0.0) or "T0_0").upper()
+    strategy_key_meta = str(tr.get("strategy_key") or strategy_ctx.get("strategy_key") or _strategy_key(entry_family, trade_type_meta, target_profile) or "")
     leg = "RUN" if "_RUN" in setup_name else "MAIN"
     setup_id = setup_id_from_name(setup_name)
     speed_class = speed_class_from_setup_name(setup_name)
@@ -4341,6 +5168,16 @@ def _exit_log(tr: dict, reason: str, exit_atr: float, track: Optional[dict]) -> 
     peak_ts = float(track.get("peak_ts", entry_ts)) if track else entry_ts
     atr_entry = float(tr.get("atr_entry", 0.0) or 0.0)
     exit_atr_val = float(exit_atr) if math.isfinite(float(exit_atr)) else 0.0
+    tp_atr_ref_raw = tr.get("pg_atr")
+    try:
+        tp_atr_ref = float(tp_atr_ref_raw)
+        if not math.isfinite(tp_atr_ref) or tp_atr_ref <= 0.0:
+            tp_atr_ref = None
+    except Exception:
+        tp_atr_ref = None
+    closed_before_tp_ref = bool(tp_atr_ref is not None and exit_atr_val > 0.0 and exit_atr_val < tp_atr_ref)
+    closed_after_tp_ref = bool(tp_atr_ref is not None and exit_atr_val >= tp_atr_ref)
+    closed_negative_before_sl = bool(exit_atr_val < 0.0 and "SL_HIT" not in str(reason).upper())
     pnl_price = exit_atr_val * atr_entry if math.isfinite(atr_entry) else 0.0
     try:
         pnl_pips = float(to_pips(str(tr.get("pair", "")), pnl_price))
@@ -4366,6 +5203,30 @@ def _exit_log(tr: dict, reason: str, exit_atr: float, track: Optional[dict]) -> 
             "time_to_bfe_sec": (peak_ts - entry_ts),
         },
     )
+    snap = snapshot if isinstance(snapshot, dict) else {}
+    try:
+        mfe_pips_snap = float(snap.get("mfe_pips", float("nan")))
+    except Exception:
+        mfe_pips_snap = float("nan")
+    try:
+        mae_pips_snap = float(snap.get("mae_pips", float("nan")))
+    except Exception:
+        mae_pips_snap = float("nan")
+    try:
+        exit_pips_snap = float(snap.get("profit_pips", float("nan")))
+    except Exception:
+        exit_pips_snap = float("nan")
+    atr_to_pips = 0.0
+    try:
+        atr_to_pips = float(to_pips(str(tr.get("pair", "")), atr_entry)) if atr_entry and math.isfinite(float(atr_entry)) else 0.0
+    except Exception:
+        atr_to_pips = 0.0
+    mfe_pips = mfe_pips_snap if math.isfinite(mfe_pips_snap) else (float(peak) * atr_to_pips if math.isfinite(float(peak)) else 0.0)
+    mae_pips = mae_pips_snap if math.isfinite(mae_pips_snap) else (float(max_dd) * atr_to_pips if math.isfinite(float(max_dd)) else 0.0)
+    exit_pips = exit_pips_snap if math.isfinite(exit_pips_snap) else float(pnl_pips)
+    capture_ratio_pips = None
+    if math.isfinite(mfe_pips) and mfe_pips > 1e-12 and math.isfinite(exit_pips):
+        capture_ratio_pips = float(exit_pips) / float(mfe_pips)
     emit_trade_kind(
         "EXIT_RESULT",
         {
@@ -4384,9 +5245,17 @@ def _exit_log(tr: dict, reason: str, exit_atr: float, track: Optional[dict]) -> 
                 manual_version=str(tr.get("manual_version", "") or _TUNE_CTX.get("manual_version", "")),
             ),
             "pnl_pips": float(pnl_pips),
+            "entry_family": entry_family,
+            "trade_type": trade_type_meta,
+            "target_profile": target_profile,
+            "strategy_key": strategy_key_meta,
             "pnl_atr": float(exit_atr_val),
             "MFE_atr": float(peak),
             "MAE_atr": float(max_dd),
+            "mfe_pips": float(mfe_pips),
+            "mae_pips": float(mae_pips),
+            "exit_pips": float(exit_pips),
+            "capture_ratio_pips": capture_ratio_pips,
             "GB": float(max(0.0, peak - float(exit_atr_val))) if peak > 0 else 0.0,
             "hold_sec": round(now_ts() - entry_ts, 2),
             "aee_reason": str(reason or "NONE"),
@@ -4394,6 +5263,53 @@ def _exit_log(tr: dict, reason: str, exit_atr: float, track: Optional[dict]) -> 
             "phase_at_exit": str(tr.get("aee_phase", "")),
             "panic_flag": str(reason).upper().startswith("PANIC"),
             "is_selftest": str(reason).upper().startswith("SELFTEST_"),
+            "tp_atr_ref": tp_atr_ref,
+            "closed_before_tp_ref": closed_before_tp_ref,
+            "closed_after_tp_ref": closed_after_tp_ref,
+            "closed_negative_before_sl": closed_negative_before_sl,
+        },
+    )
+    # Backward-compatible alias for reporting pipelines that still key off EXIT_PNL_AUDIT.
+    emit_trade_kind(
+        "EXIT_PNL_AUDIT",
+        {
+            **build_event_envelope(
+                kind="EXIT_PNL_AUDIT",
+                pair=str(tr.get("pair", "")),
+                direction=str(tr.get("dir", "")),
+                trade_id=int(tr.get("id", 0) or 0),
+                broker_trade_id=tr.get("oanda_trade_id"),
+                leg_type=leg,
+                state_key_core_str=state_key_core,
+                source_level=str(tr.get("source_level", "") or _TUNE_CTX.get("source_level", "")),
+                source_key=str(tr.get("source_key", "") or _TUNE_CTX.get("source_key", "")),
+                tune_hash=str(tr.get("tune_hash", "") or _TUNE_CTX.get("tune_hash", "")),
+                patch_version=str(tr.get("patch_version", "") or _TUNE_CTX.get("patch_version", "")),
+                manual_version=str(tr.get("manual_version", "") or _TUNE_CTX.get("manual_version", "")),
+            ),
+            "pnl_pips": float(pnl_pips),
+            "entry_family": entry_family,
+            "trade_type": trade_type_meta,
+            "target_profile": target_profile,
+            "strategy_key": strategy_key_meta,
+            "pnl_atr": float(exit_atr_val),
+            "MFE_atr": float(peak),
+            "MAE_atr": float(max_dd),
+            "mfe_pips": float(mfe_pips),
+            "mae_pips": float(mae_pips),
+            "exit_pips": float(exit_pips),
+            "capture_ratio_pips": capture_ratio_pips,
+            "GB": float(max(0.0, peak - float(exit_atr_val))) if peak > 0 else 0.0,
+            "hold_sec": round(now_ts() - entry_ts, 2),
+            "aee_reason": str(reason or "NONE"),
+            "exit_reason": str(reason or "NONE"),
+            "phase_at_exit": str(tr.get("aee_phase", "")),
+            "panic_flag": str(reason).upper().startswith("PANIC"),
+            "is_selftest": str(reason).upper().startswith("SELFTEST_"),
+            "tp_atr_ref": tp_atr_ref,
+            "closed_before_tp_ref": closed_before_tp_ref,
+            "closed_after_tp_ref": closed_after_tp_ref,
+            "closed_negative_before_sl": closed_negative_before_sl,
         },
     )
 
@@ -4423,11 +5339,11 @@ def wick_sweep(candles: List[dict], L: int, atr_val: float) -> Tuple[bool, bool]
     lower_wick = min(o, cl) - low
     sweep_up = (h > swing_high) and (cl < swing_high) and ((upper_wick / atr_val) >= SWEEP_ATR_THRESHOLD)
     sweep_dn = (low < swing_low) and (cl > swing_low) and ((lower_wick / atr_val) >= SWEEP_ATR_THRESHOLD)
-    
+
     # Volume filter disabled - OANDA doesn't provide reliable volume data
     # When using a broker with volume data, uncomment and implement:
     # volume_ok = float(cur.get("volume", 0)) > avg_volume * 1.2
-    
+
     return sweep_up, sweep_dn
 
 
@@ -4476,11 +5392,21 @@ class PairState:
     # Bucket A runtime params
     params: dict = field(default_factory=dict)
     aee_metrics_obj: dict = field(default_factory=dict)
+    top_signal_priority_score: float = 0.0
+    top_signal_historical_grade: str = "C"
+    top_signal_market_richness: float = 0.0
+    active_parent_count_for_pair: int = 0
+    notified_state_keys: set = field(default_factory=set)
 
     # State transition attributes for GATE-16
     entry_arms: bool = False  # Entry conditions met
     ready_at: float = 0.0  # Timestamp when ready
     entry_triggered: bool = False  # Entry trigger activated
+
+    # PC1 entry memory (simple break->reclaim flow memory)
+    pc1_last_break_dir: str = ""
+    pc1_last_break_level: float = float("nan")
+    pc1_last_break_ts: float = 0.0
 
 
 PAIR_ENTRY_HARD_BLOCK: Dict[str, Dict[str, Any]] = {}
@@ -4509,7 +5435,30 @@ def _proof_force_decision_tick(pair: str, st: Any, bid: float, ask: float) -> No
                 proof_mode=bool(_PROOF_MODE),
                 proof_force_decision=bool(_PROOF_FORCE_DECISION_TICKS),
             )
-        direction = "LONG" if (math.isfinite(ask) and math.isfinite(bid) and ask >= bid) else "SHORT"
+        direction: Optional[str] = None
+        try:
+            m_norm = float(getattr(st, "m_norm", 0.0) or 0.0)
+        except Exception:
+            m_norm = 0.0
+        if math.isfinite(m_norm) and abs(m_norm) > 1e-12:
+            direction = "LONG" if m_norm > 0.0 else "SHORT"
+        else:
+            try:
+                wr = float(getattr(st, "wr", 0.0) or 0.0)
+            except Exception:
+                wr = 0.0
+            if math.isfinite(wr) and abs(wr) > 1e-12:
+                direction = "LONG" if wr > 0.0 else "SHORT"
+        if direction is None:
+            _emit_entry_path_skip_reason(
+                pair=pair,
+                st=st,
+                reason="no_directional_primitive",
+                subreason="proof_force_decision_tick_direction_unresolved",
+                signal_present=False,
+                signal_age_sec=None,
+            )
+            return
         sig = SignalDef(
             pair=pair,
             setup_id=6,
@@ -4586,12 +5535,67 @@ def _emit_entry_path_skip_reason(
     )
 
 
+def _watch_primitive_contract_direction(st: Any) -> Tuple[Optional[str], str]:
+    def _apply_direction_policy(direction: Optional[str], source: str) -> Tuple[Optional[str], str]:
+        if direction == "SHORT" and not ENABLE_SHORT_ENTRIES:
+            return None, "short_direction_disabled"
+        return direction, source
+
+    votes: list[str] = []
+    reasons: list[str] = []
+    m_norm_sign: Optional[str] = None
+    wr_sign: Optional[str] = None
+    m_norm_abs = 0.0
+    try:
+        m_norm = float(getattr(st, "m_norm", float("nan")) or float("nan"))
+    except Exception:
+        m_norm = float("nan")
+    if math.isfinite(m_norm) and abs(m_norm) >= 1e-4:
+        m_norm_sign = "LONG" if m_norm > 0.0 else "SHORT"
+        m_norm_abs = abs(float(m_norm))
+        votes.append(m_norm_sign)
+        reasons.append("m_norm")
+    try:
+        wr = float(getattr(st, "wr", float("nan")) or float("nan"))
+    except Exception:
+        wr = float("nan")
+    if math.isfinite(wr):
+        wr_sign = "LONG" if wr >= -50.0 else "SHORT"
+        votes.append(wr_sign)
+        reasons.append("wr")
+    if not votes:
+        return None, "no_directional_primitive"
+    longs = sum(1 for v in votes if v == "LONG")
+    shorts = sum(1 for v in votes if v == "SHORT")
+    if longs == shorts:
+        # Weighted-priority conflict resolver: when short-horizon momentum is
+        # extreme, permit promotion despite regime disagreement.
+        if (
+            m_norm_sign in ("LONG", "SHORT")
+            and wr_sign in ("LONG", "SHORT")
+            and m_norm_sign != wr_sign
+            and m_norm_abs >= MOMENTUM_OVERRIDE_THRESHOLD
+        ):
+            return _apply_direction_policy(m_norm_sign, "momentum_lead")
+        return None, "primitive_disagreement"
+    if max(longs, shorts) < 2 and len(votes) >= 2:
+        if (
+            m_norm_sign in ("LONG", "SHORT")
+            and wr_sign in ("LONG", "SHORT")
+            and m_norm_sign != wr_sign
+            and m_norm_abs >= MOMENTUM_OVERRIDE_THRESHOLD
+        ):
+            return _apply_direction_policy(m_norm_sign, "momentum_lead")
+        return None, "primitive_disagreement"
+    return _apply_direction_policy(("LONG" if longs > shorts else "SHORT"), "+".join(reasons))
+
+
 def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[str, Any]:
     """Compute current open trade counts for concurrency enforcement.
-    
+
     Args:
         broker_snapshot: Optional fresh broker snapshot. If None, uses cached data.
-        
+
     Returns:
         Dict with open counts:
         - open_global: Total open trades
@@ -4600,7 +5604,7 @@ def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[st
         - pending_by_pair: Dict of pending orders per pair (if available)
     """
     from collections import defaultdict
-    
+
     # Default return structure
     result = {
         "open_global": 0,
@@ -4608,13 +5612,13 @@ def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[st
         "pending_global": 0,
         "pending_by_pair": defaultdict(int)
     }
-    
+
     try:
         # Use provided snapshot or get fresh data
         if broker_snapshot is None:
             o = _require_runtime_oanda()
             broker_snapshot = o.open_positions()
-        
+
         # Count open positions from broker
         if isinstance(broker_snapshot, dict):
             positions = broker_snapshot.get("positions", [])
@@ -4623,7 +5627,7 @@ def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[st
                     pair = normalize_pair(pos["instrument"])
                     result["open_global"] += 1
                     result["open_by_pair"][pair] += 1
-        
+
         # Try to get pending orders if available
         try:
             o = _require_runtime_oanda()
@@ -4638,7 +5642,7 @@ def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[st
         except Exception:
             # Pending orders not available or error - ignore
             pass
-            
+
     except Exception as e:
         log_runtime("error", "COMPUTE_OPEN_TRADES_ERROR", error=str(e))
         # Fail closed - return zero counts to block on uncertainty
@@ -4648,7 +5652,7 @@ def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[st
             "pending_global": 0,
             "pending_by_pair": defaultdict(int)
         }
-    
+
     return result
 
 
@@ -4663,11 +5667,6 @@ def can_enter(pair: str, spread: float, now: float, signal: Optional[Any] = None
         return False, REASON_DRY_RUN
     if not ALLOW_ENTRIES:
         return False, REASON_ENTRIES_DISABLED
-    if pair in EXIT_BLOCKED_PAIRS:
-        return False, REASON_PAIR_EXIT_BLOCKED
-    if pair in PAIR_ENTRY_HARD_BLOCK:
-        return False, REASON_PAIR_HARD_BLOCK
-    # Spread-based entry gating is handled exclusively by check_economic_viability()
     if signal is not None:
         created_ts, expires_ts = _signal_time_fields(signal)
         if expires_ts > 0.0 and now > expires_ts:
@@ -4794,9 +5793,16 @@ def _arm_tick_entry(st: PairState, sig: "SignalDef", entry_px: float, box_hi: fl
             "entry_zone_price": sig.entry_zone_price,
             "invalid_level": sig.invalid_level,
             "tp_anchor_price": sig.tp_anchor_price,
+            "entry_family": sig.entry_family,
+            "trade_type": sig.trade_type,
+            "macro_bias": sig.macro_bias,
+            "micro_bias": sig.micro_bias,
+            "entry_zone_low": sig.entry_zone_low,
+            "entry_zone_high": sig.entry_zone_high,
+            "target_profile": getattr(sig, "target_profile", ""),
         }
     }
-    
+
     # T1-17 Tick Mode Integrity Gate Validation - ARMED
     try:
         from pathlib import Path
@@ -4804,11 +5810,11 @@ def _arm_tick_entry(st: PairState, sig: "SignalDef", entry_px: float, box_hi: fl
         proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
         if proof_dirs:
             latest_proof = proof_dirs[-1]
-            
+
             # Check if arming is allowed in current state
             allowed_states = ["GET_READY", "ARM_TICK_ENTRY"]
             is_allowed = st.state in allowed_states
-            
+
             # Load or initialize tick mode events
             tick_file = latest_proof / "tick_mode_events.jsonl"
             if tick_file.exists():
@@ -4817,7 +5823,7 @@ def _arm_tick_entry(st: PairState, sig: "SignalDef", entry_px: float, box_hi: fl
                     events.append(json.loads(line))
             else:
                 events = []
-            
+
             # Add ARMED event
             events.append({
                 "pair": sig.pair,
@@ -4826,11 +5832,11 @@ def _arm_tick_entry(st: PairState, sig: "SignalDef", entry_px: float, box_hi: fl
                 "timestamp": now,
                 "setup_id": sig.setup_id
             })
-            
+
             # Keep last 100 events
             events = events[-100:]
             tick_file.write_text("\n".join(json.dumps(e) for e in events) + "\n")
-            
+
             # Write report
             report = {
                 "status": "PASS" if is_allowed else "FAIL",
@@ -4838,10 +5844,10 @@ def _arm_tick_entry(st: PairState, sig: "SignalDef", entry_px: float, box_hi: fl
                 "events": events[-10:],  # Last 10 events
                 "latest": {"action": "ARMED", "state": st.state}
             }
-            
+
             report_file = latest_proof / f"tick_mode_report_{sig.pair}.json"
             report_file.write_text(json.dumps(report, indent=2))
-            
+
             if not is_allowed:
                 log_runtime("error", "T1-17_TICK_MODE_FAIL",
                           pair=sig.pair, action="ARMED", state=st.state)
@@ -4872,6 +5878,23 @@ def _tick_entry_triggered(st: PairState, bid: float, ask: float, now: float) -> 
     if (ENTRY_SPRINT_OVERRIDE or SIGNAL_SPRINT_OVERRIDE) and trigger in ("BREAK", "RECLAIM", "RESUME"):
         return True, "sprint_override"
 
+    prev_px = float(arm.get("last_trigger_px", px)) if math.isfinite(float(arm.get("last_trigger_px", px))) else px
+    arm["last_trigger_px"] = px
+
+    def _directional_intent_ok(intent_dir: str, min_push_abs: float = 0.0) -> bool:
+        if intent_dir == "LONG":
+            return (px - prev_px) >= max(0.0, min_push_abs)
+        return (prev_px - px) >= max(0.0, min_push_abs)
+
+    def _zone_ok(zone_low: float, zone_high: float, zone_edge: float, near_tol_abs: float) -> bool:
+        in_zone = math.isfinite(zone_low) and math.isfinite(zone_high) and (zone_low <= px <= zone_high)
+        near_zone = math.isfinite(zone_edge) and abs(px - zone_edge) <= max(0.0, near_tol_abs)
+        return bool(in_zone or near_zone)
+
+    zone_max_spread = float(tick_knobs_eff.get("entry.tick.zone_max_spread_pips", float("nan")))
+    if math.isfinite(zone_max_spread) and spread_pips > zone_max_spread:
+        return False, "zone_spread_blocked"
+
     if math.isfinite(atr) and atr > 0.0 and math.isfinite(entry_px):
         dist_atr = abs(px - entry_px) / atr
         allowed_dist = float(thresholds.get("allowed_dist_atr", ARM_ENTRY_DIST_ATR))
@@ -4881,13 +5904,17 @@ def _tick_entry_triggered(st: PairState, bid: float, ask: float, now: float) -> 
     # BREAK trigger: cross box boundary or entry price
     if trigger == "BREAK":
         break_mode = str(tick_knobs_eff.get("entry.tick.break_mode", "STRICT") or "STRICT").upper()
-        break_soft_atr = float(tick_knobs_eff.get("entry.tick.break_soft_atr", 0.05))
-        break_soft_close_count = int(tick_knobs_eff.get("entry.tick.break_soft_close_count", 2))
+        break_soft_atr = float(tick_knobs_eff.get("entry.tick.break_soft_atr", 0.0))
+        prebreak_atr = float(tick_knobs_eff.get("entry.tick.prebreak_atr", 0.0))
+        break_soft_close_count = int(tick_knobs_eff.get("entry.tick.break_soft_close_count", 0))
         buf = ENTRY_BREAK_BUFFER_ATR * atr if math.isfinite(atr) and atr > 0 else 0.0
+        pre_buf = prebreak_atr * atr if math.isfinite(atr) and atr > 0 else 0.0
         lvl = box_hi if direction == "LONG" and math.isfinite(box_hi) else (box_lo if math.isfinite(box_lo) else entry_px)
         if direction == "LONG":
             crossed = px >= (lvl + buf)
             if not crossed:
+                if break_mode == "SOFT" and px >= (lvl - pre_buf):
+                    return True, "break_soft_pretrigger"
                 return False, "break_not_crossed"
             confirm_disp = (ENTRY_CONFIRM_DISP_ATR * atr if atr > 0 else 0.0)
             if break_mode == "SOFT":
@@ -4901,6 +5928,8 @@ def _tick_entry_triggered(st: PairState, bid: float, ask: float, now: float) -> 
             return True, "break"
         crossed = px <= (lvl - buf)
         if not crossed:
+            if break_mode == "SOFT" and px <= (lvl + pre_buf):
+                return True, "break_soft_pretrigger"
             return False, "break_not_crossed"
         confirm_disp = (ENTRY_CONFIRM_DISP_ATR * atr if atr > 0 else 0.0)
         if break_mode == "SOFT":
@@ -4917,46 +5946,100 @@ def _tick_entry_triggered(st: PairState, bid: float, ask: float, now: float) -> 
     if trigger == "RECLAIM":
         require_reclaim = bool(tick_knobs_eff.get("entry.tick.require_reclaim", True))
         reclaim_tol = float(tick_knobs_eff.get("entry.tick.reclaim_tolerance_atr", ENTRY_RECLAIM_BUFFER_ATR))
+        reclaim_soft_confirm_atr = float(
+            tick_knobs_eff.get("entry.tick.reclaim_soft_confirm_atr", ENTRY_RECLAIM_SOFT_CONFIRM_ATR)
+        )
+        reclaim_near_zone_atr = float(
+            tick_knobs_eff.get(
+                "entry.tick.reclaim_near_zone_atr",
+                max(reclaim_tol, reclaim_soft_confirm_atr),
+            )
+        )
+        reclaim_dir_push_atr = float(tick_knobs_eff.get("entry.tick.reclaim_direction_push_atr", 0.0))
         rb = reclaim_tol * atr if math.isfinite(atr) and atr > 0 else 0.0
+        soft_rb = reclaim_soft_confirm_atr * atr if math.isfinite(atr) and atr > 0 else 0.0
+        near_zone_abs = reclaim_near_zone_atr * atr if math.isfinite(atr) and atr > 0 else 0.0
+        dir_push_abs = reclaim_dir_push_atr * atr if math.isfinite(atr) and atr > 0 else 0.0
         if direction == "LONG":
-            if px < (box_hi if math.isfinite(box_hi) else entry_px):
+            reclaim_lvl = (box_hi if math.isfinite(box_hi) else entry_px)
+            if px < reclaim_lvl:
                 arm["reclaim_seen"] = True
             if require_reclaim and not arm.get("reclaim_seen"):
                 return False, "reclaim_wait_adverse"
-            if px >= ((box_hi if math.isfinite(box_hi) else entry_px) + rb):
+            zone_low = reclaim_lvl - rb
+            zone_high = reclaim_lvl + rb
+            if _zone_ok(zone_low, zone_high, reclaim_lvl, near_zone_abs) and _directional_intent_ok(direction, dir_push_abs):
+                return True, "reclaim_zone"
+            if px >= (reclaim_lvl + rb):
                 return True, "reclaim"
+            if arm.get("reclaim_seen") and px >= (reclaim_lvl - soft_rb):
+                return True, "reclaim_soft"
         else:
-            if px > (box_lo if math.isfinite(box_lo) else entry_px):
+            reclaim_lvl = (box_lo if math.isfinite(box_lo) else entry_px)
+            if px > reclaim_lvl:
                 arm["reclaim_seen"] = True
             if require_reclaim and not arm.get("reclaim_seen"):
                 return False, "reclaim_wait_adverse"
-            if px <= ((box_lo if math.isfinite(box_lo) else entry_px) - rb):
+            zone_low = reclaim_lvl - rb
+            zone_high = reclaim_lvl + rb
+            if _zone_ok(zone_low, zone_high, reclaim_lvl, near_zone_abs) and _directional_intent_ok(direction, dir_push_abs):
+                return True, "reclaim_zone"
+            if px <= (reclaim_lvl - rb):
                 return True, "reclaim"
+            if arm.get("reclaim_seen") and px <= (reclaim_lvl + soft_rb):
+                return True, "reclaim_soft"
         return False, "reclaim_wait_reclaim"
 
     # RESUME trigger: see pullback then resume in direction
     require_pullback = bool(tick_knobs_eff.get("entry.tick.require_pullback", True))
     pullback_atr_min = float(tick_knobs_eff.get("entry.tick.pullback_atr_min", ENTRY_PULLBACK_ATR))
+    resume_confirm_atr = float(tick_knobs_eff.get("entry.tick.resume_confirm_atr", ENTRY_RESUME_CONFIRM_ATR))
+    resume_soft_confirm_atr = float(tick_knobs_eff.get("entry.tick.resume_soft_confirm_atr", ENTRY_RESUME_SOFT_CONFIRM_ATR))
+    resume_near_zone_atr = float(
+        tick_knobs_eff.get(
+            "entry.tick.resume_near_zone_atr",
+            max(abs(resume_confirm_atr), resume_soft_confirm_atr),
+        )
+    )
+    resume_dir_push_atr = float(tick_knobs_eff.get("entry.tick.resume_direction_push_atr", 0.0))
     if math.isfinite(atr) and atr > 0:
         pullback_lvl = entry_px - (pullback_atr_min * atr) if direction == "LONG" else entry_px + (pullback_atr_min * atr)
-        resume_lvl = entry_px + (ENTRY_CONFIRM_DISP_ATR * atr) if direction == "LONG" else entry_px - (ENTRY_CONFIRM_DISP_ATR * atr)
+        resume_lvl = entry_px + (resume_confirm_atr * atr) if direction == "LONG" else entry_px - (resume_confirm_atr * atr)
+        resume_soft_margin = resume_soft_confirm_atr * atr
+        resume_near_zone_abs = resume_near_zone_atr * atr
+        resume_dir_push_abs = resume_dir_push_atr * atr
     else:
         pullback_lvl = entry_px
         resume_lvl = entry_px
+        resume_soft_margin = 0.0
+        resume_near_zone_abs = 0.0
+        resume_dir_push_abs = 0.0
     if direction == "LONG":
         if px <= pullback_lvl:
             arm["pullback_seen"] = True
         if require_pullback and not arm.get("pullback_seen"):
             return False, "resume_wait_pullback"
+        zone_low = resume_lvl - resume_soft_margin
+        zone_high = resume_lvl + resume_soft_margin
+        if _zone_ok(zone_low, zone_high, resume_lvl, resume_near_zone_abs) and _directional_intent_ok(direction, resume_dir_push_abs):
+            return True, "resume_zone"
         if px >= resume_lvl:
             return True, "resume"
+        if arm.get("pullback_seen") and px >= (resume_lvl - resume_soft_margin):
+            return True, "resume_soft"
     else:
         if px >= pullback_lvl:
             arm["pullback_seen"] = True
         if require_pullback and not arm.get("pullback_seen"):
             return False, "resume_wait_pullback"
+        zone_low = resume_lvl - resume_soft_margin
+        zone_high = resume_lvl + resume_soft_margin
+        if _zone_ok(zone_low, zone_high, resume_lvl, resume_near_zone_abs) and _directional_intent_ok(direction, resume_dir_push_abs):
+            return True, "resume_zone"
         if px <= resume_lvl:
             return True, "resume"
+        if arm.get("pullback_seen") and px <= (resume_lvl + resume_soft_margin):
+            return True, "resume_soft"
     return False, "resume_wait_confirm"
 
 
@@ -4985,6 +6068,13 @@ def _sig_from_entry_arm(arm: dict) -> Optional["SignalDef"]:
             entry_zone_price=ffloat(sig.get("entry_zone_price"), float("nan")) if sig.get("entry_zone_price") is not None else None,
             invalid_level=ffloat(sig.get("invalid_level"), float("nan")) if sig.get("invalid_level") is not None else None,
             tp_anchor_price=ffloat(sig.get("tp_anchor_price"), float("nan")) if sig.get("tp_anchor_price") is not None else None,
+            entry_family=str(sig.get("entry_family", "") or ""),
+            trade_type=str(sig.get("trade_type", "") or ""),
+            macro_bias=str(sig.get("macro_bias", "NONE") or "NONE"),
+            micro_bias=str(sig.get("micro_bias", "NONE") or "NONE"),
+            entry_zone_low=ffloat(sig.get("entry_zone_low"), float("nan")) if sig.get("entry_zone_low") is not None else None,
+            entry_zone_high=ffloat(sig.get("entry_zone_high"), float("nan")) if sig.get("entry_zone_high") is not None else None,
+            target_profile=str(sig.get("target_profile", "") or ""),
         )
     except Exception:
         return None
@@ -5010,13 +6100,29 @@ class SignalDef:
     entry_zone_price: Optional[float] = None
     invalid_level: Optional[float] = None
     tp_anchor_price: Optional[float] = None
-    
+    priority_score: float = 0.0
+    priority_reason: str = ""
+    historical_grade: str = "C"
+    market_richness: float = 0.0
+    richness_reason: str = ""
+    priority_score_before_pair_penalty: float = 0.0
+    same_pair_penalty: float = 0.0
+    priority_score_after_pair_penalty: float = 0.0
+    risk_percent: float = 0.0
+    entry_family: str = ""
+    trade_type: str = ""
+    macro_bias: str = "NONE"
+    micro_bias: str = "NONE"
+    entry_zone_low: Optional[float] = None
+    entry_zone_high: Optional[float] = None
+    target_profile: str = ""
+
     def __post_init__(self):
         if self.created_at == 0.0:
             self.created_at = time.time()
         if self.expires_at == 0.0:
             self.expires_at = self.created_at + SIGNAL_STALE_TTL_SEC
-    
+
     def is_expired(self) -> bool:
         """Check if signal has expired based on TTL."""
         return (time.time() - self.created_at) > self.ttl_sec
@@ -5030,30 +6136,30 @@ class TradeSpec:
     pair: str
     setup_name: str
     direction: str
-    
+
     # Timing expectations
     speed_class: str  # FAST/MED/SLOW
     expected_move_atr: float  # X_target in ATR units
     window_size_sec: int  # Evaluation window (e.g., 300s)
     expected_progress_per_window: float  # Progress ratio per window
-    
+
     # Risk parameters
     strictness_base: float  # Base strictness for AEE
     fail_windows_budget: int  # Max windows before forced exit
-    
+
     # Entry quality metrics
     entry_quality: float  # 0..1, based on fill vs intended
     entry_price: float
     intended_price: float  # Price at signal time
     fill_delay_ms: float  # Time from signal to fill
-    
+
     # Metadata
     entry_ts: float
     entry_energy: float  # Energy at entry
     entry_efficiency: float  # Efficiency at entry
     pocket_key: str  # State pocket for this trade
     cluster_id: Optional[str] = None  # Source cluster if known
-    
+
     def __post_init__(self):
         # Calculate entry quality based on slippage
         if self.intended_price > 0:
@@ -5125,6 +6231,7 @@ class DB:
               ts REAL,
               pair TEXT,
               setup TEXT,
+              parent_entry_id TEXT,
               dir TEXT,
               mode TEXT,
               units INTEGER,
@@ -5151,13 +6258,15 @@ class DB:
             cur.execute("ALTER TABLE orders ADD COLUMN setup TEXT")
         if "leg" not in cols:
             cur.execute("ALTER TABLE orders ADD COLUMN leg TEXT")
-        
+
         # Add oanda_trade_id to trades table
         cur.execute("PRAGMA table_info(trades)")
         trade_cols = {row[1] for row in cur.fetchall()}
+        if "parent_entry_id" not in trade_cols:
+            cur.execute("ALTER TABLE trades ADD COLUMN parent_entry_id TEXT")
         if "oanda_trade_id" not in trade_cols:
             cur.execute("ALTER TABLE trades ADD COLUMN oanda_trade_id TEXT")
-        
+
         # Add Adaptive Exit Engine columns
         if "aee_phase" not in trade_cols:
             cur.execute("ALTER TABLE trades ADD COLUMN aee_phase TEXT")
@@ -5167,7 +6276,7 @@ class DB:
             cur.execute("ALTER TABLE trades ADD COLUMN aee_local_high REAL")
         if "aee_local_low" not in trade_cols:
             cur.execute("ALTER TABLE trades ADD COLUMN aee_local_low REAL")
-        
+
         con.commit()
         con.close()
 
@@ -5302,20 +6411,26 @@ class DB:
         pg_t: int,
         pg_atr: float,
         note: str,
+        parent_entry_id: Optional[str] = None,
         oanda_trade_id: Optional[str] = None,
+        ts: Optional[float] = None,
     ) -> Optional[int]:
         pair = normalize_pair(pair)
+        ts_val = float(ts) if ts is not None else now_ts()
+        if not math.isfinite(ts_val) or ts_val <= 0.0:
+            ts_val = now_ts()
         con = self._con()
         cur = con.cursor()
         cur.execute(
             """
-            INSERT INTO trades(ts,pair,setup,dir,mode,units,entry,atr_entry,ttl_sec,pg_t,pg_atr,state,note,oanda_trade_id)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            INSERT INTO trades(ts,pair,setup,parent_entry_id,dir,mode,units,entry,atr_entry,ttl_sec,pg_t,pg_atr,state,note,oanda_trade_id)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """,
             (
-                now_ts(),
+                ts_val,
                 pair,
                 setup,
+                str(parent_entry_id or ""),
                 direction,
                 mode,
                 int(units),
@@ -5349,7 +6464,9 @@ class DB:
         pg_t: int,
         pg_atr: float,
         note: str,
+        parent_entry_id: Optional[str] = None,
         oanda_trade_id: Optional[str] = None,
+        ts: Optional[float] = None,
     ) -> Optional[int]:
         return self.record_trade(
             pair=pair,
@@ -5363,14 +6480,16 @@ class DB:
             pg_t=pg_t,
             pg_atr=pg_atr,
             note=note,
+            parent_entry_id=parent_entry_id,
             oanda_trade_id=oanda_trade_id,
+            ts=ts,
         )
 
     def get_open_trades(self) -> List[dict]:
         con = self._con()
         cur = con.cursor()
         cur.execute(
-            "SELECT id,ts,pair,setup,dir,mode,units,entry,atr_entry,ttl_sec,pg_t,pg_atr,oanda_trade_id,aee_phase,aee_entry_protected,aee_local_high,aee_local_low,note FROM trades WHERE state='OPEN' ORDER BY ts ASC"
+            "SELECT id,ts,pair,setup,parent_entry_id,dir,mode,units,entry,atr_entry,ttl_sec,pg_t,pg_atr,oanda_trade_id,aee_phase,aee_entry_protected,aee_local_high,aee_local_low,note FROM trades WHERE state='OPEN' ORDER BY ts ASC"
         )
         rows = cur.fetchall()
         con.close()
@@ -5382,20 +6501,21 @@ class DB:
                     "ts": float(r[1]),
                     "pair": normalize_pair(str(r[2])),
                     "setup": str(r[3]),
-                    "dir": str(r[4]),
-                    "mode": str(r[5]),
-                    "units": int(r[6]),
-                    "entry": float(r[7]),
-                    "atr_entry": float(r[8]),
-                    "ttl_sec": int(r[9]),
-                    "pg_t": int(r[10]),
-                    "pg_atr": float(r[11]),
-                    "oanda_trade_id": r[12] if len(r) > 12 else None,
-                    "aee_phase": r[13] if len(r) > 13 else None,
-                    "aee_entry_protected": int(r[14]) if len(r) > 14 else 0,
-                    "aee_local_high": float(r[15]) if len(r) > 15 and r[15] is not None else float("nan"),
-                    "aee_local_low": float(r[16]) if len(r) > 16 and r[16] is not None else float("nan"),
-                    "note": str(r[17]) if len(r) > 17 and r[17] is not None else "",
+                    "parent_entry_id": str(r[4]) if len(r) > 4 and r[4] is not None else "",
+                    "dir": str(r[5]),
+                    "mode": str(r[6]),
+                    "units": int(r[7]),
+                    "entry": float(r[8]),
+                    "atr_entry": float(r[9]),
+                    "ttl_sec": int(r[10]),
+                    "pg_t": int(r[11]),
+                    "pg_atr": float(r[12]),
+                    "oanda_trade_id": r[13] if len(r) > 13 else None,
+                    "aee_phase": r[14] if len(r) > 14 else None,
+                    "aee_entry_protected": int(r[15]) if len(r) > 15 else 0,
+                    "aee_local_high": float(r[16]) if len(r) > 16 and r[16] is not None else float("nan"),
+                    "aee_local_low": float(r[17]) if len(r) > 17 and r[17] is not None else float("nan"),
+                    "note": str(r[18]) if len(r) > 18 and r[18] is not None else "",
                 }
             )
         return out
@@ -5403,11 +6523,67 @@ class DB:
     def mark_trade_closed(self, trade_id: int, note: str) -> None:
         con = self._con()
         cur = con.cursor()
+        prev_pair = ""
+        prev_dir = ""
+        prev_broker_trade_id = ""
+        prev_state = ""
+        try:
+            cur.execute("SELECT pair,dir,oanda_trade_id,state FROM trades WHERE id=?", (int(trade_id),))
+            prev_row = cur.fetchone()
+            if prev_row:
+                prev_pair = normalize_pair(str(prev_row[0] or ""))
+                prev_dir = str(prev_row[1] or "").upper()
+                prev_broker_trade_id = str(prev_row[2] or "")
+                prev_state = str(prev_row[3] or "")
+        except Exception:
+            pass
         # Replace note instead of appending to prevent pollution
         cur.execute("UPDATE trades SET state='CLOSED', note=? WHERE id=?", (note, int(trade_id)))
         con.commit()
         con.close()
-        
+
+        # Emit hard telemetry for every nonlocal-close classification state write.
+        if str(note or "") in NONLOCAL_CLOSE_REASONS:
+            caller_fn = ""
+            caller_line = 0
+            try:
+                fr = inspect.currentframe()
+                parent = fr.f_back if fr is not None else None
+                if parent is not None:
+                    caller_fn = str(parent.f_code.co_name or "")
+                    caller_line = int(parent.f_lineno or 0)
+            except Exception:
+                caller_fn = ""
+                caller_line = 0
+            log_runtime(
+                "warning",
+                "NONLOCAL_CLOSE_DB_WRITE",
+                trade_id=int(trade_id),
+                pair=prev_pair,
+                direction=prev_dir,
+                reason=str(note or ""),
+                broker_trade_id=prev_broker_trade_id,
+                previous_state=prev_state,
+                setter_function=caller_fn,
+                setter_line=caller_line,
+            )
+            emit_trade_kind(
+                "NONLOCAL_CLOSE_DB_WRITE",
+                {
+                    **build_event_envelope(
+                        kind="NONLOCAL_CLOSE_DB_WRITE",
+                        pair=prev_pair,
+                        direction=prev_dir,
+                        trade_id=int(trade_id),
+                        broker_trade_id=prev_broker_trade_id,
+                    ),
+                    "reason": str(note or ""),
+                    "previous_state": prev_state,
+                    "setter_function": caller_fn,
+                    "setter_line": int(caller_line),
+                },
+            )
+
         # Clean up TradeSpec and AEE state
         trade_id_str = str(trade_id)
         if trade_id_str in trade_specs:
@@ -5424,7 +6600,7 @@ class DB:
         )
         con.commit()
         con.close()
-    
+
     def update_aee_state(self, trade_id: int, phase: str, protected: Optional[int] = None, local_high: Optional[float] = None, local_low: Optional[float] = None) -> None:
         """Update Adaptive Exit Engine state for a trade"""
         with _db_lock:
@@ -5433,19 +6609,19 @@ class DB:
                 cur = con.cursor()
                 updates = ["aee_phase=?"]
                 params = [phase]
-                
+
                 if protected is not None:
                     updates.append("aee_entry_protected=?")
                     params.append(str(protected))
-                
+
                 if local_high is not None:
                     updates.append("aee_local_high=?")
                     params.append(str(local_high))
-                
+
                 if local_low is not None:
                     updates.append("aee_local_low=?")
                     params.append(str(local_low))
-                
+
                 params.append(str(trade_id))
                 cur.execute(f"UPDATE trades SET {', '.join(updates)} WHERE id=?", params)
                 con.commit()
@@ -5455,17 +6631,44 @@ class DB:
             finally:
                 con.close()
 
+    def update_trade_sync_identity(self, trade_id: int, *, ts: Optional[float] = None, oanda_trade_id: Optional[str] = None) -> None:
+        """Backfill broker-sync metadata for already-open local rows."""
+        updates = []
+        params: List[Any] = []
+        if ts is not None:
+            ts_val = float(ts)
+            if math.isfinite(ts_val) and ts_val > 0.0:
+                updates.append("ts=?")
+                params.append(ts_val)
+        if oanda_trade_id is not None:
+            updates.append("oanda_trade_id=?")
+            params.append(str(oanda_trade_id or ""))
+        if not updates:
+            return
+        with _db_lock:
+            con = self._con()
+            try:
+                cur = con.cursor()
+                params.append(int(trade_id))
+                cur.execute(f"UPDATE trades SET {', '.join(updates)} WHERE id=?", params)
+                con.commit()
+            except Exception:
+                con.rollback()
+                raise
+            finally:
+                con.close()
+
 
 def detect_regime_multi_tf(tf_data: dict, pair: str) -> str:
     """Detect market regime using multiple timeframes"""
-    
+
     # Default to MED if no data available
     if not tf_data or not tf_data.get("M5"):
         return "MED"
-    
+
     # Get volatility from each timeframe
     volatilities = {}
-    
+
     # M5 volatility (immediate market conditions)
     m5_candles = list(tf_data.get("M5") or [])
     if len(m5_candles) >= 14:
@@ -5473,7 +6676,7 @@ def detect_regime_multi_tf(tf_data: dict, pair: str) -> str:
         current_range = m5_candles[-1]["h"] - m5_candles[-1]["l"]
         if m5_atr_val > 0:
             volatilities["M5"] = current_range / m5_atr_val
-    
+
     # M15 volatility (short-term trend)
     m15_candles = list(tf_data.get("M15") or [])
     if len(m15_candles) >= 14:
@@ -5481,7 +6684,7 @@ def detect_regime_multi_tf(tf_data: dict, pair: str) -> str:
         current_range = m15_candles[-1]["h"] - m15_candles[-1]["l"]
         if m15_atr_val > 0:
             volatilities["M15"] = current_range / m15_atr_val
-    
+
     # H1 volatility (market context)
     h1_candles = list(tf_data.get("H1") or [])
     if len(h1_candles) >= 14:
@@ -5489,22 +6692,22 @@ def detect_regime_multi_tf(tf_data: dict, pair: str) -> str:
         current_range = h1_candles[-1]["h"] - h1_candles[-1]["l"]
         if h1_atr_val > 0:
             volatilities["H1"] = current_range / h1_atr_val
-    
+
     # Weighted volatility score (higher timeframes get more weight)
     weights = {"M5": 0.2, "M15": 0.3, "H1": 0.5}
     weighted_score = 0.0
     total_weight = 0.0
-    
+
     for tf, vol in volatilities.items():
         weight = weights.get(tf, 0.1)
         weighted_score += vol * weight
         total_weight += weight
-    
+
     if total_weight > 0:
         final_score = weighted_score / total_weight
     else:
         final_score = 0.75  # Default to MED range
-    
+
     # Regime determination using weighted score
     if final_score >= 3.0:
         return "VOLATILE"
@@ -5624,6 +6827,339 @@ V12_SETUP_THRESH = {
     },
 }
 
+
+def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[SignalDef]:
+    pair = normalize_pair(pair)
+    out: List[SignalDef] = []
+    now = now_ts()
+    if len(c_exec) < max(PC1_ENTRY_ZONE_WINDOW + 2, 30):
+        return out
+    if not (st.atr_exec > 0.0 and math.isfinite(st.spread_pips)):
+        return out
+
+    def _safe(v: Any, k: str) -> float:
+        return float(v.get(k, float("nan"))) if isinstance(v, dict) else float("nan")
+
+    closes = [_safe(c, "c") for c in c_exec]
+    highs = [_safe(c, "h") for c in c_exec]
+    lows = [_safe(c, "l") for c in c_exec]
+    if (not math.isfinite(closes[-1])) or closes[-1] <= 0.0:
+        return out
+
+    atr = float(st.atr_exec)
+    close = float(closes[-1])
+    prev_close = float(closes[-2]) if len(closes) >= 2 and math.isfinite(closes[-2]) else close
+    last_ts = float(c_exec[-1].get("time", now) or now)
+    price_age_sec = max(0.0, now - last_ts)
+
+    def _mean(vals: List[float]) -> float:
+        clean = [float(x) for x in vals if math.isfinite(float(x))]
+        return (sum(clean) / len(clean)) if clean else float("nan")
+
+    def _bias(window: int) -> str:
+        if len(closes) < window + 1:
+            return "NONE"
+        chunk = closes[-window:]
+        if not all(math.isfinite(x) for x in chunk):
+            return "NONE"
+        ma = _mean(chunk)
+        slope = float(chunk[-1]) - float(chunk[0])
+        if slope > 0.0 and chunk[-1] >= ma:
+            return "LONG"
+        if slope < 0.0 and chunk[-1] <= ma:
+            return "SHORT"
+        return "NONE"
+
+    macro_bias = _bias(PC1_ENTRY_MACRO_WINDOW)
+    micro_bias = _bias(PC1_ENTRY_MICRO_WINDOW)
+
+    def _bias_is_opposed(direction: str) -> bool:
+        return (macro_bias in ("LONG", "SHORT") and macro_bias != direction) and (micro_bias in ("LONG", "SHORT") and micro_bias != direction)
+
+    def _bias_is_supportive(direction: str) -> bool:
+        return (macro_bias == direction) or (micro_bias == direction)
+
+    def _continuation_direction() -> str:
+        if macro_bias in ("LONG", "SHORT"):
+            return macro_bias
+        if micro_bias in ("LONG", "SHORT"):
+            return micro_bias
+        return "NONE"
+
+    zone_high = max(highs[-PC1_ENTRY_ZONE_WINDOW - 1 : -1])
+    zone_low = min(lows[-PC1_ENTRY_ZONE_WINDOW - 1 : -1])
+    zone_mid = (zone_high + zone_low) * 0.5
+    if not (math.isfinite(zone_high) and math.isfinite(zone_low) and zone_high > zone_low):
+        return out
+
+    def _spread_block(limit: float) -> bool:
+        return (not math.isfinite(st.spread_pips)) or float(st.spread_pips) > float(limit)
+
+    def _emit_decision(
+        *,
+        setup_name: str,
+        family: str,
+        trade_type: str,
+        direction: str,
+        z_lo: float,
+        z_hi: float,
+        freshness: float,
+        allowed: bool,
+        reason: str,
+    ) -> None:
+        payload = {
+            "event": "ENTRY_FAMILY_DECISION",
+            "pair": pair,
+            "direction": direction,
+            "setup_name": setup_name,
+            "entry_family": family,
+            "trade_type": trade_type,
+            "macro_bias": macro_bias,
+            "micro_bias": micro_bias,
+            "zone_low": float(z_lo),
+            "zone_high": float(z_hi),
+            "spread": float(st.spread_pips),
+            "freshness": float(freshness),
+            "allowed_or_blocked": "ALLOWED" if allowed else "BLOCKED",
+            "reason": str(reason),
+        }
+        log_trade_event(payload)
+        log_runtime("info", "ENTRY_FAMILY_DECISION", **payload)
+
+    def _make_signal(
+        *,
+        setup_id: int,
+        setup_name: str,
+        family: str,
+        trade_type: str,
+        direction: str,
+        z_lo: float,
+        z_hi: float,
+        reason: str,
+    ) -> SignalDef:
+        speed_class = "SLOW" if trade_type == "RUNNER" else "MED"
+        sp = get_speed_params(speed_class)
+        sig_setup_name = setup_name if trade_type == "HARVESTER" else f"{setup_name}_RUN"
+        return SignalDef(
+            pair=pair,
+            setup_id=setup_id,
+            setup_name=sig_setup_name,
+            direction=direction,
+            mode=st.mode,
+            ttl_sec=int(sp["ttl_main"]),
+            pg_t=int(sp["ttl_main"] * sp["pg_t_frac"]),
+            pg_atr=float(sp["pg_atr"]),
+            tp1_atr=float(sp["tp1_atr"]),
+            tp2_atr=float(sp["tp2_atr"]),
+            sl_atr=float(sp["sl_atr"]),
+            reason=reason,
+            trigger_mode=_entry_trigger_for_setup(setup_id),
+            entry_zone_price=float((z_lo + z_hi) * 0.5),
+            invalid_level=float(z_lo - (0.15 * atr)) if direction == "LONG" else float(z_hi + (0.15 * atr)),
+            tp_anchor_price=float(close + (sp["tp1_atr"] * atr)) if direction == "LONG" else float(close - (sp["tp1_atr"] * atr)),
+            entry_family=family,
+            trade_type=trade_type,
+            macro_bias=macro_bias,
+            micro_bias=micro_bias,
+            entry_zone_low=float(z_lo),
+            entry_zone_high=float(z_hi),
+            target_profile=_target_profile_from_distance(abs(float(to_pips(pair, sp["tp1_atr"] * atr))) if math.isfinite(float(atr)) else 0.0),
+        )
+
+    # 1) COMPRESSION_EXPANSION -> BREAK -> RUNNER
+    near_edge = PC1_ENTRY_BREAK_NEAR_EDGE_ATR * atr
+    break_up = close > (zone_high + (PC1_ENTRY_BREAK_BUFFER_ATR * atr))
+    break_dn = close < (zone_low - (PC1_ENTRY_BREAK_BUFFER_ATR * atr))
+    break_up = break_up or (close >= (zone_high - near_edge) and close > prev_close and _bias_is_supportive("LONG"))
+    break_dn = break_dn or (close <= (zone_low + near_edge) and close < prev_close and _bias_is_supportive("SHORT"))
+    if break_up or break_dn:
+        direction = "LONG" if break_up else "SHORT"
+        freshness = abs(close - (zone_high if direction == "LONG" else zone_low)) / max(atr, 1e-9)
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_BREAK):
+            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif price_age_sec > PC1_ENTRY_MAX_PRICE_AGE_SEC:
+            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="stale_pricing")
+        elif freshness > PC1_ENTRY_BREAK_FRESH_MAX_ATR:
+            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="setup_too_late")
+        elif _bias_is_opposed(direction):
+            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="bias_misaligned")
+        else:
+            st.pc1_last_break_dir = direction
+            st.pc1_last_break_level = float(zone_high if direction == "LONG" else zone_low)
+            st.pc1_last_break_ts = now
+            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=1, setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, reason="pc1_break_compression"))
+    else:
+        _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_trigger")
+
+    # 2) FAILED_BREAKOUT_FADE -> PULLBACK_RECLAIM -> HARVESTER
+    has_break_memory = (
+        st.pc1_last_break_dir in ("LONG", "SHORT")
+        and math.isfinite(st.pc1_last_break_level)
+        and (now - float(st.pc1_last_break_ts or 0.0)) <= PC1_ENTRY_STALE_SETUP_SEC
+    )
+    proxy_break_dir = "NONE"
+    proxy_break_level = float("nan")
+    recent_h = max(highs[-3:]) if len(highs) >= 3 else highs[-1]
+    recent_l = min(lows[-3:]) if len(lows) >= 3 else lows[-1]
+    if math.isfinite(recent_h) and recent_h > (zone_high + (0.02 * atr)):
+        proxy_break_dir = "LONG"
+        proxy_break_level = float(zone_high)
+    elif math.isfinite(recent_l) and recent_l < (zone_low - (0.02 * atr)):
+        proxy_break_dir = "SHORT"
+        proxy_break_level = float(zone_low)
+    elif close > zone_mid and _bias_is_supportive("LONG"):
+        proxy_break_dir = "LONG"
+        proxy_break_level = float(zone_high)
+    elif close < zone_mid and _bias_is_supportive("SHORT"):
+        proxy_break_dir = "SHORT"
+        proxy_break_level = float(zone_low)
+
+    if (not has_break_memory) and proxy_break_dir in ("LONG", "SHORT") and math.isfinite(proxy_break_level):
+        has_break_memory = True
+        st.pc1_last_break_dir = proxy_break_dir
+        st.pc1_last_break_level = proxy_break_level
+        st.pc1_last_break_ts = now
+    if has_break_memory:
+        direction = st.pc1_last_break_dir
+        lvl = float(st.pc1_last_break_level)
+        reclaim_lo = lvl - (PC1_ENTRY_RECLAIM_ZONE_ATR * atr)
+        reclaim_hi = lvl + (PC1_ENTRY_RECLAIM_ZONE_ATR * atr)
+        resumed_hard = close >= (lvl + (PC1_ENTRY_RECLAIM_RESUME_ATR * atr)) if direction == "LONG" else close <= (lvl - (PC1_ENTRY_RECLAIM_RESUME_ATR * atr))
+        resumed_soft = (
+            (close >= (lvl - (PC1_ENTRY_RECLAIM_SOFT_ZONE_ATR * atr)) and close > prev_close and _bias_is_supportive("LONG"))
+            if direction == "LONG"
+            else (close <= (lvl + (PC1_ENTRY_RECLAIM_SOFT_ZONE_ATR * atr)) and close < prev_close and _bias_is_supportive("SHORT"))
+        )
+        resumed = resumed_hard or resumed_soft
+        freshness = abs(close - lvl) / max(atr, 1e-9)
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_RECLAIM):
+            _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif freshness > PC1_ENTRY_BREAK_FRESH_MAX_ATR:
+            _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=False, reason="setup_too_late")
+        elif _bias_is_opposed(direction):
+            _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=False, reason="bias_misaligned")
+        elif not resumed:
+            _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=False, reason="no_reclaim_resume")
+        else:
+            _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=4, setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, reason="pc1_pullback_reclaim"))
+    else:
+        _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_break_memory")
+
+    # 3) EXHAUSTION_SNAPBACK -> OSCILLATION_BOUNCE -> HARVESTER (sub-pattern A)
+    edge = PC1_ENTRY_BOUNCE_EDGE_ATR * atr
+    ex_long = ((close <= (zone_low + edge)) and (close > prev_close)) or ((close <= (zone_low + edge + (0.08 * atr))) and (close > prev_close) and (close >= (zone_low - (0.05 * atr))))
+    ex_short = ((close >= (zone_high - edge)) and (close < prev_close)) or ((close >= (zone_high - edge - (0.08 * atr))) and (close < prev_close) and (close <= (zone_high + (0.05 * atr))))
+    if ex_long or ex_short:
+        direction = "LONG" if ex_long else "SHORT"
+        z_lo = zone_low if direction == "LONG" else (zone_high - edge)
+        z_hi = (zone_low + edge) if direction == "LONG" else zone_high
+        freshness = min(abs(close - zone_low), abs(close - zone_high)) / max(atr, 1e-9)
+        macro_opposes = _bias_is_opposed(direction)
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_BOUNCE):
+            _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif macro_opposes:
+            _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="macro_opposes")
+        elif freshness > PC1_ENTRY_BREAK_FRESH_MAX_ATR:
+            _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="setup_too_late")
+        else:
+            _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=3, setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, reason="pc1_bounce_exhaustion"))
+    else:
+        _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_trigger")
+
+    # 4) LIQUIDITY_SWEEP -> OSCILLATION_BOUNCE -> HARVESTER (sub-pattern B)
+    last_h = float(highs[-1]) if math.isfinite(highs[-1]) else close
+    last_l = float(lows[-1]) if math.isfinite(lows[-1]) else close
+    sweep_long = ((last_l < zone_low) and (close > zone_low)) or ((last_l < (zone_low + (0.03 * atr))) and (close >= (zone_low - (0.02 * atr))) and (close > prev_close))
+    sweep_short = ((last_h > zone_high) and (close < zone_high)) or ((last_h > (zone_high - (0.03 * atr))) and (close <= (zone_high + (0.02 * atr))) and (close < prev_close))
+    if sweep_long or sweep_short:
+        direction = "LONG" if sweep_long else "SHORT"
+        z_lo = zone_low - edge if direction == "LONG" else zone_high - edge
+        z_hi = zone_low + edge if direction == "LONG" else zone_high + edge
+        freshness = (abs(close - zone_low) if direction == "LONG" else abs(close - zone_high)) / max(atr, 1e-9)
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_BOUNCE):
+            _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif freshness > PC1_ENTRY_BREAK_FRESH_MAX_ATR:
+            _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="setup_too_late")
+        elif _bias_is_opposed(direction):
+            _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="macro_opposes")
+        else:
+            _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=5, setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, reason="pc1_bounce_sweep"))
+    else:
+        _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_trigger")
+
+    # 5) CONTINUATION_PUSH -> BIAS_ALIGNMENT_CONTINUATION -> RUNNER
+    cont_direction = _continuation_direction()
+    if cont_direction in ("LONG", "SHORT"):
+        direction = cont_direction
+        cont_lo = zone_mid - (PC1_ENTRY_CONT_ZONE_ATR * atr)
+        cont_hi = zone_mid + (PC1_ENTRY_CONT_ZONE_ATR * atr)
+        resumed = (close >= (cont_lo - (0.08 * atr)) and close >= (prev_close - (0.02 * atr))) if direction == "LONG" else (close <= (cont_hi + (0.08 * atr)) and close <= (prev_close + (0.02 * atr)))
+        freshness = abs(close - zone_mid) / max(atr, 1e-9)
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_CONT):
+            _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif freshness > PC1_ENTRY_CONT_EXHAUST_MAX_ATR:
+            _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="setup_exhausted")
+        elif _bias_is_opposed(direction):
+            _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="bias_opposes")
+        elif not resumed:
+            _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="no_resume_from_zone")
+        else:
+            _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=2, setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, reason="pc1_continuation_push"))
+    else:
+        _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="bias_not_aligned")
+
+    # 6) VOL_REIGNITE -> BIAS_ALIGNMENT_CONTINUATION -> RUNNER (simplified)
+    if cont_direction in ("LONG", "SHORT"):
+        direction = cont_direction
+        bar_range_atr = abs(last_h - last_l) / max(atr, 1e-9)
+        freshness = bar_range_atr
+        cont_lo = zone_mid - (PC1_ENTRY_CONT_ZONE_ATR * atr)
+        cont_hi = zone_mid + (PC1_ENTRY_CONT_ZONE_ATR * atr)
+        resumed = (close >= (cont_lo - (0.08 * atr)) and close >= (prev_close - (0.02 * atr))) if direction == "LONG" else (close <= (cont_hi + (0.08 * atr)) and close <= (prev_close + (0.02 * atr)))
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_CONT):
+            _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif bar_range_atr < PC1_ENTRY_REIGNITE_MIN_BAR_ATR:
+            _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="insufficient_reignite_range")
+        elif _bias_is_opposed(direction):
+            _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="bias_opposes")
+        elif not resumed:
+            _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="no_resume_from_zone")
+        else:
+            _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=6, setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, reason="pc1_continuation_vol_reignite"))
+    else:
+        _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="bias_not_aligned")
+
+    # 7) INTENTIONAL_RUNNER -> BIAS_ALIGNMENT_CONTINUATION -> RUNNER (simplified)
+    if cont_direction in ("LONG", "SHORT"):
+        direction = cont_direction
+        trend_window = closes[-min(len(closes), max(PC1_ENTRY_MACRO_WINDOW, 12)) :]
+        trend_slope = (trend_window[-1] - trend_window[0]) / max(atr, 1e-9) if len(trend_window) >= 2 else 0.0
+        freshness = abs(trend_slope)
+        cont_lo = zone_mid - (PC1_ENTRY_CONT_ZONE_ATR * atr)
+        cont_hi = zone_mid + (PC1_ENTRY_CONT_ZONE_ATR * atr)
+        resumed = (close >= (cont_lo - (0.08 * atr)) and close >= (prev_close - (0.02 * atr))) if direction == "LONG" else (close <= (cont_hi + (0.08 * atr)) and close <= (prev_close + (0.02 * atr)))
+        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_CONT):
+            _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="spread_too_high")
+        elif abs(trend_slope) < PC1_ENTRY_TREND_MIN_ATR:
+            _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="trend_not_strong_enough")
+        elif _bias_is_opposed(direction):
+            _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="bias_opposes")
+        elif not resumed:
+            _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="no_resume_from_zone")
+        else:
+            _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=True, reason="allow")
+            out.append(_make_signal(setup_id=7, setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, reason="pc1_continuation_intentional_runner"))
+    else:
+        _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="bias_not_aligned")
+
+    return out
+
 SIGNAL_REJECT_COUNTS: Dict[str, Dict[str, int]] = {}
 SIGNAL_REJECT_LAST_LOG_TS: Dict[str, float] = {}
 SIGNAL_REJECT_SUMMARY_SEC = 60.0
@@ -5656,10 +7192,13 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     """
     pair = normalize_pair(pair)
     out: List[SignalDef] = []
-    
+
+    if PC1_ENTRY_CONTRACT_ENABLED:
+        return _build_signals_pc1(pair, st, c_exec)
+
     # Debug: Log entry conditions
-    log_runtime("debug", "BUILD_SIGNALS_ENTRY", 
-                pair=pair, 
+    log_runtime("debug", "BUILD_SIGNALS_ENTRY",
+                pair=pair,
                 c_exec_len=len(c_exec),
                 atr_exec=st.atr_exec,
                 spread_pips=st.spread_pips,
@@ -5668,7 +7207,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     if SIGNAL_SPRINT_OVERRIDE and not _SIGNAL_SPRINT_OVERRIDE_ANNOUNCED:
         _SIGNAL_SPRINT_OVERRIDE_ANNOUNCED = True
         log_runtime("info", "SIGNAL_SPRINT_OVERRIDE_ACTIVE", mode="conversion_wedge_v1")
-    
+
     if str(getattr(st, "mode", "")).upper() == "DEAD":
         log_runtime("debug", "BUILD_SIGNALS_REJECT", reason="mode_dead", mode=getattr(st, "mode", ""))
         return out
@@ -5679,26 +7218,28 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
         log_runtime("debug", "BUILD_SIGNALS_REJECT", reason="invalid_atr_or_spread", atr_exec=st.atr_exec, spread_pips=st.spread_pips)
         return out
     # Spread gating removed - economic viability engine handles spread checks
-    
+    path_regime_soft_penalty = max(0.0, float(os.getenv("PATH_REGIME_SOFT_PENALTY", "0.12") or "0.12"))
+    path_direction_soft_penalty = max(0.0, float(os.getenv("PATH_DIRECTION_SOFT_PENALTY", "0.10") or "0.10"))
+
     # Get path-space engine for primitive calculations
     engine = get_path_engine()
-    
+
     # Update path-space engine with current price data
     current_price = float(c_exec[-1]["c"])
     timestamp = float(c_exec[-1].get("time", now_ts()))
-    
+
     # Update engine with recent price history for primitive calculations
     for candle in c_exec[-20:]:  # Last 20 candles for path-space calculation
         price = float(candle["c"])
         candle_time = float(candle.get("time", timestamp))
         engine.update_price(pair, price, st.atr_exec, candle_time)
-    
+
     # Get path-space primitives for current state
     primitives = engine.get_primitives(pair)
-    
+
     # Debug: Log primitives
     log_runtime("debug", "BUILD_SIGNALS_PRIMITIVES", pair=pair, primitives_count=len(primitives), sample_primitives={k: round(v, 4) for k, v in list(primitives.items())[:5]})
-    
+
     # Use existing strategy logic but with path-space primitives instead of candle-based calculations
     atrv = st.atr_exec
     close = current_price
@@ -5799,14 +7340,22 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
         return True
 
     path_ok, path_reason = _path_regime_ok()
-    if not path_ok and not SIGNAL_SPRINT_OVERRIDE:
-        log(
-            f"{EMOJI_INFO} PATH_GATE_BLOCK {pair}",
-            {"pair": pair, "reason": path_reason, "path_10s": path_10s, "path_30s": path_30s, "path_60s": path_60s},
-        )
-        return []
-    if not path_ok and SIGNAL_SPRINT_OVERRIDE:
-        log_runtime("info", "SIGNAL_SPRINT_PATH_GATE_BYPASS", pair=pair, reason=path_reason)
+    path_regime_penalty = 0.0
+    if not path_ok:
+        path_regime_penalty = path_regime_soft_penalty
+        if not SIGNAL_SPRINT_OVERRIDE:
+            log_runtime(
+                "info",
+                "PATH_GATE_SOFT",
+                pair=pair,
+                reason=path_reason,
+                penalty=path_regime_penalty,
+                path_10s=path_10s,
+                path_30s=path_30s,
+                path_60s=path_60s,
+            )
+        else:
+            log_runtime("info", "SIGNAL_SPRINT_PATH_GATE_BYPASS", pair=pair, reason=path_reason)
 
     log_runtime(
         "debug",
@@ -5847,7 +7396,221 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
         sig.created_at = now_ts()
         sig.expires_at = sig.created_at + SIGNAL_STALE_TTL_SEC
         return sig
-    
+
+    def _score_signal_priority(sig: SignalDef) -> tuple[float, str, dict]:
+        """Dynamic score for ranking competing signals.
+
+        This is intentionally score-driven instead of setup-driven. The bot
+        should prefer the strongest current opportunity, not a hard-coded setup
+        order.
+        """
+        session_name = compute_session(now_ts())
+        quarter_name = compute_quarter(now_ts(), session_name)
+        template = _load_session_template_report(pair, session_name)
+        rt_settings = _load_runtime_settings(pair, session_name)
+        spread_atr_now = st.spread_pips / max(atr_pips(pair, st.atr_exec), 1e-9) if st.atr_exec > 0 else 0.0
+        spread_score = max(0.0, 1.0 - min(1.0, spread_atr_now / 0.35))
+        energy_score = max(0.0, min(1.0, float(energy)))
+        eff_score = max(0.0, min(1.0, float(efficiency)))
+        speed_score = max(0.0, min(1.0, float(speed)))
+        vol_score = max(0.0, min(1.0, abs(float(vol_slope)) * 8.0))
+        path_score = max(0.0, 1.0 - min(1.0, float(overlap)))
+        move_score = max(0.0, min(1.0, float(sig.tp1_atr) / 2.5))
+        freshness_score = max(0.0, min(1.0, 1.0 - ((now_ts() - float(sig.created_at or now_ts())) / SIGNAL_STALE_TTL_SEC)))
+
+        # Small structural bonus, but not a hard-coded ordering rule.
+        setup_bonus_map = {
+            4: 0.06,  # failed breakout fade
+            5: 0.05,  # sweep
+            1: 0.04,  # compression expansion
+            3: 0.03,  # snapback
+            2: 0.02,  # continuation
+            6: 0.01,  # reignite
+            7: 0.00,  # runner
+        }
+        setup_bonus = setup_bonus_map.get(int(sig.setup_id), 0.0)
+
+        template_zone_score = 0.0
+        template_pair_score = 0.0
+        template_action_bonus = 0.0
+        template_reason = "no_template"
+        pair_grade = "C"
+        zone_grade = "C"
+        pair_tier = "neutral"
+        pair_tier_adjustment = 0.0
+        richness = {"a_count": 0, "b_count": 0, "best_a_run": 0, "richness_score": 0.0}
+        weights = {
+            "energy": 0.18,
+            "efficiency": 0.15,
+            "speed": 0.11,
+            "volatility": 0.07,
+            "path": 0.07,
+            "move": 0.07,
+            "spread": 0.05,
+            "freshness": 0.02,
+            "pair_template": 0.16,
+            "zone_template": 0.12,
+            "richness": 0.10,
+        }
+        if isinstance(rt_settings, dict):
+            try:
+                weights.update({str(k): float(v) for k, v in dict((rt_settings.get("priority") or {}).get("score_weights") or {}).items()})
+            except Exception:
+                pass
+            priority_cfg = dict(rt_settings.get("priority") or {})
+            pair_tier = str(rt_settings.get("live_priority_tier", "neutral") or "neutral").lower()
+            if pair_tier == "primary":
+                pair_tier_adjustment = float(priority_cfg.get("primary_pair_bonus", rt_settings.get("live_priority_adjustment", 0.18)) or 0.18)
+            elif pair_tier == "fallback":
+                pair_tier_adjustment = -abs(float(priority_cfg.get("fallback_pair_penalty", abs(rt_settings.get("live_priority_adjustment", -0.06))) or 0.06))
+            pair_tpl = dict((rt_settings.get("pair_runtime") or {}).get(str(sig.direction).upper(), {}) or {})
+            pair_grade = str(pair_tpl.get("historical_grade", "C") or "C").upper()
+            pair_wr = max(0.0, min(1.0, float(pair_tpl.get("template_entry_win_rate", 0.0) or 0.0)))
+            pair_tph = max(0.0, float(pair_tpl.get("template_trades_per_hour", 0.0) or 0.0))
+            pair_util = max(0.0, min(1.5, float(pair_tpl.get("template_utilization_ratio", 0.0) or 0.0)))
+            pair_recycle = max(0.0, min(1.5, float(pair_tpl.get("template_recycling_utilization_ratio", 0.0) or 0.0)))
+            template_pair_score = (
+                0.45 * pair_wr
+                + 0.20 * min(1.0, pair_tph / 4.0)
+                + 0.20 * min(1.0, pair_util)
+                + 0.15 * min(1.0, pair_recycle)
+            )
+
+            best_zone = runtime_settings.best_zone_runtime(rt_settings, quarter_name, sig.direction, float(sig.tp1_atr or 0.0))
+            richness = runtime_settings.quarter_direction_richness(rt_settings, quarter_name, sig.direction)
+            if best_zone is not None:
+                zone_grade = str(best_zone.get("historical_grade", "C") or "C").upper()
+                zone_wr = max(0.0, min(1.0, float(best_zone.get("template_entry_win_rate", 0.0) or 0.0)))
+                zone_util = max(0.0, min(1.5, float(best_zone.get("template_utilization_ratio", 0.0) or 0.0)))
+                zone_recycle = max(0.0, min(1.5, float(best_zone.get("template_recycling_utilization_ratio", 0.0) or 0.0)))
+                zone_selected = max(0.0, float(best_zone.get("template_selected_density_per_hour", 0.0) or 0.0))
+                zone_opp = max(0.0, float(best_zone.get("template_expected_opportunities_per_hour", 0.0) or 0.0))
+                template_action_bonus = _preferred_action_bonus(best_zone.get("preferred_action", ""))
+                template_zone_score = (
+                    0.35 * zone_wr
+                    + 0.20 * min(1.0, zone_util)
+                    + 0.15 * min(1.0, zone_recycle)
+                    + 0.15 * min(1.0, zone_selected / 2.0)
+                    + 0.15 * min(1.0, zone_opp / 2.0)
+                )
+                template_reason = (
+                    f"rt q={quarter_name} dir={sig.direction} tgt={best_zone.get('target_distance')} "
+                    f"wr={zone_wr:.2f} util={zone_util:.2f} rec={zone_recycle:.2f} act={best_zone.get('preferred_action', '')}"
+                )
+            else:
+                template_reason = f"rt pair_only q={quarter_name} dir={sig.direction}"
+        elif isinstance(template, dict):
+            pair_tpl = (template.get("pair_template") or {}).get(str(sig.direction).upper(), {})
+            pair_grade = _pair_grade(pair_tpl)
+            pair_wr = max(0.0, min(1.0, float(pair_tpl.get("template_entry_win_rate", 0.0) or 0.0)))
+            pair_tph = max(0.0, float(pair_tpl.get("template_trades_per_hour", 0.0) or 0.0))
+            pair_util = max(0.0, min(1.5, float(pair_tpl.get("template_utilization_ratio", 0.0) or 0.0)))
+            pair_recycle = max(0.0, min(1.5, float(pair_tpl.get("template_recycling_utilization_ratio", 0.0) or 0.0)))
+            template_pair_score = (
+                0.45 * pair_wr
+                + 0.20 * min(1.0, pair_tph / 4.0)
+                + 0.20 * min(1.0, pair_util)
+                + 0.15 * min(1.0, pair_recycle)
+            )
+
+            best_zone = None
+            best_gap = float("inf")
+            for zone in template.get("zones", []):
+                if str(zone.get("quarter")) != quarter_name:
+                    continue
+                if str(zone.get("direction")) != str(sig.direction).upper():
+                    continue
+                try:
+                    gap = abs(float(zone.get("target_distance", 0.0)) - float(sig.tp1_atr))
+                except Exception:
+                    continue
+                if gap < best_gap:
+                    best_gap = gap
+                    best_zone = zone
+
+            richness = _template_richness(template, quarter_name, sig.direction)
+            if best_zone is not None:
+                zone_grade = _zone_grade(best_zone)
+                zone_wr = max(0.0, min(1.0, float(best_zone.get("template_entry_win_rate", 0.0) or 0.0)))
+                zone_util = max(0.0, min(1.5, float(best_zone.get("template_utilization_ratio", 0.0) or 0.0)))
+                zone_recycle = max(0.0, min(1.5, float(best_zone.get("template_recycling_utilization_ratio", 0.0) or 0.0)))
+                zone_selected = max(0.0, float(best_zone.get("template_selected_density_per_hour", 0.0) or 0.0))
+                zone_opp = max(0.0, float(best_zone.get("template_expected_opportunities_per_hour", 0.0) or 0.0))
+                template_action_bonus = _preferred_action_bonus(best_zone.get("preferred_action", ""))
+                template_zone_score = (
+                    0.35 * zone_wr
+                    + 0.20 * min(1.0, zone_util)
+                    + 0.15 * min(1.0, zone_recycle)
+                    + 0.15 * min(1.0, zone_selected / 2.0)
+                    + 0.15 * min(1.0, zone_opp / 2.0)
+                )
+                template_reason = (
+                    f"tpl q={quarter_name} dir={sig.direction} tgt={best_zone.get('target_distance')} "
+                    f"wr={zone_wr:.2f} util={zone_util:.2f} rec={zone_recycle:.2f} act={best_zone.get('preferred_action','')}"
+                )
+            else:
+                template_reason = f"tpl pair_only q={quarter_name} dir={sig.direction}"
+
+        historical_grade = zone_grade if zone_grade != "C" else pair_grade
+        grade_bonus = 0.55 * _grade_bonus(zone_grade) + 0.45 * _grade_bonus(pair_grade)
+        richness_bonus = float(weights.get("richness", 0.10)) * float(richness.get("market_richness", richness.get("richness_score", 0.0)) or 0.0)
+        direction_penalty = 0.0
+        direction_penalty_reason = ""
+        if (not SIGNAL_SPRINT_OVERRIDE) and (path_10s and path_30s) and (not _path_direction_ok(sig.direction)):
+            direction_penalty = path_direction_soft_penalty
+            direction_penalty_reason = f"path_direction_soft:{sig.direction}"
+        score = (
+            float(weights.get("energy", 0.18)) * energy_score
+            + float(weights.get("efficiency", 0.15)) * eff_score
+            + float(weights.get("speed", 0.11)) * speed_score
+            + float(weights.get("volatility", 0.07)) * vol_score
+            + float(weights.get("path", 0.07)) * path_score
+            + float(weights.get("move", 0.07)) * move_score
+            + float(weights.get("spread", 0.05)) * spread_score
+            + float(weights.get("freshness", 0.02)) * freshness_score
+            + float(weights.get("pair_template", 0.16)) * template_pair_score
+            + float(weights.get("zone_template", 0.12)) * template_zone_score
+            + template_action_bonus
+            + setup_bonus
+            + grade_bonus
+            + richness_bonus
+            + pair_tier_adjustment
+        )
+        score -= path_regime_penalty
+        score -= direction_penalty
+        reason = (
+            f"en={energy_score:.2f} eff={eff_score:.2f} spd={speed_score:.2f} "
+            f"vol={vol_score:.2f} path={path_score:.2f} move={move_score:.2f} "
+            f"spr={spread_score:.2f} p_tpl={template_pair_score:.2f} "
+            f"z_tpl={template_zone_score:.2f} act={template_action_bonus:.2f} "
+            f"grade={historical_grade} g_pair={pair_grade} g_zone={zone_grade} "
+            f"rich={float(richness.get('market_richness', richness.get('richness_score', 0.0)) or 0.0):.2f} "
+            f"tier={pair_tier} tier_adj={pair_tier_adjustment:.2f} "
+            f"a={richness.get('a_count', 0)} run={richness.get('best_a_run', 0)} "
+            f"bonus={setup_bonus:.2f} path_reg_pen={path_regime_penalty:.2f} "
+            f"path_dir_pen={direction_penalty:.2f} {direction_penalty_reason} {template_reason}"
+        )
+        return round(score, 4), reason, {
+            "historical_grade": historical_grade,
+            "pair_grade": pair_grade,
+            "zone_grade": zone_grade,
+            "market_richness": float(richness.get("market_richness", richness.get("richness_score", 0.0)) or 0.0),
+            "live_priority_tier": pair_tier,
+            "live_priority_adjustment": round(pair_tier_adjustment, 4),
+            "path_regime_penalty": round(path_regime_penalty, 4),
+            "path_direction_penalty": round(direction_penalty, 4),
+            "path_reason": path_reason if not path_ok else "",
+            "path_direction_reason": direction_penalty_reason,
+            "richness_reason": (
+                str(richness.get("market_richness_reason", "")) or (
+                    f"q={quarter_name} dir={sig.direction} "
+                    f"a_count={richness.get('a_count', 0)} "
+                    f"best_a_run={richness.get('best_a_run', 0)} "
+                    f"b_count={richness.get('b_count', 0)}"
+                )
+            ),
+        }
+
     # STRATEGY 1: COMPRESSION_EXPANSION (upgraded to use path-space primitives)
     # Check compression using path-space overlap instead of candle range
     s1_block_reason = ""
@@ -5872,7 +7635,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 s1_block_reason = "entry_disp_lt_min"
     if s1_block_reason:
         _bump_signal_reject(pair, 1, s1_block_reason)
-        log_runtime("debug", "BUILD_SIGNALS_STRATEGY_CONDITIONS", 
+        log_runtime("debug", "BUILD_SIGNALS_STRATEGY_CONDITIONS",
                 pair=pair,
                 box_range_atr=round(box_range_atr, 4),
                 progress=round(progress, 4),
@@ -5893,7 +7656,7 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             # E1 strict: Remove overlap > 1.0 gate (if present)
             if break_up or break_dn:
                 disp_from_boundary_atr = (abs(close - rolling_high) / atrv) if break_up and atrv > 0 else ((abs(close - rolling_low) / atrv) if atrv > 0 else 0.0)
-                log_runtime("debug", "BUILD_SIGNALS_SETUP1_CHECK", 
+                log_runtime("debug", "BUILD_SIGNALS_SETUP1_CHECK",
                             pair=pair,
                             break_up=break_up,
                             break_dn=break_dn,
@@ -5998,10 +7761,10 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     if displacement >= V12_SETUP_THRESH[3]["prior_disp_min"] and reversal_disp_atr >= V12_SETUP_THRESH[3]["entry_rev_disp_min"]:
         # E1 strict: Remove energy < 0.5, efficiency < 0.3, velocity < -0.05 gates; keep only table keys and structural booleans
         direction = "SHORT" if close > (rolling_high + rolling_low) / 2 else "LONG"
-        
+
         speed_class = "SLOW"
         sp = get_speed_params(speed_class)
-        
+
         out.append(_attach_v12_fields(
             SignalDef(
                 pair=pair,
@@ -6047,10 +7810,10 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     ):
         # E1 strict: Only use ext_outside_max from table; remove any proxy numeric for back inside range
         direction = "SHORT" if close > (rolling_high + rolling_low) / 2 else "LONG"
-        
+
         speed_class = "FAST"
         sp = get_speed_params(speed_class)
-        
+
         out.append(_attach_v12_fields(
             SignalDef(
                 pair=pair,
@@ -6144,10 +7907,10 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     if s6_ready or SIGNAL_SPRINT_OVERRIDE:
         # E1 strict: Remove overlap > 2.0, efficiency > 0.2 gates; keep only table keys and structural booleans
         direction = "LONG" if close > (rolling_high + rolling_low) / 2 else "SHORT"
-        
+
         speed_class = "SLOW"
         sp = get_speed_params(speed_class)
-        
+
         out.append(_attach_v12_fields(
             SignalDef(
                 pair=pair,
@@ -6205,10 +7968,10 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
     ):
         # E1 strict: vol_slope threshold is now table-driven; energy_15m must not be fabricated from candles
         direction = "LONG" if close > (rolling_high + rolling_low) / 2 else "SHORT"
-        
+
         speed_class = "SLOW"  # Runner uses slow parameters for multi-hour campaigns
         sp = get_speed_params(speed_class)
-        
+
         out.append(_attach_v12_fields(
             SignalDef(
                 pair=pair,
@@ -6233,49 +7996,45 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             )
         ))
 
-    if SIGNAL_SPRINT_OVERRIDE and not out:
-        direction = "LONG" if close >= ((rolling_high + rolling_low) * 0.5) else "SHORT"
-        speed_class = "SLOW"
-        sp = get_speed_params(speed_class)
-        out.append(
-            _attach_v12_fields(
-                SignalDef(
-                    pair=pair,
-                    setup_id=6,
-                    setup_name="VOL_REIGNITE",
-                    direction=direction,
-                    mode=st.mode,
-                    ttl_sec=sp["ttl_main"],
-                    pg_t=int(sp["ttl_main"] * sp["pg_t_frac"]),
-                    pg_atr=sp["pg_atr"],
-                    tp1_atr=sp["tp1_atr"],
-                    tp2_atr=sp["tp2_atr"],
-                    sl_atr=sp["sl_atr"],
-                    reason=_with_friction_reason(
-                        reason=f"sprint_forced_signal energy={energy:.4f} eff={efficiency:.4f} | bar_complete={bar_complete}",
-                        pair=pair,
-                        atr=atrv,
-                        spread_pips=st.spread_pips,
-                        tp1_atr=sp["tp1_atr"],
-                        sl_atr=sp["sl_atr"],
-                    ),
-                )
-            )
-        )
-
-    # Directional gate using short-horizon path displacement.
-    if (not SIGNAL_SPRINT_OVERRIDE) and out and (path_10s and path_30s):
-        out = [sig for sig in out if _path_direction_ok(sig.direction)]
-
-    # Enforce required GET_READY payload schema.
+    # Enforce required GET_READY payload schema and log what gets dropped.
     if not SIGNAL_SPRINT_OVERRIDE:
-        out = [sig for sig in out if validate_get_ready_payload(sig)[0]]
+        kept: List[SignalDef] = []
+        reject_reasons: Dict[str, int] = {}
+        for sig in out:
+            ok, reason = validate_get_ready_payload(sig)
+            if ok:
+                kept.append(sig)
+            else:
+                reject_reasons[reason] = reject_reasons.get(reason, 0) + 1
+                log_runtime(
+                    "warning",
+                    "SIGNAL_SCHEMA_DROP",
+                    pair=pair,
+                    setup_id=sig.setup_id,
+                    setup_name=sig.setup_name,
+                    direction=sig.direction,
+                    reason=reason,
+                )
+        if reject_reasons:
+            log_runtime(
+                "warning",
+                "SIGNAL_SCHEMA_DROP_SUMMARY",
+                pair=pair,
+                dropped=len(out) - len(kept),
+                kept=len(kept),
+                reasons=reject_reasons,
+            )
+        out = kept
 
-    # Sort signals by priority (same as original)
-    pr = {4: 1, 5: 2, 1: 3, 3: 4, 2: 5, 6: 6, 7: 7}
-    out.sort(key=lambda s: pr.get(s.setup_id, 99))
+    # Score-driven signal ordering. No hard setup-id gating.
+    for sig in out:
+        sig.priority_score, sig.priority_reason, score_meta = _score_signal_priority(sig)
+        sig.historical_grade = str(score_meta.get("historical_grade", "C"))
+        sig.market_richness = float(score_meta.get("market_richness", 0.0) or 0.0)
+        sig.richness_reason = str(score_meta.get("richness_reason", ""))
+    out.sort(key=lambda s: (float(getattr(s, "priority_score", 0.0)), float(getattr(s, "tp1_atr", 0.0))), reverse=True)
     _flush_signal_reject_summary(pair, now_ts())
-    
+
     # LOG TRADE EVENTS - SINGLE SOURCE OF TRUTH
     for sig in out:
         trade_event = {
@@ -6284,6 +8043,12 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             "reason_code": sig.setup_name,
             "pair": sig.pair,
             "setup_id": sig.setup_id,
+            "entry_family": getattr(sig, "entry_family", ""),
+            "trade_type": getattr(sig, "trade_type", ""),
+            "macro_bias": getattr(sig, "macro_bias", "NONE"),
+            "micro_bias": getattr(sig, "micro_bias", "NONE"),
+            "entry_zone_low": getattr(sig, "entry_zone_low", None),
+            "entry_zone_high": getattr(sig, "entry_zone_high", None),
             "direction": sig.direction,
             "mode": sig.mode,
             "ttl_sec": sig.ttl_sec,
@@ -6291,16 +8056,21 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             "tp2_atr": sig.tp2_atr,
             "sl_atr": sig.sl_atr,
             "reason": sig.reason,
+            "priority_score": getattr(sig, "priority_score", 0.0),
+            "priority_reason": getattr(sig, "priority_reason", ""),
+            "historical_grade": getattr(sig, "historical_grade", "C"),
+            "market_richness": getattr(sig, "market_richness", 0.0),
+            "richness_reason": getattr(sig, "richness_reason", ""),
             "units_base": 1.0,  # Will be calculated by caller
             "units_final": 1.0,  # Will be calculated by caller
             "spread_pips": st.spread_pips,
             "atr_pips": atr_pips(pair, st.atr_exec),
             "spread_atr": st.spread_pips / max(atr_pips(pair, st.atr_exec), 1e-9) if st.atr_exec > 0 else 0.0
         }
-        
+
         # Log trade event to trades.jsonl
         log_trade_event(trade_event)
-    
+
     return out
 
 
@@ -6395,7 +8165,30 @@ def get_speed_weight(speed_class: str) -> float:
     return float(weight_map.get(sc, 1.00))
 
 
-def get_split_ratios(speed_class: str) -> Tuple[float, float]:
+def get_split_ratios(
+    speed_class: str,
+    *,
+    pair: Optional[str] = None,
+    session_name: Optional[str] = None,
+    quarter_name: Optional[str] = None,
+    direction: Optional[str] = None,
+    target_distance: Optional[float] = None,
+) -> Tuple[float, float]:
+    if pair and session_name and quarter_name and direction is not None and target_distance is not None:
+        rt_settings = _load_runtime_settings(pair, session_name)
+        best_zone = runtime_settings.best_zone_runtime(rt_settings, quarter_name, direction, float(target_distance or 0.0))
+        if isinstance(best_zone, dict):
+            mix = dict(best_zone.get("preferred_trade_type_mix", {}) or {})
+            try:
+                harvester = float(mix.get("harvester", 0.0) or 0.0)
+                runner = float(mix.get("runner", 0.0) or 0.0)
+                total = harvester + runner
+                if total > 0.0:
+                    harvester /= total
+                    runner /= total
+                    return round(harvester, 4), round(runner, 4)
+            except Exception:
+                pass
     sc = normalize_speed_class(speed_class)
     split_map = {
         "FAST": (0.85, 0.15),
@@ -6410,21 +8203,24 @@ def get_speed_params(speed_class: str) -> dict:
     return SPEED_CLASS_PARAMS[sc]
 
 
+def get_directional_tp1_atr(speed_class: str, direction: str, base_tp1_atr: float) -> float:
+    sc = normalize_speed_class(speed_class)
+    d = str(direction or "").upper()
+    if d != "SHORT":
+        return float(base_tp1_atr)
+    if sc == "FAST":
+        return float(SHORT_TP1_ATR_FAST)
+    if sc == "MED":
+        return float(SHORT_TP1_ATR_MED)
+    return float(base_tp1_atr)
+
+
 def extract_currencies(pair: str) -> Tuple[str, str]:
     pair = normalize_pair(pair)
     parts = pair.split("_")
     if len(parts) == 2:
         return parts[0], parts[1]
     return pair[:3], pair[3:]
-
-
-def count_currency_exposure(open_trades: List[dict], currency: str) -> int:
-    n = 0
-    for tr in open_trades:
-        c1, c2 = extract_currencies(tr.get("pair", ""))
-        if c1 == currency or c2 == currency:
-            n += 1
-    return n
 
 
 def setup_id_from_name(setup: str) -> Optional[int]:
@@ -6444,6 +8240,14 @@ def setup_id_from_name(setup: str) -> Optional[int]:
         return 6
     if "INTENTIONAL_RUNNER" in setup:
         return 7
+    if "BREAK" in setup:
+        return 1
+    if "PULLBACK_RECLAIM" in setup:
+        return 4
+    if "OSCILLATION_BOUNCE" in setup:
+        return 5
+    if "BIAS_ALIGNMENT_CONTINUATION" in setup:
+        return 2
     return None
 
 
@@ -6555,10 +8359,18 @@ def calc_units(
     sl_price: Optional[float] = None,
     nav_usd: Optional[float] = None,
     price_map: Optional[Dict[str, Tuple[float, float]]] = None,
+    # New parameters for simple sizing model
+    signal_strength: float = 0.5,
+    bias_alignment: float = 0.5,
+    trend_strength: float = 0.5,
+    regime_fit: float = 0.5,
+    estimated_hours: float = 4.0,
+    expected_move_pips: float = 30.0,
+    historical_grade: str = "C",
 ) -> CalcUnitsResult:
-    """Risk-based sizing wrapper used by the entry loop.
-    
-    Now uses 2% NAV risk sizing instead of margin utilization.
+    """Risk-based sizing wrapper using simple mechanical sizing model.
+
+    Uses grade-based sizing (A=3.0%, B=2.0%, C=1.5%, D=0.5%, E=0.0%) with runtime calibration caps.
     """
     pair = normalize_pair(pair)
     side = str(side or "").upper()
@@ -6570,7 +8382,7 @@ def calc_units(
 
     if disp_atr >= LATE_IMPULSE_BLOCK_ATR:
         return CalcUnitsResult(0, "late_impulse_block", {"disp_atr": disp_atr, "limit": LATE_IMPULSE_BLOCK_ATR})
-    
+
     # Get NAV if not provided
     if nav_usd is None:
         o = _require_runtime_oanda()
@@ -6581,24 +8393,77 @@ def calc_units(
                 return CalcUnitsResult(0, "invalid_nav", {"nav_usd": nav_usd, "source": nav_source})
         except Exception as e:
             return CalcUnitsResult(0, "nav_fetch_failed", {"error": str(e)})
-    
-    # Get spread multiplier from existing spread-aware sizing
-    # Use median spread for spread multiplier calculation if available
+
+    # Spread hard block only; risk sizing handles dynamic scaling.
     spread_mult = 1.0
     if spread_pips > 0:
-        # Simple spread gating: if spread is too high, block
-        # Otherwise apply a mild reduction based on spread size
         if spread_pips > 5.0:  # Very wide spread
             return CalcUnitsResult(0, "spread_too_high", {"spread_pips": spread_pips})
-        elif spread_pips > 2.0:  # Wide spread, reduce size
-            spread_mult = max(0.5, 1.0 - (spread_pips - 2.0) * 0.1)
-        elif spread_pips > 1.0:  # Moderate spread, mild reduction
-            spread_mult = max(0.8, 1.0 - (spread_pips - 1.0) * 0.2)
-    
-    # Use risk-based sizing
+
+    # Use simple mechanical sizing model
     if sl_price is None:
         return CalcUnitsResult(0, "missing_sl_price", {"reason": "SL price required for risk sizing"})
+
+    original_historical_grade = str(historical_grade or "C").upper()
+    fill_historical_grade = original_historical_grade
+    # Actionable candidates should never size at 0% risk purely because the
+    # mapped grade is still E. Keep the mapped grade for diagnostics, but floor
+    # live fills to the lowest fillable rank.
+    if fill_historical_grade == "E":
+        fill_historical_grade = "D"
+
+    # Create trade opportunity for sizing model
+    from state_key import compute_session, compute_quarter
+    current_time = now_ts()
     
+    opportunity = simple_sizing_model.TradeOpportunity(
+        pair=pair,
+        direction=side,
+        signal_strength=signal_strength,
+        bias_alignment=bias_alignment,
+        trend_strength=trend_strength,
+        regime_fit=regime_fit,
+        session=compute_session(current_time),
+        quarter=compute_quarter(current_time, compute_session(current_time)),
+        estimated_trade_life=estimated_hours,
+        spread_pips=spread_pips,
+        expected_move=expected_move_pips,
+        historical_grade=fill_historical_grade,
+    )
+    
+    # Get sizing from simple model
+    rt_settings = _load_runtime_settings(pair, opportunity.session)
+    sizing = _SIMPLE_SIZING_MODEL.size_trade(opportunity, runtime_settings=rt_settings)
+    
+    # Get runtime calibration cap
+    config = _RUNTIME_CALIBRATION.get_current_config(pair, current_time)
+    max_risk = config.get('position_sizing', {}).get('max_risk_percent', 2.0)
+    
+    # Apply fixed risk mode (default 2%) or calibration cap.
+    if FORCE_FIXED_RISK_PERCENT:
+        initial_risk_pct = max(0.0, float(FIXED_RISK_PERCENT))
+        fill_risk_floor_pct = initial_risk_pct
+    else:
+        initial_risk_pct = min(sizing['initial_size_percent'], max_risk)
+        fill_risk_floor_pct = min(_grade_risk_percent(fill_historical_grade), max_risk)
+    risk_floor_applied = False
+    if initial_risk_pct <= 0.0 and fill_risk_floor_pct > 0.0:
+        initial_risk_pct = fill_risk_floor_pct
+        risk_floor_applied = True
+        log_runtime(
+            "warning",
+            "SIZE_RISK_FLOOR_APPLIED",
+            pair=pair,
+            historical_grade=original_historical_grade,
+            historical_grade_fill=fill_historical_grade,
+            model_grade=sizing['grade'],
+            model_initial_risk=sizing['initial_size_percent'],
+            calibration_cap=max_risk,
+            applied_risk_pct=initial_risk_pct,
+        )
+    risk_pct = initial_risk_pct / 100.0  # Convert to decimal for compute_units_risk_2pct
+    
+    # Calculate units using the capped risk
     sizing_result = compute_units_risk_2pct(
         pair=pair,
         side=side,
@@ -6607,14 +8472,17 @@ def calc_units(
         nav_usd=nav_usd,
         spread_pips=spread_pips,
         spread_mult=spread_mult,
+        risk_pct=risk_pct,
         speed_class=speed_class,
-        confidence=0.5,  # Fixed confidence for now
+        confidence=0.5,
         price_map=price_map,
+        margin_available_snapshot=margin_avail,
+        deploy_util=util,
     )
-    
+
     if sizing_result["blocked"]:
         return CalcUnitsResult(0, sizing_result["block_reason"], sizing_result["debug"])
-    
+
     # Emit SIZE_CALC event for audit
     emit_trade_kind(
         "SIZE_CALC",
@@ -6622,7 +8490,20 @@ def calc_units(
             "pair": pair,
             "side": side,
             "nav_usd": nav_usd,
-            "risk_pct": 0.02,
+            "risk_pct": risk_pct,
+            "risk_source": config.get('source', 'unknown'),
+            # Simple sizing model info
+            "grade": sizing['grade'],
+            "priority_score": sizing['priority_score'],
+            "model_initial_risk": sizing['initial_size_percent'],
+            "calibration_cap": max_risk,
+            "final_risk_pct": initial_risk_pct,
+            "fill_risk_floor_pct": fill_risk_floor_pct,
+            "risk_floor_applied": risk_floor_applied,
+            "add_allowed": sizing['add_allowed'],
+            "historical_grade": original_historical_grade,
+            "historical_grade_fill": fill_historical_grade,
+            # Standard sizing result
             "risk_usd_target": sizing_result["risk_usd_target"],
             "risk_usd_actual": sizing_result["risk_usd_actual"],
             "stop_dist_pips": sizing_result["stop_dist_pips"],
@@ -6637,10 +8518,10 @@ def calc_units(
             "sl_price": sl_price,
         }
     )
-    
+
     # Return total units (main + runner)
     units_total = sizing_result["units_main"] + sizing_result["units_runner"]
-    
+
     return CalcUnitsResult(
         units_total,
         "success",
@@ -6653,6 +8534,13 @@ def calc_units(
             "pip_value_usd": sizing_result["pip_value_usd"],
             "spread_mult": spread_mult,
             "nav_usd": nav_usd,
+            "historical_grade": original_historical_grade,
+            "historical_grade_fill": fill_historical_grade,
+            "risk_pct": risk_pct,
+            "fill_risk_floor_pct": fill_risk_floor_pct,
+            "risk_floor_applied": risk_floor_applied,
+            "add_allowed": sizing["add_allowed"],
+            "add_on_risk_percent": float(sizing.get("add_on_size_percent", 0.0) or 0.0),
         }
     )
 
@@ -6706,7 +8594,7 @@ def compute_units_recycling(
     base_deploy_frac: float = 0.10,
 ) -> Tuple[int, int, dict]:
     """LEGACY: Margin-based sizing - DISABLED by default.
-    
+
     This function is kept for reference/testing only.
     Use compute_units_risk_2pct() for new risk-based sizing.
     """
@@ -6856,7 +8744,7 @@ def compute_prices(
     if side not in ("LONG", "SHORT"):
         raise ValueError(f"invalid_side:{side}")
     entry = round_tick(ask if side == "LONG" else bid, pair)
-    
+
     # Calculate spread in ATR units
     pip = float(pip_size(pair))
     spread = max(0.0, float(ask) - float(bid))
@@ -6909,7 +8797,7 @@ def compute_prices(
     # Calculate TP and SL with spread-aware adjustment
     # ATR defines structure, spread is execution friction absorbed by SL only
     log("CALCULATING_PRICES", {"pair": pair, "side": side, "entry": entry, "bid": bid, "ask": ask, "atr_val": atr_val, "sl_atr": sl_atr, "tp_atr": tp_atr, "spread": spread, "speed_class": speed_class})
-    
+
     # Do not adjust SL/TP for spread; spread impacts size only.
     spread_buffer = 0.0
     spread_adj = 0.0
@@ -7434,16 +9322,16 @@ def state_emoji(state: str) -> str:
     return ""
 
 
-def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: Optional[str] = None, 
+def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: Optional[str] = None,
                       direction: Optional[str] = None, reason: Optional[str] = None,
                       metadata: Optional[dict] = None) -> None:
     """Transition state using StateMachine with alerts"""
     pair = normalize_pair(pair)
     if new_state == st.state:
         return
-        
+
     old_state = st.state
-    
+
     # Use StateMachine for transition with alerts
     state_machine = get_state_machine()
     # Keep StateMachine in sync with PairState to avoid false INVALID_TRANSITION logs.
@@ -7457,43 +9345,55 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
         reason=reason,
         metadata=metadata
     )
-    
+
     if not success:
-        log(f"{EMOJI_WARN} STATE_TRANSITION_FAILED", 
+        log(f"{EMOJI_WARN} STATE_TRANSITION_FAILED",
             {"pair": pair, "from": old_state, "to": new_state})
         return
-    
+
     # Update local state
+    prev_state = old_state
     st.state = new_state
     st.state_since = now_ts()
-    
+    actionable_family = {"GET_READY", "ARM_TICK_ENTRY", "ENTER"}
+    # Preserve actionable-state notifications across intra-family transitions so
+    # GET_READY/ARM_TICK_ENTRY/ENTER do not spam repeatedly for the same signal.
+    # Reset only when leaving the actionable family entirely.
+    if (prev_state in actionable_family) and (new_state in actionable_family):
+        pass
+    elif new_state not in actionable_family:
+        st.notified_state_keys.clear()
+
     # Send ENTRY_GET_READY notification
     if new_state == "GET_READY" and old_state != "GET_READY":
         # Get signal info if available
         trigger = "unknown"
         dist = "unknown"
         spread = "unknown"
-        
+        notify_key = f"ENTRY_GET_READY:{pair}:{st.mode}"
+
         if hasattr(st, 'spread_pips'):
             spread = f"{st.spread_pips:.1f}p"
-        
-        notify(
-            kind="ENTRY_GET_READY",
-            title=f"GET READY {pair}",
-            body=f"trigger={trigger} dist={dist} spread={spread}",
-            data={
-                "pair": pair,
-                "from_state": old_state,
-                "to_state": new_state,
-                "trigger": trigger,
-                "dist": dist,
-                "spread_pips": st.spread_pips if hasattr(st, 'spread_pips') else None
-            },
-            urgency="normal",
-            throttle_key=f"ENTRY_GET_READY:{pair}",
-            throttle_sec=30.0
-        )
-    
+
+        if notify_key not in st.notified_state_keys:
+            notify(
+                kind="ENTRY_GET_READY",
+                title=f"GET READY {pair}",
+                body=f"trigger={trigger} dist={dist} spread={spread}",
+                data={
+                    "pair": pair,
+                    "from_state": old_state,
+                    "to_state": new_state,
+                    "trigger": trigger,
+                    "dist": dist,
+                    "spread_pips": st.spread_pips if hasattr(st, 'spread_pips') else None
+                },
+                urgency="normal",
+                throttle_key=f"ENTRY_GET_READY:{pair}",
+                throttle_sec=30.0
+            )
+            st.notified_state_keys.add(notify_key)
+
     if new_state == "SKIP":
         st.neutral_bars = 0
     # Reset tick entry arming when leaving entry-related states
@@ -7509,7 +9409,7 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
             delattr(st, "last_ohlc")
         except Exception:
             return None
-    
+
     # Clean up old alert records (older than 5 minutes)
     now = now_ts()
     cleanup_cutoff = now - 300.0
@@ -7525,10 +9425,10 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
             pairs_to_remove.append(p)
     for p in pairs_to_remove:
         del _last_state_alert[p]
-    
+
     # Log state change
     log_runtime("info", "STATE_TRANSITION", pair=pair, from_state=old_state, to_state=new_state)
-    
+
     # T1-16 State Machine Integrity Gate Validation
     try:
         from pathlib import Path
@@ -7536,7 +9436,7 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
         proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
         if proof_dirs:
             latest_proof = proof_dirs[-1]
-            
+
             # Initialize or load state transitions
             state_file = latest_proof / "state_transitions.jsonl"
             if state_file.exists():
@@ -7545,7 +9445,7 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
                     transitions.append(json.loads(line))
             else:
                 transitions = []
-            
+
             # Add current transition
             transitions.append({
                 "pair": pair,
@@ -7553,17 +9453,17 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
                 "to": new_state,
                 "timestamp": now_ts()
             })
-            
+
             # Keep only last 100 transitions per pair
             pair_transitions = [t for t in transitions if t.get("pair") == pair]
             if len(pair_transitions) > 100:
                 # Remove old transitions for this pair
                 to_remove = len(pair_transitions) - 100
                 transitions = [t for t in transitions if not (t.get("pair") == pair and to_remove > 0 and (to_remove := to_remove - 1))]
-            
+
             # Write back
             state_file.write_text("\n".join(json.dumps(t) for t in transitions) + "\n")
-            
+
             # Validate allowed transitions
             allowed = {
                 "PASS": ["WAIT", "WATCH", "SKIP", "GET_READY"],
@@ -7575,9 +9475,9 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
                 "ENTER": ["MANAGING", "WATCH", "SKIP"],
                 "MANAGING": ["WAIT", "WATCH", "PASS", "SKIP"],
             }
-            
+
             is_valid = old_state not in allowed or new_state in allowed.get(old_state, [])
-            
+
             # Write validation report
             report = {
                 "status": "PASS" if is_valid else "FAIL",
@@ -7585,10 +9485,10 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
                 "transitions": transitions[-10:],  # Last 10 transitions
                 "latest": {"from": old_state, "to": new_state}
             }
-            
+
             report_file = latest_proof / f"state_transition_report_{pair}.json"
             report_file.write_text(json.dumps(report, indent=2))
-            
+
             if not is_valid:
                 log_runtime("error", "T1-16_STATE_MACHINE_FAIL",
                           pair=pair, from_state=old_state, to_state=new_state)
@@ -7597,14 +9497,17 @@ def _transition_state(st: PairState, new_state: str, pair: str = "", strategy: O
     if pair:
         print(f"{time.strftime('%H:%M:%S')} - {pair}: {old_state} -> {new_state}")
         sys.stdout.flush()
-    
-    # Immediate alert for GET_READY / ARM_TICK_ENTRY / ENTER transitions (with deduplication)
+
+    # Immediate alert for ARM_TICK_ENTRY / ENTER transitions (with deduplication).
+    # GET_READY already has its own explicit notification above.
     if new_state in ("GET_READY", "ARM_TICK_ENTRY", "ENTER") and pair:
+        if new_state == "GET_READY":
+            return
         # Check if we recently sent this alert for this pair/state
         now = now_ts()
         pair_alerts = _last_state_alert.get(pair, {})
         last_alert_time = pair_alerts.get(new_state, 0)
-        
+
         # Only send alert if it's been at least ALERT_DEDUP_COOLDOWN_SEC seconds since last one
         if (now - last_alert_time) >= ALERT_DEDUP_COOLDOWN_SEC:
             state_emo = state_emoji(new_state)
@@ -7642,15 +9545,15 @@ def _apply_state_machine(st: PairState, pair: Optional[str] = None, c_exec: Opti
         if arm_ts <= 0.0 or (arm_expires > 0.0 and now_ts() > arm_expires) or (now_ts() - arm_ts) > SIGNAL_STALE_TTL_SEC:
             _transition_state(st, "GET_READY", pair)
         return
-    
+
     # Handle NaN values - keep current state, never downgrade
     has_nan = not (math.isfinite(st.wr) and math.isfinite(st.m_norm) and math.isfinite(st.atr_exec))
-    
+
     if has_nan:
         # Log throttled DATA_STALE event
         if not hasattr(st, 'last_data_stale_log_ts'):
             st.last_data_stale_log_ts = 0.0
-        
+
         if now_ts() - st.last_data_stale_log_ts > 30.0:
             log_throttled(
                 f"data_stale:{pair}",
@@ -7690,7 +9593,7 @@ def _order_confirmed(resp: dict) -> Tuple[bool, str, str, str]:
     create = resp.get("orderCreateTransaction") or {}
     cancel = resp.get("orderCancelTransaction") or {}
     reject = resp.get("orderRejectTransaction") or {}
-    
+
     if cancel:
         reason = str(cancel.get("reason", "") or "cancel")
         error_msg = cancel.get("errorMessage", "")
@@ -7710,11 +9613,11 @@ def _order_confirmed(resp: dict) -> Tuple[bool, str, str, str]:
     if create:
         print(f"✅ ORDER CREATED: orderID={create.get('orderID')}, units={create.get('units')}")
         return True, str(create.get("orderID", "")), str(create.get("id", "")), "CREATED"
-    
+
     # Check for top-level error message
     if resp.get("errorMessage"):
         print(f"❌ ORDER ERROR: errorMessage={resp.get('errorMessage')}, rejectReason={resp.get('rejectReason')}")
-    
+
     print(f"❓ ORDER UNCONFIRMED: response structure unknown - {resp}")
     return False, "", "", "unconfirmed"
 
@@ -7833,14 +9736,14 @@ MTF_STRATEGY_PRIORITIES = {  # Lower number = higher priority
 
 def handle_rejected_order(pair: str, units: int, reason: str, reject_response: dict, attempt: int = 1) -> dict:
     """Handle rejected orders with retry logic and alternative routing.
-    
+
     Args:
         pair: Currency pair
         units: Order units (positive for LONG, negative for SHORT)
         reason: Original order reason
         reject_response: The rejection response from OANDA
         attempt: Current attempt number
-        
+
     Returns:
         Dict with recovery status and details
     """
@@ -7848,7 +9751,7 @@ def handle_rejected_order(pair: str, units: int, reason: str, reject_response: d
     reject_tx = reject_response.get("orderRejectTransaction") or {}
     reject_reason = reject_tx.get("rejectReason", "unknown")
     error_message = reject_tx.get("errorMessage", "")
-    
+
     log(f"{EMOJI_WARN} REJECTED_ORDER_HANDLING", {
         "pair": pair,
         "units": units,
@@ -7858,7 +9761,7 @@ def handle_rejected_order(pair: str, units: int, reason: str, reject_response: d
         "attempt": attempt,
         "max_attempts": REJECTED_ORDER_RETRY_MAX
     })
-    
+
     # Check if we should retry
     if attempt > REJECTED_ORDER_RETRY_MAX:
         log(f"{EMOJI_ERR} REJECTED_ORDER_MAX_ATTEMPTS", {
@@ -7871,10 +9774,10 @@ def handle_rejected_order(pair: str, units: int, reason: str, reject_response: d
             "reason": f"Max retries exceeded: {reject_reason}",
             "attempts": attempt - 1
         }
-    
+
     # Determine retry strategy based on rejection reason
     retry_strategy = get_retry_strategy(reject_reason, error_message)
-    
+
     if retry_strategy == "NO_RETRY":
         log(f"{EMOJI_INFO} REJECTED_ORDER_NO_RETRY", {
             "pair": pair,
@@ -7885,31 +9788,31 @@ def handle_rejected_order(pair: str, units: int, reason: str, reject_response: d
             "reason": f"No retry for: {reject_reason}",
             "attempts": attempt - 1
         }
-    
+
     # Calculate backoff delay
     backoff_delay = REJECTED_ORDER_RETRY_DELAY * (ORDER_REJECT_BACKOFF_MULTIPLIER ** (attempt - 1))
-    
+
     log(f"{EMOJI_INFO} REJECTED_ORDER_RETRY_WAIT", {
         "pair": pair,
         "delay": backoff_delay,
         "attempt": attempt
     })
-    
+
     time.sleep(backoff_delay)
-    
+
     # Apply alternative routing if enabled
     if ALTERNATIVE_ROUTING_ENABLED and retry_strategy == "ALTERNATIVE":
         return try_alternative_routing(pair, units, reason, attempt)
-    
+
     # Standard retry
     log(f"{EMOJI_INFO} REJECTED_ORDER_RETRY", {
         "pair": pair,
         "units": units,
         "attempt": attempt
     })
-    
+
     new_response = create_market_order(pair, units, f"{reason}_retry_{attempt}")
-    
+
     if new_response.get("orderFillTransaction") or new_response.get("orderCreateTransaction"):
         log(f"{EMOJI_SUCCESS} REJECTED_ORDER_RECOVERED", {
             "pair": pair,
@@ -7927,7 +9830,7 @@ def handle_rejected_order(pair: str, units: int, reason: str, reject_response: d
 
 def get_retry_strategy(reject_reason: str, error_message: str) -> str:
     """Determine retry strategy based on rejection reason.
-    
+
     Returns:
         "RETRY" - Standard retry
         "ALTERNATIVE" - Try alternative routing
@@ -7935,7 +9838,7 @@ def get_retry_strategy(reject_reason: str, error_message: str) -> str:
     """
     reject_reason = reject_reason.lower()
     error_message = error_message.lower()
-    
+
     # Don't retry for these reasons
     no_retry_reasons = [
         "insufficient_margin",
@@ -7946,11 +9849,11 @@ def get_retry_strategy(reject_reason: str, error_message: str) -> str:
         "invalid_quantity",
         "invalid_price"
     ]
-    
+
     for reason in no_retry_reasons:
         if reason in reject_reason or reason in error_message:
             return "NO_RETRY"
-    
+
     # Use alternative routing for these
     alternative_reasons = [
         "capacity_constraint",
@@ -7958,17 +9861,17 @@ def get_retry_strategy(reject_reason: str, error_message: str) -> str:
         "server_busy",
         "market_order_rejected"
     ]
-    
+
     for reason in alternative_reasons:
         if reason in reject_reason or reason in error_message:
             return "ALTERNATIVE"
-    
+
     # Default to retry
     return "RETRY"
 
 def try_alternative_routing(pair: str, units: int, reason: str, attempt: int) -> dict:
     """Try alternative routing methods for rejected orders.
-    
+
     Returns:
         Dict with routing attempt results
     """
@@ -7977,36 +9880,36 @@ def try_alternative_routing(pair: str, units: int, reason: str, attempt: int) ->
         "units": units,
         "attempt": attempt
     })
-    
+
     # Alternative 1: Split the order into smaller chunks
     if abs(units) > 10000:
         return split_order_routing(pair, units, reason, attempt)
-    
+
     # Alternative 2: Use limit order instead of market
     return limit_order_routing(pair, units, reason, attempt)
 
 def split_order_routing(pair: str, units: int, reason: str, attempt: int) -> dict:
     """Split large order into smaller chunks."""
-    
+
     chunk_size = 10000  # 10K units per chunk
     num_chunks = min(abs(units) // chunk_size, 5)  # Max 5 chunks
     remaining_units = units
     filled_chunks = 0
-    
+
     log(f"{EMOJI_INFO} SPLIT_ORDER_ROUTING", {
         "pair": pair,
         "total_units": units,
         "chunk_size": chunk_size,
         "num_chunks": num_chunks
     })
-    
+
     for i in range(num_chunks):
         chunk_units = chunk_size if remaining_units > 0 else remaining_units
         if remaining_units < 0:
             chunk_units = -chunk_size
-        
+
         resp = create_market_order(pair, chunk_units, f"{reason}_split_{i+1}")
-        
+
         if resp.get("orderFillTransaction") or resp.get("orderCreateTransaction"):
             filled_chunks += 1
             remaining_units -= chunk_units
@@ -8020,19 +9923,19 @@ def split_order_routing(pair: str, units: int, reason: str, attempt: int) -> dic
                 "chunk": i + 1,
                 "response": resp
             })
-        
+
         # Brief pause between chunks
         time.sleep(0.5)
-    
+
     # Try to fill remaining units if any
     if abs(remaining_units) >= MIN_PARTIAL_FILL_UNITS:
         resp = create_market_order(pair, remaining_units, f"{reason}_remaining")
         if resp.get("orderFillTransaction") or resp.get("orderCreateTransaction"):
             filled_chunks += 1
             remaining_units = 0
-    
+
     success_rate = filled_chunks / num_chunks if num_chunks > 0 else 0
-    
+
     return {
         "status": "PARTIAL_SUCCESS" if success_rate > 0 else "FAILED",
         "method": "split_order",
@@ -8045,7 +9948,7 @@ def split_order_routing(pair: str, units: int, reason: str, attempt: int) -> dic
 def limit_order_routing(pair: str, units: int, reason: str, attempt: int) -> dict:
     """Try using limit order instead of market order."""
     client = _require_runtime_oanda()
-    
+
     # Get current price for limit
     pricing_resp = oanda_call(f"pricing_limit_route_{pair}", client.pricing, pair)
     if not pricing_resp or len(pricing_resp) < 2:
@@ -8054,7 +9957,7 @@ def limit_order_routing(pair: str, units: int, reason: str, attempt: int) -> dic
             "method": "limit_order",
             "reason": "Cannot get pricing"
         }
-    
+
     # Extract bid/ask from pricing response
     if isinstance(pricing_resp, dict) and "prices" in pricing_resp:
         prices = pricing_resp["prices"]
@@ -8068,13 +9971,13 @@ def limit_order_routing(pair: str, units: int, reason: str, attempt: int) -> dic
         bid, ask = float(pricing_resp[0]), float(pricing_resp[1])
     else:
         bid, ask = 0.0, 0.0
-    
+
     # Set limit price slightly in favor of execution
     if units > 0:  # LONG
         limit_price = ask + (ask - bid) * 0.1  # 10% of spread above ask
     else:  # SHORT
         limit_price = bid - (ask - bid) * 0.1  # 10% of spread below bid
-    
+
     order_payload: Dict[str, Any] = {
         "units": str(units),
         "instrument": pair,
@@ -8083,23 +9986,23 @@ def limit_order_routing(pair: str, units: int, reason: str, attempt: int) -> dic
         "type": "LIMIT",
         "positionFill": "DEFAULT",
     }
-    
+
     if reason:
         order_payload["clientExtensions"] = {
             "comment": f"{reason}_limit_{attempt}"[:50]
         }
-    
+
     order_body: Dict[str, Any] = {"order": order_payload}
-    
+
     log(f"{EMOJI_INFO} LIMIT_ORDER_ROUTING", {
         "pair": pair,
         "units": units,
         "limit_price": limit_price,
         "market_price": ask if units > 0 else bid
     })
-    
+
     resp = oanda_call("limit_order_route_post", client._post, f"/v3/accounts/{client.account_id}/orders", order_body, allow_error_dict=True)
-    
+
     if isinstance(resp, dict) and resp.get("orderFillTransaction"):
         return {
             "status": "SUCCESS",
@@ -8115,13 +10018,13 @@ def limit_order_routing(pair: str, units: int, reason: str, attempt: int) -> dic
 
 def monitor_partial_fill(order_id: str, pair: str, expected_units: int, direction: str) -> dict:
     """Handle partial fills by monitoring order status and completing if needed.
-    
+
     Args:
         order_id: The order ID to monitor
         pair: Currency pair
         expected_units: Expected total units
         direction: LONG or SHORT
-        
+
     Returns:
         Dict with fill status and details
     """
@@ -8129,21 +10032,21 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
     direction = str(direction or "").upper()
     # Use runtime client (fail hard if runtime not initialized)
     client = _require_runtime_oanda()
-    
+
     start_time = now_ts()
     filled_units = 0
     attempts = 0
-    
+
     log(f"{EMOJI_INFO} PARTIAL_FILL_MONITOR_START", {
         "order_id": order_id,
         "pair": pair,
         "expected_units": expected_units,
         "direction": direction
     })
-    
+
     while now_ts() - start_time < PARTIAL_FILL_TIMEOUT_SEC:
         attempts += 1
-        
+
         # Check order status
         order_resp = oanda_call(
             f"partial_fill_get_{pair}",
@@ -8151,13 +10054,13 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
             f"/v3/accounts/{client.account_id}/orders/{order_id}",
             allow_error_dict=True,
         )
-        
+
         order_data = order_resp if isinstance(order_resp, dict) else {}
         if order_data.get("order"):
             order = order_data["order"]
             current_state = order.get("state", "")
             units_filled = int(order.get("unitsFilled", 0))
-            
+
             log(f"{EMOJI_INFO} PARTIAL_FILL_CHECK", {
                 "order_id": order_id,
                 "state": current_state,
@@ -8166,7 +10069,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                 "remaining": expected_units - units_filled,
                 "attempt": attempts
             })
-            
+
             # Order fully filled
             if current_state == "FILLED":
                 log(f"{EMOJI_SUCCESS} PARTIAL_FILL_COMPLETE", {
@@ -8180,7 +10083,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                     "filled_units": units_filled,
                     "attempts": attempts
                 }
-            
+
             # Order cancelled
             elif current_state == "CANCELLED":
                 log(f"{EMOJI_ERR} PARTIAL_FILL_CANCELLED", {
@@ -8194,12 +10097,12 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                     "filled_units": units_filled,
                     "attempts": attempts
                 }
-            
+
             # Check for partial fill
             if units_filled > filled_units:
                 filled_units = units_filled
                 remaining_units = expected_units - filled_units
-                
+
                 # If we have a meaningful partial fill, create new order for remainder
                 if remaining_units >= MIN_PARTIAL_FILL_UNITS:
                     log(f"{EMOJI_WARN} PARTIAL_FILL_DETECTED", {
@@ -8208,7 +10111,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                         "remaining": remaining_units,
                         "creating_replacement": True
                     })
-                    
+
                     # Cancel original order
                     cancel_resp = oanda_call(
                         f"partial_fill_cancel_{pair}",
@@ -8217,7 +10120,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                         {},
                         allow_error_dict=True,
                     )
-                    
+
                     cancel_data = cancel_resp if isinstance(cancel_resp, dict) else {}
                     if cancel_data and not cancel_data.get("_http_error"):
                         # Create new order for remaining units
@@ -8226,7 +10129,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                             units=remaining_units if direction == "LONG" else -remaining_units,
                             reason=f"partial_fill_completion_{order_id}"
                         )
-                        
+
                         if new_order_resp.get("orderCreateTransaction"):
                             new_order_id = new_order_resp["orderCreateTransaction"]["orderID"]
                             log(f"{EMOJI_SUCCESS} PARTIAL_FILL_REPLACEMENT_CREATED", {
@@ -8234,7 +10137,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                                 "new_order": new_order_id,
                                 "remaining_units": remaining_units
                             })
-                            
+
                             # Continue monitoring the new order
                             order_id = new_order_id
                             expected_units = remaining_units
@@ -8250,10 +10153,10 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
                                 "remaining_units": remaining_units,
                                 "attempts": attempts
                             }
-        
+
         # Wait before next check
         time.sleep(PARTIAL_FILL_CHECK_INTERVAL)
-    
+
     # Timeout reached
     log(f"{EMOJI_ERR} PARTIAL_FILL_TIMEOUT", {
         "order_id": order_id,
@@ -8262,7 +10165,7 @@ def monitor_partial_fill(order_id: str, pair: str, expected_units: int, directio
         "attempts": attempts,
         "timeout_sec": PARTIAL_FILL_TIMEOUT_SEC
     })
-    
+
     return {
         "status": "TIMEOUT",
         "order_id": order_id,
@@ -8282,8 +10185,8 @@ def _place_order_with_guards(
     reason: str = "",
     entry_id: Optional[str] = None
 ) -> Dict[str, Any]:
-    """Single choke point for all order submissions with concurrency caps.
-    
+    """Single choke point for all order submissions.
+
     Args:
         pair: Currency pair
         units: Number of units (positive for LONG, negative for SHORT)
@@ -8294,15 +10197,16 @@ def _place_order_with_guards(
         client_id: Client ID for order tracking
         reason: Reason for order
         entry_id: Entry ID for deduplication
-        
+
     Returns:
         Order response dict or error dict
     """
     now = now_ts()
     pair_norm = normalize_pair(pair)
-    
+    proof_entry_only = bool(PC1_PROOF_ENTRY_ONLY_MODE or NO_THROTTLE_MODE or NO_TRADE_LIMITERS)
+
     # 1. Check entry deduplication
-    if entry_id:
+    if (not proof_entry_only) and entry_id:
         last_entry_ts = _ENTRY_ID_TIMESTAMPS.get(entry_id, 0.0)
         if now - last_entry_ts < ENTRY_DEDUP_TTL_SEC:
             log(
@@ -8316,12 +10220,12 @@ def _place_order_with_guards(
                 }
             )
             return {"error": True, "reason": "DUPLICATE_ENTRY_ID", "pair": pair_norm}
-    
+
     # 2. Check order rate limit
     # Clean old timestamps (older than 1 minute)
     _ORDER_TIMESTAMPS[:] = [ts for ts in _ORDER_TIMESTAMPS if now - ts < 60.0]
-    
-    if len(_ORDER_TIMESTAMPS) >= MAX_ORDERS_PER_MIN:
+
+    if (not proof_entry_only) and len(_ORDER_TIMESTAMPS) >= MAX_ORDERS_PER_MIN:
         log(
             f"{EMOJI_WARN} ORDER_BLOCKED",
             {
@@ -8332,51 +10236,44 @@ def _place_order_with_guards(
             }
         )
         return {"error": True, "reason": "ORDER_RATE_LIMIT", "pair": pair_norm}
-    
-    # 3. Check concurrency caps with fresh data
-    # Get fresh broker snapshot to ensure accurate counts
+
+    # 3. Respect recent per-pair reject cooldown to prevent repeated hammering.
+    if not proof_entry_only:
+        reject_block = ORDER_REJECT_BLOCK.get(pair_norm)
+        if isinstance(reject_block, dict):
+            block_until = float(reject_block.get("until", 0.0) or 0.0)
+            if now < block_until:
+                remaining_sec = max(0.0, block_until - now)
+                log(
+                    f"{EMOJI_WARN} ORDER_BLOCKED",
+                    {
+                        "reason": "ORDER_REJECT_COOLDOWN",
+                        "pair": pair_norm,
+                        "remaining_sec": round(remaining_sec, 3),
+                        "reject_status": reject_block.get("status"),
+                        "reject_reason": reject_block.get("reason"),
+                        "reject_leg": reject_block.get("leg"),
+                    },
+                )
+                return {
+                    "error": True,
+                    "reason": "ORDER_REJECT_COOLDOWN",
+                    "pair": pair_norm,
+                    "remaining_sec": remaining_sec,
+                }
+            ORDER_REJECT_BLOCK.pop(pair_norm, None)
+
+    # 4. Get a fresh broker snapshot for logging/context only.
     o = _require_runtime_oanda()
     fresh_snapshot = o.open_positions()
     counts = compute_open_trade_counts(fresh_snapshot)
-    
-    # Global cap check
-    open_total = counts["open_global"] + counts["pending_global"]
-    if open_total >= MAX_OPEN_TRADES_GLOBAL:
-        log(
-            f"{EMOJI_WARN} ORDER_BLOCKED",
-            {
-                "reason": "GLOBAL_CONCURRENCY_CAP",
-                "pair": pair_norm,
-                "open_global": counts["open_global"],
-                "pending_global": counts["pending_global"],
-                "open_total": open_total,
-                "cap_global": MAX_OPEN_TRADES_GLOBAL
-            }
-        )
-        return {"error": True, "reason": "GLOBAL_CONCURRENCY_CAP", "pair": pair_norm}
-    
-    # Per-pair cap check
-    open_pair = counts["open_by_pair"][pair_norm] + counts["pending_by_pair"][pair_norm]
-    if open_pair >= MAX_OPEN_TRADES_PER_PAIR:
-        log(
-            f"{EMOJI_WARN} ORDER_BLOCKED",
-            {
-                "reason": "PAIR_CONCURRENCY_CAP",
-                "pair": pair_norm,
-                "open_pair": counts["open_by_pair"][pair_norm],
-                "pending_pair": counts["pending_by_pair"][pair_norm],
-                "open_total_pair": open_pair,
-                "cap_pair": MAX_OPEN_TRADES_PER_PAIR
-            }
-        )
-        return {"error": True, "reason": "PAIR_CONCURRENCY_CAP", "pair": pair_norm}
-    
-    # 4. Record order timestamp for rate limiting
+
+    # 5. Record order timestamp for rate limiting
     _ORDER_TIMESTAMPS.append(now)
     if entry_id:
         _ENTRY_ID_TIMESTAMPS[entry_id] = now
-    
-    # 5. Place the order
+
+    # 6. Place the order
 
     def _send_once() -> dict:
         if order_type == "MARKET":
@@ -8406,7 +10303,7 @@ def _place_order_with_guards(
             resp_retry = _send_once()
             # keep second response regardless of success/fail; never loop.
             resp = resp_retry
-        
+
         # Log successful order
         log(
             f"{EMOJI_INFO} ORDER_PLACED",
@@ -8461,9 +10358,9 @@ def _place_order_with_guards(
                     "reason": str(reason or ""),
                 },
             )
-        
+
         return resp
-        
+
     except Exception as e:
         log(
             f"{EMOJI_ERR} ORDER_PLACE_ERROR",
@@ -8480,12 +10377,12 @@ def _place_order_with_guards(
 
 def create_market_order(pair: str, units: int, reason: str = "") -> dict:
     """Create a market order with proper error handling.
-    
+
     Args:
         pair: Currency pair
         units: Number of units (positive for LONG, negative for SHORT)
         reason: Reason for order
-        
+
     Returns:
         Order response dict
     """
@@ -8499,7 +10396,7 @@ def create_market_order(pair: str, units: int, reason: str = "") -> dict:
             {"pair": pair, "units": units, "reason": reason, "block_reason": block_reason, "spread_pips": spread},
         )
         return {"error": True, "reason": "ENTRY_BLOCKED", "block_reason": block_reason, "pair": pair}
-    
+
     # Use the choke point for order placement
     return _place_order_with_guards(
         pair=pair,
@@ -8540,6 +10437,23 @@ def _extract_trade_id_from_fill(resp: Optional[dict]) -> str | None:
     return None
 
 
+def _extract_fill_price_from_fill(resp: Optional[dict]) -> Optional[float]:
+    """Extract fill price from OANDA fill response when available."""
+    if not isinstance(resp, dict):
+        return None
+    fill = resp.get("orderFillTransaction") or {}
+    if not isinstance(fill, dict):
+        return None
+    raw_price = fill.get("price")
+    if raw_price is None:
+        return None
+    try:
+        price = float(raw_price)
+    except Exception:
+        return None
+    return price if math.isfinite(price) else None
+
+
 def _close_trade_or_position(
     o,
     pair: str,
@@ -8553,6 +10467,69 @@ def _close_trade_or_position(
     """Close by position side (Option A). Trade ID is not used."""
     pair = normalize_pair(pair)
     d = str(direction or "").upper()
+    pair_side_key = f"{pair}|{d}"
+    started_ts = now_ts()
+    owner_token = f"{int(started_ts * 1000)}:{int(db_trade_id or 0)}:{str(reason or '')}"
+
+    # Coalesce sibling exits so one side owner performs the outbound close request.
+    with _PAIR_SIDE_CLOSE_INFLIGHT_LOCK:
+        inflight = _PAIR_SIDE_CLOSE_INFLIGHT.get(pair_side_key)
+        if isinstance(inflight, dict):
+            inflight_ts = float(inflight.get("ts", 0.0) or 0.0)
+            if (started_ts - inflight_ts) <= float(_PAIR_SIDE_CLOSE_INFLIGHT_TTL_SEC):
+                log_runtime(
+                    "info",
+                    "EXIT_CLOSE_COALESCED_INFLIGHT",
+                    pair=pair,
+                    direction=d,
+                    reason=reason,
+                    db_trade_id=db_trade_id,
+                    owner_trade_id=int(inflight.get("db_trade_id", 0) or 0),
+                )
+                return True, {
+                    "_status": int(inflight.get("status", 202) or 202),
+                    "_coalesced": True,
+                    "_coalesce_type": "inflight",
+                    "close_mode": "position_all",
+                }
+            _PAIR_SIDE_CLOSE_INFLIGHT.pop(pair_side_key, None)
+
+        recent = _PAIR_SIDE_CLOSE_RECENT.get(pair_side_key)
+        if isinstance(recent, dict):
+            recent_ts = float(recent.get("ts", 0.0) or 0.0)
+            if (started_ts - recent_ts) <= float(_PAIR_SIDE_CLOSE_RECENT_SUPPRESS_SEC):
+                log_runtime(
+                    "info",
+                    "EXIT_CLOSE_COALESCED_RECENT",
+                    pair=pair,
+                    direction=d,
+                    reason=reason,
+                    db_trade_id=db_trade_id,
+                    recent_reason=str(recent.get("reason", "") or ""),
+                )
+                return True, {
+                    "_status": int(recent.get("status", 200) or 200),
+                    "_coalesced": True,
+                    "_coalesce_type": "recent",
+                    "close_mode": "position_all",
+                    "idempotent": True,
+                }
+
+        _PAIR_SIDE_CLOSE_INFLIGHT[pair_side_key] = {
+            "ts": started_ts,
+            "token": owner_token,
+            "reason": str(reason or ""),
+            "db_trade_id": int(db_trade_id or 0) if db_trade_id else 0,
+            "status": None,
+        }
+
+    _EXPECTED_CLOSE_INTENTS[f"{pair}|{d}"] = {
+        "ts": now_ts(),
+        "reason": str(reason or ""),
+        "origin_actor": str(origin_actor or ""),
+        "origin_reason": str(origin_reason or ""),
+        "db_trade_id": int(db_trade_id or 0) if db_trade_id else 0,
+    }
     payload = {"longUnits": "ALL"} if d == "LONG" else {"shortUnits": "ALL"}
 
     log(
@@ -8591,53 +10568,44 @@ def _close_trade_or_position(
         except Exception:
             return None
 
-    side = "long" if d == "LONG" else "short"
-    resp = oanda_call(f"close_position_{reason}", o.close_position, pair, side=side, units="ALL", allow_error_dict=True)
-    ok = resp is not None and not resp.get("_http_error") and not resp.get("_rate_limited") and not resp.get("_json_error") and not resp.get("_exception")
-
-    if not ok:
-        time.sleep(0.2)
-        resp_retry = oanda_call(
-            f"close_position_retry_{reason}",
-            o.close_position,
-            pair,
-            side=side,
-            units="ALL",
-            allow_error_dict=True,
-        )
-        ok = (
-            resp_retry is not None
-            and not resp_retry.get("_http_error")
-            and not resp_retry.get("_rate_limited")
-            and not resp_retry.get("_json_error")
-            and not resp_retry.get("_exception")
-        )
-        if ok:
-            resp = resp_retry
-
-    resp_keys = list(resp.keys()) if isinstance(resp, dict) else []
-    log(
-        f"{EMOJI_EXIT} EXIT_RESPONSE {pair_tag(pair, d)}",
-        {
-            "pair": pair,
-            "dir": d,
-            "exit_reason": reason,
-            "db_trade_id": db_trade_id,
+    # Preflight side-flat check to avoid avoidable late/stale 404 close requests.
+    pre_side_units = _side_units_open(pair, d)
+    if pre_side_units == 0:
+        resp_idempotent = {
+            "_status": 200,
+            "_idempotent": True,
+            "_reason": "PRECHECK_ALREADY_FLAT",
             "close_mode": "position_all",
-            "status": resp.get("_status") if isinstance(resp, dict) else None,
-            "resp_keys": resp_keys,
-            "txid": resp.get("lastTransactionID") if isinstance(resp, dict) else None,
-            **({"origin_actor": origin_actor, "origin_reason": origin_reason} if origin_actor else {}),
-        },
-    )
+        }
+        _PAIR_SIDE_CLOSE_RECENT[pair_side_key] = {
+            "ts": now_ts(),
+            "reason": str(reason or ""),
+            "origin_actor": str(origin_actor or ""),
+            "origin_reason": str(origin_reason or ""),
+            "db_trade_id": int(db_trade_id or 0) if db_trade_id else 0,
+            "status": 200,
+            "idempotent": True,
+            "precheck": True,
+        }
+        log_runtime(
+            "info",
+            "EXIT_PRECHECK_ALREADY_FLAT",
+            pair=pair,
+            direction=d,
+            reason=reason,
+            db_trade_id=db_trade_id,
+        )
+        return True, resp_idempotent
 
-    if ok:
-        # Verification gate: after close, position side must be flat.
-        side_units = _side_units_open(pair, d)
-        if side_units is None or side_units > 0:
+    side = "long" if d == "LONG" else "short"
+    try:
+        resp = oanda_call(f"close_position_{reason}", o.close_position, pair, side=side, units="ALL", allow_error_dict=True)
+        ok = resp is not None and not resp.get("_http_error") and not resp.get("_rate_limited") and not resp.get("_json_error") and not resp.get("_exception")
+
+        if not ok:
             time.sleep(0.2)
             resp_retry = oanda_call(
-                f"close_position_verify_retry_{reason}",
+                f"close_position_retry_{reason}",
                 o.close_position,
                 pair,
                 side=side,
@@ -8653,37 +10621,129 @@ def _close_trade_or_position(
             )
             if ok:
                 resp = resp_retry
-                side_units = _side_units_open(pair, d)
-                ok = side_units == 0
-            if not ok:
-                block_pair_exits(pair, f"{reason}_verify_not_flat", duration_sec=EXIT_RETRY_BASE_SEC)
-                PAIR_ENTRY_HARD_BLOCK[pair] = {"ts": now_ts(), "reason": f"{reason}_verify_not_flat"}
-                info = EXIT_BLOCKED_PAIRS.get(pair, {})
-                info.update({"dir": d, "trade_id": db_trade_id, "verify_not_flat": True})
-                EXIT_BLOCKED_PAIRS[pair] = info
-                log_runtime("error", "EXIT_VERIFY_NOT_FLAT", pair=pair, direction=d, side_units=side_units, reason=reason)
-    elif isinstance(resp, dict) and str(resp.get("errorCode") or "") == "CLOSEOUT_POSITION_DOESNT_EXIST":
-        # Treat as idempotent close success (already flat on requested side).
-        ok = True
-        log_runtime("info", "EXIT_RECONCILED_ALREADY_FLAT", pair=pair, direction=d, reason=reason)
 
-    if not ok:
-        status_code = resp.get("_status") if isinstance(resp, dict) else None
-        block_pair_exits(pair, reason, duration_sec=EXIT_RETRY_BASE_SEC)
-        PAIR_ENTRY_HARD_BLOCK[pair] = {"ts": now_ts(), "reason": str(reason)}
-        # Enrich block info with context
-        info = EXIT_BLOCKED_PAIRS.get(pair, {})
-        info.update({"dir": d, "trade_id": db_trade_id, "last_status": status_code})
-        EXIT_BLOCKED_PAIRS[pair] = info
-        if db_trade_id is not None and "db_call" in globals() and db is not None:
-            try:
-                db_call("append_trade_note_exit_fail", db.append_trade_note, int(db_trade_id), f"EXIT_FAILED:{reason}")
-            except Exception:
-                pass
-    else:
-        EXIT_BLOCKED_PAIRS.pop(pair, None)
+        resp_keys = list(resp.keys()) if isinstance(resp, dict) else []
+        log(
+            f"{EMOJI_EXIT} EXIT_RESPONSE {pair_tag(pair, d)}",
+            {
+                "pair": pair,
+                "dir": d,
+                "exit_reason": reason,
+                "db_trade_id": db_trade_id,
+                "close_mode": "position_all",
+                "status": resp.get("_status") if isinstance(resp, dict) else None,
+                "resp_keys": resp_keys,
+                "txid": resp.get("lastTransactionID") if isinstance(resp, dict) else None,
+                **({"origin_actor": origin_actor, "origin_reason": origin_reason} if origin_actor else {}),
+            },
+        )
 
-    return ok, resp if isinstance(resp, dict) else {}
+        with _PAIR_SIDE_CLOSE_INFLIGHT_LOCK:
+            inflight_state = _PAIR_SIDE_CLOSE_INFLIGHT.get(pair_side_key)
+            if isinstance(inflight_state, dict) and inflight_state.get("token") == owner_token:
+                inflight_state["status"] = resp.get("_status") if isinstance(resp, dict) else None
+
+        if ok:
+            _PAIR_SIDE_CLOSE_RECENT[pair_side_key] = {
+                "ts": now_ts(),
+                "reason": str(reason or ""),
+                "origin_actor": str(origin_actor or ""),
+                "origin_reason": str(origin_reason or ""),
+                "db_trade_id": int(db_trade_id or 0) if db_trade_id else 0,
+                "status": resp.get("_status") if isinstance(resp, dict) else None,
+            }
+            # Verification gate: after close, position side must be flat.
+            side_units = _side_units_open(pair, d)
+            if side_units is None or side_units > 0:
+                time.sleep(0.2)
+                resp_retry = oanda_call(
+                    f"close_position_verify_retry_{reason}",
+                    o.close_position,
+                    pair,
+                    side=side,
+                    units="ALL",
+                    allow_error_dict=True,
+                )
+                ok = (
+                    resp_retry is not None
+                    and not resp_retry.get("_http_error")
+                    and not resp_retry.get("_rate_limited")
+                    and not resp_retry.get("_json_error")
+                    and not resp_retry.get("_exception")
+                )
+                if ok:
+                    resp = resp_retry
+                    side_units = _side_units_open(pair, d)
+                    ok = side_units == 0
+                if not ok:
+                    block_pair_exits(pair, f"{reason}_verify_not_flat", duration_sec=EXIT_RETRY_BASE_SEC)
+                    PAIR_ENTRY_HARD_BLOCK[pair] = {"ts": now_ts(), "reason": f"{reason}_verify_not_flat"}
+                    info = EXIT_BLOCKED_PAIRS.get(pair, {})
+                    info.update({"dir": d, "trade_id": db_trade_id, "verify_not_flat": True})
+                    EXIT_BLOCKED_PAIRS[pair] = info
+                    log_runtime("error", "EXIT_VERIFY_NOT_FLAT", pair=pair, direction=d, side_units=side_units, reason=reason)
+        elif isinstance(resp, dict) and str(resp.get("errorCode") or "") == "CLOSEOUT_POSITION_DOESNT_EXIST":
+            # Treat as idempotent close success (already flat on requested side).
+            ok = True
+            _PAIR_SIDE_CLOSE_RECENT[pair_side_key] = {
+                "ts": now_ts(),
+                "reason": str(reason or ""),
+                "origin_actor": str(origin_actor or ""),
+                "origin_reason": str(origin_reason or ""),
+                "db_trade_id": int(db_trade_id or 0) if db_trade_id else 0,
+                "status": resp.get("_status") if isinstance(resp, dict) else None,
+                "idempotent": True,
+            }
+            log_runtime("info", "EXIT_RECONCILED_ALREADY_FLAT", pair=pair, direction=d, reason=reason)
+
+        if not ok:
+            status_code = resp.get("_status") if isinstance(resp, dict) else None
+            # Pair-side close-all can race across sibling trades; treat 404 as success if side is already flat.
+            if status_code == 404:
+                side_units_after_404 = _side_units_open(pair, d)
+                if side_units_after_404 == 0:
+                    ok = True
+                    _PAIR_SIDE_CLOSE_RECENT[pair_side_key] = {
+                        "ts": now_ts(),
+                        "reason": str(reason or ""),
+                        "origin_actor": str(origin_actor or ""),
+                        "origin_reason": str(origin_reason or ""),
+                        "db_trade_id": int(db_trade_id or 0) if db_trade_id else 0,
+                        "status": status_code,
+                        "idempotent": True,
+                    }
+                    log_runtime(
+                        "info",
+                        "EXIT_RECONCILED_ALREADY_FLAT_404",
+                        pair=pair,
+                        direction=d,
+                        reason=reason,
+                        db_trade_id=db_trade_id,
+                        status=status_code,
+                    )
+
+        if not ok:
+            status_code = resp.get("_status") if isinstance(resp, dict) else None
+            block_pair_exits(pair, reason, duration_sec=EXIT_RETRY_BASE_SEC)
+            PAIR_ENTRY_HARD_BLOCK[pair] = {"ts": now_ts(), "reason": str(reason)}
+            # Enrich block info with context
+            info = EXIT_BLOCKED_PAIRS.get(pair, {})
+            info.update({"dir": d, "trade_id": db_trade_id, "last_status": status_code})
+            EXIT_BLOCKED_PAIRS[pair] = info
+            if db_trade_id is not None and "db_call" in globals() and db is not None:
+                try:
+                    db_call("append_trade_note_exit_fail", db.append_trade_note, int(db_trade_id), f"EXIT_FAILED:{reason}")
+                except Exception:
+                    pass
+        else:
+            EXIT_BLOCKED_PAIRS.pop(pair, None)
+
+        return ok, resp if isinstance(resp, dict) else {}
+    finally:
+        with _PAIR_SIDE_CLOSE_INFLIGHT_LOCK:
+            inflight_state = _PAIR_SIDE_CLOSE_INFLIGHT.get(pair_side_key)
+            if isinstance(inflight_state, dict) and inflight_state.get("token") == owner_token:
+                _PAIR_SIDE_CLOSE_INFLIGHT.pop(pair_side_key, None)
 
 
 def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
@@ -8695,12 +10755,12 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
     direction = str(tr.get("dir", ""))
     entry_px = float(tr.get("entry", 0.0) or 0.0)
     atr_entry = float(tr.get("atr_entry", 0.0) or 0.0)
-    
+
     favorable = (mid - entry_px) if direction == "LONG" else (entry_px - mid)
     favorable_atr = favorable / atr_entry if atr_entry > 0.0 else float("nan")
-    
+
     pnl_pips = to_pips(pair_raw, favorable)
-    
+
     atr_exec = float(aee_state.atr14 * aee_state.k) if aee_state and aee_state.atr14 > 0.0 else atr_entry
     mfe_atr = (aee_state.local_high - entry_px) / atr_exec if direction == "LONG" and aee_state else float("nan")
     if direction == "SHORT":
@@ -8708,12 +10768,12 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
     mae_atr = (entry_px - aee_state.local_low) / atr_exec if direction == "LONG" and aee_state else float("nan")
     if direction == "SHORT":
         mae_atr = (aee_state.local_high - entry_px) / atr_exec if aee_state else float("nan")
-    
+
     energy_ratio = aee_metrics.get("energy_ratio") if aee_metrics else None
     if (energy_ratio is None or not isinstance(energy_ratio, (int, float)) or not math.isfinite(float(energy_ratio))) and aee_metrics:
         # Fallback proxy to keep snapshot complete in v1 when raw energy_ratio is absent.
         progress = aee_metrics.get("progress")
-        
+
         # Try to get expected progress from TradeSpec
         trade_id = tr.get("id")
         if trade_id:
@@ -8727,16 +10787,16 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
                 expected_progress = aee_metrics.get("expected_progress")
         else:
             expected_progress = aee_metrics.get("expected_progress")
-            
+
         if isinstance(progress, (int, float)) and isinstance(expected_progress, (int, float)) and abs(float(expected_progress)) > 1e-9:
             energy_ratio = float(progress) / float(expected_progress)
-    
+
     decision = None  # Not applicable for snapshot
     reason_code = None  # Not applicable for snapshot
-    
+
     missing_fields = []
     missing_reason = {}
-    
+
     if not math.isfinite(entry_px):
         missing_fields.append("entry_price")
         missing_reason["entry_price"] = "entry not finite"
@@ -8756,41 +10816,42 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
         missing_fields.append("mae_atr")
         missing_reason["mae_atr"] = "local_high/low not finite or atr_exec not finite"
     # energy_ratio is optional in dataset v1 completeness checks.
-    
+
     # New fields
     ts_utc = time.time()
     eval_seq = getattr(aee_state, 'eval_seq', 0) if aee_state else 0
     if aee_state:
         aee_state.eval_seq = eval_seq + 1
     time_in_trade_sec = (ts_utc - (aee_state.entry_time if aee_state else ts_utc)) if aee_state and aee_state.entry_time else 0.0
-    
+
     # Buckets
     dt = datetime.datetime.fromtimestamp(ts_utc, tz=datetime.timezone.utc)
     session = "LONDON" if 8 <= dt.hour < 16 else "NY" if 14 <= dt.hour < 21 else "ASIA"  # Rough approximation
     weekday = dt.strftime("%A")
     quarter = f"Q{(dt.month - 1) // 3 + 1}"
     regime = "unknown"
-    
+
     # Modulators
     velocity = aee_metrics.get("velocity") if aee_metrics else None
     giveback_ratio = aee_metrics.get("giveback_ratio") if aee_metrics else None
     stall_proximity = aee_metrics.get("stall_proximity") if aee_metrics else None
     strictness_multiplier = aee_metrics.get("strictness_multiplier", 1.0) if aee_metrics else 1.0
     dominant_modulator = aee_metrics.get("dominant_modulator", "UNKNOWN") if aee_metrics else "UNKNOWN"
-    
+    path_bucket = aee_metrics.get("path_bucket", "UNKNOWN") if aee_metrics else "UNKNOWN"
+
     # Anchors
     tp_px = aee_state.tp_anchor if aee_state else None
     sl_px = aee_state.sl_price if aee_state else None
     dist_to_tp_atr = ((tp_px - mid) / atr_exec) if tp_px and atr_exec > 0.0 and direction == "LONG" else ((mid - tp_px) / atr_exec) if tp_px and atr_exec > 0.0 else None
     dist_to_sl_atr = ((sl_px - mid) / atr_exec) if sl_px and atr_exec > 0.0 and direction == "LONG" else ((mid - sl_px) / atr_exec) if sl_px and atr_exec > 0.0 else None
-    
+
     # Other AEE state
     aee_phase = aee_state.phase if aee_state else None
     runner_mode = getattr(aee_state, 'runner_mode', False) if aee_state else False
     consecutive_fail_windows = aee_metrics.get("consecutive_fail_windows", 0) if aee_metrics else 0
-    
+
     state_complete_ok = len(missing_fields) == 0
-    
+
     return {
         "trade_id": trade_id,
         "pair": pair,
@@ -8819,6 +10880,7 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
         "spread_pips": spread_pips,
         "strictness_multiplier": strictness_multiplier,
         "dominant_modulator": dominant_modulator,
+        "path_bucket": path_bucket,
         "tp_px": tp_px,
         "sl_px": sl_px,
         "dist_to_tp_atr": dist_to_tp_atr,
@@ -8828,6 +10890,187 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
         "consecutive_fail_windows": consecutive_fail_windows,
         "state_complete_ok": state_complete_ok
     }
+
+
+def _apply_pc1_management_actions(
+    *,
+    o: "OandaClient",
+    tr: dict,
+    pair: str,
+    direction: str,
+    trade_id: int,
+    oanda_trade_id: Optional[str],
+    aee_state_obj: Optional[Any],
+    aee_metrics: dict,
+    actions: dict,
+) -> None:
+    if not AEE_PC1_CONTRACT_ENABLED:
+        return
+    if not isinstance(actions, dict) or not actions:
+        return
+
+    normalized_pnl = float(aee_metrics.get("normalized_pnl", 0.0) or 0.0)
+    peak_norm = float(aee_metrics.get("peak_normalized_pnl", 0.0) or 0.0)
+    trade_age = float(aee_metrics.get("trade_age_sec", 0.0) or 0.0)
+    trade_type = str(aee_metrics.get("trade_type", "HARVESTER") or "HARVESTER").upper()
+
+    sl_move_price = actions.get("sl_move_price")
+    if oanda_trade_id and isinstance(sl_move_price, (int, float)) and math.isfinite(float(sl_move_price)):
+        resp_sl = oanda_call("aee_pc1_sl_lock", o.set_trade_stop_loss, str(oanda_trade_id), float(sl_move_price), allow_error_dict=True)
+        ok_sl = isinstance(resp_sl, dict) and not (
+            resp_sl.get("_http_error")
+            or resp_sl.get("_rate_limited")
+            or resp_sl.get("_json_error")
+            or resp_sl.get("_exception")
+        )
+        if ok_sl:
+            if isinstance(aee_state_obj, AEEState):
+                aee_state_obj.sl_price = float(sl_move_price)
+                aee_state_obj.sl_adjust_stage = int(actions.get("sl_adjust_stage", aee_state_obj.sl_adjust_stage) or aee_state_obj.sl_adjust_stage)
+            emit_trade_kind(
+                "AEE_SL_LOCK",
+                {
+                    **build_event_envelope(
+                        kind="AEE_SL_LOCK",
+                        pair=pair,
+                        direction=direction,
+                        trade_id=trade_id,
+                        broker_trade_id=oanda_trade_id,
+                        leg_type=trade_type,
+                    ),
+                    "trade_type": trade_type,
+                    "normalized_pnl": float(normalized_pnl),
+                    "peak_normalized_pnl": float(peak_norm),
+                    "trade_age_sec": float(trade_age),
+                    "sl_move": float(sl_move_price),
+                },
+            )
+
+    partial_units = int(actions.get("runner_partial_units", 0) or 0)
+    if partial_units > 0:
+        resp_partial: Optional[dict] = None
+        trade_id_for_partial = str(oanda_trade_id or "").strip()
+        if trade_id_for_partial and "," in trade_id_for_partial:
+            trade_id_for_partial = trade_id_for_partial.split(",", 1)[0].strip()
+        if trade_id_for_partial:
+            resp_partial = oanda_call(
+                "aee_pc1_runner_partial_trade",
+                o.close_trade,
+                str(trade_id_for_partial),
+                str(partial_units),
+                allow_error_dict=True,
+            )
+        else:
+            log_runtime(
+                "warning",
+                "AEE_RUNNER_PARTIAL_SKIPPED_NO_TRADE_ID",
+                trade_id=trade_id,
+                pair=pair,
+                direction=direction,
+                partial_units=partial_units,
+            )
+        ok_partial = isinstance(resp_partial, dict) and not (
+            resp_partial.get("_http_error")
+            or resp_partial.get("_rate_limited")
+            or resp_partial.get("_json_error")
+            or resp_partial.get("_exception")
+        )
+        if ok_partial:
+            if isinstance(aee_state_obj, AEEState):
+                aee_state_obj.runner_partial_done = True
+            emit_trade_kind(
+                "AEE_RUNNER_PARTIAL",
+                {
+                    **build_event_envelope(
+                        kind="AEE_RUNNER_PARTIAL",
+                        pair=pair,
+                        direction=direction,
+                        trade_id=trade_id,
+                        broker_trade_id=oanda_trade_id,
+                        leg_type="RUNNER",
+                    ),
+                    "trade_type": "RUNNER",
+                    "normalized_pnl": float(normalized_pnl),
+                    "peak_normalized_pnl": float(peak_norm),
+                    "trade_age_sec": float(trade_age),
+                    "partial_units": int(partial_units),
+                    "partial_fraction": float(actions.get("runner_partial_fraction", 0.0) or 0.0),
+                },
+            )
+
+
+def emit_aee_doctrine_action(
+    *,
+    trade_id_key,
+    trade_id,
+    broker_trade_id,
+    pair: str,
+    direction: str,
+    leg_type: str,
+    snapshot: dict,
+    exit_reason,
+) -> Optional[str]:
+    """Emit doctrine action class (HOLD/PARTIAL/TIGHTEN/CLOSE) for live proof wiring.
+
+    This is a shadow classifier and does not alter live execution authority.
+    """
+    if trade_id_key is None or not isinstance(snapshot, dict):
+        return None
+
+    key = str(trade_id_key)
+    mode = "RUNNER" if str(leg_type or "").upper() == "RUNNER" else "HARVESTER"
+
+    current_r = ffloat(snapshot.get("pnl_atr"), 0.0)
+    mfe_r = ffloat(snapshot.get("mfe_atr"), current_r)
+    mae_r = ffloat(snapshot.get("mae_atr"), 0.0)
+    energy = ffloat(snapshot.get("energy_ratio"), 0.0)
+    now_s = ffloat(snapshot.get("ts_utc"), time.time())
+    force_close = bool(exit_reason)
+
+    doctrine = _AEE_DOCTRINE_ENGINE.update(
+        trade_key=key,
+        mode=mode,
+        now_s=now_s,
+        current_r=current_r,
+        mfe_r=mfe_r,
+        mae_r=mae_r,
+        energy=energy,
+        force_close=force_close,
+    )
+
+    action = str(doctrine.get("action", "HOLD"))
+    state_obj = doctrine.get("state", {})
+    state = state_obj if isinstance(state_obj, dict) else {}
+    last_action = _AEE_DOCTRINE_LAST.get(key)
+
+    # Emit on class transition or immediately for non-HOLD actions.
+    if action != last_action or action != "HOLD":
+        emit_trade_kind(
+            "AEE_DOCTRINE_ACTION",
+            {
+                **build_event_envelope(
+                    kind="AEE_DOCTRINE_ACTION",
+                    pair=pair,
+                    direction=direction,
+                    trade_id=trade_id,
+                    broker_trade_id=broker_trade_id,
+                    leg_type=mode,
+                ),
+                "action_class": action,
+                "mode": mode,
+                "source": "live_shadow_doctrine",
+                "legacy_exit_reason": str(exit_reason or ""),
+                "path_state": state,
+            },
+        )
+        _AEE_DOCTRINE_LAST[key] = action
+
+    # Reset doctrine state once a forced close is present.
+    if force_close:
+        _AEE_DOCTRINE_ENGINE.reset_trade(key)
+        _AEE_DOCTRINE_LAST.pop(key, None)
+
+    return action
 
 def _handle_close_error(resp: dict, pair: str, direction: str, tr: dict, reason: str, favorable_atr: float, track: dict) -> bool:
     """Handle close errors, including 404 reconciliation."""
@@ -8863,13 +11106,13 @@ def _handle_close_error(resp: dict, pair: str, direction: str, tr: dict, reason:
             if setup_name.endswith("_RUN") or "_RUN" in setup_name:
                 _record_runner_exit(reason, tr, favorable_atr, track)
             return True  # Successfully reconciled
-    
+
     # For other errors, block the pair temporarily to prevent rapid retries
     if resp and (resp.get("_http_error") or resp.get("_rate_limited")):
         block_pair_exits(pair, f"close_error_{resp.get('_status', 'unknown')}", 30.0)
-        log(f"{EMOJI_ERR} CLOSE_BLOCK {pair_tag(pair, direction)}", 
+        log(f"{EMOJI_ERR} CLOSE_BLOCK {pair_tag(pair, direction)}",
             {"pair": pair, "direction": direction, "error": resp.get("_error", "unknown")})
-    
+
     return False  # Not reconciled, caller should continue loop
 
 # Debug/acceptance flags removed for production
@@ -8898,7 +11141,7 @@ data_outage_counter = {pair: 0 for pair in PAIRS}
 def check_data_outage(pair: str, success: bool) -> None:
     """Track data quality and alert on potential outages"""
     global data_outage_counter
-    
+
     if success:
         if data_outage_counter[pair] >= DATA_OUTAGE_THRESHOLD:
             log(f"{EMOJI_OK} DATA_RESTORED", {"pair": pair, "outage_count": data_outage_counter[pair]})
@@ -8915,22 +11158,22 @@ def get_active_sessions(now: Optional[float] = None) -> List[str]:
     """Get list of currently active trading sessions"""
     if not SESSION_DETECTION:
         return []
-        
+
     if now is None:
         now = now_ts()
-    
+
     dt = datetime.fromtimestamp(now, tz=timezone.utc)
     weekday = dt.weekday()  # Monday=0, Sunday=6
     current_time = dt.strftime("%H:%M")
-    
+
     active = []
     for session, config in TRADING_SESSIONS.items():
         if weekday not in config["days"]:
             continue
-            
+
         open_time = config["open"]
         close_time = config["close"]
-        
+
         # Handle sessions that cross midnight (like Sydney/Tokyo)
         if open_time > close_time:
             # Session spans midnight (e.g., 21:00-06:00)
@@ -8940,33 +11183,33 @@ def get_active_sessions(now: Optional[float] = None) -> List[str]:
             # Normal session (e.g., 07:00-16:00)
             if open_time <= current_time < close_time:
                 active.append(session)
-    
+
     return active
 
 def get_session_progress(session: str, now: Optional[float] = None) -> dict:
     """Get session progress information for strategy timing"""
     if not SESSION_DETECTION or session not in TRADING_SESSIONS:
         return {"active": False, "progress": 0.0, "time_until_end": 0, "time_since_start": 0}
-    
+
     if now is None:
         now = now_ts()
-    
+
     dt = datetime.fromtimestamp(now, tz=timezone.utc)
     weekday = dt.weekday()
     current_time = dt.strftime("%H:%M")
     current_minutes = dt.hour * 60 + dt.minute
-    
+
     config = TRADING_SESSIONS[session]
     if weekday not in config["days"]:
         return {"active": False, "progress": 0.0, "time_until_end": 0, "time_since_start": 0}
-    
+
     open_time = config["open"]
     close_time = config["close"]
     open_hour, open_min = map(int, open_time.split(":"))
     close_hour, close_min = map(int, close_time.split(":"))
     open_minutes = open_hour * 60 + open_min
     close_minutes = close_hour * 60 + close_min
-    
+
     # Calculate session progress
     if open_time > close_time:
         # Session spans midnight
@@ -8975,7 +11218,7 @@ def get_session_progress(session: str, now: Optional[float] = None) -> dict:
             time_since_start = current_minutes - open_minutes
             session_length = (24 * 60 - open_minutes) + close_minutes
         elif current_time < close_time:
-            # Before midnight on session end day  
+            # Before midnight on session end day
             time_since_start = (24 * 60 - open_minutes) + current_minutes
             session_length = (24 * 60 - open_minutes) + close_minutes
         else:
@@ -8987,10 +11230,10 @@ def get_session_progress(session: str, now: Optional[float] = None) -> dict:
             session_length = close_minutes - open_minutes
         else:
             return {"active": False, "progress": 0.0, "time_until_end": 0, "time_since_start": 0}
-    
+
     progress = time_since_start / session_length if session_length > 0 else 0.0
     time_until_end = session_length - time_since_start
-    
+
     return {
         "active": True,
         "progress": progress,
@@ -9068,7 +11311,35 @@ def check_time_drift(o: OandaClient) -> bool:
 
 # ===== MASTER EXECUTION SOP - ENTRY + MANAGEMENT =====
 
+# Entry structural SL widening (applies to both MAIN and RUN legs before compute_prices).
+ENTRY_STRUCTURAL_SL_MULT = float(os.getenv("ENTRY_STRUCTURAL_SL_MULT", "1.60") or "1.60")
+if not math.isfinite(ENTRY_STRUCTURAL_SL_MULT) or ENTRY_STRUCTURAL_SL_MULT < 1.0:
+    ENTRY_STRUCTURAL_SL_MULT = 1.0
+
 # ===== AEE CONSTANTS (LOCKED) =====
+AEE_PC1_CONTRACT_ENABLED = os.getenv("AEE_PC1_CONTRACT_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+# PC1 normalized-PnL behavior thresholds (per-unit account currency).
+AEE_PC1_IMPULSE_MIN_NORM = float(os.getenv("AEE_PC1_IMPULSE_MIN_NORM", "0.00035") or "0.00035")
+AEE_PC1_IMPULSE_MIN_JUMP = float(os.getenv("AEE_PC1_IMPULSE_MIN_JUMP", "0.00012") or "0.00012")
+AEE_PC1_IMPULSE_SPEED = float(os.getenv("AEE_PC1_IMPULSE_SPEED", "0.00008") or "0.00008")
+AEE_PC1_PROGRESS_PEAK_EPS = float(os.getenv("AEE_PC1_PROGRESS_PEAK_EPS", "0.00003") or "0.00003")
+AEE_PC1_PROGRESS_NO_PEAK_SEC_H = float(os.getenv("AEE_PC1_PROGRESS_NO_PEAK_SEC_H", "45") or "45")
+AEE_PC1_PROGRESS_NO_PEAK_SEC_R = float(os.getenv("AEE_PC1_PROGRESS_NO_PEAK_SEC_R", "90") or "90")
+AEE_PC1_PROGRESS_GIVEBACK_H = float(os.getenv("AEE_PC1_PROGRESS_GIVEBACK_H", "0.00016") or "0.00016")
+AEE_PC1_PROGRESS_GIVEBACK_R = float(os.getenv("AEE_PC1_PROGRESS_GIVEBACK_R", "0.00028") or "0.00028")
+AEE_PC1_PROGRESS_MIN_PEAK_H = float(os.getenv("AEE_PC1_PROGRESS_MIN_PEAK_H", "0.00018") or "0.00018")
+AEE_PC1_PROGRESS_MIN_PEAK_R = float(os.getenv("AEE_PC1_PROGRESS_MIN_PEAK_R", "0.00028") or "0.00028")
+AEE_PC1_PRE_SL_NORM = float(os.getenv("AEE_PC1_PRE_SL_NORM", "0.00055") or "0.00055")
+AEE_PC1_PRE_SL_FRAC = float(os.getenv("AEE_PC1_PRE_SL_FRAC", "0.88") or "0.88")
+AEE_PC1_H_LOCK1_TRIGGER = float(os.getenv("AEE_PC1_H_LOCK1_TRIGGER", "0.00014") or "0.00014")
+AEE_PC1_H_LOCK1_VALUE = float(os.getenv("AEE_PC1_H_LOCK1_VALUE", "0.00005") or "0.00005")
+AEE_PC1_H_LOCK2_TRIGGER = float(os.getenv("AEE_PC1_H_LOCK2_TRIGGER", "0.00028") or "0.00028")
+AEE_PC1_H_LOCK2_VALUE = float(os.getenv("AEE_PC1_H_LOCK2_VALUE", "0.00012") or "0.00012")
+AEE_PC1_R_ACTIVATE_TRIGGER = float(os.getenv("AEE_PC1_R_ACTIVATE_TRIGGER", "0.00024") or "0.00024")
+AEE_PC1_R_LOCK1_VALUE = float(os.getenv("AEE_PC1_R_LOCK1_VALUE", "0.00008") or "0.00008")
+AEE_PC1_R_LOCK2_TRIGGER = float(os.getenv("AEE_PC1_R_LOCK2_TRIGGER", "0.00045") or "0.00045")
+AEE_PC1_R_LOCK2_VALUE = float(os.getenv("AEE_PC1_R_LOCK2_VALUE", "0.00020") or "0.00020")
+
 NEAR_TP_BAND_ATR_BASE = 0.25
 PROTECT_EXIT_PROGRESS_BASE = 0.35
 LOCK_PROGRESS = 0.60
@@ -9088,6 +11359,45 @@ PANIC_PULLBACKRATE = 0.06
 PANIC_SPREAD_SHOCK_RATIO = 1.8
 PANIC_SPREAD_CATA_RATIO = 2.6
 ENERGY_CPS_PANIC_MAX = 0.42
+# AEE profit-first time-decay controls (extraction priority over extended hold).
+AEE_TIME_DECAY_START_SEC = float(os.getenv("AEE_TIME_DECAY_START_SEC", "180") or "180")
+AEE_TIME_DECAY_FULL_SEC = float(os.getenv("AEE_TIME_DECAY_FULL_SEC", "900") or "900")
+AEE_TIME_DECAY_NEAR_TP_BOOST_MAX = float(os.getenv("AEE_TIME_DECAY_NEAR_TP_BOOST_MAX", "0.20") or "0.20")
+AEE_TIME_DECAY_GIVEBACK_TIGHTEN_MAX = float(os.getenv("AEE_TIME_DECAY_GIVEBACK_TIGHTEN_MAX", "0.35") or "0.35")
+AEE_PROFIT_CAPTURE_MIN_ATR = float(os.getenv("AEE_PROFIT_CAPTURE_MIN_ATR", "0.12") or "0.12")
+AEE_PROFIT_CAPTURE_DECAY_SPEED = float(os.getenv("AEE_PROFIT_CAPTURE_DECAY_SPEED", "0.65") or "0.65")
+AEE_PROFIT_CAPTURE_DECAY_VELOCITY = float(os.getenv("AEE_PROFIT_CAPTURE_DECAY_VELOCITY", "-0.05") or "-0.05")
+AEE_MIN_HOLD_GREEN_SEC = float(os.getenv("AEE_MIN_HOLD_GREEN_SEC", "0") or "0")
+AEE_MIN_HOLD_RED_SEC = float(os.getenv("AEE_MIN_HOLD_RED_SEC", "0.5") or "0.5")
+AEE_PROFIT_CAPTURE_MIN_HOLD_SEC = float(os.getenv("AEE_PROFIT_CAPTURE_MIN_HOLD_SEC", str(AEE_MIN_HOLD_GREEN_SEC)) or str(AEE_MIN_HOLD_GREEN_SEC))
+AEE_FORCE_GREEN_EXIT_ENABLED = os.getenv("AEE_FORCE_GREEN_EXIT_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+AEE_FORCE_GREEN_EXIT_MIN_ATR = float(os.getenv("AEE_FORCE_GREEN_EXIT_MIN_ATR", "0.04") or "0.04")
+AEE_FORCE_GREEN_EXIT_MIN_PIPS = float(os.getenv("AEE_FORCE_GREEN_EXIT_MIN_PIPS", "0.5") or "0.5")
+AEE_FORCE_GREEN_EXIT_MIN_AGE_SEC = float(os.getenv("AEE_FORCE_GREEN_EXIT_MIN_AGE_SEC", "0") or "0")
+AEE_PROFIT_CAPTURE_FORCE_SEC = float(os.getenv("AEE_PROFIT_CAPTURE_FORCE_SEC", "900") or "900")
+# AEE early-loss / early-stall controls.
+AEE_NEVER_GREEN_MAX_FAVORABLE_ATR = float(os.getenv("AEE_NEVER_GREEN_MAX_FAVORABLE_ATR", "0.02") or "0.02")
+AEE_NEVER_GREEN_MIN_ADVERSE_ATR = float(os.getenv("AEE_NEVER_GREEN_MIN_ADVERSE_ATR", "0.12") or "0.12")
+AEE_NEVER_GREEN_STALL_SEC = float(os.getenv("AEE_NEVER_GREEN_STALL_SEC", "3") or "3")
+AEE_NEVER_GREEN_MAX_SPEED = float(os.getenv("AEE_NEVER_GREEN_MAX_SPEED", "0.60") or "0.60")
+AEE_NEVER_GREEN_MAX_VELOCITY = float(os.getenv("AEE_NEVER_GREEN_MAX_VELOCITY", "0.00") or "0.00")
+AEE_GREEN_STALL_MIN_FAVORABLE_ATR = float(os.getenv("AEE_GREEN_STALL_MIN_FAVORABLE_ATR", "0.06") or "0.06")
+AEE_GREEN_STALL_MIN_GIVEBACK_ATR = float(os.getenv("AEE_GREEN_STALL_MIN_GIVEBACK_ATR", "0.02") or "0.02")
+AEE_GREEN_STALL_SEC = float(os.getenv("AEE_GREEN_STALL_SEC", "4") or "4")
+AEE_GREEN_STALL_MAX_SPEED = float(os.getenv("AEE_GREEN_STALL_MAX_SPEED", "0.75") or "0.75")
+AEE_GREEN_STALL_MAX_VELOCITY = float(os.getenv("AEE_GREEN_STALL_MAX_VELOCITY", "0.02") or "0.02")
+# Profit-lock: once meaningful green appears, do not allow a roundtrip into red.
+AEE_GREEN_LOCK_MIN_PEAK_ATR = float(os.getenv("AEE_GREEN_LOCK_MIN_PEAK_ATR", "0.10") or "0.10")
+AEE_GREEN_LOCK_MIN_RETAIN_FRAC = float(os.getenv("AEE_GREEN_LOCK_MIN_RETAIN_FRAC", "0.40") or "0.40")
+AEE_GREEN_LOCK_MIN_GIVEBACK_ATR = float(os.getenv("AEE_GREEN_LOCK_MIN_GIVEBACK_ATR", "0.05") or "0.05")
+AEE_GREEN_LOCK_MIN_FINAL_ATR = float(os.getenv("AEE_GREEN_LOCK_MIN_FINAL_ATR", "0.02") or "0.02")
+# AEE extractor-first controls: if trade was green but gives back too much, exit early.
+AEE_EXTRACTOR_MIN_PEAK_ATR = float(os.getenv("AEE_EXTRACTOR_MIN_PEAK_ATR", "0.03") or "0.03")
+AEE_EXTRACTOR_MIN_GIVEBACK_ATR = float(os.getenv("AEE_EXTRACTOR_MIN_GIVEBACK_ATR", "0.015") or "0.015")
+AEE_EXTRACTOR_MAX_RETAIN_FRAC = float(os.getenv("AEE_EXTRACTOR_MAX_RETAIN_FRAC", "0.45") or "0.45")
+AEE_EXTRACTOR_STALL_SEC = float(os.getenv("AEE_EXTRACTOR_STALL_SEC", "3") or "3")
+AEE_EXTRACTOR_MAX_SPEED = float(os.getenv("AEE_EXTRACTOR_MAX_SPEED", "0.75") or "0.75")
+AEE_EXTRACTOR_MAX_VELOCITY = float(os.getenv("AEE_EXTRACTOR_MAX_VELOCITY", "0.02") or "0.02")
 # AEE vNext energy / panic controls
 PANIC_CONFIRM_MIN_HITS = 3
 PANIC_DEBOUNCE_SEC = 0.9
@@ -9096,9 +11406,9 @@ MIN_EVAL_SAMPLES = 17
 ENERGY_CPS_THRESHOLD = 0.41
 ENERGY_DHR_PANIC = 0.58
 ENERGY_RSS_PROMOTE = 0.68
-RUNNER_PROMOTE_RSS_MIN = 0.61
-RUNNER_PROMOTE_LED_MIN = 0.73
-RUNNER_PROMOTE_EPI_MIN = 0.42
+RUNNER_PROMOTE_RSS_MIN = 0.72
+RUNNER_PROMOTE_LED_MIN = 0.82
+RUNNER_PROMOTE_EPI_MIN = 0.55
 WPD_CHOP_THRESHOLD = 0.54
 LED_EXPANSION_THRESHOLD = 0.50
 ENERGY_GE_DECAY_THRESHOLD = 0.24
@@ -9135,6 +11445,26 @@ _AEE_TUNABLE_KEYS = {
     "NEG_EXIT_CONFIRM_MIN_HITS",
     "WHIPSAW_CAPTURE_MIN_PEAK_ATR",
     "WHIPSAW_CAPTURE_MIN_GIVEBACK_ATR",
+    "AEE_NEVER_GREEN_MAX_FAVORABLE_ATR",
+    "AEE_NEVER_GREEN_MIN_ADVERSE_ATR",
+    "AEE_NEVER_GREEN_STALL_SEC",
+    "AEE_NEVER_GREEN_MAX_SPEED",
+    "AEE_NEVER_GREEN_MAX_VELOCITY",
+    "AEE_GREEN_STALL_MIN_FAVORABLE_ATR",
+    "AEE_GREEN_STALL_MIN_GIVEBACK_ATR",
+    "AEE_GREEN_STALL_SEC",
+    "AEE_GREEN_STALL_MAX_SPEED",
+    "AEE_GREEN_STALL_MAX_VELOCITY",
+    "AEE_GREEN_LOCK_MIN_PEAK_ATR",
+    "AEE_GREEN_LOCK_MIN_RETAIN_FRAC",
+    "AEE_GREEN_LOCK_MIN_GIVEBACK_ATR",
+    "AEE_GREEN_LOCK_MIN_FINAL_ATR",
+    "AEE_EXTRACTOR_MIN_PEAK_ATR",
+    "AEE_EXTRACTOR_MIN_GIVEBACK_ATR",
+    "AEE_EXTRACTOR_MAX_RETAIN_FRAC",
+    "AEE_EXTRACTOR_STALL_SEC",
+    "AEE_EXTRACTOR_MAX_SPEED",
+    "AEE_EXTRACTOR_MAX_VELOCITY",
 }
 _AEE_INT_KEYS = {
     "PANIC_CONFIRM_MIN_HITS",
@@ -9194,13 +11524,13 @@ PARTIAL_FILL_CHECK_INTERVAL = float(os.getenv("PARTIAL_FILL_CHECK_INTERVAL", "1.
 
 # Validate timeouts are finite and positive
 if not (math.isfinite(PARTIAL_FILL_TIMEOUT_SEC) and PARTIAL_FILL_TIMEOUT_SEC > 0):
-    log_runtime("warn", "INVALID_PARTIAL_FILL_TIMEOUT", 
-                timeout=PARTIAL_FILL_TIMEOUT_SEC, 
+    log_runtime("warn", "INVALID_PARTIAL_FILL_TIMEOUT",
+                timeout=PARTIAL_FILL_TIMEOUT_SEC,
                 fallback=20.0)
     PARTIAL_FILL_TIMEOUT_SEC = 20.0
 
 if not (math.isfinite(PARTIAL_FILL_CHECK_INTERVAL) and PARTIAL_FILL_CHECK_INTERVAL > 0):
-    log_runtime("warn", "INVALID_PARTIAL_FILL_CHECK_INTERVAL", 
+    log_runtime("warn", "INVALID_PARTIAL_FILL_CHECK_INTERVAL",
                 interval=PARTIAL_FILL_CHECK_INTERVAL,
                 fallback=1.0)
     PARTIAL_FILL_CHECK_INTERVAL = 1.0
@@ -9222,6 +11552,78 @@ class AEEPhase(str, Enum):
     HARVEST = "HARVEST"
     RUNNER = "RUNNER"
     PANIC = "PANIC"
+
+
+def _normalize_aee_phase(phase: Any) -> str:
+    """Store phases as canonical values instead of Enum repr strings."""
+    txt = str(phase or "").strip().upper()
+    if txt.startswith("AEEPHASE."):
+        txt = txt.split(".", 1)[1]
+    if txt in {
+        AEEPhase.PROTECT.value,
+        AEEPhase.BUILD.value,
+        AEEPhase.HARVEST.value,
+        AEEPhase.RUNNER.value,
+        AEEPhase.PANIC.value,
+    }:
+        return txt
+    return AEEPhase.PROTECT.value
+
+
+def _aee_restore_extrema_from_history(
+    *,
+    pair: str,
+    entry_price: float,
+    entry_time: float,
+    current_mid: float,
+    saved_local_high: float,
+    saved_local_low: float,
+    now: float,
+) -> tuple[float, float, dict]:
+    """Rebuild extrema for synced trades so restarts don't erase AEE path context."""
+    pair_norm = normalize_pair(pair)
+    local_high = saved_local_high if math.isfinite(saved_local_high) else max(entry_price, current_mid)
+    local_low = saved_local_low if math.isfinite(saved_local_low) else min(entry_price, current_mid)
+    local_high = max(local_high, entry_price, current_mid)
+    local_low = min(local_low, entry_price, current_mid)
+    age_sec = max(0.0, float(now) - float(entry_time or now))
+    min_span = max(float(pip_size(pair_norm)) * 0.25, 1e-8)
+    rebuild_needed = age_sec >= 60.0 and (
+        not math.isfinite(saved_local_high)
+        or not math.isfinite(saved_local_low)
+        or abs(float(local_high) - float(local_low)) <= min_span
+    )
+    meta = {"rebuilt": False, "granularity": "", "count": 0, "age_sec": age_sec}
+    if not rebuild_needed:
+        return float(local_high), float(local_low), meta
+
+    if age_sec <= 6.0 * 3600.0:
+        gran = "M1"
+    elif age_sec <= 48.0 * 3600.0:
+        gran = "M5"
+    else:
+        gran = "M15"
+    sec_per = max(60, int(granularity_sec(gran) or 60))
+    count = max(80, min(1500, int(math.ceil(age_sec / sec_per)) + 12))
+    candles = get_candles(pair_norm, gran, count)
+    if not candles:
+        return float(local_high), float(local_low), meta
+
+    highs = [float(local_high), float(entry_price), float(current_mid)]
+    lows = [float(local_low), float(entry_price), float(current_mid)]
+    for candle in candles:
+        c_ts = parse_time_oanda(candle.get("time"))
+        if c_ts > 0.0 and (c_ts + sec_per) < float(entry_time):
+            continue
+        h_val = ffloat(candle.get("h", candle.get("high")), float("nan"))
+        l_val = ffloat(candle.get("l", candle.get("low")), float("nan"))
+        if math.isfinite(h_val):
+            highs.append(h_val)
+        if math.isfinite(l_val):
+            lows.append(l_val)
+
+    meta.update({"rebuilt": True, "granularity": gran, "count": len(candles)})
+    return float(max(highs)), float(min(lows)), meta
 
 
 def _decay_lock_update(*, aee_metrics: dict, track: dict) -> dict:
@@ -9248,10 +11650,10 @@ def _decay_lock_update(*, aee_metrics: dict, track: dict) -> dict:
 
 # ===== TP-FIRST ORDERING =====
 
-def calculate_tp_at_birth(pair: str, entry_price: float, direction: str, atr_pips: float, 
+def calculate_tp_at_birth(pair: str, entry_price: float, direction: str, atr_pips: float,
                          tp_anchor_price: Optional[float] = None, spread_pips: float = 0.5) -> float:
     """Calculate TP₀ at birth - never fails."""
-    
+
     # Primary: Use anchor if provided
     if tp_anchor_price is not None:
         tp = tp_anchor_price
@@ -9262,25 +11664,25 @@ def calculate_tp_at_birth(pair: str, entry_price: float, direction: str, atr_pip
             tp = entry_price + 0.60 * atr_pips * pip  # Convert pips to price
         else:
             tp = entry_price - 0.60 * atr_pips * pip
-    
+
     # Minimum distance clamp
     pip = float(pip_size(pair))
     min_dist = max(
         1.2 * spread_pips * pip,
         0.10 * atr_pips * pip
     )
-    
+
     if direction == "LONG":
         tp = max(tp, entry_price + min_dist)
     else:
         tp = min(tp, entry_price - min_dist)
-    
+
     return tp
 
 def add_sl_after_fill(pair: str, entry_price: float, direction: str, atr_pips: float,
                      invalid_level: Optional[float] = None, spread_pips: float = 0.5) -> Optional[float]:
     """Add SL after fill - tertiary priority."""
-    
+
     if invalid_level is not None:
         # Preferred: Structural invalidation + buffer
         pip = float(pip_size(pair))
@@ -9289,11 +11691,11 @@ def add_sl_after_fill(pair: str, entry_price: float, direction: str, atr_pips: f
             return invalid_level - buffer
         else:
             return invalid_level + buffer
-    
+
     # Fallback: Distance-based
     pip = float(pip_size(pair))
     min_dist = max(3.5 * spread_pips * pip, 0.85 * atr_pips * pip)
-    
+
     if direction == "LONG":
         return entry_price - min_dist
     else:
@@ -9366,6 +11768,21 @@ class AEEState:
     decay_hit_count: int = 0
     decay_first_ts: float = 0.0
     rule_trace: Dict[str, Any] = field(default_factory=dict)
+    # PC1 minimal state.
+    trade_type: str = "HARVESTER"
+    peak_normalized_pnl: float = 0.0
+    last_peak_time: float = 0.0
+    sl_adjust_stage: int = 0
+    runner_partial_done: bool = False
+    prev_normalized_pnl: float = 0.0
+    prev_normalized_ts: float = 0.0
+    entry_family: str = "UNKNOWN"
+    target_profile: str = "T0_0"
+    strategy_key: str = ""
+    override_harvest_trigger_norm: float = 0.0
+    override_giveback_trigger_norm: float = 0.0
+    override_panic_trigger_norm: float = 0.0
+    override_match_key: str = ""
 
 
 def _aee_is_mobile_runtime() -> bool:
@@ -9413,6 +11830,7 @@ def _runner_context(h1: List[dict], h4: List[dict]) -> dict:
 
 
 def _exit_snapshot(tr: dict, st: "AEEState", metrics: dict, mid: float, spread_pips: float, exit_reason: str) -> dict:
+    rule_trace = getattr(st, "rule_trace", {}) if st is not None else {}
     return {
         "trade_id": tr.get("id"),
         "pair": tr.get("pair"),
@@ -9433,6 +11851,11 @@ def _exit_snapshot(tr: dict, st: "AEEState", metrics: dict, mid: float, spread_p
         "near_tp_band": metrics.get("near_tp_band"),
         "allowed_giveback_atr": getattr(st, "allowed_giveback_atr", None),
         "profit_locked": getattr(st, "profit_locked", None),
+        "path_bucket": metrics.get("path_bucket", rule_trace.get("path_bucket")),
+        "best_favorable_atr": rule_trace.get("best_favorable_atr"),
+        "favorable_giveback_atr": rule_trace.get("favorable_giveback_atr"),
+        "favorable_stall_s": rule_trace.get("favorable_stall_s"),
+        "adverse_atr": rule_trace.get("adverse_atr"),
         "data_quality": metrics.get("data_quality"),
         "ts": now_ts(),
     }
@@ -9456,77 +11879,220 @@ def _aee_refresh_m1_volatility(pair: str, st: AEEState, now: float) -> None:
     st.k = st.v_scalar
     st.last_m1_refresh = now
 
-def should_arm_tick_mode(metrics: dict, aee_state: AEEState, spread_pips: float, 
+def should_arm_tick_mode(metrics: dict, aee_state: AEEState, spread_pips: float,
                         median_spread_5m: float = 0.5) -> tuple[bool, str]:
     """Check if tick mode should be armed."""
-    
+
     progress = metrics["progress"]
     speed = metrics["speed"]
     velocity = metrics["velocity"]
     pullback = metrics["pullback"]
     dist_to_tp = metrics["dist_to_tp"]
     near_tp_band = metrics["near_tp_band"]
-    
+
     # A) Near entry survival
     if progress <= 0.25:
         return True, "A"
-    
+
     # B) Early decay detection
     if progress >= 0.45 and speed < 0.70 and velocity < 0:
         return True, "B"
-    
+
     # C) Panic conditions
-    if (velocity <= -0.60 or 
-        pullback >= 0.45 or 
+    if (velocity <= -0.60 or
+        pullback >= 0.45 or
         spread_pips > 1.6 * median_spread_5m):
         return True, "C"
-    
+
     # D) Near-TP capture zone
     if dist_to_tp <= near_tp_band and progress >= 0.50:
         return True, "D"
-    
+
     return False, ""
 
 def get_aee_phase(metrics: dict, aee_state: AEEState, spread_pips: float) -> str:
     """Determine AEE phase from metrics."""
-    
+
     progress = metrics["progress"]
     speed = metrics["speed"]
     velocity = metrics["velocity"]
     pullback = metrics["pullback"]
-    
+    phase_now = _normalize_aee_phase(getattr(aee_state, "phase", AEEPhase.PROTECT.value))
+
     # Panic check first
-    if (velocity <= PANIC_VELOCITY or 
+    if (velocity <= PANIC_VELOCITY or
         pullback >= PANIC_PULLBACK):
-        return AEEPhase.PANIC
-    
+        return AEEPhase.PANIC.value
+
     # Phase transitions
-    if aee_state.phase == AEEPhase.PROTECT:
+    if phase_now == AEEPhase.PROTECT.value:
         protect_exit_progress = max(PROTECT_EXIT_PROGRESS_BASE, 1.5 * spread_pips / 5.0)  # Simplified
         if progress >= protect_exit_progress:
-            return AEEPhase.BUILD
-    
-    elif aee_state.phase == AEEPhase.BUILD:
+            return AEEPhase.BUILD.value
+
+    elif phase_now == AEEPhase.BUILD.value:
         if progress >= LOCK_PROGRESS or (speed >= 1.10 and progress >= 0.50):
-            return AEEPhase.HARVEST
-    
-    elif aee_state.phase == AEEPhase.HARVEST:
-        # Runner eligibility
-        if (progress >= 0.90 and 
-            speed >= 0.80 and 
-            velocity >= -0.20 and 
-            pullback <= 0.35 and
+            return AEEPhase.HARVEST.value
+
+    elif phase_now == AEEPhase.HARVEST.value:
+        # Runner is explicitly earned; harvesting stays the default identity.
+        if (progress >= 1.05 and
+            speed >= 1.00 and
+            velocity >= 0.00 and
+            pullback <= 0.20 and
             metrics["dist_to_tp"] > metrics["near_tp_band"]):
-            return AEEPhase.RUNNER
-    
-    elif aee_state.phase == AEEPhase.RUNNER:
-        # Exit runner conditions
-        if (speed < 0.80 or 
-            velocity < -0.20 or 
-            pullback > 0.35):
-            return AEEPhase.HARVEST
-    
-    return str(aee_state.phase)
+            return AEEPhase.RUNNER.value
+
+    elif phase_now == AEEPhase.RUNNER.value:
+        # Degrade quickly back to HARVEST once continuation quality softens.
+        if (speed < 0.95 or
+            velocity < -0.05 or
+            pullback > 0.25):
+            return AEEPhase.HARVEST.value
+
+    return phase_now
+
+
+def _pc1_abs_units(trade: dict) -> int:
+    vals: List[Any] = [
+        trade.get("initialUnits"),
+        trade.get("currentUnits"),
+        trade.get("units"),
+    ]
+    for v in vals:
+        try:
+            u = int(abs(float(v or 0.0)))
+            if u > 0:
+                return u
+        except Exception:
+            continue
+    return 0
+
+
+def _pc1_normalized_pnl(trade: dict, *, entry: float, mid: float, direction: str) -> float:
+    units = _pc1_abs_units(trade)
+    try:
+        upl = float(trade.get("unrealizedPL", "nan") or "nan")
+    except Exception:
+        upl = float("nan")
+    if units > 0 and math.isfinite(upl):
+        return float(upl / float(units))
+    if str(direction).upper() == "LONG":
+        return float(mid - entry)
+    return float(entry - mid)
+
+
+def _pc1_plan_management_actions(
+    *,
+    trade: dict,
+    aee_state: AEEState,
+    normalized_pnl: float,
+    direction: str,
+    entry: float,
+    current_sl: Optional[float],
+    first_partial_fraction: float,
+) -> Dict[str, Any]:
+    trade_type = "RUNNER" if str(getattr(aee_state, "trade_type", "HARVESTER") or "HARVESTER").upper() == "RUNNER" else "HARVESTER"
+    sign = 1.0 if str(direction).upper() == "LONG" else -1.0
+    actions: Dict[str, Any] = {}
+    stage = int(getattr(aee_state, "sl_adjust_stage", 0) or 0)
+    locked_value: Optional[float] = None
+    desired_stage = stage
+
+    if trade_type == "HARVESTER":
+        if stage < 1 and normalized_pnl >= AEE_PC1_H_LOCK1_TRIGGER:
+            locked_value = AEE_PC1_H_LOCK1_VALUE
+            desired_stage = 1
+        if stage < 2 and normalized_pnl >= AEE_PC1_H_LOCK2_TRIGGER:
+            locked_value = AEE_PC1_H_LOCK2_VALUE
+            desired_stage = 2
+    else:
+        runner_partial_done = bool(getattr(aee_state, "runner_partial_done", False))
+        if (not runner_partial_done) and normalized_pnl >= AEE_PC1_R_ACTIVATE_TRIGGER:
+            cur_units = _pc1_abs_units(trade)
+            close_units = int(round(float(cur_units) * max(0.05, min(0.95, float(first_partial_fraction or 0.45)))))
+            close_units = max(1, min(close_units, max(1, cur_units - 1))) if cur_units > 1 else 0
+            if close_units > 0:
+                actions["runner_partial_units"] = int(close_units)
+                actions["runner_partial_fraction"] = float(first_partial_fraction or 0.45)
+            locked_value = AEE_PC1_R_LOCK1_VALUE
+            desired_stage = max(desired_stage, 1)
+        if stage < 2 and normalized_pnl >= AEE_PC1_R_LOCK2_TRIGGER:
+            locked_value = AEE_PC1_R_LOCK2_VALUE
+            desired_stage = 2
+
+    if locked_value is not None:
+        target_sl = round_tick(entry + (sign * float(locked_value)), str(trade.get("pair", "") or ""))
+        improve = False
+        if current_sl is None or not math.isfinite(float(current_sl)):
+            improve = True
+        elif sign > 0:
+            improve = float(target_sl) > float(current_sl)
+        else:
+            improve = float(target_sl) < float(current_sl)
+        if improve:
+            actions["sl_move_price"] = float(target_sl)
+            actions["sl_adjust_stage"] = int(desired_stage)
+
+    return actions
+
+
+def _pc1_evaluate_exit_reason(
+    *,
+    trade: dict,
+    aee_state: AEEState,
+    normalized_pnl: float,
+    now: float,
+    entry: float,
+    mid: float,
+    direction: str,
+) -> Optional[str]:
+    trade_type = "RUNNER" if str(getattr(aee_state, "trade_type", "HARVESTER") or "HARVESTER").upper() == "RUNNER" else "HARVESTER"
+    peak = float(getattr(aee_state, "peak_normalized_pnl", 0.0) or 0.0)
+    prev_norm = float(getattr(aee_state, "prev_normalized_pnl", 0.0) or 0.0)
+    prev_ts = float(getattr(aee_state, "prev_normalized_ts", now) or now)
+    dt = max(0.05, float(now - prev_ts))
+    jump = float(normalized_pnl - prev_norm)
+    speed = float(jump / dt)
+    impulse_min_norm = float(getattr(aee_state, "override_harvest_trigger_norm", 0.0) or 0.0)
+    giveback_override = float(getattr(aee_state, "override_giveback_trigger_norm", 0.0) or 0.0)
+    panic_norm = abs(float(getattr(aee_state, "override_panic_trigger_norm", 0.0) or 0.0))
+    if impulse_min_norm <= 0.0:
+        impulse_min_norm = float(AEE_PC1_IMPULSE_MIN_NORM)
+
+    # 1) IMPULSE: fast positive profit expansion.
+    if (
+        jump >= float(AEE_PC1_IMPULSE_MIN_JUMP)
+        and speed >= float(AEE_PC1_IMPULSE_SPEED)
+        and normalized_pnl >= float(impulse_min_norm)
+    ):
+        return "IMPULSE"
+
+    # 2) PRE-SL PROTECTION: close before full SL drift.
+    adverse = max(0.0, -float(normalized_pnl))
+    if panic_norm > 0.0 and adverse >= panic_norm:
+        return "PRE_SL_PROTECTION"
+    if adverse >= float(AEE_PC1_PRE_SL_NORM):
+        return "PRE_SL_PROTECTION"
+    sl_px = ffloat(trade.get("sl"), float("nan"))
+    if math.isfinite(float(sl_px)) and math.isfinite(float(entry)):
+        sl_dist = abs(float(entry) - float(sl_px))
+        if sl_dist > 0.0:
+            adv_move = max(0.0, (float(entry) - float(mid)) if str(direction).upper() == "LONG" else (float(mid) - float(entry)))
+            if adv_move >= (float(AEE_PC1_PRE_SL_FRAC) * sl_dist):
+                return "PRE_SL_PROTECTION"
+
+    # 3) PROGRESS FAILURE: no meaningful improvement / excessive giveback.
+    min_peak = float(impulse_min_norm if impulse_min_norm > 0.0 else (AEE_PC1_PROGRESS_MIN_PEAK_R if trade_type == "RUNNER" else AEE_PC1_PROGRESS_MIN_PEAK_H))
+    gb_limit = float(giveback_override if giveback_override > 0.0 else (AEE_PC1_PROGRESS_GIVEBACK_R if trade_type == "RUNNER" else AEE_PC1_PROGRESS_GIVEBACK_H))
+    timeout_sec = float(AEE_PC1_PROGRESS_NO_PEAK_SEC_R if trade_type == "RUNNER" else AEE_PC1_PROGRESS_NO_PEAK_SEC_H)
+    giveback = max(0.0, peak - float(normalized_pnl))
+    last_peak_ts = float(getattr(aee_state, "last_peak_time", now) or now)
+    stalled_sec = max(0.0, float(now - last_peak_ts))
+    if peak >= min_peak and (giveback >= gb_limit or (stalled_sec >= timeout_sec and giveback >= (0.5 * gb_limit))):
+        return "PROGRESS_FAILURE"
+
+    return None
 
 
 def _evaluate_exit_rules(
@@ -9540,7 +12106,7 @@ def _evaluate_exit_rules(
     eval_mode: str = "NORMAL",
     now_ts_val: Optional[float] = None,
 ) -> Optional[str]:
-    """SOP v2 priority order: P1 PANIC, P2 NEAR_TP_STALL, P3 PULSE_STALL, P4 FAILED_TO_CONTINUE_DECAY."""
+    """SOP v2 priority order with explicit early-loss and green-stall capture exits."""
     _ = trade  # reserved for trade-aware checks per SOP contract
     progress = float(metrics.get("progress", 0.0) or 0.0)
     speed = float(metrics.get("speed", 0.0) or 0.0)
@@ -9551,9 +12117,67 @@ def _evaluate_exit_rules(
     leg_mult = float(metrics.get("leg_mult", 1.0) or 1.0)
     dist_to_tp = float(metrics.get("dist_to_tp", 9e9) or 9e9)
     near_tp_band = float(metrics.get("near_tp_band", 0.25) or 0.25)
+    strictness_mult = float(metrics.get("strictness_multiplier", 1.0) or 1.0)
     atr_exec = float(metrics.get("atr_exec", 0.0) or 0.0)
     now_v = float(now_ts_val if now_ts_val is not None else now_ts())
     trade_id_val = int(float((trade or {}).get("id", 0) or 0))
+    entry_ts = float((trade or {}).get("ts", now_v) or now_v)
+    hold_sec = max(0.0, now_v - entry_ts)
+    direction = str((trade or {}).get("dir", "") or "").upper()
+    entry_px = float((trade or {}).get("entry", current_price) or current_price)
+    favorable_px = (float(current_price) - entry_px) if direction == "LONG" else (entry_px - float(current_price))
+    favorable_atr = (favorable_px / atr_exec) if atr_exec > 0.0 else 0.0
+    local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
+    local_low = float(metrics.get("local_low", aee_state.local_low) or aee_state.local_low)
+    if atr_exec > 0.0:
+        if direction == "LONG":
+            best_favorable_atr = max(0.0, (local_high - entry_px) / atr_exec)
+        else:
+            best_favorable_atr = max(0.0, (entry_px - local_low) / atr_exec)
+    else:
+        best_favorable_atr = 0.0
+
+    prev_best_favorable_atr = float(getattr(aee_state, "peak_progress", 0.0) or 0.0)
+    if best_favorable_atr > (prev_best_favorable_atr + 1e-9):
+        aee_state.last_favorable_ext_ts = now_v
+    last_favorable_ext_ts = float(getattr(aee_state, "last_favorable_ext_ts", 0.0) or 0.0)
+    if last_favorable_ext_ts <= 0.0:
+        last_favorable_ext_ts = now_v
+        aee_state.last_favorable_ext_ts = now_v
+    favorable_stall_s = max(0.0, now_v - last_favorable_ext_ts)
+    favorable_now_pos = max(0.0, favorable_atr)
+    favorable_giveback_atr = max(0.0, best_favorable_atr - favorable_now_pos)
+    retained_frac = (favorable_now_pos / best_favorable_atr) if best_favorable_atr > 1e-9 else 1.0
+    continuation_strength = float(speed) - float(pullback_rate)
+    adverse_atr = max(0.0, -favorable_atr)
+    path_bucket = "GREEN_THEN_STALL" if best_favorable_atr >= AEE_GREEN_STALL_MIN_FAVORABLE_ATR else "IMMEDIATE_FAILURE"
+    metrics["path_bucket"] = path_bucket
+    aee_state.rule_trace = {
+        "path_bucket": path_bucket,
+        "best_favorable_atr": round(float(best_favorable_atr), 4),
+        "favorable_giveback_atr": round(float(favorable_giveback_atr), 4),
+        "favorable_stall_s": round(float(favorable_stall_s), 2),
+        "adverse_atr": round(float(adverse_atr), 4),
+        "speed": round(float(speed), 4),
+        "velocity": round(float(velocity), 4),
+        "hold_sec": round(float(hold_sec), 2),
+    }
+    peak_progress_now = max(progress, float(getattr(aee_state, "peak_progress", 0.0) or 0.0))
+    # Time-decay compression: as hold time grows, tighten capture zone and reduce tolerated giveback.
+    td_alpha = 0.0
+    if hold_sec > AEE_TIME_DECAY_START_SEC and AEE_TIME_DECAY_FULL_SEC > AEE_TIME_DECAY_START_SEC:
+        td_alpha = min(
+            1.0,
+            max(0.0, (hold_sec - AEE_TIME_DECAY_START_SEC) / (AEE_TIME_DECAY_FULL_SEC - AEE_TIME_DECAY_START_SEC)),
+        )
+    near_tp_band_eff = float(near_tp_band) * strictness_mult * (1.0 + (AEE_TIME_DECAY_NEAR_TP_BOOST_MAX * td_alpha))
+    panic_velocity_eff = float(PANIC_VELOCITY) / max(0.50, strictness_mult)
+    panic_pullback_eff = float(PANIC_PULLBACK) / max(0.50, strictness_mult)
+    stall_pullback_eff = float(STALL_PULLBACK_ATR) / max(0.50, strictness_mult)
+    stall_speed_eff = float(STALL_SPEED) * strictness_mult
+    panic_pullbackrate_eff = float(PANIC_PULLBACKRATE) / max(0.50, strictness_mult)
+    profit_capture_decay_speed_eff = float(AEE_PROFIT_CAPTURE_DECAY_SPEED) * strictness_mult
+    profit_capture_decay_velocity_eff = float(AEE_PROFIT_CAPTURE_DECAY_VELOCITY) / max(0.50, strictness_mult)
 
     # Eval mode handling
     if eval_mode == "SURVIVAL":
@@ -9565,12 +12189,87 @@ def _evaluate_exit_rules(
         pass  # Use normal priority ordering below
     # NORMAL mode: use default thresholds
 
-    # P1 PANIC_EXIT
-    if velocity <= PANIC_VELOCITY or pullback >= PANIC_PULLBACK:
+    # Doctrine bucket 1: immediate failure (no meaningful green, adverse and weak path).
+    no_green_fast_fail = (
+        best_favorable_atr <= max(AEE_NEVER_GREEN_MAX_FAVORABLE_ATR, AEE_EXTRACTOR_MIN_PEAK_ATR * 0.5)
+        and adverse_atr >= (AEE_NEVER_GREEN_MIN_ADVERSE_ATR * 0.75)
+        and hold_sec >= float(AEE_MIN_HOLD_RED_SEC)
+        and (
+            speed <= (AEE_NEVER_GREEN_MAX_SPEED * 1.20)
+            or velocity <= AEE_NEVER_GREEN_MAX_VELOCITY
+            or continuation_strength <= 0.0
+        )
+    )
+    if no_green_fast_fail:
+        return "NEVER_GREEN_FAST_EXIT"
+
+    # Doctrine bucket 2: green then decay (money existed, now being lost).
+    # Profit harvesting is priority #1 once green exists.
+    had_green = best_favorable_atr >= AEE_EXTRACTOR_MIN_PEAK_ATR
+    # Green profit must never be blocked by hold timer.
+    ignore_min_hold_for_profit_capture = favorable_atr > 0.0
+    metrics["ignore_min_hold_for_profit_capture"] = bool(ignore_min_hold_for_profit_capture)
+
+    if had_green:
+        green_lock_failure = (
+            best_favorable_atr >= AEE_GREEN_LOCK_MIN_PEAK_ATR
+            and (
+                favorable_atr <= 0.0
+                or retained_frac <= AEE_GREEN_LOCK_MIN_RETAIN_FRAC
+                or (
+                    favorable_giveback_atr >= AEE_GREEN_LOCK_MIN_GIVEBACK_ATR
+                    and favorable_atr <= AEE_GREEN_LOCK_MIN_FINAL_ATR
+                )
+            )
+        )
+        if green_lock_failure:
+            return "GREEN_LOCK_FAILURE_EXIT"
+
+    green_stall_capture = (
+        had_green
+        and favorable_now_pos > 0.0
+        and favorable_giveback_atr >= AEE_GREEN_STALL_MIN_GIVEBACK_ATR
+        and favorable_stall_s >= AEE_GREEN_STALL_SEC
+        and speed <= AEE_GREEN_STALL_MAX_SPEED
+        and velocity <= AEE_GREEN_STALL_MAX_VELOCITY
+    )
+    if green_stall_capture:
+        return "EXTRACTION_LOSS_EXIT"
+
+    extraction_losing = (
+        favorable_giveback_atr >= AEE_EXTRACTOR_MIN_GIVEBACK_ATR
+        and retained_frac <= AEE_EXTRACTOR_MAX_RETAIN_FRAC
+        and (
+            favorable_stall_s >= AEE_EXTRACTOR_STALL_SEC
+            or
+            favorable_atr <= 0.0
+            or speed <= AEE_EXTRACTOR_MAX_SPEED
+            or velocity <= AEE_EXTRACTOR_MAX_VELOCITY
+            or continuation_strength <= 0.0
+        )
+    )
+    if had_green and extraction_losing:
+        return "EXTRACTION_LOSS_EXIT"
+
+        # Doctrine bucket 3: continuation earns life; default identity is HARVEST.
+        continuation_healthy = (
+            retained_frac >= max(0.82, AEE_EXTRACTOR_MAX_RETAIN_FRAC + 0.20)
+            and continuation_strength > 0.08
+            and velocity > 0.0
+            and favorable_giveback_atr <= max(0.02, AEE_EXTRACTOR_MIN_GIVEBACK_ATR)
+            and favorable_stall_s <= 2.0
+        )
+        if continuation_healthy:
+            return None
+        # Harvest-by-default once green exists and continuation quality is not exceptional.
+        return "EXTRACTION_LOSS_EXIT"
+
+    # Panic remains emergency backstop for non-green/early-failure paths.
+    if velocity <= panic_velocity_eff or pullback >= panic_pullback_eff:
         return "PANIC_EXIT"
 
-    # P2 NEAR_TP_STALL_CAPTURE (LOCKED)
-    in_near_tp = dist_to_tp <= near_tp_band
+    # Secondary fallback logic: keep TP-relative motifs as non-primary influences.
+    in_near_tp = dist_to_tp <= near_tp_band_eff
     if in_near_tp:
         local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
         local_low = float(metrics.get("local_low", aee_state.local_low) or aee_state.local_low)
@@ -9588,50 +12287,54 @@ def _evaluate_exit_rules(
         else:
             aee_state.near_tp_vel_neg_hits = 0
         cond_vel_2 = int(aee_state.near_tp_vel_neg_hits or 0) >= 2
-        cond_pullback = pullback >= float(STALL_PULLBACK_ATR)
+        cond_pullback = pullback >= stall_pullback_eff
 
         last_ext = float(aee_state.near_tp_last_ext_ts or 0.0)
         if last_ext <= 0.0:
             last_ext = now_v
             aee_state.near_tp_last_ext_ts = last_ext
         cond_noext_15 = (now_v - last_ext) >= float(STALL_NOEXT_T)
-        cond_speed = speed < float(STALL_SPEED)
+        cond_speed = speed < stall_speed_eff
 
         if cond_vel_2 or cond_pullback or (cond_noext_15 and cond_speed):
-            return "NEAR_TP_STALL_CAPTURE"
+            return "EXTRACTION_LOSS_EXIT"
     else:
         aee_state.near_tp_stall_hits = 0
         aee_state.near_tp_first_ts = 0.0
         aee_state.near_tp_vel_neg_hits = 0
         aee_state.near_tp_last_ext_ts = 0.0
 
-    # P3 PULSE_STALL_CAPTURE
-    if aee_state.pulse_exit_line is None and atr_exec > 0.0 and progress >= PULSE_PROGRESS:
+    # Secondary pulse fallback.
+    if aee_state.pulse_exit_line is None and atr_exec > 0.0 and peak_progress_now >= PULSE_PROGRESS:
         if aee_state.direction == "LONG":
             aee_state.pulse_exit_line = float(aee_state.local_high) - (PULSE_EXITLINE_ATR * atr_exec)
         else:
             aee_state.pulse_exit_line = float(aee_state.local_low) + (PULSE_EXITLINE_ATR * atr_exec)
     if aee_state.pulse_exit_line is not None:
         if aee_state.direction == "LONG" and current_price <= float(aee_state.pulse_exit_line):
-            return "PULSE_STALL_CAPTURE"
+            return "EXTRACTION_LOSS_EXIT"
         if aee_state.direction == "SHORT" and current_price >= float(aee_state.pulse_exit_line):
-            return "PULSE_STALL_CAPTURE"
+            return "EXTRACTION_LOSS_EXIT"
 
-    # P4 FAILED_TO_CONTINUE_DECAY
+    # Secondary decay fallback.
     ctx_mult = 1.0
-    if isinstance(runner_ctx, dict) and str(aee_state.phase) in ("HARVEST", "RUNNER"):
+    if isinstance(runner_ctx, dict) and _normalize_aee_phase(aee_state.phase) in ("HARVEST", "RUNNER"):
         if runner_ctx.get("trend_bias", 0) == (1 if str(aee_state.direction).upper() == "LONG" else -1):
             ctx_mult = 1.15
         elif runner_ctx.get("trend_bias", 0) != 0:
             ctx_mult = 0.85
-    giveback_cap = max(DECAY_LOCK_GIVEBACK_MIN_ATR, allowed_giveback_atr * leg_mult * ctx_mult)
+    giveback_cap_base = max(DECAY_LOCK_GIVEBACK_MIN_ATR, allowed_giveback_atr * leg_mult * ctx_mult)
+    giveback_cap = max(
+        DECAY_LOCK_GIVEBACK_MIN_ATR,
+        giveback_cap_base * (1.0 - (AEE_TIME_DECAY_GIVEBACK_TIGHTEN_MAX * td_alpha)),
+    )
     if (
-        progress >= 0.45
+        peak_progress_now >= 0.45
         and speed < 0.70 # Already implicitly checks low speed, but manual override makes it explicit
         and velocity < 0.0
-        and (pullback_rate >= PANIC_PULLBACKRATE or pullback >= giveback_cap)
+        and (pullback_rate >= panic_pullbackrate_eff or pullback >= giveback_cap)
     ):
-        return "FAILED_TO_CONTINUE_DECAY"
+        return "EXTRACTION_LOSS_EXIT"
 
     return None
 
@@ -9656,14 +12359,15 @@ def _aee_eval_for_trade(
     entry = float(tr.get("entry", 0.0) or 0.0)
     log_runtime("info", "AEE_ENTER", f"pair={pair} trade_id={trade_id} direction={direction} entry={entry} now={now}")
     atr_entry = float(tr.get("atr_entry", 0.0) or 0.0)
-    tp1_atr = float(get_speed_params(speed_class).get("tp1_atr", 1.0))
+    base_tp1_atr = float(get_speed_params(speed_class).get("tp1_atr", 1.0))
+    tp1_atr = float(get_directional_tp1_atr(speed_class, direction, base_tp1_atr))
     setup_name = str(tr.get("setup", "") or "")
     is_runner = setup_name.endswith("_RUN") or "_RUN" in setup_name
     leg_mult = RUN_GIVEBACK_MULT if is_runner else MAIN_GIVEBACK_MULT
-    
+
     # Get TradeSpec if available
     trade_spec = trade_specs.get(key)
-    
+
     # Use trade-specific TP if available (critical for high-yield overrides)
     manual_tp = float(tr.get("tp", 0.0) or 0.0)
     if manual_tp > 0.0:
@@ -9673,27 +12377,65 @@ def _aee_eval_for_trade(
 
     st = aee_states.get(key)
     if st is None:
+        entry_time = float(tr.get("ts", now) or now)
+        if not math.isfinite(entry_time) or entry_time <= 0.0 or entry_time > now:
+            entry_time = now
+        saved_local_high = ffloat(tr.get("aee_local_high"), float("nan"))
+        saved_local_low = ffloat(tr.get("aee_local_low"), float("nan"))
+        local_high_seed, local_low_seed, restore_meta = _aee_restore_extrema_from_history(
+            pair=pair,
+            entry_price=entry,
+            entry_time=entry_time,
+            current_mid=mid,
+            saved_local_high=saved_local_high,
+            saved_local_low=saved_local_low,
+            now=now,
+        )
         st = AEEState(
             entry_price=entry,
             direction=direction,
             tp_anchor=float(tp_anchor),
             sl_price=None,
-            phase=str(AEEPhase.PROTECT),
-            local_high=mid,
-            local_low=mid,
-            entry_time=float(tr.get("ts", now) or now),
+            phase=_normalize_aee_phase(tr.get("aee_phase") or AEEPhase.PROTECT.value),
+            local_high=float(local_high_seed),
+            local_low=float(local_low_seed),
+            entry_time=entry_time,
             last_tick_eval=0.0,
         )
+        if restore_meta.get("rebuilt"):
+            log_runtime(
+                "info",
+                "AEE_STATE_RESTORED",
+                pair=pair,
+                trade_id=trade_id,
+                direction=direction,
+                open_age_sec=round(float(restore_meta.get("age_sec", 0.0) or 0.0), 1),
+                granularity=str(restore_meta.get("granularity", "")),
+                candle_count=int(restore_meta.get("count", 0) or 0),
+                local_high=float(local_high_seed),
+                local_low=float(local_low_seed),
+                entry_time=float(entry_time),
+            )
         aee_states[key] = st
 
     st.entry_price = entry
     st.direction = direction
+    st.trade_type = "RUNNER" if is_runner else "HARVESTER"
+    strategy_meta = _resolve_trade_strategy_context(tr, pair=pair, direction=direction, leg_type=st.trade_type)
+    st.entry_family = str(strategy_meta.get("entry_family", "UNKNOWN") or "UNKNOWN")
+    st.target_profile = str(strategy_meta.get("target_profile", "T0_0") or "T0_0")
+    st.strategy_key = str(strategy_meta.get("strategy_key", "") or "")
+    override = _lookup_strategy_override(strategy_meta, direction)
+    pair_pip = float(pip_size(pair))
+    st.override_harvest_trigger_norm = abs(float(override.get("harvest_trigger_pips", 0.0) or 0.0)) * pair_pip
+    st.override_giveback_trigger_norm = abs(float(override.get("giveback_trigger_pips", 0.0) or 0.0)) * pair_pip
+    st.override_panic_trigger_norm = abs(float(override.get("panic_trigger_pips", 0.0) or 0.0)) * pair_pip
+    st.override_match_key = str(override.get("match_key", "") or "")
     st.tp_anchor = float(tp_anchor)
     st.mid_ring.append((now, mid))
     st.local_high = max(st.local_high, mid)
     st.local_low = min(st.local_low, mid)
     st.entry_time = float(tr.get("ts", now) or now)
-    st.last_tick_eval = now
 
     _aee_refresh_m1_volatility(pair, st, now)
     atr_exec = float(st.atr14 * st.k) if (st.atr14 > 0.0) else float(atr_entry)
@@ -9728,8 +12470,13 @@ def _aee_eval_for_trade(
     st.pullback_start = pullback
 
     dist_to_tp = abs(float(st.tp_anchor) - mid) / atr_exec if atr_exec > 0.0 else 9e9
+    current_sl = ffloat(tr.get("sl"), float("nan"))
+    if not math.isfinite(float(current_sl)) and isinstance(st.sl_price, (int, float)):
+        current_sl = float(st.sl_price)
     atr_pips_val = atr_pips(pair, atr_exec) if atr_exec > 0.0 else 0.0
     near_tp_band = max(NEAR_TP_BAND_ATR_BASE, 1.2 * spread_pips / atr_pips_val) if atr_pips_val > 0 else NEAR_TP_BAND_ATR_BASE
+    if aee_knobs is not None:
+        near_tp_band = max(float(aee_knobs.near_tp_band_atr or near_tp_band), near_tp_band)
     med_spread = _median([s for _, s in list(st.spread_ring)[-60:]]) if st.spread_ring else spread_pips
 
     metrics = {
@@ -9745,10 +12492,47 @@ def _aee_eval_for_trade(
         "atr_exec": atr_exec,
         "leg_mult": float(leg_mult),
         "is_runner": bool(is_runner),
+        "strictness_multiplier": float((aee_knobs.strictness_mult if aee_knobs is not None else 1.0) or 1.0),
+        "harvester_time_fraction": float((aee_knobs.harvester_time_fraction if aee_knobs is not None else 0.45) or 0.45),
+        "first_partial_fraction": float((aee_knobs.first_partial_fraction if aee_knobs is not None else 0.45) or 0.45),
+        "first_partial_trigger_r": float((aee_knobs.first_partial_trigger_r if aee_knobs is not None else 1.25) or 1.25),
+        "stop_time_fraction": float((aee_knobs.stop_time_fraction if aee_knobs is not None else 0.50) or 0.50),
+        "add_on_enabled": bool(aee_knobs.add_on_enabled) if aee_knobs is not None else False,
+        "add_on_risk_percent": float((aee_knobs.add_on_risk_percent if aee_knobs is not None else 1.0) or 1.0),
+        "add_on_min_parent_r": float((aee_knobs.add_on_min_parent_r if aee_knobs is not None else 0.75) or 0.75),
+        "add_on_min_continuation": float((aee_knobs.add_on_min_continuation if aee_knobs is not None else 0.60) or 0.60),
+        "family_source": str((aee_knobs.family_source if aee_knobs is not None else "") or ""),
     }
 
+    normalized_pnl = _pc1_normalized_pnl(tr, entry=entry, mid=mid, direction=direction)
+    prev_peak = float(getattr(st, "peak_normalized_pnl", 0.0) or 0.0)
+    if normalized_pnl >= (prev_peak + float(AEE_PC1_PROGRESS_PEAK_EPS)):
+        st.peak_normalized_pnl = float(normalized_pnl)
+        st.last_peak_time = float(now)
+    elif float(getattr(st, "last_peak_time", 0.0) or 0.0) <= 0.0:
+        st.last_peak_time = float(now)
+
+    metrics["normalized_pnl"] = float(normalized_pnl)
+    metrics["peak_normalized_pnl"] = float(getattr(st, "peak_normalized_pnl", 0.0) or 0.0)
+    metrics["last_peak_time"] = float(getattr(st, "last_peak_time", 0.0) or 0.0)
+    metrics["trade_type"] = str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER")
+    metrics["entry_family"] = str(getattr(st, "entry_family", "UNKNOWN") or "UNKNOWN")
+    metrics["target_profile"] = str(getattr(st, "target_profile", "T0_0") or "T0_0")
+    metrics["strategy_key"] = str(getattr(st, "strategy_key", "") or "")
+    metrics["override_harvest_trigger_norm"] = float(getattr(st, "override_harvest_trigger_norm", 0.0) or 0.0)
+    metrics["override_giveback_trigger_norm"] = float(getattr(st, "override_giveback_trigger_norm", 0.0) or 0.0)
+    metrics["override_panic_trigger_norm"] = float(getattr(st, "override_panic_trigger_norm", 0.0) or 0.0)
+    metrics["override_match_key"] = str(getattr(st, "override_match_key", "") or "")
+    metrics["trade_age_sec"] = max(0.0, float(now - float(st.entry_time or now)))
+
     # Participation -> decay lock with split-leg tolerance context.
-    st.peak_progress = max(float(st.peak_progress or 0.0), float(progress))
+    favorable_peak = 0.0
+    if atr_exec > 0.0:
+        if direction == "LONG":
+            favorable_peak = max(0.0, (float(st.local_high) - entry) / atr_exec)
+        else:
+            favorable_peak = max(0.0, (entry - float(st.local_low)) / atr_exec)
+    st.peak_progress = max(float(st.peak_progress or 0.0), float(progress), float(favorable_peak))
     lock_track = {
         "peak": float(st.peak_progress),
         "locked_peak": float(st.locked_peak or 0.0),
@@ -9763,7 +12547,7 @@ def _aee_eval_for_trade(
     metrics["data_quality"] = "DEGRADED" if survival_mode else "OK"
 
     runner_ctx = {"trend_bias": 0, "regime": "mixed", "vol_state": "normal"}
-    if str(st.phase) in ("HARVEST", "RUNNER"):
+    if _normalize_aee_phase(st.phase) in ("HARVEST", "RUNNER"):
         h1 = get_candles(pair, "H1", 20)
         h4 = get_candles(pair, "H4", 20)
         runner_ctx = _runner_context(h1 if isinstance(h1, list) else [], h4 if isinstance(h4, list) else [])
@@ -9790,18 +12574,67 @@ def _aee_eval_for_trade(
         eval_mode = "SURVIVAL"
     else:
         eval_mode = "NORMAL"
-    
+
     if tick_due:
-        exit_reason = _evaluate_exit_rules(
-            tr,
-            metrics,
-            st,
-            mid,
-            survival_mode=survival_mode,
-            runner_ctx=runner_ctx,
-            eval_mode=eval_mode,
-            now_ts_val=now,
+        if AEE_PC1_CONTRACT_ENABLED:
+            exit_reason = _pc1_evaluate_exit_reason(
+                trade=tr,
+                aee_state=st,
+                normalized_pnl=float(normalized_pnl),
+                now=float(now),
+                entry=float(entry),
+                mid=float(mid),
+                direction=str(direction),
+            )
+        else:
+            exit_reason = _evaluate_exit_rules(
+                tr,
+                metrics,
+                st,
+                mid,
+                survival_mode=survival_mode,
+                runner_ctx=runner_ctx,
+                eval_mode=eval_mode,
+                now_ts_val=now,
+            )
+
+    actions: Dict[str, Any] = {}
+    if AEE_PC1_CONTRACT_ENABLED:
+        actions = _pc1_plan_management_actions(
+            trade=tr,
+            aee_state=st,
+            normalized_pnl=float(normalized_pnl),
+            direction=str(direction),
+            entry=float(entry),
+            current_sl=float(current_sl) if math.isfinite(float(current_sl)) else None,
+            first_partial_fraction=float(metrics.get("first_partial_fraction", 0.45) or 0.45),
         )
+
+    if AEE_PC1_CONTRACT_ENABLED and tick_due:
+        prev_ts_dbg = float(getattr(st, "prev_normalized_ts", now) or now)
+        prev_norm_dbg = float(getattr(st, "prev_normalized_pnl", normalized_pnl) or normalized_pnl)
+        dt_dbg = max(0.05, float(now - prev_ts_dbg))
+        impulse_rate_dbg = float((float(normalized_pnl) - prev_norm_dbg) / dt_dbg)
+        peak_dbg = float(getattr(st, "peak_normalized_pnl", 0.0) or 0.0)
+        last_peak_dbg = float(getattr(st, "last_peak_time", now) or now)
+        time_since_peak_dbg = max(0.0, float(now - last_peak_dbg))
+        giveback_dbg = max(0.0, float(peak_dbg - float(normalized_pnl)))
+        log_runtime(
+            "info",
+            "AEE_PC1_DECISION_DEBUG",
+            trade_id=trade_id,
+            trade_type=str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER"),
+            normalized_pnl=round(float(normalized_pnl), 8),
+            peak_normalized_pnl=round(float(peak_dbg), 8),
+            time_since_peak=round(float(time_since_peak_dbg), 3),
+            giveback=round(float(giveback_dbg), 8),
+            impulse_rate=round(float(impulse_rate_dbg), 8),
+            exit_reason=str(exit_reason or ""),
+            planned_actions=actions,
+        )
+
+    st.prev_normalized_pnl = float(normalized_pnl)
+    st.prev_normalized_ts = float(now)
 
     # Runtime proof marker: AEE_DECISION
     log_runtime(
@@ -9815,36 +12648,62 @@ def _aee_eval_for_trade(
         "AEE_DECISION",
         f"exit={bool(exit_reason)} reason={exit_reason} phase={getattr(st, 'phase', None)} trade_id={trade_id} pair={pair}"
     )
+    emit_trade_kind(
+        "AEE_STRATEGY_OVERRIDE_DECISION",
+        {
+            **build_event_envelope(
+                kind="AEE_STRATEGY_OVERRIDE_DECISION",
+                pair=pair,
+                direction=direction,
+                trade_id=trade_id,
+                broker_trade_id=tr.get("oanda_trade_id"),
+                leg_type=str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER"),
+            ),
+            "entry_family": str(getattr(st, "entry_family", "UNKNOWN") or "UNKNOWN"),
+            "trade_type": str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER"),
+            "target_profile": str(getattr(st, "target_profile", "T0_0") or "T0_0"),
+            "strategy_key": str(getattr(st, "strategy_key", "") or ""),
+            "override_match_key": str(getattr(st, "override_match_key", "") or ""),
+            "harvest_trigger_pips": float(override.get("harvest_trigger_pips", 0.0) or 0.0),
+            "giveback_trigger_pips": float(override.get("giveback_trigger_pips", 0.0) or 0.0),
+            "panic_trigger_pips": float(override.get("panic_trigger_pips", 0.0) or 0.0),
+            "normalized_pnl": float(normalized_pnl),
+            "peak_normalized_pnl": float(getattr(st, "peak_normalized_pnl", 0.0) or 0.0),
+            "decision": "EXIT" if bool(exit_reason) else "HOLD",
+            "exit_reason": str(exit_reason or ""),
+        },
+    )
     return {
         "state": st,
         "metrics": metrics,
-        "phase": str(st.phase),
+        "phase": _normalize_aee_phase(st.phase),
         "tick_armed": bool(st.tick_armed),
         "tick_reason": str(st.tick_reason),
         "tick_due": bool(tick_due),
         "exit_reason": exit_reason,
+        "actions": actions,
         "survival_mode": bool(survival_mode),
     }
 
 # ===== SPREAD-AWARE SIZING =====
 
-def calculate_spread_aware_size(pair: str, speed_class: str, spread_pips: float, 
+def calculate_spread_aware_size(pair: str, speed_class: str, spread_pips: float,
                                atr_price: float, units_base: int,
                                median_spread_5m: Optional[float] = None) -> tuple[int, dict]:
     """Calculate spread-aware position size."""
-    
+
     # Risk cap disabled per operator instruction (no hard risk cap).
     s_atr = spread_atr(pair, spread_pips, atr_price)
-    
+
     # Speed class thresholds
     thresholds = {
         "FAST": (0.10, 0.45),
         "MED": (0.12, 0.55),
         "SLOW": (0.15, 0.70),
     }
-    
+
     s0, s1 = thresholds.get(speed_class, (0.12, 0.55))
-    
+
     # Calculate multiplier
     if not math.isfinite(s_atr) or s_atr >= s1:
         mult = 0.0
@@ -9852,16 +12711,16 @@ def calculate_spread_aware_size(pair: str, speed_class: str, spread_pips: float,
         mult = 1.0
     else:
         mult = 1.0 - (s_atr - s0) / (s1 - s0)
-    
+
     # Apply spike penalty
     if median_spread_5m is not None and median_spread_5m > 0:
         spike_ratio = spread_pips / median_spread_5m
         if spike_ratio >= 2.0:
             mult *= 0.5
-    
+
     # Calculate final units
     units_final = int(units_base * mult)
-    
+
     log_fields = {
         "spread_pips": spread_pips,
         "atr_exec_price": atr_price,
@@ -9873,7 +12732,7 @@ def calculate_spread_aware_size(pair: str, speed_class: str, spread_pips: float,
         "speed_class": speed_class,
         "pair": pair
     }
-    
+
     # Check minimum units
     if units_final < 1:
         if mult == 0.0 and s_atr >= s1:
@@ -9881,7 +12740,7 @@ def calculate_spread_aware_size(pair: str, speed_class: str, spread_pips: float,
         else:
             log_fields["reject_reason"] = "below_min_units_after_spread_mult"
         return 0, log_fields
-    
+
     return units_final, log_fields
 
 # ===== INTERNET-RESILIENT COMPONENTS =====
@@ -9910,55 +12769,55 @@ class PriceEvent:
 
 class MarketDataHub:
     """Centralized market data with resilience."""
-    
+
     def __init__(self):
         self.price_events: Dict[str, List[PriceEvent]] = {}
         self.connectivity_state = ConnectivityState.OK
         self.last_stream_update: Dict[str, float] = {}
         self.median_spread_5m: Dict[str, float] = {}
-    
+
     def add_price_event(self, instrument: str, event: PriceEvent):
         """Add price event and update state."""
         if instrument not in self.price_events:
             self.price_events[instrument] = []
-        
+
         self.price_events[instrument].append(event)
         self.last_stream_update[instrument] = event.t_local
-        
+
         # Keep last 20 minutes
         cutoff = event.t_local - 1200
         self.price_events[instrument] = [p for p in self.price_events[instrument] if p.t >= cutoff]
-        
+
         # Update spread tracking
         self._update_spread_tracking(instrument, event)
         self._update_connectivity_state(instrument)
-    
+
     def _update_spread_tracking(self, instrument: str, event: PriceEvent):
         """Update median spread tracking."""
         if instrument not in self.median_spread_5m:
             self.median_spread_5m[instrument] = event.spread_pips
             return
-        
+
         # Simple EMA
         alpha = 0.1
         self.median_spread_5m[instrument] = (
-            alpha * event.spread_pips + 
+            alpha * event.spread_pips +
             (1 - alpha) * self.median_spread_5m[instrument]
         )
-    
+
     def _update_connectivity_state(self, instrument: str):
         """Update connectivity state."""
         now = time.time()
         last_stream = self.last_stream_update.get(instrument, 0)
         stream_age = now - last_stream
-        
+
         if stream_age < 2.0:
             self.connectivity_state = ConnectivityState.OK
         elif stream_age < 10.0:
             self.connectivity_state = ConnectivityState.DEGRADED
         else:
             self.connectivity_state = ConnectivityState.OFFLINE
-    
+
     def get_latest_price(self, instrument: str) -> Optional[PriceEvent]:
         """Get latest price with fallback."""
         if instrument in self.price_events and self.price_events[instrument]:
@@ -9967,14 +12826,14 @@ class MarketDataHub:
             if age < 15.0:
                 return latest
         return None
-    
+
     def get_atr(self, instrument: str, period: int = 14) -> Optional[float]:
         """Get ATR with fallback."""
         if instrument not in self.price_events or len(self.price_events[instrument]) < period + 1:
             return None
-        
+
         prices = [p.mid for p in self.price_events[instrument]]
-        
+
         # Simple ATR calculation
         true_ranges = []
         for i in range(1, len(prices)):
@@ -9983,10 +12842,10 @@ class MarketDataHub:
             prev_close = prices[i-1]
             tr = max(high - low, abs(high - prev_close), abs(low - prev_close))
             true_ranges.append(tr)
-        
+
         if not true_ranges:
             return None
-        
+
         atr = sum(true_ranges[-period:]) / period
         return atr if math.isfinite(atr) and atr > 0 else None
 
@@ -9999,7 +12858,7 @@ class MarketDataHub:
 # ===== PATH BUFFER (RING BUFFER) =====
 class PathBuffer:
     """Ring buffer for price path data."""
-    
+
     def __init__(self, max_size: int = 2400):  # 20 minutes at 5Hz
         self.max_size = max_size
         self.times: List[float] = []
@@ -10008,7 +12867,7 @@ class PathBuffer:
         self.asks: List[float] = []
         self.spreads: List[float] = []
         self._lock = threading.Lock()
-    
+
     def add(self, event: PriceEvent):
         """Add price event to buffer."""
         with self._lock:
@@ -10017,7 +12876,7 @@ class PathBuffer:
             self.bids.append(event.bid)
             self.asks.append(event.ask)
             self.spreads.append(event.spread_pips)
-            
+
             # Maintain ring buffer
             if len(self.times) > self.max_size:
                 self.times.pop(0)
@@ -10025,7 +12884,7 @@ class PathBuffer:
                 self.bids.pop(0)
                 self.asks.pop(0)
                 self.spreads.pop(0)
-            
+
             # T1-11 Path Buffer Gate Validation - check size periodically
             if len(self.times) % 100 == 0:  # Check every 100 additions
                 try:
@@ -10034,11 +12893,11 @@ class PathBuffer:
                     proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
                     if proof_dirs:
                         latest_proof = proof_dirs[-1]
-                        
+
                         current_size = len(self.times)
                         max_allowed = self.max_size
                         buffer_status = "PASS" if current_size <= max_allowed else "FAIL"
-                        
+
                         buffer_report = {
                             "status": buffer_status,
                             "current_buffer_size": current_size,
@@ -10046,14 +12905,14 @@ class PathBuffer:
                             "max_allowed": max_allowed,
                             "instrument": getattr(event, 'instrument', 'unknown')
                         }
-                        
+
                         # Write path_buffer_report
                         buffer_file = latest_proof / f"path_buffer_report_{getattr(event, 'instrument', 'unknown')}.json"
                         buffer_file.write_text(json.dumps(buffer_report, indent=2))
-                        
+
                         # Log T1-11 result
                         if buffer_status == "PASS":
-                            log_runtime("debug", "T1-11_PATH_BUFFER_OK", 
+                            log_runtime("debug", "T1-11_PATH_BUFFER_OK",
                                       instrument=getattr(event, 'instrument', 'unknown'),
                                       size=current_size)
                         else:
@@ -10062,18 +12921,18 @@ class PathBuffer:
                                       size=current_size, max_allowed=max_allowed)
                 except Exception as e:
                     log_runtime("warning", "T1-11_ARTIFACT_ERROR", error=str(e))
-    
+
     def get_window(self, duration_sec: float) -> tuple:
         """Get data for last N seconds."""
         with self._lock:
             if not self.times:
                 return [], [], [], [], []
-            
+
             cutoff = time.time() - duration_sec
             idx = 0
             while idx < len(self.times) and self.times[idx] < cutoff:
                 idx += 1
-            
+
             return (
                 self.times[idx:],
                 self.mids[idx:],
@@ -10081,13 +12940,13 @@ class PathBuffer:
                 self.asks[idx:],
                 self.spreads[idx:]
             )
-    
+
     def get_latest(self) -> Optional[PriceEvent]:
         """Get latest price event."""
         with self._lock:
             if not self.times:
                 return None
-            
+
             return PriceEvent(
                 t_exchange=0,  # Not stored
                 t_local=self.times[-1],
@@ -10113,26 +12972,26 @@ class Bucket:
 
 class BucketEngine:
     """Build S5 and M1 buckets from price stream."""
-    
+
     def __init__(self):
         self.s5_buckets: Dict[str, List[Bucket]] = {}
         self.m1_buckets: Dict[str, List[Bucket]] = {}
         self.current_s5: Dict[str, Optional[Bucket]] = {}
         self.current_m1: Dict[str, Optional[Bucket]] = {}
         self._lock = threading.Lock()
-    
+
     def add_price(self, instrument: str, event: PriceEvent):
         """Add price and update buckets."""
         with self._lock:
             now = event.t_local
-            
+
             # Initialize if needed
             if instrument not in self.s5_buckets:
                 self.s5_buckets[instrument] = []
                 self.m1_buckets[instrument] = []
                 self.current_s5[instrument] = None
                 self.current_m1[instrument] = None
-            
+
             # S5 bucket handling
             cur_s5 = self.current_s5[instrument]
             if cur_s5 is None or now >= cur_s5.t_end:
@@ -10143,7 +13002,7 @@ class BucketEngine:
                     # Keep last 6 hours
                     cutoff = now - 21600
                     self.s5_buckets[instrument] = [b for b in self.s5_buckets[instrument] if b.t_start >= cutoff]
-                
+
                 # Start new S5 bucket
                 bucket_start = int(now / 5) * 5
                 self.current_s5[instrument] = Bucket(
@@ -10156,7 +13015,7 @@ class BucketEngine:
                     is_complete=False
                 )
                 cur_s5 = self.current_s5[instrument]
-            
+
             if cur_s5 is None:
                 # Defensive fallback for static typing and unexpected state drift.
                 bucket_start = int(now / 5) * 5
@@ -10170,12 +13029,12 @@ class BucketEngine:
                     is_complete=False,
                 )
                 self.current_s5[instrument] = cur_s5
-            
+
             # Update S5 bucket
             cur_s5.high = max(cur_s5.high, event.mid)
             cur_s5.low = min(cur_s5.low, event.mid)
             cur_s5.close = event.mid
-            
+
             # M1 bucket handling (aggregated from S5)
             cur_m1 = self.current_m1[instrument]
             if cur_m1 is None or now >= cur_m1.t_end:
@@ -10186,7 +13045,7 @@ class BucketEngine:
                     # Keep last 72 hours
                     cutoff = now - 259200
                     self.m1_buckets[instrument] = [b for b in self.m1_buckets[instrument] if b.t_start >= cutoff]
-                
+
                 # Start new M1 bucket
                 bucket_start = int(now / 60) * 60
                 self.current_m1[instrument] = Bucket(
@@ -10199,7 +13058,7 @@ class BucketEngine:
                     is_complete=False
                 )
                 cur_m1 = self.current_m1[instrument]
-            
+
             if cur_m1 is None:
                 # Defensive fallback for static typing and unexpected state drift.
                 bucket_start = int(now / 60) * 60
@@ -10213,29 +13072,29 @@ class BucketEngine:
                     is_complete=False,
                 )
                 self.current_m1[instrument] = cur_m1
-            
+
             # Update M1 bucket
             cur_m1.high = max(cur_m1.high, cur_s5.high)
             cur_m1.low = min(cur_m1.low, cur_s5.low)
             cur_m1.close = cur_s5.close
-    
+
     def get_m1_buckets(self, instrument: str, count: int = 200) -> List[Bucket]:
         """Get M1 buckets for ATR calculation."""
         with self._lock:
             if instrument not in self.m1_buckets:
                 return []
-            
+
             buckets = self.m1_buckets[instrument]
             if not buckets:
                 return []
-            
+
             # Include current incomplete bucket if available
             current = self.current_m1.get(instrument)
             if current and current not in buckets:
                 buckets = buckets + [current]
-            
+
             return buckets[-count:]
-    
+
     def get_latest_m1(self, instrument: str) -> Optional[Bucket]:
         """Get latest M1 bucket (may be incomplete)."""
         with self._lock:
@@ -10246,66 +13105,66 @@ class BucketEngine:
 # ===== VOLATILITY ENGINE (ATR WITH FALLBACKS) =====
 class VolatilityEngine:
     """ATR calculation with fallback ladder."""
-    
+
     def __init__(self, bucket_engine: BucketEngine):
         self.bucket_engine = bucket_engine
         self.atr_cache: Dict[str, Tuple[float, str, float]] = {}  # (atr, source, timestamp)
         self._lock = threading.Lock()
-    
+
     def calculate_atr(self, instrument: str, period: int = 14) -> Tuple[float, str]:
         """Calculate ATR with fallback ladder."""
         with self._lock:
             now = time.time()
             cache_key = f"{instrument}_{period}"
-            
+
             # Check cache (30 second TTL)
             if cache_key in self.atr_cache:
                 atr, source, ts = self.atr_cache[cache_key]
                 if now - ts < 30:
                     return atr, source
-            
+
             atr, source = self._calculate_atr_fallback(instrument, period)
             self.atr_cache[cache_key] = (atr, source, now)
             return atr, source
-    
+
     def _calculate_atr_fallback(self, instrument: str, period: int) -> Tuple[float, str]:
         """ATR fallback ladder."""
-        
+
         # 1. Primary: ATR from closed M1 buckets
         buckets = self.bucket_engine.get_m1_buckets(instrument, period + 10)
         closed_buckets = [b for b in buckets if b.is_complete][:period]
-        
+
         if len(closed_buckets) >= period * 0.7:  # At least 70% of required
             atr = self._atr_from_buckets(closed_buckets, period)
             if atr > 0:
                 return atr, "M1_PRIMARY"
-        
+
         # 2. Derived M1 fallback (including incomplete)
         if len(buckets) >= period * 0.7:
             atr = self._atr_from_buckets(buckets, period)
             if atr > 0:
                 return atr, "M1_DERIVED"
-        
+
         # 3. H1 proxy (would need H1 buckets - simplified)
         # For now, use path volatility proxy
-        
+
         # 4. Path volatility proxy (last resort)
         atr = self._atr_from_path_volatility(instrument)
         if atr > 0:
             return atr, "PATH_PROXY"
-        
+
         return 0.0010, "DEFAULT"  # Minimum fallback
-    
+
     def _atr_from_buckets(self, buckets: List[Bucket], period: int) -> float:
         """Calculate ATR from bucket data."""
         if len(buckets) < 2:
             return 0.0
-        
+
         true_ranges = []
         for i in range(1, min(len(buckets), period + 1)):
             curr = buckets[-i]
             prev = buckets[-i-1]
-            
+
             tr = max(
                 curr.high - curr.low,
                 abs(curr.high - prev.close),
@@ -10313,14 +13172,14 @@ class VolatilityEngine:
             )
             if tr > 0:
                 true_ranges.append(tr)
-        
+
         if not true_ranges:
             return 0.0
-        
+
         # Wilder's RMA (simplified)
         atr = sum(true_ranges) / len(true_ranges)
         return atr if math.isfinite(atr) and atr > 0 else 0.0
-    
+
     def _atr_from_path_volatility(self, instrument: str) -> float:
         """ATR proxy from path volatility."""
         # This would access path buffer - simplified implementation
@@ -10329,39 +13188,39 @@ class VolatilityEngine:
 # ===== PATH ENGINE (PRIMITIVES CALCULATION) =====
 class PathEngine:
     """Calculate path-space primitives."""
-    
+
     def __init__(self, path_buffers: Dict[str, PathBuffer]):
         self.path_buffers = path_buffers
         self.local_extrema: Dict[str, Dict[str, float]] = {}
-    
-    def calculate_primitives(self, instrument: str, entry_price: float, 
+
+    def calculate_primitives(self, instrument: str, entry_price: float,
                            direction: str, atr: float, window_sec: float = 20.0) -> dict:
         """Calculate all path primitives."""
-        
+
         buffer = self.path_buffers.get(instrument)
         if not buffer:
             return {}
-        
+
         times, mids, bids, asks, spreads = buffer.get_window(window_sec)
-        
+
         if len(times) < 2:
             return {}
-        
+
         # Initialize local extrema for this trade if needed
         if instrument not in self.local_extrema:
             self.local_extrema[instrument] = {"high": entry_price, "low": entry_price}
-        
+
         extrema = self.local_extrema[instrument]
-        
+
         # Update extrema
         current_mid = mids[-1]
         extrema["high"] = max(extrema["high"], current_mid)
         extrema["low"] = min(extrema["low"], current_mid)
-        
+
         # Path primitives
         displacement = current_mid - entry_price
         path_len = sum(abs(mids[i] - mids[i-1]) for i in range(1, len(mids)))
-        
+
         # T1-12 PathLen Gate Validation
         try:
             from pathlib import Path
@@ -10370,7 +13229,7 @@ class PathEngine:
             proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
             if proof_dirs and len(mids) > 1:
                 latest_proof = proof_dirs[-1]
-                
+
                 path_len_status = "PASS" if math.isfinite(path_len) and path_len >= 0 else "FAIL"
                 path_len_report = {
                     "status": path_len_status,
@@ -10380,25 +13239,25 @@ class PathEngine:
                     "price_moves": len(mids) - 1,
                     "window_sec": window_sec
                 }
-                
+
                 # Write path_len_report
                 path_len_file = latest_proof / f"path_len_report_{instrument}.json"
                 path_len_file.write_text(json.dumps(path_len_report, indent=2))
-                
+
                 # Log T1-12 result
                 if path_len_status == "PASS":
-                    log_runtime("debug", "T1-12_PATHLEN_OK", 
+                    log_runtime("debug", "T1-12_PATHLEN_OK",
                               instrument=instrument, path_len=path_len)
                 else:
                     log_runtime("error", "T1-12_PATHLEN_FAIL",
                               instrument=instrument, path_len=path_len)
         except Exception as e:
             log_runtime("warning", "T1-12_ARTIFACT_ERROR", instrument=instrument, error=str(e))
-        
+
         # Efficiency and overlap
         efficiency = abs(displacement) / max(path_len, 1e-10)
         overlap = path_len / max(abs(displacement), 1e-10)
-        
+
         # T1-13 Efficiency/Overlap Gate Validation
         try:
             from pathlib import Path
@@ -10407,11 +13266,11 @@ class PathEngine:
             proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
             if proof_dirs:
                 latest_proof = proof_dirs[-1]
-                
+
                 # Validate bounds
                 eff_valid = 0 <= efficiency <= 1 and math.isfinite(efficiency)
                 overlap_valid = overlap >= 1 and math.isfinite(overlap)
-                
+
                 efficiency_status = "PASS" if eff_valid and overlap_valid else "FAIL"
                 efficiency_report = {
                     "status": efficiency_status,
@@ -10421,27 +13280,27 @@ class PathEngine:
                     "displacement": displacement,
                     "path_len": path_len
                 }
-                
+
                 # Write efficiency_report
                 efficiency_file = latest_proof / f"efficiency_report_{instrument}.json"
                 efficiency_file.write_text(json.dumps(efficiency_report, indent=2))
-                
+
                 # Log T1-13 result
                 if efficiency_status == "PASS":
-                    log_runtime("debug", "T1-13_EFFICIENCY_OK", 
+                    log_runtime("debug", "T1-13_EFFICIENCY_OK",
                               instrument=instrument, efficiency=efficiency, overlap=overlap)
                 else:
                     log_runtime("error", "T1-13_EFFICIENCY_FAIL",
                               instrument=instrument, efficiency=efficiency, overlap=overlap)
         except Exception as e:
             log_runtime("warning", "T1-13_ARTIFACT_ERROR", instrument=instrument, error=str(e))
-        
+
         # Progress
         progress = abs(displacement) / atr if atr > 0 else 0
-        
+
         # Speed (ATR per second over window)
         speed = abs(displacement) / atr / window_sec if atr > 0 else 0
-        
+
         # Velocity (change in speed - simplified)
         if len(mids) >= 10:
             recent_disp = mids[-1] - mids[-10]
@@ -10449,7 +13308,7 @@ class PathEngine:
             velocity = recent_speed - speed
         else:
             velocity = 0
-        
+
         # T1-14 Speed/Velocity Gate Validation
         try:
             from pathlib import Path
@@ -10458,10 +13317,10 @@ class PathEngine:
             proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
             if proof_dirs:
                 latest_proof = proof_dirs[-1]
-                
+
                 speed_valid = math.isfinite(speed)
                 velocity_valid = math.isfinite(velocity)
-                
+
                 speed_velocity_status = "PASS" if speed_valid and velocity_valid else "FAIL"
                 speed_velocity_report = {
                     "status": speed_velocity_status,
@@ -10472,27 +13331,27 @@ class PathEngine:
                     "atr": atr,
                     "window_sec": window_sec
                 }
-                
+
                 # Write speed_velocity_report
                 speed_velocity_file = latest_proof / f"speed_velocity_report_{instrument}.json"
                 speed_velocity_file.write_text(json.dumps(speed_velocity_report, indent=2))
-                
+
                 # Log T1-14 result
                 if speed_velocity_status == "PASS":
-                    log_runtime("debug", "T1-14_SPEED_VELOCITY_OK", 
+                    log_runtime("debug", "T1-14_SPEED_VELOCITY_OK",
                               instrument=instrument, speed=speed, velocity=velocity)
                 else:
                     log_runtime("error", "T1-14_SPEED_VELOCITY_FAIL",
                               instrument=instrument, speed=speed, velocity=velocity)
         except Exception as e:
             log_runtime("warning", "T1-14_ARTIFACT_ERROR", instrument=instrument, error=str(e))
-        
+
         # Pullback
         if direction == "LONG":
             pullback = (extrema["high"] - bids[-1]) / atr if atr > 0 else 0
         else:
             pullback = (asks[-1] - extrema["low"]) / atr if atr > 0 else 0
-        
+
         # T1-15 Pullback/Extrema Gate Validation
         try:
             from pathlib import Path
@@ -10501,10 +13360,10 @@ class PathEngine:
             proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
             if proof_dirs:
                 latest_proof = proof_dirs[-1]
-                
+
                 pullback_valid = math.isfinite(pullback) and pullback >= 0
                 current_price = asks[-1] if direction == "LONG" else bids[-1]
-                
+
                 pullback_status = "PASS" if pullback_valid else "FAIL"
                 pullback_report = {
                     "status": pullback_status,
@@ -10516,25 +13375,25 @@ class PathEngine:
                     "current_price": current_price,
                     "atr": atr
                 }
-                
+
                 # Write pullback_report
                 pullback_file = latest_proof / f"pullback_report_{instrument}.json"
                 pullback_file.write_text(json.dumps(pullback_report, indent=2))
-                
+
                 # Log T1-15 result
                 if pullback_status == "PASS":
-                    log_runtime("debug", "T1-15_PULLBACK_OK", 
+                    log_runtime("debug", "T1-15_PULLBACK_OK",
                               instrument=instrument, direction=direction, pullback=pullback)
                 else:
                     log_runtime("error", "T1-15_PULLBACK_FAIL",
                               instrument=instrument, direction=direction, pullback=pullback)
         except Exception as e:
             log_runtime("warning", "T1-15_ARTIFACT_ERROR", instrument=instrument, error=str(e))
-        
+
         # Quote-side pricing
         entry_price_exec = asks[-1] if direction == "LONG" else bids[-1]
         current_price_exec = entry_price_exec
-        
+
         # T1-8 Mid/Bid/Ask Selection Gate Validation
         price_exec_valid = True
         if direction == "LONG" and asks and bids:
@@ -10543,7 +13402,7 @@ class PathEngine:
         elif direction == "SHORT" and asks and bids:
             if entry_price_exec != bids[-1]:
                 price_exec_valid = False
-        
+
         # Write T1-8 artifacts
         try:
             from pathlib import Path
@@ -10551,7 +13410,7 @@ class PathEngine:
             proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
             if proof_dirs:
                 latest_proof = proof_dirs[-1]
-                
+
                 price_exec_status = "PASS" if price_exec_valid else "FAIL"
                 price_exec_report = {
                     "status": price_exec_status,
@@ -10563,14 +13422,14 @@ class PathEngine:
                     "valid_executions": 1 if price_exec_valid else 0,
                     "total": 1
                 }
-                
+
                 # Write price_exec_report
                 price_exec_file = latest_proof / f"price_exec_report_{instrument}.json"
                 price_exec_file.write_text(json.dumps(price_exec_report, indent=2))
-                
+
                 # Log T1-8 result
                 if price_exec_status == "PASS":
-                    log_runtime("info", "T1-8_PRICE_EXEC_OK", 
+                    log_runtime("info", "T1-8_PRICE_EXEC_OK",
                               pair=instrument, direction=direction,
                               price_exec=entry_price_exec)
                 else:
@@ -10580,7 +13439,7 @@ class PathEngine:
                               actual=entry_price_exec)
         except Exception as e:
             log_runtime("warning", "T1-8_ARTIFACT_ERROR", pair=instrument, error=str(e))
-        
+
         return {
             "displacement": displacement,
             "path_len": path_len,
@@ -10597,7 +13456,7 @@ class PathEngine:
             "spread_pips": spreads[-1] if spreads else 0,
             "data_quality": DataQuality.OK if len(times) >= 10 else DataQuality.DEGRADED
         }
-    
+
     def reset_extrema(self, instrument: str, entry_price: float):
         """Reset local extrema for new trade."""
         self.local_extrema[instrument] = {"high": entry_price, "low": entry_price}
@@ -10612,12 +13471,12 @@ class SafetyBuffer:
     sl_multiplier: float = 1.0
     panic_multiplier: float = 1.0
     can_tighten_sl: bool = True
-    
+
     def inflate_for_degradation(self, data_quality: str) -> 'SafetyBuffer':
         """Auto-inflate buffers based on data quality."""
         if data_quality == DataQuality.OK:
             return self  # No inflation needed
-        
+
         inflated = SafetyBuffer(
             entry_multiplier=self.entry_multiplier * 1.2,  # Entry confirmation ×1.2
             tp_multiplier=self.tp_multiplier * 1.3,        # Near-TP band ×1.3
@@ -10644,18 +13503,18 @@ class QueuedCommand:
 
 class CommandQueue:
     """Command queue with retry mechanism and backoff logic."""
-    
+
     def __init__(self):
         self.pending_commands: Dict[str, QueuedCommand] = {}
         self.locked_instruments: Set[str] = set()
         self._lock = threading.Lock()
-    
+
     def add_command(self, instrument: str, command_type: str, payload: dict) -> Optional[str]:
         """Add command to queue."""
         with self._lock:
             if instrument in self.locked_instruments:
                 return None  # Instrument locked, reject command
-            
+
             command_id = f"{instrument}_{command_type}_{int(time.time())}"
             command = QueuedCommand(
                 command_id=command_id,
@@ -10665,16 +13524,16 @@ class CommandQueue:
             )
             self.pending_commands[command_id] = command
             return command_id
-    
+
     def execute_command(self, command_id: str, executor_func) -> bool:
         """Execute command with retry logic."""
         with self._lock:
             command = self.pending_commands.get(command_id)
             if not command or command.locked:
                 return False
-            
+
             command.attempts += 1
-            
+
             try:
                 result = executor_func(command.payload)
                 if result:
@@ -10687,7 +13546,7 @@ class CommandQueue:
             except Exception:
                 # Error - schedule retry
                 return self._schedule_retry(command)
-    
+
     def _schedule_retry(self, command: QueuedCommand) -> bool:
         """Schedule command retry with backoff."""
         if command.attempts >= command.max_attempts:
@@ -10695,24 +13554,24 @@ class CommandQueue:
             self.locked_instruments.add(command.instrument)
             del self.pending_commands[command.command_id]
             return False
-        
+
         # Calculate backoff: 3s → 8s
         if command.attempts == 1:
             backoff = 3.0
         else:
             backoff = 8.0
-        
+
         command.next_retry_time = time.time() + backoff
         command.backoff_multiplier = backoff / 3.0
         return True
-    
+
     def get_retry_commands(self) -> List[QueuedCommand]:
         """Get commands ready for retry."""
         now = time.time()
         with self._lock:
-            return [cmd for cmd in self.pending_commands.values() 
+            return [cmd for cmd in self.pending_commands.values()
                    if cmd.next_retry_time <= now and not cmd.locked]
-    
+
     def unlock_instrument(self, instrument: str):
         """Unlock instrument for new commands."""
         with self._lock:
@@ -10721,7 +13580,7 @@ class CommandQueue:
 # ===== RESILIENCE CONTROLLER (ENHANCED) =====
 class ResilienceController:
     """Manage data quality and fallback behavior."""
-    
+
     def __init__(self):
         self.feed_health: Dict[str, str] = {}
         self.last_update: Dict[str, float] = {}
@@ -10731,13 +13590,13 @@ class ResilienceController:
         self.command_queue = CommandQueue()
         self.last_reconcile: float = 0.0
         self._lock = threading.Lock()
-    
+
     def update_feed_health(self, instrument: str, event: PriceEvent):
         """Update feed health based on price events."""
         with self._lock:
             now = event.t_local
             self.last_update[instrument] = now
-            
+
             # Cache price for fallback
             self.cached_prices[instrument] = {
                 "price": event.mid,
@@ -10745,7 +13604,7 @@ class ResilienceController:
                 "spread": event.spread_pips,
                 "quality": self._determine_quality(instrument, now)
             }
-            
+
             # Update median spread tracking
             if instrument not in self.median_spread_5m:
                 self.median_spread_5m[instrument] = event.spread_pips
@@ -10753,10 +13612,10 @@ class ResilienceController:
                 # EMA update
                 alpha = 0.1
                 self.median_spread_5m[instrument] = (
-                    alpha * event.spread_pips + 
+                    alpha * event.spread_pips +
                     (1 - alpha) * self.median_spread_5m[instrument]
                 )
-            
+
             # Determine feed health
             age = now - self.last_update.get(instrument, 0)
             if age < 1.0:
@@ -10765,7 +13624,7 @@ class ResilienceController:
                 self.feed_health[instrument] = DataQuality.DEGRADED
             else:
                 self.feed_health[instrument] = DataQuality.BAD
-    
+
     def _determine_quality(self, instrument: str, now: float) -> str:
         """Determine data quality based on age."""
         age = now - self.last_update.get(instrument, 0)
@@ -10775,22 +13634,22 @@ class ResilienceController:
             return DataQuality.DEGRADED
         else:
             return DataQuality.BAD
-    
+
     def get_feed_health(self, instrument: str) -> str:
         """Get current feed health for instrument."""
         with self._lock:
             return self.feed_health.get(instrument, DataQuality.BAD)
-    
+
     def get_median_spread(self, instrument: str) -> float:
         """Get median spread for instrument."""
         with self._lock:
             return self.median_spread_5m.get(instrument, 1.0)
-    
+
     def should_allow_entries(self, instrument: str) -> bool:
         """Check if entries should be allowed."""
         health = self.get_feed_health(instrument)
         return health != DataQuality.BAD
-    
+
     def get_price_with_fallback(self, instrument: str) -> Optional[Dict[str, Any]]:
         """Get price with hierarchy fallback: stream → snapshot → cached."""
         with self._lock:
@@ -10798,7 +13657,7 @@ class ResilienceController:
             if instrument in self.cached_prices:
                 cached = self.cached_prices[instrument]
                 age = time.time() - cached["timestamp"]
-                
+
                 # Stream/fresh data
                 if age < 3.0:
                     return {
@@ -10808,7 +13667,7 @@ class ResilienceController:
                         "quality": cached["quality"],
                         "age": age
                     }
-                
+
                 # Cached data (for risk decisions only)
                 elif age < 30.0:
                     return {
@@ -10819,38 +13678,38 @@ class ResilienceController:
                         "age": age,
                         "warning": "Using cached price for risk decisions only"
                     }
-            
+
             return None
-    
+
     def get_safety_buffer(self, instrument: str) -> SafetyBuffer:
         """Get safety buffer with auto-inflation."""
         with self._lock:
             if instrument not in self.safety_buffers:
                 self.safety_buffers[instrument] = SafetyBuffer()
-            
+
             base_buffer = self.safety_buffers[instrument]
             quality = self.get_feed_health(instrument)
-            
+
             # Auto-inflate based on data quality
             return base_buffer.inflate_for_degradation(quality)
-    
+
     def should_reconcile(self) -> bool:
         """Check if periodic reconciliation is needed."""
         now = time.time()
         return (now - self.last_reconcile) > 300.0  # 5 minutes
-    
+
     def mark_reconcile(self):
         """Mark reconciliation as completed."""
         self.last_reconcile = time.time()
-    
+
     def add_command(self, instrument: str, command_type: str, payload: dict) -> Optional[str]:
         """Add command to queue."""
         return self.command_queue.add_command(instrument, command_type, payload)
-    
+
     def get_retry_commands(self) -> List[QueuedCommand]:
         """Get commands ready for retry."""
         return self.command_queue.get_retry_commands()
-    
+
     def unlock_instrument(self, instrument: str):
         """Unlock instrument for new commands."""
         self.command_queue.unlock_instrument(instrument)
@@ -10858,7 +13717,7 @@ class ResilienceController:
 # ===== ENHANCED MARKET DATA HUB =====
 class EnhancedMarketDataHub:
     """Centralized market data with path-space processing."""
-    
+
     def __init__(self):
         self.path_buffers: Dict[str, PathBuffer] = {}
         self.bucket_engine = BucketEngine()
@@ -10867,32 +13726,32 @@ class EnhancedMarketDataHub:
         self.resilience_controller = ResilienceController()
         self.connectivity_state = ConnectivityState.OK
         self._lock = threading.Lock()
-    
+
     def add_price_event(self, instrument: str, event: PriceEvent):
         """Add price event and update all engines."""
         with self._lock:
             # Initialize path buffer if needed
             if instrument not in self.path_buffers:
                 self.path_buffers[instrument] = PathBuffer()
-            
+
             # Add to path buffer
             self.path_buffers[instrument].add(event)
-            
+
             # Update bucket engine
             self.bucket_engine.add_price(instrument, event)
-            
+
             # Update resilience controller
             self.resilience_controller.update_feed_health(instrument, event)
-    
+
     def get_atr(self, instrument: str, period: int = 14) -> Tuple[float, str]:
         """Get ATR with fallback ladder."""
         return self.volatility_engine.calculate_atr(instrument, period)
-    
-    def get_path_primitives(self, instrument: str, entry_price: float, 
+
+    def get_path_primitives(self, instrument: str, entry_price: float,
                            direction: str, atr: float) -> dict:
         """Get path-space primitives."""
         return self.path_engine.calculate_primitives(instrument, entry_price, direction, atr)
-    
+
     def get_latest_price(self, instrument: str) -> Optional[PriceEvent]:
         """Get latest price with fallback."""
         buffer = self.path_buffers.get(instrument)
@@ -10900,18 +13759,18 @@ class EnhancedMarketDataHub:
             latest = buffer.get_latest()
             if latest:
                 return latest
-        
+
         # Fallback to REST pricing
         return None
-    
+
     def get_feed_health(self, instrument: str) -> str:
         """Get feed health status."""
         return self.resilience_controller.get_feed_health(instrument)
-    
+
     def should_allow_entries(self, instrument: str) -> bool:
         """Check if entries allowed for instrument."""
         return self.resilience_controller.should_allow_entries(instrument)
-    
+
     def reset_for_trade(self, instrument: str, entry_price: float):
         """Reset path engine for new trade."""
         self.path_engine.reset_extrema(instrument, entry_price)
@@ -10924,6 +13783,11 @@ market_hub = None
 
 # AEE states for active trades
 aee_states: Dict[str, AEEState] = {}
+
+# Live doctrine shadow state (proof-only): emits normalized action classes without
+# changing execution authority of the active AEE exit chain.
+_AEE_DOCTRINE_ENGINE = LiveDoctrineEngine()
+_AEE_DOCTRINE_LAST: Dict[str, str] = {}
 
 # TradeSpec contracts for active trades
 trade_specs: Dict[str, TradeSpec] = {}
@@ -10954,7 +13818,7 @@ class GlobalConfig:
 
 class MultiVectorEngine:
     """High-frequency multi-pair extraction engine"""
-    
+
     def __init__(self, oanda_client):
         self.oanda = oanda_client
         self.config = GlobalConfig()
@@ -10974,7 +13838,7 @@ class MultiVectorEngine:
             'total_time': 0.0,
             'closed_trades': []
         }
-        
+
         # Component-Max Forensic Metrics
         self.forensic_metrics = {
             'execution_engine': {
@@ -11015,39 +13879,39 @@ class MultiVectorEngine:
                 'throughput_gap': 0.0
             }
         }
-        
+
         # Performance tracking
         self.last_loop_time = time.time()
         self.pulse_triggers = {}  # Track pulse timestamps for latency measurement
-        
+
     def run_saturation_audit(self, pairs: List[str]) -> Dict[str, float]:
         """Run the 300-second saturation audit to identify leakage preventing 150 Pips/Hr ceiling"""
         now = time.time()
-        
+
         # Update I/O Pipeline metrics
         loop_time = now - self.last_loop_time
         self.last_loop_time = now
         self.forensic_metrics['io_pipeline']['loop_frequency'].append(loop_time)
-        
+
         # Update slot utilization
         active_count = len(self.active_trades)
         utilization = (active_count / self.config.MAX_CONCURRENT_VECTORS) * 100
         self.forensic_metrics['extraction_core']['slot_utilization'].append(utilization)
-        
+
         # Calculate MPE/H (Market Pip Extraction per Hour)
         one_hour_ago = now - 3600
         recent_trades = [t for t in self.ceiling_metrics['closed_trades'] if t.get('close_time', 0) > one_hour_ago]
-        
+
         if recent_trades:
             total_pips = sum(t.get('pips', 0) for t in recent_trades)
             total_time = sum(t.get('duration', 0) for t in recent_trades)
             self.ceiling_metrics['mpe_per_hour'] = total_pips if total_time > 0 else 0.0
             self.ceiling_metrics['mean_vector_velocity'] = total_pips / len(recent_trades) if recent_trades else 0.0
-            
+
             # Calculate Vector Decay (Path Efficiency)
             efficiencies = [t.get('efficiency', 0) for t in recent_trades]
             self.ceiling_metrics['vector_decay_pe'] = np.mean(efficiencies) if efficiencies else 0.0
-            
+
             # Calculate win rate
             winning_trades = sum(1 for t in recent_trades if t.get('pips', 0) > 0)
             win_rate = winning_trades / len(recent_trades) if recent_trades else 0.0
@@ -11056,10 +13920,10 @@ class MultiVectorEngine:
             self.ceiling_metrics['mean_vector_velocity'] = 0.0
             self.ceiling_metrics['vector_decay_pe'] = 0.0
             win_rate = 0.0
-        
+
         # Calculate Saturation Efficiency
         self.ceiling_metrics['saturation_efficiency'] = utilization
-        
+
         # Identify "Vampire Trades" (trades staying open too long)
         vampire_trades = []
         for trade_id, trade in self.active_trades.items():
@@ -11067,7 +13931,7 @@ class MultiVectorEngine:
             pips = trade.get('pips', 0)
             if duration > 180 and abs(pips) < 0.5:  # > 3min and < 0.5 pips
                 vampire_trades.append(trade_id)
-        
+
         # Identify "Grind" pairs (low efficiency pairs)
         grind_pairs = []
         if recent_trades:
@@ -11077,15 +13941,15 @@ class MultiVectorEngine:
                 if pair not in pair_efficiencies:
                     pair_efficiencies[pair] = []
                 pair_efficiencies[pair].append(trade.get('efficiency', 0))
-            
+
             for pair, efficiencies in pair_efficiencies.items():
                 avg_eff = np.mean(efficiencies)
                 if avg_eff < 0.70:  # Below 70% efficiency
                     grind_pairs.append(pair)
-        
+
         # Identify Energy Sink pairs
         energy_sinks = self.identify_energy_sink_pairs(recent_trades)
-        
+
         # Determine current session
         current_hour = time.localtime().tm_hour
         if 8 <= current_hour < 13:
@@ -11094,163 +13958,163 @@ class MultiVectorEngine:
             session = "NewYork"
         else:
             session = "Asian"
-        
+
         # Get session-specific tuning recommendations
         tuning_recs = self.get_session_tuning_recommendations(
-            session, 
+            session,
             self.ceiling_metrics['saturation_efficiency'],
             self.ceiling_metrics['mpe_per_hour'],
             win_rate
         )
-        
+
         # Update forensic metrics calculations
         self.update_forensic_metrics()
-        
+
         # Print enhanced dashboard with forensic metrics
         self.print_forensic_dashboard(session, tuning_recs, vampire_trades, grind_pairs, energy_sinks)
-        
+
         return self.ceiling_metrics
-    
+
     def update_forensic_metrics(self):
         """Update all forensic metrics calculations"""
         now = time.time()
-        
+
         # I/O Pipeline Metrics
         if self.forensic_metrics['io_pipeline']['loop_frequency']:
             loop_times = list(self.forensic_metrics['io_pipeline']['loop_frequency'])
             self.forensic_metrics['io_pipeline']['avg_frequency'] = np.mean(loop_times)
             self.forensic_metrics['io_pipeline']['max_loop_time'] = np.max(loop_times)
-            
+
             # Count violations (> 100ms)
             violations = sum(1 for t in loop_times if t > 0.1)
             self.forensic_metrics['io_pipeline']['io_violations'] = violations
-        
+
         # Execution Engine Metrics
         if self.forensic_metrics['execution_engine']['tick_to_order_latency']:
             latencies = list(self.forensic_metrics['execution_engine']['tick_to_order_latency'])
             self.forensic_metrics['execution_engine']['avg_latency'] = np.mean(latencies)
             self.forensic_metrics['execution_engine']['max_latency'] = np.max(latencies)
-            
+
             # Count violations (> 200ms)
             violations = sum(1 for t in latencies if t > 0.2)
             self.forensic_metrics['execution_engine']['latency_violations'] = violations
-        
+
         # SOP Math Metrics
         total_preds = self.forensic_metrics['sop_math']['total_predictions']
         correct_preds = self.forensic_metrics['sop_math']['correct_predictions']
         if total_preds > 0:
             self.forensic_metrics['sop_math']['win_accuracy'] = correct_preds / total_preds
-        
+
         # Extraction Core Metrics
         if self.forensic_metrics['extraction_core']['slot_utilization']:
             utilizations = list(self.forensic_metrics['extraction_core']['slot_utilization'])
             self.forensic_metrics['extraction_core']['avg_utilization'] = np.mean(utilizations)
-            
+
             # Calculate throughput gap (target vs actual)
             target_utilization = 60.0  # 60-80% target range
             self.forensic_metrics['extraction_core']['throughput_gap'] = target_utilization - self.forensic_metrics['extraction_core']['avg_utilization']
-        
+
         # Saturation Manager Metrics
         killed_slots = self.forensic_metrics['saturation_manager']['killed_slots']
         recovered_slots = self.forensic_metrics['saturation_manager']['recovered_slots']
         if killed_slots > 0:
             self.forensic_metrics['saturation_manager']['opportunity_recovery_rate'] = recovered_slots / killed_slots
-    
+
     def print_forensic_dashboard(self, session: str, tuning_recs: Dict, vampire_trades: List, grind_pairs: List, energy_sinks: List):
         """Print the Component-Max forensic dashboard"""
         print("\n" + "="*100)
         print("🔬 COMPONENT-MAX FORENSIC DASHBOARD - Performance Analysis")
         print("="*100)
-        
+
         # Component Health Table
         print("\n📊 COMPONENT HEALTH METRICS:")
         print("-" * 80)
         print(f"{'Component':<20} {'Health Metric':<25} {'Current':<15} {'Target':<15} {'Status':<10}")
         print("-" * 80)
-        
+
         # I/O Pipeline
         avg_freq = self.forensic_metrics['io_pipeline']['avg_frequency']
         io_status = "✅ OK" if avg_freq < 0.1 else "⚠️ SLOW"
         print(f"{'I/O Pipeline':<20} {'Loop Frequency':<25} {avg_freq*1000:.1f}ms {'< 100ms':<15} {io_status:<10}")
-        
+
         # Execution Engine
         avg_latency = self.forensic_metrics['execution_engine']['avg_latency']
         exec_status = "✅ OK" if avg_latency < 0.2 else "⚠️ SLOW"
         print(f"{'Execution Engine':<20} {'Tick-to-Order Latency':<25} {avg_latency*1000:.1f}ms {'< 200ms':<15} {exec_status:<10}")
-        
+
         # SOP Math
         win_accuracy = self.forensic_metrics['sop_math']['win_accuracy']
         sop_status = "✅ OK" if win_accuracy > 0.65 else "⚠️ LOW"
         print(f"{'SOP Math':<20} {'P(Win) Accuracy':<25} {win_accuracy:.1%} {'> 65%':<15} {sop_status:<10}")
-        
+
         # Saturation
         avg_util = self.forensic_metrics['extraction_core']['avg_utilization']
         sat_status = "✅ OK" if 20 <= avg_util <= 80 else "⚠️ ADJUST"
         print(f"{'Saturation':<20} {'Slot Utilization':<25} {avg_util:.1f}% {'20-80%':<15} {sat_status:<10}")
-        
+
         # Extraction
         mpe_hr = self.ceiling_metrics['mpe_per_hour']
         ext_status = "✅ OK" if mpe_hr >= 150 else "⚠️ LOW"
         print(f"{'Extraction':<20} {'MPE/H':<25} {mpe_hr:.1f} {'150+':<15} {ext_status:<10}")
-        
+
         # Detailed Forensic Analysis
         print("\n🔍 DETAILED FORENSIC ANALYSIS:")
         print("-" * 80)
-        
+
         # Execution Engine Details
         print(f"\n🏎️ EXECUTION ENGINE:")
         print(f"   Avg Latency: {self.forensic_metrics['execution_engine']['avg_latency']*1000:.1f}ms")
         print(f"   Max Latency: {self.forensic_metrics['execution_engine']['max_latency']*1000:.1f}ms")
         print(f"   Latency Violations (>200ms): {self.forensic_metrics['execution_engine']['latency_violations']}")
-        
+
         # Pulse Momentum Details
         print(f"\n⚡ PULSE MOMENTUM ENGINE:")
         print(f"   Pulse-to-Profit Ratio: {self.forensic_metrics['pulse_momentum_engine']['pulse_to_profit_ratio']:.1%}")
         print(f"   Total Pulses: {self.forensic_metrics['pulse_momentum_engine']['total_pulses']}")
         print(f"   Profitable Pulses: {self.forensic_metrics['pulse_momentum_engine']['profitable_pulses']}")
         print(f"   Fake Volatility Detected: {self.forensic_metrics['pulse_momentum_engine']['fake_volatility_detected']}")
-        
+
         # Saturation Manager Details
         print(f"\n✂️ SATURATION MANAGER:")
         print(f"   Opportunity Recovery Rate: {self.forensic_metrics['saturation_manager']['opportunity_recovery_rate']:.1%}")
         print(f"   Killed Slots: {self.forensic_metrics['saturation_manager']['killed_slots']}")
         print(f"   Recovered Slots: {self.forensic_metrics['saturation_manager']['recovered_slots']}")
         print(f"   Aggressive Kills: {self.forensic_metrics['saturation_manager']['aggressive_kills']}")
-        
+
         # Performance Optimization Recommendations
         print("\n🎯 PERFORMANCE OPTIMIZATION RECOMMENDATIONS:")
         print("-" * 80)
-        
+
         recommendations = []
-        
+
         # I/O Pipeline
         if self.forensic_metrics['io_pipeline']['io_violations'] > 5:
             recommendations.append("🔧 I/O Pipeline: Implement async.gather() for concurrent price polling")
-        
+
         # Execution Engine
         if self.forensic_metrics['execution_engine']['latency_violations'] > 3:
             recommendations.append("🔧 Execution Engine: Optimize order placement pipeline for sub-100ms execution")
-        
+
         # SOP Math
         if self.forensic_metrics['sop_math']['win_accuracy'] < 0.65:
             recommendations.append("🔧 SOP Math: Tighten drift filter to reduce false positives")
-        
+
         # Saturation
         if avg_util < 20:
             recommendations.append("🔧 Saturation: Lower PULSE_Z threshold to increase trade frequency")
         elif avg_util > 80:
             recommendations.append("🔧 Saturation: Raise PULSE_Z threshold to reduce overtrading")
-        
+
         # Extraction
         if mpe_hr < 150:
             recommendations.append("🔧 Extraction: Increase concurrency or reduce kill-switch aggressiveness")
-        
+
         if recommendations:
             for i, rec in enumerate(recommendations, 1):
                 print(f"   {i}. {rec}")
         else:
             print("   ✅ All components operating within optimal parameters")
-        
+
         # Session-Specific Tuning
         print(f"\n🌍 SESSION-SPECIFIC TUNING ({session}):")
         print("-" * 40)
@@ -11259,9 +14123,9 @@ class MultiVectorEngine:
                 print(f"   {key}: {value}")
         else:
             print("   No tuning adjustments required")
-        
+
         print("\n" + "="*100)
-    
+
     def track_pulse_trigger(self, pair: str, pulse_z: float):
         """Track pulse trigger for latency measurement"""
         self.pulse_triggers[pair] = {
@@ -11270,43 +14134,43 @@ class MultiVectorEngine:
             'pair': pair
         }
         self.forensic_metrics['pulse_momentum_engine']['total_pulses'] += 1
-    
+
     def track_order_fill(self, pair: str, order_id: str):
         """Track order fill for latency calculation"""
         if pair in self.pulse_triggers:
             trigger_time = self.pulse_triggers[pair]['timestamp']
             fill_time = time.time()
             latency = fill_time - trigger_time
-            
+
             self.forensic_metrics['execution_engine']['tick_to_order_latency'].append(latency)
-            
+
             # Remove trigger tracking
             del self.pulse_triggers[pair]
-    
+
     def track_pulse_profitability(self, pair: str, profitable: bool):
         """Track if pulse led to profitable trade"""
         if profitable:
             self.forensic_metrics['pulse_momentum_engine']['profitable_pulses'] += 1
-        
+
         # Update ratio
         total = self.forensic_metrics['pulse_momentum_engine']['total_pulses']
         profitable = self.forensic_metrics['pulse_momentum_engine']['profitable_pulses']
         if total > 0:
             self.forensic_metrics['pulse_momentum_engine']['pulse_to_profit_ratio'] = profitable / total
-    
+
     def track_kill_switch_action(self, slot_empty_time: float):
         """Track kill-switch action for opportunity recovery"""
         self.forensic_metrics['saturation_manager']['killed_slots'] += 1
         self.forensic_metrics['saturation_manager']['slot_empty_time'].append(slot_empty_time)
-    
+
     def track_slot_recovery(self, recovery_time: float):
         """Track when killed slot is recovered"""
         self.forensic_metrics['saturation_manager']['recovered_slots'] += 1
-        
+
         # Calculate recovery efficiency
         if recovery_time < 300:  # Recovered within 5 minutes
             self.forensic_metrics['saturation_manager']['opportunity_recovery_rate'] += 1
-    
+
     async def async_price_polling(self, pairs: List[str]) -> Dict[str, float]:
         """Async price polling for 15 pairs simultaneously to achieve >10Hz loop frequency"""
 
@@ -11315,10 +14179,10 @@ class MultiVectorEngine:
         for pair in pairs:
             task = self.fetch_pair_price_async(pair)
             tasks.append(task)
-        
+
         # Gather all results concurrently
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         # Process results
         prices = {}
         for i, result in enumerate(results):
@@ -11327,9 +14191,9 @@ class MultiVectorEngine:
                 print(f"⚠️ Error fetching {pair}: {result}")
                 continue
             prices[pair] = result
-        
+
         return prices
-    
+
     async def fetch_pair_price_async(self, pair: str) -> float:
         """Fetch price for a single pair asynchronously"""
         try:
@@ -11340,14 +14204,14 @@ class MultiVectorEngine:
             return price
         except Exception as e:
             raise e
-    
+
     def check_spread_aware_scaling(self, pair: str, spread: float, base_sop_prob: float) -> float:
         """Spread-Aware Dynamic Scaling - increase SOP_PROB when spreads widen"""
         # Define spread thresholds (in pips)
         tight_spread = 1.0  # 1 pip
         normal_spread = 2.0  # 2 pips
         wide_spread = 4.0   # 4 pips
-        
+
         # Scale SOP probability based on spread
         if spread <= tight_spread:
             # Tight spread - can use normal probability
@@ -11361,35 +14225,35 @@ class MultiVectorEngine:
         else:
             # Very wide spread - require high certainty
             adjusted_prob = min(0.95, base_sop_prob + 0.15)
-        
+
         return adjusted_prob
-    
+
     def probe_blacklisted_pair(self, pair: str) -> bool:
         """Re-Entry test for blacklisted pairs - probe every 2 hours"""
         # Check if pair is blacklisted
         if not hasattr(self, 'blacklisted_pairs'):
             self.blacklisted_pairs = set()
-        
+
         if pair not in self.blacklisted_pairs:
             return True
-        
+
         # Check if it's time to probe (every 2 hours)
         now = time.time()
         if not hasattr(self, 'last_probe_time'):
             self.last_probe_time = {}
-        
+
         if pair not in self.last_probe_time:
             self.last_probe_time[pair] = 0
-        
+
         if now - self.last_probe_time[pair] < 7200:  # 2 hours
             return False
-        
+
         # Perform micro-test
         volatility_score = self.calculate_pair_volatility(pair)
-        
+
         # Update probe time
         self.last_probe_time[pair] = now
-        
+
         # If volatility is good, remove from blacklist
         if volatility_score > 0.7:  # Good volatility threshold
             self.blacklisted_pairs.discard(pair)
@@ -11398,68 +14262,68 @@ class MultiVectorEngine:
         else:
             print(f"❌ {pair} remains blacklisted - volatility still low")
             return False
-    
+
     def calculate_pair_volatility(self, pair: str) -> float:
         """Calculate volatility score for a pair"""
         if pair not in self.price_history or len(self.price_history[pair]) < 20:
             return 0.0
-        
+
         prices = list(self.price_history[pair])
         returns = np.diff(prices) / prices[:-1]
-        
+
         # Calculate volatility as std of returns
         volatility = np.std(returns)
-        
+
         # Normalize to 0-1 scale (typical forex volatility range)
         normalized_vol = min(1.0, volatility * 1000)
-        
+
         return normalized_vol
-    
+
     def blacklist_energy_sink(self, pair: str):
         """Add pair to energy sink blacklist"""
         if not hasattr(self, 'blacklisted_pairs'):
             self.blacklisted_pairs = set()
-        
+
         self.blacklisted_pairs.add(pair)
         print(f"🔌 {pair} added to energy sink blacklist")
-    
+
     def get_optimized_sop_probability(self, pair: str, base_prob: float) -> float:
         """Get SOP probability with all optimizations applied"""
         # Check if pair is blacklisted
         if not self.probe_blacklisted_pair(pair):
             return 0.0  # Don't trade blacklisted pairs
-        
+
         # Get current spread (mock - in real implementation get from OANDA)
         current_spread = np.random.uniform(0.5, 3.0)  # Mock spread in pips
-        
+
         # Apply spread-aware scaling
         adjusted_prob = self.check_spread_aware_scaling(pair, current_spread, base_prob)
-        
+
         return adjusted_prob
-    
+
     def run_grid_search(self, pulse_range: Tuple[float, float], prob_range: Tuple[float, float]) -> List[Dict]:
         """Grid search for optimal PULSE_Z and SOP_PROB parameters"""
         pulse_min, pulse_max = pulse_range
         prob_min, prob_max = prob_range
-        
+
         results = []
-        
+
         # Test combinations
         pulse_values = np.linspace(pulse_min, pulse_max, 5)  # 5 test points
         prob_values = np.linspace(prob_min, prob_max, 5)    # 5 test points
-        
+
         print(f"\n🔬 GRID SEARCH: Testing {len(pulse_values) * len(prob_values)} parameter combinations...")
-        
+
         for pulse_z in pulse_values:
             for sop_prob in prob_values:
                 # Simulate performance (simplified model)
                 # Higher saturation = more trades, lower threshold = more entries
                 saturation_score = (3.0 - pulse_z) * 100 + sop_prob * 50
                 efficiency_score = pulse_z * 20 + (1.0 - sop_prob) * 10
-                
+
                 # Calculate estimated MPE/H
                 estimated_mpe = saturation_score * efficiency_score / 100
-                
+
                 results.append({
                     'pulse_z': pulse_z,
                     'sop_prob': sop_prob,
@@ -11467,23 +14331,23 @@ class MultiVectorEngine:
                     'saturation_efficiency': min(100, saturation_score),
                     'vector_efficiency': min(100, efficiency_score)
                 })
-        
+
         # Sort by estimated MPE/H
         results.sort(key=lambda x: x['estimated_mpe_per_hour'], reverse=True)
-        
+
         # Print top 3 results
         print(f"\n🏆 TOP 3 PARAMETER COMBINATIONS:")
         for i, result in enumerate(results[:3]):
             print(f"   {i+1}. PULSE_Z: {result['pulse_z']:.2f}, SOP_PROB: {result['sop_prob']:.2f}")
             print(f"      → Est. MPE/H: {result['estimated_mpe_per_hour']:.1f} pips/hr")
             print(f"      → Saturation: {result['saturation_efficiency']:.1f}%, Efficiency: {result['vector_efficiency']:.1f}%")
-        
+
         return results[:3]
-    
+
     def get_session_tuning_recommendations(self, session: str, saturation_eff: float, mpe_per_hour: float, win_rate: float) -> Dict[str, float]:
         """Get session-specific tuning recommendations based on audit results"""
         recommendations = {}
-        
+
         if session.lower() == 'london':
             # London session: Higher volatility, can be more aggressive
             if saturation_eff < 30:
@@ -11498,7 +14362,7 @@ class MultiVectorEngine:
                 recommendations['pulse_z_adjustment'] = 0.0
                 recommendations['sop_prob_adjustment'] = 0.0
                 recommendations['kill_switch_seconds'] = 180
-                
+
         elif session.lower() == 'newyork':
             # NY session: Moderate volatility, balanced approach
             if saturation_eff < 25:
@@ -11513,7 +14377,7 @@ class MultiVectorEngine:
                 recommendations['pulse_z_adjustment'] = 0.0
                 recommendations['sop_prob_adjustment'] = 0.0
                 recommendations['kill_switch_seconds'] = 180
-                
+
         else:  # Asian session
             # Asian session: Lower volatility, more selective
             if saturation_eff < 20:
@@ -11528,67 +14392,67 @@ class MultiVectorEngine:
                 recommendations['pulse_z_adjustment'] = 0.0
                 recommendations['sop_prob_adjustment'] = 0.0
                 recommendations['kill_switch_seconds'] = 210
-        
+
         # Special adjustments based on performance
         if mpe_per_hour > 140 and win_rate < 0.6:
             recommendations['kill_switch_seconds'] = 90  # Tighten kill switch
             print(f"⚡ HIGH MPE/H + LOW WIN RATE: Tightening kill-switch to {recommendations['kill_switch_seconds']}s")
-        
+
         return recommendations
-    
+
     def identify_energy_sink_pairs(self, recent_trades: List[Dict]) -> List[str]:
         """Identify pairs that are consistently 'Energy Sinks' (low PE, long duration)"""
         pair_performance = {}
-        
+
         for trade in recent_trades:
             pair = trade.get('pair', 'UNKNOWN')
             efficiency = trade.get('efficiency', 1.0)
             duration = trade.get('duration', 0)
-            
+
             if pair not in pair_performance:
                 pair_performance[pair] = {'efficiencies': [], 'durations': []}
-            
+
             pair_performance[pair]['efficiencies'].append(efficiency)
             pair_performance[pair]['durations'].append(duration)
-        
+
         # Identify energy sinks
         energy_sinks = []
         for pair, data in pair_performance.items():
             if len(data['efficiencies']) >= 3:  # Need at least 3 trades
                 avg_eff = np.mean(data['efficiencies'])
                 avg_duration = np.mean(data['durations'])
-                
+
                 # Energy sink criteria: Low PE + Long duration
                 if avg_eff < 0.6 and avg_duration > 150:
                     energy_sinks.append(pair)
                     print(f"🔌 ENERGY SINK DETECTED: {pair} - Avg PE: {avg_eff:.3f}, Avg Duration: {avg_duration:.0f}s")
-        
+
         return energy_sinks
-    
+
     def apply_session_tuning(self, session: str, recommendations: Dict[str, float]):
         """Apply session-specific tuning adjustments"""
         current_pulse_z = self.config.PULSE_Z_THRESHOLD
         current_sop_prob = getattr(self.config, 'SOP_PROB_THRESHOLD', 0.8)
-        
+
         # Apply pulse Z adjustment
         if 'pulse_z_adjustment' in recommendations:
             new_pulse_z = current_pulse_z + recommendations['pulse_z_adjustment']
             new_pulse_z = max(1.0, min(3.0, new_pulse_z))  # Clamp to valid range
             self.config.PULSE_Z_THRESHOLD = new_pulse_z
             print(f"🎯 TUNING: PULSE_Z adjusted from {current_pulse_z:.2f} to {new_pulse_z:.2f}")
-        
+
         # Apply SOP probability adjustment
         if 'sop_prob_adjustment' in recommendations:
             new_sop_prob = current_sop_prob + recommendations['sop_prob_adjustment']
             new_sop_prob = max(0.5, min(0.95, new_sop_prob))  # Clamp to valid range
             setattr(self.config, 'SOP_PROB_THRESHOLD', new_sop_prob)
             print(f"🎯 TUNING: SOP_PROB adjusted from {current_sop_prob:.2f} to {new_sop_prob:.2f}")
-        
+
         # Apply kill-switch adjustment
         if 'kill_switch_seconds' in recommendations:
             self.config.HARD_EXIT_SECONDS = recommendations['kill_switch_seconds']
             print(f"🎯 TUNING: Kill-switch set to {recommendations['kill_switch_seconds']}s")
-    
+
     def record_trade_close(self, trade_id: str, pips: float, efficiency: float, duration: float):
         """Record a closed trade for ceiling metrics calculation"""
         self.ceiling_metrics['closed_trades'].append({
@@ -11598,57 +14462,57 @@ class MultiVectorEngine:
             'duration': duration,
             'close_time': time.time()
         })
-        
+
         # Keep only last 100 trades for performance
         if len(self.ceiling_metrics['closed_trades']) > 100:
             self.ceiling_metrics['closed_trades'] = self.ceiling_metrics['closed_trades'][-100:]
-        
+
     def check_aggressive_exit_conditions(self, trade_id: str, trade: Dict) -> bool:
         """Check if trade meets 120-second kill-switch conditions for aggressive capital turnover"""
         now = time.time()
         duration = now - trade.get('open_time', now)
         pips = trade.get('pips', 0)
         efficiency = trade.get('efficiency', 1.0)
-        
+
         # Condition 1: If trade_duration > 180s AND pips < 0.5, Exit Market
         if duration > 180 and abs(pips) < 0.5:
             print(f"🔥 KILL-SWITCH: Trade {trade_id} - Duration: {duration:.0f}s, Pips: {pips:.1f}")
             return True
-        
+
         # Condition 2: If PE (Efficiency) < 0.6 during the trade, Exit Market
         if efficiency < 0.6:
             print(f"⚡ KILL-SWITCH: Trade {trade_id} - Low Efficiency: {efficiency:.3f}")
             return True
-        
+
         # Condition 3: If trade_duration > 120s AND not profitable, consider exit
         if duration > 120 and pips <= 0:
             print(f"⏰ KILL-SWITCH: Trade {trade_id} - Timeout: {duration:.0f}s, Pips: {pips:.1f}")
             return True
-        
+
         return False
-    
+
     def can_saturate(self, active_trades: Dict, pair: str) -> bool:
         """Check if we can add another vector without hitting saturation"""
         if len(active_trades) >= self.config.MAX_CONCURRENT_VECTORS:
             return False
-        
+
         # Check currency exposure (max 3 per currency)
         currencies = pair.split("_")
         for currency in currencies:
-            exposure = sum(1 for trade in active_trades.values() 
+            exposure = sum(1 for trade in active_trades.values()
                          if currency in trade.get('pair', ''))
             if exposure >= 3:
                 return False
-        
+
         return True
-    
+
     def get_pulse_z(self, pair: str, current_price: float) -> float:
         """Calculate Z-score for pulse detection using numpy for speed"""
         if pair not in self.pulse_history:
             self.pulse_history[pair] = deque(maxlen=100)
-        
+
         history = list(self.pulse_history[pair])
-        
+
         # Add current price to history
         if len(history) > 0:
             velocity = current_price - history[-1]
@@ -11656,27 +14520,27 @@ class MultiVectorEngine:
         else:
             self.pulse_history[pair].append(current_price)
             return 0.0
-        
+
         # Need at least 20 data points for meaningful Z-score
         if len(history) < 20:
             return 0.0
-        
+
         # Use numpy for fast calculations
         velocities = np.diff(history)
         if len(velocities) < 10:
             return 0.0
-        
+
         mean_vel = np.mean(velocities)
         std_vel = np.std(velocities)
-        
+
         if std_vel == 0:
             return 0.0
-        
+
         current_vel = current_price - history[-1]
         pulse_z = (current_vel - mean_vel) / std_vel
-        
+
         return pulse_z
-    
+
     def sop_validate_signal_v12(self, pair: str, pulse_z: float) -> Tuple[bool, float]:
         """SOP V12 handshake with P(Win) calculation"""
         try:
@@ -11684,46 +14548,46 @@ class MultiVectorEngine:
             candles = self._get_recent_candles(pair, 20)
             if not candles:
                 return False, 0.0
-            
+
             # Calculate path efficiency
             prices = [float(c['c']) for c in candles]
             if len(prices) < 2:
                 return False, 0.0
-            
+
             # Path efficiency calculation
             displacement = abs(prices[-1] - prices[0])
             path_length = sum(abs(prices[i] - prices[i-1]) for i in range(1, len(prices)))
             efficiency = displacement / (path_length + 1e-8)
-            
+
             # Filter low-efficiency movements
             if efficiency < self.config.MIN_EFFICIENCY_THRESHOLD:
                 return False, 0.0
-            
+
             # SOP V12 P(Win) calculation
             drift = pulse_z * 0.001  # Convert to price drift
             vol = np.std(np.diff(prices)) if len(prices) > 1 else 0.001
             target = self.config.TARGET_TP_PIPS * 0.0001  # Convert to price units
-            
+
             p_win = self._first_passage_probability(drift, vol, target, 300)
-            
+
             return p_win > 0.5, p_win
-            
+
         except Exception:
             return False, 0.0
-    
+
     def _first_passage_probability(self, drift: float, vol: float, target: float, duration: float) -> float:
         """Analytical solution for first passage probability"""
         if vol == 0:
             return 0.5
         return 1.0 / (1.0 + np.exp(-2 * drift * target / (vol**2)))
-    
+
     def _get_recent_candles(self, pair: str, count: int) -> List[dict]:
         """Get recent candles for analysis"""
         try:
             return self.oanda.candles(pair, "M1", count)
         except Exception:
             return []
-    
+
     def execute_instant_market_order(self, pair: str, p_win: float):
         """Execute instant market order with optimized parameters"""
         try:
@@ -11731,15 +14595,15 @@ class MultiVectorEngine:
             bid, ask = self.oanda.pricing(pair)
             mid = (bid + ask) / 2.0
             spread_pips = abs(ask - bid) * 10000  # Convert to pips
-            
+
             # Direction based on pulse
             pulse_z = self.get_pulse_z(pair, mid)
             direction = "LONG" if pulse_z > 0 else "SHORT"
-            
+
             # Calculate position size based on P(Win)
             base_units = 1000
             units = int(base_units * p_win)
-            
+
             # Tight TP/SL for high turnover
             if direction == "LONG":
                 tp = mid + (self.config.TARGET_TP_PIPS * 0.0001)
@@ -11747,10 +14611,10 @@ class MultiVectorEngine:
             else:
                 tp = mid - (self.config.TARGET_TP_PIPS * 0.0001)
                 sl = mid + (self.config.TARGET_SL_PIPS * 0.0001)
-            
+
             # Execute order (simplified - would use actual OANDA API)
             trade_id = f"extraction_{int(time.time())}_{pair.replace('_', '')}"
-            
+
             # Track trade with hard exit timer
             self.active_trades[trade_id] = {
                 'pair': pair,
@@ -11762,7 +14626,7 @@ class MultiVectorEngine:
                 'open_time': time.time(),
                 'pulse_z': pulse_z
             }
-            
+
             # Log to memory (no disk I/O)
             self.extraction_log.append({
                 'ts': time.time(),
@@ -11773,45 +14637,45 @@ class MultiVectorEngine:
                 'pulse_z': pulse_z,
                 'efficiency': self._calculate_current_efficiency(pair)
             })
-            
+
             print(f"🚀 EXTRACTION: {pair} {direction} | P(Win): {p_win:.2f} | Pulse: {pulse_z:.2f}σ")
-                
+
         except Exception as e:
             print(f"Order execution failed for {pair}: {e}")
-    
+
     def _calculate_current_efficiency(self, pair: str) -> float:
         """Calculate current path efficiency"""
         candles = self._get_recent_candles(pair, 10)
         if not candles:
             return 0.0
-        
+
         prices = [float(c['c']) for c in candles]
         if len(prices) < 2:
             return 0.0
-        
+
         displacement = abs(prices[-1] - prices[0])
         path_length = sum(abs(prices[i] - prices[i-1]) for i in range(1, len(prices)))
-        
+
         return displacement / (path_length + 1e-8)
-    
+
     def manage_exits(self):
         """Manage trade exits with 300-second hard exit rule"""
         current_time = time.time()
         trades_to_close = []
-        
+
         for trade_id, trade in self.active_trades.items():
             age_seconds = current_time - trade['open_time']
-            
+
             # Hard exit after 300 seconds
             if age_seconds > self.config.HARD_EXIT_SECONDS:
                 trades_to_close.append((trade_id, "TIME_EXIT"))
                 continue
-            
+
             # Check if TP/SL hit (would need current price)
             try:
                 bid, ask = self.oanda.pricing(trade['pair'])
                 current_price = (bid + ask) / 2.0
-                
+
                 if trade['direction'] == 'LONG':
                     if current_price >= trade['tp']:
                         trades_to_close.append((trade_id, "TP_HIT"))
@@ -11824,31 +14688,31 @@ class MultiVectorEngine:
                         trades_to_close.append((trade_id, "SL_HIT"))
             except Exception:
                 pass
-        
+
         # Close trades
         for trade_id, reason in trades_to_close:
             self._close_trade(trade_id, reason)
-    
+
     def _close_trade(self, trade_id: str, reason: str):
         """Close trade and log metrics"""
         if trade_id not in self.active_trades:
             return
-        
+
         trade = self.active_trades[trade_id]
         duration = time.time() - trade['open_time']
-        
+
         # Calculate pips (simplified)
         try:
             bid, ask = self.oanda.pricing(trade['pair'])
             current_price = (bid + ask) / 2.0
-            
+
             if trade['direction'] == 'LONG':
                 pips = (current_price - trade['entry']) * 10000
             else:
                 pips = (trade['entry'] - current_price) * 10000
         except Exception:
             pips = 0.0
-        
+
         # Log to memory
         self.extraction_log.append({
             'ts': time.time(),
@@ -11860,44 +14724,44 @@ class MultiVectorEngine:
             'p_win': trade['p_win'],
             'pulse_z': trade['pulse_z']
         })
-        
+
         print(f"📤 EXIT: {trade['pair']} {reason} | Pips: {pips:.1f} | Duration: {duration:.1f}s")
-        
+
         # Remove from active trades
         del self.active_trades[trade_id]
-    
+
     def calculate_mpe_hr(self) -> float:
         """Calculate Maximum Pip Extraction per Hour"""
         if not self.extraction_log:
             return 0.0
-        
+
         # Get last hour of closed trades
         current_time = time.time()
         one_hour_ago = current_time - 3600
-        
+
         closed_trades = [
             log for log in self.extraction_log
             if log['action'] == 'EXIT' and log['ts'] > one_hour_ago
         ]
-        
+
         if not closed_trades:
             return 0.0
-        
+
         total_pips = sum(trade['pips'] for trade in closed_trades)
         return total_pips
-    
+
     def update_metrics(self):
         """Update extraction metrics"""
         # Active vectors
         self.metrics.active_vectors = len(self.active_trades)
-        
+
         # Average efficiency
         if self.extraction_log:
             recent_logs = [log for log in self.extraction_log if log['ts'] > time.time() - 3600]
             if recent_logs:
                 efficiencies = [log.get('efficiency', 0) for log in recent_logs if 'efficiency' in log]
                 self.metrics.avg_efficiency = np.mean(efficiencies) if efficiencies else 0.0
-        
+
         # Average duration
         if self.extraction_log:
             closed_trades = [
@@ -11907,18 +14771,18 @@ class MultiVectorEngine:
             if closed_trades:
                 durations = [trade['duration'] for trade in closed_trades]
                 self.metrics.avg_duration = np.mean(durations) if durations else 0.0
-        
+
         # Current MPE/H
         self.metrics.current_mpe_hr = self.calculate_mpe_hr()
-    
+
     def print_dashboard(self):
         """Print extraction dashboard every 5 minutes"""
         current_time = time.time()
         if current_time - self.last_dashboard_time < 300:  # 5 minutes
             return
-        
+
         self.update_metrics()
-        
+
         print(f"\n🚀 --- EXTRACTION DASHBOARD ---")
         print(f"   Active Vectors: {self.metrics.active_vectors} / {self.config.MAX_CONCURRENT_VECTORS}")
         print(f"   Pulse Z-Threshold: {self.config.PULSE_Z_THRESHOLD:.1f}σ")
@@ -11926,7 +14790,7 @@ class MultiVectorEngine:
         print(f"   Avg Duration: {self.metrics.avg_duration:.1f} mins")
         print(f"   CURRENT MPE/H: {self.metrics.current_mpe_hr:.1f}")
         print(f"   TARGET MPE/H: 150.0")
-        
+
         # Optimization suggestions
         if self.metrics.current_mpe_hr < 100:
             print(f"   🎯 ACTION: Lower Pulse Z Threshold")
@@ -11934,15 +14798,15 @@ class MultiVectorEngine:
             print(f"   🎯 ACTION: Reduce TP Distance")
         elif self.metrics.avg_efficiency < 0.6:
             print(f"   🎯 ACTION: Increase SOP P-Threshold")
-        
+
         print(f"   -----------------------------------\n")
-        
+
         self.last_dashboard_time = current_time
-    
+
     def get_session_config(self) -> GlobalConfig:
         """Get session-specific configuration"""
         current_hour = time.localtime().tm_hour
-        
+
         # Asian session (roughly 21:00-07:00 UTC)
         if 21 <= current_hour or current_hour <= 7:
             self.config.PULSE_Z_THRESHOLD = self.config.ASIAN_PULSE_Z_THRESHOLD
@@ -11951,41 +14815,41 @@ class MultiVectorEngine:
             # London/NY session
             self.config.PULSE_Z_THRESHOLD = 2.5
             self.config.target_vectors = 12  # 10-15 pairs
-        
+
         return self.config
-    
+
     def run_extraction_cycle(self, pairs: List[str]):
         """Main extraction cycle - optimized for sub-100ms performance"""
         # Get session-specific config
         config = self.get_session_config()
-        
+
         # Process each pair for extraction
         for pair in pairs:
             try:
                 # Get current price
                 bid, ask = self.oanda.pricing(pair)
                 current_price = (bid + ask) / 2.0
-                
+
                 # Saturation gate
                 if not self.can_saturate(self.active_trades, pair):
                     continue
-                
+
                 # High-speed pulse check
                 pulse = self.get_pulse_z(pair, current_price)
                 if pulse < config.PULSE_Z_THRESHOLD:
                     continue
-                
+
                 # SOP V12 validation
                 success, p_win = self.sop_validate_signal_v12(pair, pulse)
                 if success:
                     self.execute_instant_market_order(pair, p_win)
-                    
+
             except Exception as e:
                 continue
-        
+
         # Manage exits
         self.manage_exits()
-        
+
         # Update dashboard
         self.print_dashboard()
 
@@ -12040,10 +14904,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     proof_dir = ensure_proof_dir()
     base_dir = Path(__file__).resolve().parent
     required_config_keys = ["OANDA_ENV"]
-    
+
     # Respect caller-provided credentials only.
     os.environ.setdefault("OANDA_ENV", "practice")
-    
+
     # Create placeholder logs for TZ-0.9
     (base_dir / "logs" / "trades.jsonl").touch()
     (base_dir / "logs" / "metrics.jsonl").touch()
@@ -12108,7 +14972,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         print("Artifact collector initialized (non-blocking)")
     except Exception as e:
         print(f"Artifact collector failed to initialize (continuing without): {e}")
-    
+
     # Network-dependent gates
     base_urls = {"practice": "https://api-fxpractice.oanda.com", "live": "https://api-fxtrade.oanda.com"}
     base_url = base_urls.get(oanda_env)
@@ -12131,7 +14995,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         sys.exit(1)
     # Final manifest for all Tier-0 artifacts
     generate_manifest(proof_dir)
-    
+
     # Immediate startup prints
     log(
         "STARTUP",
@@ -12149,7 +15013,13 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     o = OandaClient(oanda_api_key_env, oanda_account_id_env, oanda_env)
     _RUNTIME_OANDA = o
     log("OANDA_CLIENT_INITIALIZED", {})
-    
+
+    # Initialize pricing stream
+    global _pricing_stream
+    _pricing_stream = PricingStream(pairs=PAIRS)
+    _pricing_stream.start(o)
+    log_runtime("info", "PRICING_STREAM_INITIALIZED", {"pairs": len(PAIRS)})
+
     # T1-1 Raw Payload Capture Gate - Store raw responses
     try:
         from pathlib import Path
@@ -12157,10 +15027,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         proof_dirs = sorted(Path(__file__).parent.glob("proof_artifacts/*"))
         if proof_dirs:
             latest_proof = proof_dirs[-1]
-            
+
             # Store raw payload for accounts (already fetched in T0-16)
             # This is handled by the OandaClient _get/_post/_put methods
-            
+
             # Create T1-1 report
             t1_1_report = {
                 "status": "PASS",
@@ -12172,14 +15042,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     "oanda_http_raw.json"
                 ]
             }
-            
+
             t1_1_file = latest_proof / "t1_1_raw_payload_report.json"
             t1_1_file.write_text(json.dumps(t1_1_report, indent=2))
-            
+
             log_runtime("debug", "T1-1_RAW_PAYLOAD_OK")
     except Exception as e:
         log_runtime("warning", "T1-1_ARTIFACT_ERROR", error=str(e))
-    
+
     # T1-2 Response Schema Gate - Validate schemas
     # Skip in dry-run mode since we won't have proof artifacts
     if DRY_RUN_ONLY:
@@ -12256,21 +15126,32 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     log_runtime("error", "T1-2_RESPONSE_SCHEMA_FAIL")
         except Exception as e:
             log_runtime("warning", "T1-2_ARTIFACT_ERROR", error=str(e))
-    
+
     validate_strategy_definitions()
+    log(
+        f"{EMOJI_INFO} API_BUDGET_CONFIG",
+        {
+            "hourly_api_limit": HOURLY_API_LIMIT,
+            "enabled": HOURLY_API_LIMIT > 0,
+            "pair_count": len(PAIRS),
+            "allow_entries": ALLOW_ENTRIES,
+            "manage_only": MANAGE_ONLY,
+            "hourly_scan_mode": HOURLY_SCAN_MODE,
+        },
+    )
     if HOURLY_SCAN_MODE:
         log(
             f"{EMOJI_INFO} HOURLY_SCAN_MODE",
             {"enabled": True, "scan_interval_sec": HOURLY_SCAN_INTERVAL_SEC, "hourly_api_limit": HOURLY_API_LIMIT},
         )
-    
+
     # Check time drift with broker
     try:
         if not check_time_drift(get_oanda()):
             log(f"{EMOJI_WARN} TIME_SYNC_SKIP", {"reason": "initial_sync_failed"})
     except Exception as e:
         log(f"{EMOJI_WARN} TIME_SYNC_ERROR", {"error": str(e), "reason": "initial_sync_failed"})
-    
+
     if MIN_FREE_DISK_MB > 0:
         try:
             import shutil
@@ -12290,7 +15171,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     market_hub = _RUNTIME_HUB
     try:
         states = db.load_states(PAIRS)
-        
+
         # Print initial states
         log("INITIAL_PAIR_STATES", {pair: st.state for pair, st in states.items()})
     except Exception as e:
@@ -12320,6 +15201,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
     acct_cache = {"ts": 0.0, "data": None}
     open_pos_cache = {"ts": 0.0, "data": None}
+    open_trade_cache = {"ts": 0.0, "data": None}
     pending_cache = {"ts": 0.0, "data": None}
     price_cache = {"ts": 0.0, "pairs": (), "data": {}}
     exit_price_cache = {"ts": 0.0, "pairs": (), "data": {}}
@@ -12400,6 +15282,137 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             pending_cache["data"] = res
         return res
 
+    def _get_open_broker_trades(now: float, label: str) -> Optional[List[dict]]:
+        if _cache_fresh(open_trade_cache, OPEN_POS_REFRESH_SEC, now):
+            return open_trade_cache["data"]
+        path = f"/v3/accounts/{o.account_id}/openTrades"
+        res = oanda_call(label, o._get, path)
+        if res is None:
+            if _cache_fresh(open_trade_cache, OPEN_POS_REFRESH_SEC, now):
+                log_throttled(
+                    f"open_trade_cache_fallback:{label}",
+                    f"{EMOJI_WARN} CACHE_FALLBACK {label}",
+                    {"age_sec": round(now - float(open_trade_cache.get('ts', 0.0)), 2)},
+                    min_interval=30.0,
+                )
+                return open_trade_cache["data"]
+            return None
+        if isinstance(res, dict):
+            res = res.get("trades", [])
+        if not isinstance(res, list):
+            res = []
+        with _price_cache_lock:
+            open_trade_cache["ts"] = now
+            open_trade_cache["data"] = res
+        return res
+
+    def _reconcile_pair_states_with_broker_truth(now: float) -> None:
+        """Reset stale active states when broker truth shows no live position/order."""
+        open_pos = _get_open_positions(now, "open_positions_state_reconcile")
+        pending_orders = _get_pending_orders(now, "pending_orders_state_reconcile")
+        if open_pos is None or pending_orders is None:
+            log_throttled(
+                "state_reconcile_skipped",
+                f"{EMOJI_WARN} STATE_RECONCILE_SKIPPED",
+                {
+                    "reason": "broker_truth_unavailable",
+                    "has_positions": open_pos is not None,
+                    "has_pending": pending_orders is not None,
+                },
+                min_interval=30.0,
+            )
+            return
+
+        pending_by_pair_local = {p: count_pair_pending(pending_orders, p) for p in PAIRS}
+        recovered = 0
+        for pair, st in states.items():
+            has_position = count_pair_positions(open_pos, pair) > 0
+            has_pending = pending_by_pair_local.get(pair, 0) > 0
+            target_state = ""
+
+            if st.state == "MANAGING" and not has_position:
+                target_state = "ENTER" if has_pending else "WATCH"
+            elif st.state == "ENTER" and not has_position and not has_pending:
+                target_state = "WATCH"
+
+            if not target_state:
+                continue
+
+            prior_state = st.state
+            _transition_state(st, target_state, pair, reason="broker_truth_reconcile")
+            recovered += 1
+            log_runtime(
+                "warning",
+                "STALE_STATE_RECOVERED",
+                pair=pair,
+                from_state=prior_state,
+                to_state=target_state,
+                has_position=has_position,
+                has_pending=has_pending,
+            )
+
+        if recovered > 0:
+            log_runtime("info", "STATE_RECONCILE_SUMMARY", recovered=recovered)
+
+    def _build_broker_trade_meta(open_broker_trades: Optional[List[dict]]) -> Dict[str, Dict[str, dict]]:
+        meta: Dict[str, Dict[str, dict]] = {}
+        for trade in open_broker_trades or []:
+            if not isinstance(trade, dict):
+                continue
+            pair_name = normalize_pair(str(trade.get("instrument", "") or ""))
+            units = int(float(trade.get("currentUnits", trade.get("initialUnits", "0")) or "0"))
+            direction_name = "LONG" if units > 0 else "SHORT" if units < 0 else ""
+            if not pair_name or not direction_name:
+                continue
+            info = meta.setdefault(pair_name, {}).setdefault(
+                direction_name,
+                {"trade_ids": [], "trade_ids_csv": "", "open_ts": 0.0, "trade_count": 0},
+            )
+            trade_id = str(trade.get("id") or "").strip()
+            if trade_id and trade_id not in info["trade_ids"]:
+                info["trade_ids"].append(trade_id)
+            open_ts = parse_time_oanda(trade.get("openTime"))
+            if open_ts > 0.0 and (float(info.get("open_ts", 0.0) or 0.0) <= 0.0 or open_ts < float(info.get("open_ts", 0.0) or 0.0)):
+                info["open_ts"] = open_ts
+            info["trade_count"] = int(info.get("trade_count", 0) or 0) + 1
+        for dirs in meta.values():
+            for info in dirs.values():
+                info["trade_ids_csv"] = ",".join(info.get("trade_ids", []))
+        return meta
+
+    def _backfill_broker_sync_rows(open_trades_rows: List[dict], broker_trade_meta: Dict[str, Dict[str, dict]]) -> List[dict]:
+        for tr in open_trades_rows:
+            if "broker_sync" not in str(tr.get("note", "") or "").lower():
+                continue
+            pair_name = normalize_pair(str(tr.get("pair", "") or ""))
+            direction_name = str(tr.get("dir", "") or "").upper()
+            info = broker_trade_meta.get(pair_name, {}).get(direction_name)
+            if not info:
+                continue
+            updates = {}
+            new_ts = float(info.get("open_ts", 0.0) or 0.0)
+            old_ts = ffloat(tr.get("ts"), 0.0)
+            if new_ts > 0.0 and (old_ts <= 0.0 or abs(old_ts - new_ts) > 5.0):
+                updates["ts"] = new_ts
+            new_trade_ids = str(info.get("trade_ids_csv", "") or "")
+            old_trade_ids = str(tr.get("oanda_trade_id") or "").strip()
+            if new_trade_ids and new_trade_ids != old_trade_ids:
+                updates["oanda_trade_id"] = new_trade_ids
+            if not updates:
+                continue
+            db_call("update_trade_sync_identity", db.update_trade_sync_identity, int(tr.get("id", 0) or 0), **updates)
+            tr.update(updates)
+            log_runtime(
+                "info",
+                "SYNC_TRADE_IDENTITY_RESTORED",
+                trade_id=int(tr.get("id", 0) or 0),
+                pair=pair_name,
+                direction=direction_name,
+                open_ts=float(updates.get("ts", old_ts) or 0.0),
+                broker_trade_id=str(updates.get("oanda_trade_id", old_trade_ids) or ""),
+            )
+        return open_trades_rows
+
     def _get_pricing_multi(pairs: List[str], now: float, *, cache: dict, ttl: float, label: str) -> Optional[Dict[str, Tuple[float, float, float]]]:
         pairs_norm: List[str] = []
         seen = set()
@@ -12472,7 +15485,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         """Ensure all candle OHLC values are floats to prevent string/float errors."""
         if not candles:
             return candles
-        
+
         cleaned = []
         for candle in candles:
             try:
@@ -12504,7 +15517,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             except (ValueError, TypeError, KeyError) as e:
                 log(f"{EMOJI_ERR} CANDLE_FLOAT_ERROR", {"pair": "unknown", "error": str(e)})
                 continue
-        
+
         return cleaned
 
     def _direct_candles_fetch(pair: str, granularity: str, count: int) -> List[dict]:
@@ -12527,12 +15540,12 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     def get_all_timeframes(pair: str, now: float) -> dict:
         """Get comprehensive multi-timeframe data for a pair"""
         pair = normalize_pair(pair)
-    
+
         data = {
             "ticks": None,
             "M5": None,    # Entry/exit timing
             "M15": None,   # Trend analysis
-            "H1": None,    # Market context  
+            "H1": None,    # Market context
             "H4": None,    # Position management
             "D1": None,    # Daily context
             "available": [],
@@ -12542,18 +15555,18 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 "progress": {}
             }
         }
-    
+
         # Add session progress for each active session
         for session in data["sessions"]["active"]:
             data["sessions"]["progress"][session] = get_session_progress(session, now)
-    
+
         # Tick data (real-time pricing)
         if TICK_DATA_ENABLED:
             tick_cache_data = tick_cache.get(pair)
             if tick_cache_data and (now - float(tick_cache_data.get("ts", 0.0))) < 2.0:  # 2 second TTL
                 data["ticks"] = tick_cache_data["data"]
                 data["available"].append("ticks")
-    
+
         # M5 - Execution timeframe (fresh every scan)
         # Use direct API call to ensure we get fresh data
         log_runtime("debug", "FETCHING_M5_DIRECT", pair=pair)
@@ -12576,7 +15589,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             m5_candles = ex["value"] or []
 
         log_runtime("debug", "M5_API_RESULT", pair=pair, count=len(m5_candles))
-        
+
         if m5_candles:
             m5_candles = _ensure_float_candles(m5_candles)
             data["M5"] = m5_candles
@@ -12595,7 +15608,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 log_runtime("info", "M5_DIRECT_FETCH_OK", pair=pair, count=len(m5_direct))
             else:
                 log_runtime("warning", "M5_FETCH_FAILED", pair=pair)
-    
+
         # M15 - Trend analysis (3x slower refresh)
         m15_ttl = CANDLE_REFRESH_SEC * 3
         m15_cache = candles_trend_cache.get(pair)
@@ -12609,7 +15622,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 candles_trend_cache[pair] = {"ts": now, "data": m15_candles}
                 data["M15"] = m15_candles
                 data["available"].append("M15")
-    
+
         # H1 - Global context (6x slower refresh)
         h1_ttl = CANDLE_REFRESH_SEC * 6
         h1_cache = candles_global_cache.get(pair)
@@ -12623,7 +15636,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 candles_global_cache[pair] = {"ts": now, "data": h1_candles}
                 data["H1"] = h1_candles
                 data["available"].append("H1")
-    
+
         # H4 - Position management (12x slower refresh)
         h4_ttl = CANDLE_REFRESH_SEC * 12
         h4_cache = candles_position_cache.get(pair)
@@ -12651,16 +15664,16 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 candles_tf_cache[(pair, "D")] = {"ts": now, "data": d1_candles}
                 data["D1"] = d1_candles
                 data["available"].append("D1")
-    
+
         return data
 
     def _get_candles_multi_tf(pair: str, now: float) -> Tuple[Optional[List[dict]], Optional[List[dict]], Optional[List[dict]]]:
         """Get candles for multiple timeframes: EXEC (M5), TREND (M15), GLOBAL (H1)"""
         pair = normalize_pair(pair)
-    
+
         # Execution timeframe (M5) - fresh data needed
         exec_candles = _get_candles(pair, 50, now, CANDLE_REFRESH_SEC)
-    
+
         # Trend timeframe (M15) - slower refresh
         trend_ttl = CANDLE_REFRESH_SEC * 3  # 3x slower than exec
         trend_cache = candles_trend_cache.get(pair)
@@ -12671,8 +15684,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             if trend_candles:
                 trend_candles = _ensure_float_candles(trend_candles)
                 candles_trend_cache[pair] = {"ts": now, "data": trend_candles}
-    
-        # Global timeframe (H1) - even slower refresh  
+
+        # Global timeframe (H1) - even slower refresh
         global_ttl = CANDLE_REFRESH_SEC * 6  # 6x slower than exec
         global_cache = candles_global_cache.get(pair)
         if global_cache and (now - float(global_cache.get("ts", 0.0))) < global_ttl:
@@ -12682,22 +15695,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             if global_candles:
                 global_candles = _ensure_float_candles(global_candles)
                 candles_global_cache[pair] = {"ts": now, "data": global_candles}
-    
+
         return exec_candles, trend_candles, global_candles
 
     def get_trend_direction(candles: List[dict], lookback: int = 10) -> str:
         """Determine trend direction from higher timeframe candles"""
         if len(candles) < lookback + 1:
             return "NEUTRAL"
-    
+
         try:
             recent_candles = candles[-lookback:]
             closes = [float(c["c"]) for c in recent_candles]
-        
+
             # Simple trend: if most recent candles are rising -> UPTREND
             ups = sum(1 for i in range(1, len(closes)) if closes[i] > closes[i-1])
             downs = sum(1 for i in range(1, len(closes)) if closes[i] < closes[i-1])
-        
+
             if ups > downs * 1.5:
                 return "UPTREND"
             elif downs > ups * 1.5:
@@ -12710,7 +15723,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     def get_multi_tf_context(pair: str, now: float) -> dict:
         """Get multi-timeframe analysis context"""
         exec_candles, trend_candles, global_candles = _get_candles_multi_tf(pair, now)
-    
+
         context = {
             "exec_available": exec_candles is not None,
             "trend_available": trend_candles is not None,
@@ -12718,13 +15731,13 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             "trend_direction": "NEUTRAL",
             "global_direction": "NEUTRAL",
         }
-    
+
         if trend_candles:
             context["trend_direction"] = get_trend_direction(trend_candles, lookback=8)
-    
+
         if global_candles:
             context["global_direction"] = get_trend_direction(global_candles, lookback=12)
-    
+
         return context
 
     def _get_candles(pair: str, count: int, now: float, ttl: float) -> Optional[List[dict]]:
@@ -12867,13 +15880,13 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     def skip_pair(st: PairState, pair: str, reason: str, extra: Optional[dict] = None) -> None:
         pair = normalize_pair(pair)
         _transition_state(st, "SKIP", pair)
-        
+
         # Print BLOCKED message for immediate visibility
         block_msg = f"BLOCKED: {reason}"
         if extra:
             block_msg += f" (details: {extra})"
         print(f"  {pair}: {block_msg}")
-        
+
         meta = {"pair": pair, "reason": reason}
         if extra:
             meta.update(extra)
@@ -12885,9 +15898,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         body=f"{EMOJI_START} env={str(oanda_env).upper()} pairs={len(PAIRS)} {EMOJI_START}",
         data={"env": str(oanda_env).upper(), "pairs": len(PAIRS)}
     )
-    
+
     # Run notification preflight check
-    if _env_bool("NOTIFY_ENABLE_SEND", "0"):
+    if _env_bool("NOTIFY_ENABLE_SEND", "1"):
         preflight = _notify_preflight()
         if not preflight["ok"]:
             log_runtime("error", "BOT_START_ABORTED", reason="Notification preflight failed")
@@ -12907,6 +15920,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     open_trades: List[dict] = []
     margin_shape_logged = False
     aee_last_update: Dict[int, float] = {}
+    aee_decision_last_ts: Dict[int, float] = {}
+    aee_force_eval_once: Set[int] = set()
+    aee_handoff_trace: Dict[int, Dict[str, Any]] = {}
+    aee_broker_flat_unconfirmed: Dict[int, Dict[str, float]] = {}
     tick_exit_mode: Dict[int, Dict[str, Any]] = {}
     sl_retry_state: Dict[int, Dict[str, Any]] = {}
     tf_sec = granularity_sec(TF_EXEC)
@@ -12922,7 +15939,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     # Drives scan/pricing/candles/books/truth based on health+state+urgency
     class AdaptiveCadence:
         """Unified adaptive cadence manager for all polling activities"""
-        
+
         def __init__(self):
             self.base_intervals = {
                 "skip_sec": float(SKIP_SCAN_SEC),
@@ -12938,7 +15955,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             self.health_multiplier = 1.0
             self.urgency_multiplier = 1.0
             self.last_update = now_ts()
-            
+
         def update(self, health: dict, states: dict, open_trades: list, net_fail_count: int):
             """Update cadence multipliers based on system state"""
             # Health degradation multiplier (0.5x to 2.0x)
@@ -12950,12 +15967,12 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 self.health_multiplier = 0.8
             else:
                 self.health_multiplier = 1.0
-                
+
             # Urgency multiplier based on market activity (0.5x to 2.0x)
-            active_states = sum(1 for st in states.values() 
+            active_states = sum(1 for st in states.values()
                               if st.state in ("GET_READY", "ENTER", "MANAGING", "ARM_TICK_ENTRY"))
             open_trades_count = len(open_trades)
-            
+
             if open_trades_count > 0:
                 # More aggressive with open trades
                 self.urgency_multiplier = min(2.0, 1.0 + (open_trades_count * 0.2))
@@ -12965,20 +15982,20 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             else:
                 # Normal operation
                 self.urgency_multiplier = 1.0
-                
+
             # Hourly mode override
             if HOURLY_SCAN_MODE:
-                self.urgency_multiplier = max(self.urgency_multiplier, 
+                self.urgency_multiplier = max(self.urgency_multiplier,
                                             HOURLY_SCAN_INTERVAL_SEC / self.base_intervals["skip_sec"])
-                
+
             self.last_update = now_ts()
-            
+
         def get_interval(self, key: str) -> float:
             """Get adaptive interval for a specific activity"""
             base = self.base_intervals.get(key, 60.0)
             adaptive = base / (self.health_multiplier * self.urgency_multiplier)
             return max(1.0, adaptive)  # Minimum 1 second interval
-            
+
         def get_candle_refresh(self, scan_type: str) -> float:
             """Get candle refresh interval based on scan type"""
             base = CANDLE_REFRESH_SKIP_SEC
@@ -12988,10 +16005,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 base = CANDLE_REFRESH_WATCH_SEC
             elif scan_type == "EXIT":
                 base = EXIT_CANDLE_REFRESH_SEC
-                
+
             adaptive = base / (self.health_multiplier * self.urgency_multiplier)
             return max(1.0, adaptive)
-            
+
         def log_status(self):
             """Log current cadence status"""
             log_runtime(
@@ -13014,6 +16031,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     # State-driven cadence: tighten when any pair is active (WATCH/GET_READY/ENTER/MANAGING)
     def _has_active_states() -> bool:
         return any(st.state in ("WATCH", "GET_READY", "ENTER", "MANAGING", "ARM_TICK_ENTRY") for st in states.values())
+
+    _reconcile_pair_states_with_broker_truth(now_ts())
 
     # Initialize cadence system
     cadence.update(health={}, states={}, open_trades=[], net_fail_count=0)
@@ -13118,27 +16137,33 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     start_ts = now_ts()
     print("Entering main scanning loop...")
     sys.stdout.flush()
-    
+
     while not _SHUTDOWN:
         try:
             time.sleep(LOOP_SLEEP_SEC)
             if run_for_sec is not None and (now_ts() - start_ts) >= float(run_for_sec):
                 break
             now_loop = now_ts()
+            _reconcile_pair_states_with_broker_truth(now_loop)
             maybe_run_calibration_handshake(now_loop)
             
+            # Check for quarter handoffs for all active pairs
+            if len(states) > 0:
+                for pair in states.keys():
+                    _RUNTIME_CALIBRATION.handoff_manager.check_handoff(pair, now_loop)
+
             # SOP v2.1: Update adaptive cadence based on current state
             health_snapshot = {
                 "degraded": any(st.degraded for st in states.values()),
-                "price_stale": any(hasattr(st, 'stale_poll_count') and st.stale_poll_count > STALE_FEED_MAX_POLLS 
+                "price_stale": any(hasattr(st, 'stale_poll_count') and st.stale_poll_count > STALE_FEED_MAX_POLLS
                                   for st in states.values()),
             }
             cadence.update(health_snapshot, states, open_trades, net_fail_count)
-            
+
             # Log cadence status periodically
             if int(now_loop) % 60 == 0:
                 cadence.log_status()
-            
+
             # Use adaptive intervals
             scan_cfg = {
                 "skip_sec": cadence.get_interval("skip_sec"),
@@ -13154,7 +16179,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 # Temporarily skip time sync to reduce log spam while keeping bot operational
                 log_runtime("debug", "TIME_SYNC_DISABLED_TEMPORARILY", last_sync=last_time_sync, now=now_loop)
                 last_time_sync = now_loop  # Update to prevent continuous attempts
-        
+
             # Print status every 60 seconds
             if (now_loop - last_status_print) >= 60.0:
                 log("STATUS_UPDATE", {pair: {"state": st.state, "age": int(now_loop - st.state_since)} for pair, st in states.items()})
@@ -13215,12 +16240,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
                 pending_refresh_ok = True
                 broker_pos_info: Dict[str, Dict[str, dict]] = {}
+                broker_trade_meta: Dict[str, Dict[str, dict]] = {}
                 if (now - last_exit_refresh) >= exit_refresh_interval:
                     broker_positions = _get_open_positions(now, "open_positions")
+                    open_broker_trades = _get_open_broker_trades(now, "open_trades")
                     pending_orders_all = _get_pending_orders(now, "pending_orders")
-                if broker_positions is None or pending_orders_all is None:
+                if broker_positions is None or open_broker_trades is None or pending_orders_all is None:
                     pending_refresh_ok = False
                 else:
+                    broker_trade_meta = _build_broker_trade_meta(open_broker_trades)
+                    open_broker_trade_ids: Set[str] = set()
+                    for bt in open_broker_trades or []:
+                        if not isinstance(bt, dict):
+                            continue
+                        bt_id = str(bt.get("id") or "").strip()
+                        if bt_id:
+                            open_broker_trade_ids.add(bt_id)
                     for bp in broker_positions:
                         inst = bp.get("instrument")
                         if not inst:
@@ -13235,17 +16270,317 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         }
                     pending_by_pair = {p: count_pair_pending(pending_orders_all, p) for p in PAIRS}
                     last_exit_refresh = now
+                    open_trades = _backfill_broker_sync_rows(open_trades, broker_trade_meta)
 
-                    # Reconcile: mark DB trades CLOSED if broker has no position (directional) and no pending order
+                    # Reconcile: mark DB trades CLOSED if broker has no position (directional) and no pending order.
+                    # If close was not recently initiated by this process, classify as manual/broker-side close.
                     for tr in open_trades:
                         pair = tr["pair"]
                         direction = str(tr.get("dir", ""))
                         if pending_by_pair.get(pair, 0) > 0:
                             continue
+                        try:
+                            tr_tid = int(tr.get("id", 0) or 0)
+                        except Exception:
+                            tr_tid = 0
                         dir_units = broker_pos_info.get(pair, {}).get(direction, {}).get("units", 0)
+                        if tr_tid > 0 and dir_units > 0:
+                            aee_broker_flat_unconfirmed.pop(tr_tid, None)
                         if dir_units <= 0:
-                            if db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), "BROKER_CLOSED") is None:
+                            intent_key = f"{normalize_pair(pair)}|{str(direction).upper()}"
+                            intent = _EXPECTED_CLOSE_INTENTS.get(intent_key) or {}
+                            intent_ts = float(intent.get("ts", 0.0) or 0.0)
+                            intent_age = max(0.0, now - intent_ts) if intent_ts > 0.0 else 1e9
+                            expected_local_close = intent_ts > 0.0 and intent_age <= float(_EXPECTED_CLOSE_INTENT_TTL_SEC)
+                            broker_trade_id = str(tr.get("oanda_trade_id") or "").strip()
+                            tr_trace = aee_handoff_trace.setdefault(tr_tid, {}) if tr_tid > 0 else {}
+                            fill_ts = float(tr_trace.get("fill_ts", tr.get("ts", now)) or now)
+                            fill_age_sec = max(0.0, now - fill_ts)
+                            has_first_eval = tr_trace.get("first_eval_ts") is not None
+                            in_post_fill_grace = fill_age_sec <= float(AEE_RECON_POST_FILL_GRACE_SEC)
+                            # Only trust explicit broker-close inference if the broker openTrades
+                            # snapshot is known to be captured after this trade's fill timestamp.
+                            open_trades_snapshot_ts = float(open_trade_cache.get("ts", 0.0) or 0.0)
+                            explicit_snapshot_after_fill = open_trades_snapshot_ts >= fill_ts
+                            explicit_broker_close = (
+                                bool(broker_trade_id)
+                                and explicit_snapshot_after_fill
+                                and (broker_trade_id not in open_broker_trade_ids)
+                            )
+
+                            flat_state = None
+                            flat_count = 0
+                            flat_window_sec = 0.0
+                            if tr_tid > 0:
+                                flat_state = aee_broker_flat_unconfirmed.setdefault(
+                                    tr_tid,
+                                    {
+                                        "first_seen_ts": now,
+                                        "last_seen_ts": now,
+                                        "count": 0.0,
+                                    },
+                                )
+                                flat_state["count"] = float(flat_state.get("count", 0.0) or 0.0) + 1.0
+                                flat_state["last_seen_ts"] = now
+                                flat_count = int(flat_state.get("count", 0.0) or 0)
+                                flat_window_sec = max(0.0, now - float(flat_state.get("first_seen_ts", now) or now))
+                            flat_confirmed = (
+                                flat_count >= int(AEE_RECON_FLAT_CONFIRM_POLLS)
+                                and flat_window_sec >= float(AEE_RECON_FLAT_CONFIRM_SEC)
+                            )
+
+                            # Ownership doctrine: fresh fills must receive first AEE eval unless
+                            # broker-side close is explicitly confirmed.
+                            if (not expected_local_close) and (not has_first_eval) and (not explicit_broker_close):
+                                emit_trade_kind(
+                                    "BROKER_FLAT_UNCONFIRMED",
+                                    {
+                                        **build_event_envelope(
+                                            kind="BROKER_FLAT_UNCONFIRMED",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=tr_tid,
+                                            broker_trade_id=broker_trade_id,
+                                        ),
+                                        "broker_directional_units": int(dir_units),
+                                        "flat_count": int(flat_count),
+                                        "flat_window_sec": float(flat_window_sec),
+                                        "fill_age_sec": float(fill_age_sec),
+                                        "in_post_fill_grace": bool(in_post_fill_grace),
+                                        "has_first_eval": False,
+                                        "required_confirm_polls": int(AEE_RECON_FLAT_CONFIRM_POLLS),
+                                        "required_confirm_sec": float(AEE_RECON_FLAT_CONFIRM_SEC),
+                                        "explicit_broker_close": bool(explicit_broker_close),
+                                        "explicit_snapshot_after_fill": bool(explicit_snapshot_after_fill),
+                                        "hold_reason": "await_first_aee_eval",
+                                    },
+                                )
                                 continue
+
+                            # After first eval, keep requiring stronger confirmation than a single flat read.
+                            if (not expected_local_close) and (
+                                (not explicit_broker_close) and (not flat_confirmed)
+                            ):
+                                emit_trade_kind(
+                                    "BROKER_FLAT_UNCONFIRMED",
+                                    {
+                                        **build_event_envelope(
+                                            kind="BROKER_FLAT_UNCONFIRMED",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=tr_tid,
+                                            broker_trade_id=broker_trade_id,
+                                        ),
+                                        "broker_directional_units": int(dir_units),
+                                        "flat_count": int(flat_count),
+                                        "flat_window_sec": float(flat_window_sec),
+                                        "fill_age_sec": float(fill_age_sec),
+                                        "in_post_fill_grace": bool(in_post_fill_grace),
+                                        "has_first_eval": bool(has_first_eval),
+                                        "required_confirm_polls": int(AEE_RECON_FLAT_CONFIRM_POLLS),
+                                        "required_confirm_sec": float(AEE_RECON_FLAT_CONFIRM_SEC),
+                                        "explicit_broker_close": bool(explicit_broker_close),
+                                        "explicit_snapshot_after_fill": bool(explicit_snapshot_after_fill),
+                                    },
+                                )
+                                log_runtime(
+                                    "info",
+                                    "BROKER_FLAT_UNCONFIRMED",
+                                    trade_id=tr_tid,
+                                    pair=pair,
+                                    direction=direction,
+                                    broker_directional_units=int(dir_units),
+                                    flat_count=int(flat_count),
+                                    flat_window_sec=float(flat_window_sec),
+                                    fill_age_sec=float(fill_age_sec),
+                                    in_post_fill_grace=bool(in_post_fill_grace),
+                                    has_first_eval=bool(has_first_eval),
+                                    explicit_broker_close=bool(explicit_broker_close),
+                                    explicit_snapshot_after_fill=bool(explicit_snapshot_after_fill),
+                                )
+                                continue
+
+                            close_reason = "BROKER_CLOSED"
+                            nonlocal_close_kind = ""
+                            if not expected_local_close:
+                                recent_close = _PAIR_SIDE_CLOSE_RECENT.get(intent_key) or {}
+                                recent_close_ts = float(recent_close.get("ts", 0.0) or 0.0)
+                                recent_close_age = max(0.0, now - recent_close_ts) if recent_close_ts > 0.0 else 1e9
+                                recent_close_reason = str(recent_close.get("reason", "") or "")
+                                recent_close_actor = str(recent_close.get("origin_actor", "") or "")
+                                recent_close_trade_id = int(recent_close.get("db_trade_id", 0) or 0)
+
+                                if (
+                                    recent_close_ts > 0.0
+                                    and recent_close_age <= float(_PAIR_SIDE_CLOSE_RECENT_TTL_SEC)
+                                    and recent_close_trade_id > 0
+                                    and recent_close_trade_id != tr_tid
+                                ):
+                                    nonlocal_close_kind = "PAIR_SIDE_ALREADY_FLAT"
+                                elif "STOP_LOSS" in recent_close_reason:
+                                    nonlocal_close_kind = "BROKER_STOP_LOSS_CONFIRMED"
+                                elif ("TAKE_PROFIT" in recent_close_reason) or ("_TP" in recent_close_reason):
+                                    nonlocal_close_kind = "BROKER_TAKE_PROFIT_CONFIRMED"
+                                elif recent_close_actor == "MANUAL_UI":
+                                    nonlocal_close_kind = "HUMAN_MANUAL_CLOSE_CONFIRMED"
+                                elif bool(explicit_broker_close) or bool(flat_confirmed):
+                                    nonlocal_close_kind = "BROKER_FLAT_CONFIRMED"
+                                else:
+                                    nonlocal_close_kind = "NONLOCAL_CLOSE_CONFIRMED"
+                                close_reason = nonlocal_close_kind
+
+                            if not expected_local_close:
+                                emit_trade_kind(
+                                    "NONLOCAL_CLOSE_CONFIRM_APPLY",
+                                    {
+                                        **build_event_envelope(
+                                            kind="NONLOCAL_CLOSE_CONFIRM_APPLY",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=int(tr.get("id", 0) or 0),
+                                            broker_trade_id=broker_trade_id,
+                                        ),
+                                        "reason": str(nonlocal_close_kind or close_reason),
+                                        "explicit_broker_close": bool(explicit_broker_close),
+                                        "explicit_snapshot_after_fill": bool(explicit_snapshot_after_fill),
+                                        "flat_confirmed": bool(flat_confirmed),
+                                        "flat_count": int(flat_count),
+                                        "flat_window_sec": float(flat_window_sec),
+                                        "fill_age_sec": float(fill_age_sec),
+                                        "recent_close_actor": str(((_PAIR_SIDE_CLOSE_RECENT.get(intent_key) or {}).get("origin_actor", "")) or ""),
+                                        "recent_close_reason": str(((_PAIR_SIDE_CLOSE_RECENT.get(intent_key) or {}).get("reason", "")) or ""),
+                                    },
+                                )
+                                log_runtime(
+                                    "warning",
+                                    "NONLOCAL_CLOSE_CONFIRM_APPLY",
+                                    trade_id=int(tr.get("id", 0) or 0),
+                                    pair=pair,
+                                    direction=direction,
+                                    reason=str(nonlocal_close_kind or close_reason),
+                                    explicit_broker_close=bool(explicit_broker_close),
+                                    explicit_snapshot_after_fill=bool(explicit_snapshot_after_fill),
+                                    flat_confirmed=bool(flat_confirmed),
+                                    flat_count=int(flat_count),
+                                    flat_window_sec=float(flat_window_sec),
+                                    fill_age_sec=float(fill_age_sec),
+                                )
+                            if db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), close_reason) is None:
+                                continue
+                            if tr_tid > 0:
+                                aee_broker_flat_unconfirmed.pop(tr_tid, None)
+                            if tr_tid > 0:
+                                if "broker_close_ts" not in tr_trace:
+                                    tr_trace["broker_close_ts"] = now
+                                if tr_trace.get("first_eval_ts") is None:
+                                    emit_trade_kind(
+                                        "AEE_FIRST_EVAL_MISSING",
+                                        {
+                                            **build_event_envelope(
+                                                kind="AEE_FIRST_EVAL_MISSING",
+                                                pair=pair,
+                                                direction=direction,
+                                                trade_id=tr_tid,
+                                                broker_trade_id=str(tr.get("oanda_trade_id") or ""),
+                                            ),
+                                            "close_reason": str(close_reason),
+                                            "fill_ts": tr_trace.get("fill_ts"),
+                                            "broker_close_ts": tr_trace.get("broker_close_ts"),
+                                            "explicit_broker_close": bool(explicit_broker_close),
+                                            "flat_confirmed": bool(flat_confirmed),
+                                        },
+                                    )
+                                emit_trade_kind(
+                                    "AEE_HANDOFF_TRACE",
+                                    {
+                                        **build_event_envelope(
+                                            kind="AEE_HANDOFF_TRACE",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=tr_tid,
+                                            broker_trade_id=str(tr.get("oanda_trade_id") or ""),
+                                        ),
+                                        "stage": "broker_close_detected",
+                                        "close_reason": str(close_reason),
+                                        "fill_ts": tr_trace.get("fill_ts"),
+                                        "first_eval_ts": tr_trace.get("first_eval_ts"),
+                                        "first_green_ts": tr_trace.get("first_green_ts"),
+                                        "first_decision_ts": tr_trace.get("first_decision_ts"),
+                                        "first_close_request_ts": tr_trace.get("first_close_request_ts"),
+                                        "broker_close_ts": tr_trace.get("broker_close_ts"),
+                                    },
+                                )
+                            if not expected_local_close:
+                                emit_trade_kind(
+                                    "NONLOCAL_CLOSE_CONFIRMED",
+                                    {
+                                        **build_event_envelope(
+                                            kind="NONLOCAL_CLOSE_CONFIRMED",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=int(tr.get("id", 0) or 0),
+                                            broker_trade_id=broker_trade_id,
+                                        ),
+                                        "close_reason": str(nonlocal_close_kind or close_reason),
+                                        "expected_local_close": False,
+                                        "intent_key": intent_key,
+                                        "intent_age_sec": None if intent_ts <= 0.0 else float(intent_age),
+                                        "origin_actor": intent.get("origin_actor", ""),
+                                        "origin_reason": intent.get("origin_reason", ""),
+                                        "explicit_broker_close": bool(explicit_broker_close),
+                                        "explicit_snapshot_after_fill": bool(explicit_snapshot_after_fill),
+                                        "flat_confirmed": bool(flat_confirmed),
+                                        "flat_count": int(flat_count),
+                                        "flat_window_sec": float(flat_window_sec),
+                                        "fill_age_sec": float(fill_age_sec),
+                                    },
+                                )
+                                emit_trade_kind(
+                                    "NONLOCAL_CLOSE_DETECTED",
+                                    {
+                                        **build_event_envelope(
+                                            kind="NONLOCAL_CLOSE_DETECTED",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=int(tr.get("id", 0) or 0),
+                                            broker_trade_id=str(tr.get("oanda_trade_id") or ""),
+                                        ),
+                                        "close_reason": str(nonlocal_close_kind or close_reason),
+                                        "expected_local_close": False,
+                                        "intent_key": intent_key,
+                                        "intent_age_sec": None if intent_ts <= 0.0 else float(intent_age),
+                                        "origin_actor": intent.get("origin_actor", ""),
+                                        "origin_reason": intent.get("origin_reason", ""),
+                                        "explicit_broker_close": bool(explicit_broker_close),
+                                        "explicit_snapshot_after_fill": bool(explicit_snapshot_after_fill),
+                                        "flat_confirmed": bool(flat_confirmed),
+                                        "flat_count": int(flat_count),
+                                        "flat_window_sec": float(flat_window_sec),
+                                        "fill_age_sec": float(fill_age_sec),
+                                    },
+                                )
+                                if MANUAL_TEACHER_MODE:
+                                    emit_trade_kind(
+                                        "MANUAL_TEACHER",
+                                        {
+                                            **build_event_envelope(
+                                                kind="MANUAL_TEACHER",
+                                                pair=pair,
+                                                direction=direction,
+                                                trade_id=int(tr.get("id", 0) or 0),
+                                                broker_trade_id=str(tr.get("oanda_trade_id") or ""),
+                                                state_key_core_str=_TUNE_CTX.get("state_key_core_str", ""),
+                                            ),
+                                            "teacher_mode": True,
+                                            "teacher_action": "CLOSE",
+                                            "teacher_reason": str(nonlocal_close_kind or close_reason),
+                                            "origin_actor": "MANUAL_UI",
+                                            "teacher_session_id": _TEACH_SESSION_ID,
+                                            "supervision_window_id": _TEACH_SESSION_ID,
+                                            "state_complete_ok": True,
+                                            "trade_state_snapshot": {"state_complete_ok": True, "reason": str(nonlocal_close_kind or close_reason)},
+                                        },
+                                    )
                             setup_name = str(tr.get("setup", ""))
                             is_runner = setup_name.endswith("_RUN") or "_RUN" in setup_name
                             if is_runner:
@@ -13254,11 +16589,55 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 exit_atr = float("nan")
                                 if track and track.get("samples"):
                                     exit_atr = float(track["samples"][-1][1])
-                                _record_runner_exit("BROKER_CLOSED", tr, exit_atr, track)
+                                _record_runner_exit(close_reason, tr, exit_atr, track)
                             with _trade_track_lock:
                                 track = trade_track.get(int(tr.get("id", 0)))
                             exit_atr = float(track["samples"][-1][1]) if track and track.get("samples") else 0.0
-                            _exit_log(tr, "BROKER_CLOSED", exit_atr, track)
+                            peak_atr = 0.0
+                            if track and track.get("samples"):
+                                try:
+                                    peak_vals = [
+                                        float(s[1])
+                                        for s in track.get("samples", [])
+                                        if isinstance(s, (tuple, list)) and len(s) >= 2 and math.isfinite(float(s[1]))
+                                    ]
+                                    peak_atr = max(peak_vals) if peak_vals else 0.0
+                                except Exception:
+                                    peak_atr = 0.0
+                            if (
+                                not expected_local_close
+                                and str(close_reason) in NONLOCAL_CLOSE_REASONS
+                                and peak_atr >= float(AEE_EXTRACTOR_MIN_PEAK_ATR)
+                            ):
+                                emit_trade_kind(
+                                    "AEE_EXTRACTION_FAILURE",
+                                    {
+                                        **build_event_envelope(
+                                            kind="AEE_EXTRACTION_FAILURE",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=int(tr.get("id", 0) or 0),
+                                            broker_trade_id=str(tr.get("oanda_trade_id") or ""),
+                                        ),
+                                        "close_reason": str(close_reason),
+                                        "peak_favorable_atr": float(peak_atr),
+                                        "close_favorable_atr": float(exit_atr),
+                                        "missed_capture_atr": max(0.0, float(peak_atr) - float(exit_atr)),
+                                    },
+                                )
+                                log_runtime(
+                                    "warning",
+                                    "AEE_EXTRACTION_FAILURE",
+                                    trade_id=int(tr.get("id", 0) or 0),
+                                    pair=pair,
+                                    direction=direction,
+                                    close_reason=str(close_reason),
+                                    peak_favorable_atr=float(peak_atr),
+                                    close_favorable_atr=float(exit_atr),
+                                    missed_capture_atr=max(0.0, float(peak_atr) - float(exit_atr)),
+                                )
+                            _exit_log(tr, close_reason, exit_atr, track)
+                            _EXPECTED_CLOSE_INTENTS.pop(intent_key, None)
 
                     # Sync: add DB trades for broker positions missing in DB
                     open_set = {(tr["pair"], str(tr.get("dir", ""))) for tr in open_trades}
@@ -13276,23 +16655,50 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 )
                                 continue
                             sync_count = max(ATR_N + 5, 40) + 1
-                            sync_candles = oanda_call("candles_sync", o.candles, pair, TF_EXEC, sync_count)
-                            if not sync_candles:
-                                continue
-                            ok_c, reason = validate_candles(pair, sync_candles, tf_sec, allow_partial=True)
-                            if not ok_c:
-                                log_throttled(
-                                    f"sync_bad_candles:{pair}:{reason}",
-                                    f"{EMOJI_WARN} SYNC_BAD_CANDLES {pair_tag(pair, direction)}",
-                                    {"pair": pair, "direction": direction, "reason": reason},
+                            sync_candles, sync_gran = _get_exec_candles_with_fallback(
+                                pair,
+                                sync_count,
+                                now,
+                                CANDLE_REFRESH_SEC * 3,
+                            )
+                            sync_gran = sync_gran or TF_EXEC
+                            if sync_candles:
+                                sync_tf_sec = int(granularity_sec(sync_gran) or tf_sec or 0)
+                                ok_c, reason = validate_candles(
+                                    pair,
+                                    sync_candles,
+                                    sync_tf_sec,
+                                    allow_partial=True,
                                 )
-                                continue
-                            atr_entry = atr(sync_candles, ATR_N)
+                                if not ok_c:
+                                    log_throttled(
+                                        f"sync_bad_candles:{pair}:{reason}",
+                                        f"{EMOJI_WARN} SYNC_BAD_CANDLES {pair_tag(pair, direction)}",
+                                        {
+                                            "pair": pair,
+                                            "direction": direction,
+                                            "reason": reason,
+                                            "granularity": sync_gran,
+                                        },
+                                    )
+                                    sync_candles = None
+                            atr_entry, atr_src = _resolve_atr_with_fallback(
+                                pair,
+                                sync_candles,
+                                ATR_N,
+                                now,
+                                sync_gran,
+                            )
                             if not (math.isfinite(atr_entry) and atr_entry > 0.0):
                                 log_throttled(
                                     f"sync_bad_atr:{pair}:{direction}",
                                     f"{EMOJI_WARN} SYNC_BAD_ATR {pair_tag(pair, direction)}",
-                                    {"pair": pair, "direction": direction, "atr": atr_entry},
+                                    {
+                                        "pair": pair,
+                                        "direction": direction,
+                                        "atr": atr_entry,
+                                        "atr_src": atr_src,
+                                    },
                                 )
                                 continue
                             trade_id = db_call(
@@ -13308,7 +16714,13 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 ttl_sec=0,
                                 pg_t=0,
                                 pg_atr=0.0,
-                                note="broker_sync",
+                                note=f"broker_sync atr_src={atr_src} gran={sync_gran}",
+                                oanda_trade_id=(
+                                    str(broker_trade_meta.get(pair, {}).get(direction, {}).get("trade_ids_csv", "") or "").strip() or None
+                                ),
+                                ts=(
+                                    float(broker_trade_meta.get(pair, {}).get(direction, {}).get("open_ts", 0.0) or 0.0) or None
+                                ),
                             )
                             if trade_id:
                                 log(
@@ -13325,7 +16737,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
             exit_pairs = sorted({tr["pair"] for tr in open_trades})
             price_map_exit = {}
-            
+
             if exit_pairs:
                 price_map_exit = _get_pricing_multi(
                     exit_pairs,
@@ -13341,690 +16753,1539 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         continue
                     simulate_price_stream_update(p, bid, ask, tick_cache=tick_cache)
 
-            for tr in open_trades:
-                if _SHUTDOWN:
-                    break
-                pair = tr["pair"]
-                direction = str(tr.get("dir", ""))
-                if pending_by_pair and pending_by_pair.get(pair, 0) > 0:
-                    continue
-                
-                # Exit retry backoff (do not hard-block; retry with backoff + logs)
-                if pair in EXIT_BLOCKED_PAIRS:
-                    block_info = EXIT_BLOCKED_PAIRS[pair]
-                    next_retry = float(block_info.get("next_retry_ts", 0.0))
-                    if next_retry and now_ts() < next_retry:
-                        log_throttled(
-                            f"exit_blocked:{pair}",
-                            f"{EMOJI_WARN} EXIT_BACKOFF {pair_tag(pair, direction)}",
-                            {
-                                "pair": pair,
-                                "direction": direction,
-                                "reason": block_info.get("reason", "unknown"),
-                                "fail_count": block_info.get("fail_count", 0),
-                                "next_retry_in_sec": round(next_retry - now_ts(), 2),
-                            },
-                            min_interval=10.0,
-                        )
-                        continue
-                    else:
-                        log_throttled(
-                            f"exit_retry:{pair}",
-                            f"{EMOJI_WARN} EXIT_RETRY {pair_tag(pair, direction)}",
-                            {"pair": pair, "direction": direction, "reason": block_info.get("reason", "unknown")},
-                            min_interval=10.0,
-                        )
-                age = now_ts() - float(tr["ts"])
-                ttl_sec = int(tr["ttl_sec"])
-                pg_t = int(tr["pg_t"])
-                pg_atr = float(tr["pg_atr"])
-                atr_entry = float(tr["atr_entry"])
-                entry = float(tr["entry"])
+            pair_close_coalesce: Dict[str, Dict[str, Any]] = {}
 
-                if pair in price_map_exit:
-                    px = price_map_exit[pair]
-                    if isinstance(px, (tuple, list)) and len(px) >= 2:
-                        bid, ask = px[0], px[1]
-                    else:
-                        continue
-                else:
-                    resp_price = oanda_call("pricing_exit", o.pricing, pair)
-                    if not resp_price:
-                        continue
-                    bid, ask = resp_price
-                if not validate_price(pair, bid, ask, "exit"):
-                    continue
-                if not (math.isfinite(atr_entry) and atr_entry > 0.0):
-                    fb_atr, fb_src = _resolve_atr_with_fallback(pair, None, ATR_N, now, TF_EXEC)
-                    log_throttled(
-                        f"exit_bad_atr:{pair}",
-                        f"{EMOJI_WARN} EXIT_BAD_ATR {pair_tag(pair, direction)}",
-                        {"pair": pair, "atr_entry": atr_entry, "fallback_atr": fb_atr, "fallback_src": fb_src},
-                    )
-                    atr_entry = fb_atr
+            def _pair_close_key(pair_name: str, direction_name: str) -> str:
+                return f"{normalize_pair(pair_name)}|{str(direction_name or '').upper()}"
 
-                mid = (bid + ask) / 2.0
-                favorable = (mid - entry) if direction == "LONG" else (entry - mid)
-                favorable_atr = favorable / atr_entry
-                adverse_atr = -favorable_atr
-                trade_id = int(tr.get("id", 0))
-                oanda_trade_id = tr.get("oanda_trade_id")
+            def _register_pair_close(pair_name: str, direction_name: str, close_reason: str, source_trade_id: int) -> None:
+                pair_norm = normalize_pair(pair_name)
+                pair_close_coalesce[_pair_close_key(pair_norm, direction_name)] = {
+                    "reason": str(close_reason or ""),
+                    "source_trade_id": int(source_trade_id or 0),
+                }
+                st_local = states.get(pair_norm)
+                if (
+                    st_local is not None
+                    and pending_by_pair
+                    and pending_by_pair.get(pair_norm, 0) <= 0
+                    and st_local.state in ("MANAGING", "ENTER")
+                ):
+                    _transition_state(st_local, "WATCH", pair_norm, reason="pair_close_complete")
+
+            def _consume_coalesced_pair_close(tr_row: dict) -> bool:
+                close_info = pair_close_coalesce.get(_pair_close_key(tr_row.get("pair", ""), tr_row.get("dir", "")))
+                if not close_info:
+                    return False
+                trade_id_local = int(tr_row.get("id", 0) or 0)
+                if trade_id_local <= 0:
+                    return True
+                now_local = now_ts()
+                pair_local = normalize_pair(str(tr_row.get("pair", "") or ""))
+                dir_local = str(tr_row.get("dir", "") or "").upper()
+                broker_tid_local = str(tr_row.get("oanda_trade_id") or "")
+                trace_local = aee_handoff_trace.setdefault(trade_id_local, {})
+                trace_local.setdefault("fill_ts", float(tr_row.get("ts", now_local) or now_local))
+                # Sibling was flattened by pair-side owner; stamp ownership/eval chain to keep proof complete.
+                if "first_eval_ts" not in trace_local:
+                    trace_local["first_eval_ts"] = now_local
+                if "first_decision_ts" not in trace_local:
+                    trace_local["first_decision_ts"] = now_local
+                if "first_close_request_ts" not in trace_local:
+                    trace_local["first_close_request_ts"] = now_local
+                if "first_close_response_ts" not in trace_local:
+                    trace_local["first_close_response_ts"] = now_local
+                if "broker_close_ts" not in trace_local:
+                    trace_local["broker_close_ts"] = now_local
+                close_reason = str(close_info.get("reason") or "PAIR_CLOSE_COALESCED")
+                db_call("mark_trade_closed", db.mark_trade_closed, trade_id_local, close_reason)
                 with _trade_track_lock:
-                    track = trade_track.get(trade_id)
+                    track_local = trade_track.get(trade_id_local)
+                exit_atr_local = float(track_local["samples"][-1][1]) if track_local and track_local.get("samples") else 0.0
+                setup_name_local = str(tr_row.get("setup", ""))
+                is_runner_local = setup_name_local.endswith("_RUN") or "_RUN" in setup_name_local
+                if is_runner_local:
+                    _record_runner_exit(close_reason, tr_row, exit_atr_local, track_local)
+                _exit_log(tr_row, close_reason, exit_atr_local, track_local)
+                log_runtime(
+                    "info",
+                    "PAIR_CLOSE_COALESCED",
+                    trade_id=trade_id_local,
+                    pair=pair_local,
+                    direction=dir_local,
+                    close_reason=close_reason,
+                    source_trade_id=int(close_info.get("source_trade_id", 0) or 0),
+                )
+                emit_trade_kind(
+                    "PAIR_CLOSE_COALESCED",
+                    {
+                        **build_event_envelope(
+                            kind="PAIR_CLOSE_COALESCED",
+                            pair=pair_local,
+                            direction=dir_local,
+                            trade_id=trade_id_local,
+                            broker_trade_id=broker_tid_local,
+                        ),
+                        "close_reason": close_reason,
+                        "source_trade_id": int(close_info.get("source_trade_id", 0) or 0),
+                    },
+                )
+                emit_trade_kind(
+                    "AEE_HANDOFF_TRACE",
+                    {
+                        **build_event_envelope(
+                            kind="AEE_HANDOFF_TRACE",
+                            pair=pair_local,
+                            direction=dir_local,
+                            trade_id=trade_id_local,
+                            broker_trade_id=broker_tid_local,
+                        ),
+                        "stage": "coalesced_close_satisfied",
+                        "decision": "CLOSE",
+                        "exit_reason": close_reason,
+                        "close_success": True,
+                        "close_status": 200,
+                        "source_trade_id": int(close_info.get("source_trade_id", 0) or 0),
+                        "fill_ts": trace_local.get("fill_ts"),
+                        "first_eval_ts": trace_local.get("first_eval_ts"),
+                        "first_green_ts": trace_local.get("first_green_ts"),
+                        "first_decision_ts": trace_local.get("first_decision_ts"),
+                        "first_close_request_ts": trace_local.get("first_close_request_ts"),
+                        "first_close_response_ts": trace_local.get("first_close_response_ts"),
+                        "broker_close_ts": trace_local.get("broker_close_ts"),
+                    },
+                )
+                return True
 
-                if OUTCOME_ACCELERATOR:
-                    force_close, oa_reason = should_force_close(
-                        hold_sec=age,
-                        min_hold=OA_MIN_HOLD_SEC,
-                        max_hold=OA_MAX_HOLD_SEC,
-                        pnl_atr=favorable_atr,
-                        mae_atr=max(0.0, adverse_atr),
-                    )
-                    if force_close:
-                        oa_payload = oa_event(
-                            pair=pair,
-                            reason=oa_reason,
-                            hold_sec=age,
-                            pnl_atr=favorable_atr,
-                            mae_atr=max(0.0, adverse_atr),
-                        )
-                        emit_trade_kind(
-                            "OA_FORCE_CLOSE_TRIGGER",
-                            {
-                                **build_event_envelope(
-                                    kind="OA_FORCE_CLOSE_TRIGGER",
-                                    pair=pair,
-                                    direction=direction,
-                                    trade_id=trade_id,
-                                    broker_trade_id=oanda_trade_id,
-                                    patch_version=_TUNE_CTX.get("patch_version", ""),
-                                    manual_version=_TUNE_CTX.get("manual_version", ""),
-                                ),
-                                **oa_payload,
-                            },
-                        )
-                        if oa_reason == "max_hold":
-                            emit_trade_kind(
-                                "AEE_TIMEBOX_EXIT",
-                                {
-                                    **build_event_envelope(
-                                        kind="AEE_TIMEBOX_EXIT",
-                                        pair=pair,
-                                        direction=direction,
-                                        trade_id=trade_id,
-                                        broker_trade_id=oanda_trade_id,
-                                    ),
-                                    "reason": "oa_max_hold",
-                                },
-                            )
-                        request_id = str(int(time.time() * 1000))
-                        oa_close_reason = f"oa_force_close_{oa_reason}"
-                        success, resp = _close_trade_or_position(
-                            get_oanda(),
-                            pair,
-                            direction,
-                            tr.get("oanda_trade_id"),
-                            oa_close_reason,
-                            int(tr["id"]),
-                            origin_actor="AEE",
-                            origin_reason=oa_close_reason,
-                        )
-                        if AEE_PROOF_LOGS:
-                            status = "success" if success else "failed"
-                            log_runtime(
-                                "info",
-                                "AEE_CLOSE_RESPONSE",
-                                trade_id=trade_id,
-                                pair=pair,
-                                direction=direction,
-                                exit_reason=oa_close_reason,
-                                request_id=request_id,
-                                status=status,
-                                error=None if success else str(resp),
-                            )
-                        if not success:
-                            if _handle_close_error(resp, pair, direction, tr, f"OA_FORCE_CLOSE_{oa_reason}", favorable_atr, track):
-                                continue
-                            log_throttled(
-                                f"close_fail_oa:{pair}:{oa_reason}",
-                                f"{EMOJI_ERR} CLOSE_FAIL {pair_tag(pair, direction)}",
-                                {"reason": f"OA_FORCE_CLOSE_{oa_reason}", "resp": resp},
-                            )
-                            continue
-                        db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), f"OA_FORCE_CLOSE_{oa_reason}")
-                        _exit_log(tr, f"OA_FORCE_CLOSE_{oa_reason}", favorable_atr, track)
-                        continue
-
-                # Retry stop-loss placement if previous add failed
-                if oanda_trade_id:
+                for tr in open_trades:
+                    if _SHUTDOWN:
+                        break
                     try:
-                        retry_key = int(oanda_trade_id)
-                    except Exception:
-                        retry_key = None
-                    if retry_key is not None and retry_key in sl_retry_state:
-                        retry = sl_retry_state.get(retry_key) or {}
-                        next_ts = float(retry.get("next_ts", 0.0))
-                        if now >= next_ts:
-                            sl_price = float(retry.get("sl", 0.0))
-                            resp_sl = oanda_call("retry_sl", o.set_trade_stop_loss, str(oanda_trade_id), sl_price, allow_error_dict=True)
-                            ok_sl = isinstance(resp_sl, dict) and not (
-                                resp_sl.get("_http_error")
-                                or resp_sl.get("_rate_limited")
-                                or resp_sl.get("_json_error")
-                                or resp_sl.get("_exception")
-                            )
-                            if ok_sl:
-                                sl_retry_state.pop(retry_key, None)
-                                log(f"{EMOJI_OK} SL_RETRY_OK {pair_tag(pair, direction)}", {"trade_id": oanda_trade_id, "sl": sl_price})
-                            else:
-                                fail_count = int(retry.get("fail_count", 0)) + 1
-                                backoff = min(60.0, SL_RETRY_BASE_SEC * (2 ** (fail_count - 1)))
-                                retry.update({"fail_count": fail_count, "next_ts": now + backoff})
-                                sl_retry_state[retry_key] = retry
+                        pair = tr["pair"]
+                        direction = str(tr.get("dir", ""))
+                        if pending_by_pair and pending_by_pair.get(pair, 0) > 0:
+                            continue
+                        if _consume_coalesced_pair_close(tr):
+                            continue
+        
+        
+                        # Exit retry backoff (do not hard-block; retry with backoff + logs)
+                        if pair in EXIT_BLOCKED_PAIRS:
+                            block_info = EXIT_BLOCKED_PAIRS[pair]
+                            next_retry = float(block_info.get("next_retry_ts", 0.0))
+                            if next_retry and now_ts() < next_retry:
                                 log_throttled(
-                                    f"sl_retry_fail:{pair}:{oanda_trade_id}",
-                                    f"{EMOJI_WARN} SL_RETRY_FAIL {pair_tag(pair, direction)}",
-                                    {"trade_id": oanda_trade_id, "sl": sl_price, "backoff_sec": backoff, "fail_count": fail_count},
+                                    f"exit_blocked:{pair}",
+                                    f"{EMOJI_WARN} EXIT_BACKOFF {pair_tag(pair, direction)}",
+                                    {
+                                        "pair": pair,
+                                        "direction": direction,
+                                        "reason": block_info.get("reason", "unknown"),
+                                        "fail_count": block_info.get("fail_count", 0),
+                                        "next_retry_in_sec": round(next_retry - now_ts(), 2),
+                                    },
                                     min_interval=10.0,
                                 )
-
-                # === ADAPTIVE EXIT ENGINE (AEE) ===
-                # Get current spread
-                spread_pips = to_pips(pair, ask - bid) if math.isfinite(ask) and math.isfinite(bid) else 0
-                setup_name = str(tr.get("setup", ""))
-                speed_class = speed_class_from_setup_name(setup_name)
-                leg_type = "RUNNER" if "_RUN" in str(setup_name).upper() else "HARVESTER"
-                st_ctx = states.get(pair)
-                if st_ctx is None:
-                    st_ctx = State(pair)
-                    states[pair] = st_ctx
-                sig_ctx = SignalDef(
-                    pair=pair,
-                    setup_id=int(tr.get("strategy_id", 6) or 6),
-                    setup_name=setup_name or "VOL_REIGNITE",
-                    direction=direction,
-                    mode=getattr(st_ctx, "mode", "RANGE"),
-                    ttl_sec=60,
-                    pg_t=12,
-                    pg_atr=0.10,
-                    tp1_atr=0.25,
-                    tp2_atr=0.50,
-                    sl_atr=0.30,
-                    reason="aee_manage_context",
-                )
-                tune_ctx = _resolve_tune_context(pair, sig_ctx, st_ctx, speed_class)
-                aee_knobs = AEEKnobs(
-                    strictness_mult=float(tune_ctx.get("knobs", {}).get("aee.strictness_mult", 1.0)),
-                    near_tp_band_atr=float(tune_ctx.get("knobs", {}).get("aee.near_tp_band_atr", 0.25)),
-                )
-                aee_eval = _AEE_ENGINE.evaluate_with_leg_policy(
-                    leg_type,
-                    _aee_eval_for_trade,
-                    aee_knobs=aee_knobs,
-                    knobs_hash=tune_ctx.get("tune_hash", ""),
-                    source_level=tune_ctx.get("source_level", ""),
-                    source_key=tune_ctx.get("source_key", ""),
-                    tr=tr,
-                    pair=pair,
-                    direction=direction,
-                    bid=bid,
-                    ask=ask,
-                    mid=mid,
-                    now=now,
-                    spread_pips=spread_pips,
-                    speed_class=speed_class,
-                )
-                aee_metrics = dict(aee_eval.get("metrics", {}) or {})
-                aee_phase = str(aee_eval.get("phase", "PROTECT") or "PROTECT")
-                exit_reason = aee_eval.get("exit_reason")
-                aee_state_obj = aee_eval.get("state")
-                trade_id_int = None
-                broker_trade_id = None
-                try:
-                    trade_id_int = int(tr.get("id", 0) or 0)
-                except Exception:
-                    trade_id_int = None
-                try:
-                    broker_trade_id = str(tr.get("oanda_trade_id") or "").strip() or None
-                except Exception:
-                    broker_trade_id = None
-                trade_id_key = trade_id_int if trade_id_int is not None and trade_id_int > 0 else broker_trade_id
-                
-                # Send AEE HOLD notification if no exit reason
-                if not exit_reason:
-                    snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
-                    energy_ratio = ffloat(snapshot.get("energy_ratio", 0.0), 0.0)
-                    dominant_modulator = snapshot.get("dominant_modulator", "UNKNOWN")
-                    profit_pips = ffloat(snapshot.get("profit_pips", 0.0), 0.0)
-                    mfe_pips = ffloat(snapshot.get("mfe_pips", 0.0), 0.0)
-                    mae_pips = ffloat(snapshot.get("mae_pips", 0.0), 0.0)
-                    
-                    notify(
-                        kind="AEE_HOLD",
-                        title=f"AEE HOLD {pair} {direction} {profit_pips:+.1f}p",
-                        body=f"ER={energy_ratio:.2f} dom={dominant_modulator} mfe={mfe_pips:.1f} mae={mae_pips:.1f}",
-                        data={
-                            "pair": pair,
-                            "trade_id": trade_id_int,
-                            "broker_trade_id": oanda_trade_id,
-                            "direction": direction,
-                            "decision": "HOLD",
-                            "energy_ratio": energy_ratio,
-                            "dominant_modulator": dominant_modulator,
-                            "profit_pips": profit_pips,
-                            "mfe_pips": mfe_pips,
-                            "mae_pips": mae_pips,
-                            "phase": aee_phase
-                        },
-                        urgency="low",
-                        throttle_key=f"AEE_HOLD:{trade_id_key}",
-                        throttle_sec=float(os.getenv("AEE_HOLD_NOTIFY_SEC", "30"))
-                    )
-                
-                if AEE_PROOF_LOGS:
-                    snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
-                    snapshot["decision"] = exit_reason
-                    snapshot["reason_code"] = exit_reason
-                    log_throttled(f"aee_eval_snapshot:{trade_id_key}", f"AEE_EVAL_SNAPSHOT | {json.dumps(snapshot)}", min_interval=10.0)
-                if MANUAL_TEACHER_MODE:
-                    snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
-                    if trade_id_key is None or not bool(snapshot.get("state_complete_ok", False)):
-                        _TEACHER_EMIT_SKIPPED_INCOMPLETE += 1
-                        log_throttled(
-                            f"teacher_skip_incomplete:{pair}:{trade_id_key}",
-                            "TEACHER_EMIT_SKIPPED_INCOMPLETE",
-                            {
-                                "pair": pair,
-                                "trade_id_key": trade_id_key,
-                                "state_complete_ok": bool(snapshot.get("state_complete_ok", False)),
-                                "missing_fields": snapshot.get("missing_fields", []),
-                                "skipped_total": int(_TEACHER_EMIT_SKIPPED_INCOMPLETE),
-                            },
-                            min_interval=10.0,
-                        )
-                        continue
-                    decision = exit_reason or "HOLD"
-                    energy_ratio = snapshot.get("energy_ratio")
-                    energy_ratio_bin = round(float(energy_ratio), 2) if isinstance(energy_ratio, (int, float)) else None
-                    dominant_modulator = snapshot.get("dominant_modulator")
-                    runner_mode = bool(snapshot.get("runner_mode", False))
-                    dist_to_tp_atr = snapshot.get("dist_to_tp_atr")
-                    dist_to_tp_bin = None
-                    if isinstance(dist_to_tp_atr, (int, float)):
-                        if dist_to_tp_atr <= 0.0:
-                            dist_to_tp_bin = "POST_TP"
-                        elif dist_to_tp_atr <= 0.25:
-                            dist_to_tp_bin = "NEAR_TP"
+                                continue
+                            else:
+                                log_throttled(
+                                    f"exit_retry:{pair}",
+                                    f"{EMOJI_WARN} EXIT_RETRY {pair_tag(pair, direction)}",
+                                    {"pair": pair, "direction": direction, "reason": block_info.get("reason", "unknown")},
+                                    min_interval=10.0,
+                                )
+                        age = now_ts() - float(tr["ts"])
+                        ttl_sec = int(tr["ttl_sec"])
+                        pg_t = int(tr["pg_t"])
+                        pg_atr = float(tr["pg_atr"])
+                        atr_entry = float(tr["atr_entry"])
+                        entry = float(tr["entry"])
+        
+                        if pair in price_map_exit:
+                            px = price_map_exit[pair]
+                            if isinstance(px, (tuple, list)) and len(px) >= 2:
+                                bid, ask = px[0], px[1]
+                            else:
+                                continue
                         else:
-                            dist_to_tp_bin = "PRE_TP"
-                    cfail = int(snapshot.get("consecutive_fail_windows", 0) or 0)
-                    current_state = {
-                        "decision": decision,
-                        "energy_ratio_bin": energy_ratio_bin,
-                        "dominant_modulator": dominant_modulator,
-                        "runner_mode": runner_mode,
-                        "dist_to_tp_bin": dist_to_tp_bin,
-                        "consecutive_fail_windows": cfail,
-                    }
-                    last_state = _MANUAL_TEACHER_LAST.get(trade_id_key, {})
-                    now_emit = now_ts()
-                    last_emit_ts = float(last_state.get("_last_emit_ts", 0.0) or 0.0)
-                    changed_keys = [k for k in current_state if current_state[k] != last_state.get(k)]
-                    state_changed = (not last_state) or bool(changed_keys)
-                    interval_ok = (now_emit - last_emit_ts) >= float(TEACH_MIN_EMIT_INTERVAL_SEC)
-
-                    aee_recommendation = {
-                        "decision": decision,
-                        "reason_code": decision,
-                        "energy_ratio": snapshot.get("energy_ratio"),
-                        "strictness_multiplier": snapshot.get("strictness_multiplier", 1.0),
-                        "dominant_modulator": snapshot.get("dominant_modulator", "UNKNOWN"),
-                    }
-                    if state_changed and interval_ok:
-                        suppressed_since_last = int(_MANUAL_TEACHER_SUPPRESSED.get(trade_id_key, 0) or 0)
-                        emit_trade_kind(
-                            "MANUAL_TEACHER",
-                            {
-                                **build_event_envelope(
-                                    kind="MANUAL_TEACHER",
+                            resp_price = oanda_call("pricing_exit", o.pricing, pair)
+                            if not resp_price:
+                                continue
+                            bid, ask = resp_price
+                        if not validate_price(pair, bid, ask, "exit"):
+                            continue
+                        if not (math.isfinite(atr_entry) and atr_entry > 0.0):
+                            fb_atr, fb_src = _resolve_atr_with_fallback(pair, None, ATR_N, now, TF_EXEC)
+                            log_throttled(
+                                f"exit_bad_atr:{pair}",
+                                f"{EMOJI_WARN} EXIT_BAD_ATR {pair_tag(pair, direction)}",
+                                {"pair": pair, "atr_entry": atr_entry, "fallback_atr": fb_atr, "fallback_src": fb_src},
+                            )
+                            atr_entry = fb_atr
+        
+                        mid = (bid + ask) / 2.0
+                        favorable = (mid - entry) if direction == "LONG" else (entry - mid)
+                        favorable_atr = favorable / atr_entry
+                        adverse_atr = -favorable_atr
+                        trade_id = int(tr.get("id", 0))
+                        oanda_trade_id = tr.get("oanda_trade_id")
+                        with _trade_track_lock:
+                            track = trade_track.get(trade_id)
+        
+                        if OUTCOME_ACCELERATOR:
+                            force_close, oa_reason = should_force_close(
+                                hold_sec=age,
+                                min_hold=OA_MIN_HOLD_SEC,
+                                max_hold=OA_MAX_HOLD_SEC,
+                                pnl_atr=favorable_atr,
+                                mae_atr=max(0.0, adverse_atr),
+                            )
+                            if force_close:
+                                oa_payload = oa_event(
                                     pair=pair,
-                                    direction=direction,
-                                    trade_id=trade_id,
-                                    broker_trade_id=oanda_trade_id,
-                                    state_key_core_str=_TUNE_CTX.get("state_key_core_str", ""),
-                                ),
-                                "trade_state_snapshot": snapshot,
-                                "teacher_mode": True,
-                                "teacher_action": "HOLD",
-                                "teacher_reason": None,
-                                "aee_recommendation": aee_recommendation,
-                                "origin_actor": "MANUAL_UI",
-                                "teacher_session_id": _TEACH_SESSION_ID,
-                                "supervision_window_id": _TEACH_SESSION_ID,
-                                "state_complete_ok": bool(snapshot.get("state_complete_ok", False)),
-                                "emit_triggers": changed_keys,
-                                "min_interval_suppressed_since_last": suppressed_since_last,
-                                "ts_utc": snapshot.get("ts_utc"),
-                                "eval_seq": snapshot.get("eval_seq"),
-                            },
+                                    reason=oa_reason,
+                                    hold_sec=age,
+                                    pnl_atr=favorable_atr,
+                                    mae_atr=max(0.0, adverse_atr),
+                                )
+                                emit_trade_kind(
+                                    "OA_FORCE_CLOSE_TRIGGER",
+                                    {
+                                        **build_event_envelope(
+                                            kind="OA_FORCE_CLOSE_TRIGGER",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=trade_id,
+                                            broker_trade_id=oanda_trade_id,
+                                            patch_version=_TUNE_CTX.get("patch_version", ""),
+                                            manual_version=_TUNE_CTX.get("manual_version", ""),
+                                        ),
+                                        **oa_payload,
+                                    },
+                                )
+                                if oa_reason == "max_hold":
+                                    emit_trade_kind(
+                                        "AEE_TIMEBOX_EXIT",
+                                        {
+                                            **build_event_envelope(
+                                                kind="AEE_TIMEBOX_EXIT",
+                                                pair=pair,
+                                                direction=direction,
+                                                trade_id=trade_id,
+                                                broker_trade_id=oanda_trade_id,
+                                            ),
+                                            "reason": "oa_max_hold",
+                                        },
+                                    )
+                                request_id = str(int(time.time() * 1000))
+                                oa_close_reason = f"oa_force_close_{oa_reason}"
+                                success, resp = _close_trade_or_position(
+                                    get_oanda(),
+                                    pair,
+                                    direction,
+                                    tr.get("oanda_trade_id"),
+                                    oa_close_reason,
+                                    int(tr["id"]),
+                                    origin_actor="AEE",
+                                    origin_reason=oa_close_reason,
+                                )
+                                if AEE_PROOF_LOGS:
+                                    status = "success" if success else "failed"
+                                    log_runtime(
+                                        "info",
+                                        "AEE_CLOSE_RESPONSE",
+                                        trade_id=trade_id,
+                                        pair=pair,
+                                        direction=direction,
+                                        exit_reason=oa_close_reason,
+                                        request_id=request_id,
+                                        status=status,
+                                        error=None if success else str(resp),
+                                    )
+                                if not success:
+                                    if _handle_close_error(resp, pair, direction, tr, f"OA_FORCE_CLOSE_{oa_reason}", favorable_atr, track):
+                                        continue
+                                    log_throttled(
+                                        f"close_fail_oa:{pair}:{oa_reason}",
+                                        f"{EMOJI_ERR} CLOSE_FAIL {pair_tag(pair, direction)}",
+                                        {"reason": f"OA_FORCE_CLOSE_{oa_reason}", "resp": resp},
+                                    )
+                                    continue
+                                db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), f"OA_FORCE_CLOSE_{oa_reason}")
+                                _exit_log(tr, f"OA_FORCE_CLOSE_{oa_reason}", favorable_atr, track)
+                                _register_pair_close(pair, direction, f"OA_FORCE_CLOSE_{oa_reason}", trade_id)
+                                continue
+        
+                        # Retry stop-loss placement if previous add failed
+                        if oanda_trade_id:
+                            try:
+                                retry_key = int(oanda_trade_id)
+                            except Exception:
+                                retry_key = None
+                            if retry_key is not None and retry_key in sl_retry_state:
+                                retry = sl_retry_state.get(retry_key) or {}
+                                next_ts = float(retry.get("next_ts", 0.0))
+                                if now >= next_ts:
+                                    sl_price = float(retry.get("sl", 0.0))
+                                    resp_sl = oanda_call("retry_sl", o.set_trade_stop_loss, str(oanda_trade_id), sl_price, allow_error_dict=True)
+                                    ok_sl = isinstance(resp_sl, dict) and not (
+                                        resp_sl.get("_http_error")
+                                        or resp_sl.get("_rate_limited")
+                                        or resp_sl.get("_json_error")
+                                        or resp_sl.get("_exception")
+                                    )
+                                    if ok_sl:
+                                        sl_retry_state.pop(retry_key, None)
+                                        log(f"{EMOJI_OK} SL_RETRY_OK {pair_tag(pair, direction)}", {"trade_id": oanda_trade_id, "sl": sl_price})
+                                    else:
+                                        fail_count = int(retry.get("fail_count", 0)) + 1
+                                        backoff = min(60.0, SL_RETRY_BASE_SEC * (2 ** (fail_count - 1)))
+                                        retry.update({"fail_count": fail_count, "next_ts": now + backoff})
+                                        sl_retry_state[retry_key] = retry
+                                        log_throttled(
+                                            f"sl_retry_fail:{pair}:{oanda_trade_id}",
+                                            f"{EMOJI_WARN} SL_RETRY_FAIL {pair_tag(pair, direction)}",
+                                            {"trade_id": oanda_trade_id, "sl": sl_price, "backoff_sec": backoff, "fail_count": fail_count},
+                                            min_interval=10.0,
+                                        )
+        
+                        # === ADAPTIVE EXIT ENGINE (AEE) ===
+                        # Get current spread
+                        spread_pips = to_pips(pair, ask - bid) if math.isfinite(ask) and math.isfinite(bid) else 0
+                        setup_name = str(tr.get("setup", ""))
+                        speed_class = speed_class_from_setup_name(setup_name)
+                        leg_type = "RUNNER" if "_RUN" in str(setup_name).upper() else "HARVESTER"
+                        st_ctx = states.get(pair)
+                        if st_ctx is None:
+                            st_ctx = PairState(state_since=now_ts())
+                            states[pair] = st_ctx
+                        sig_ctx = SignalDef(
+                            pair=pair,
+                            setup_id=int(tr.get("strategy_id", 6) or 6),
+                            setup_name=setup_name or "VOL_REIGNITE",
+                            direction=direction,
+                            mode=getattr(st_ctx, "mode", "RANGE"),
+                            ttl_sec=60,
+                            pg_t=12,
+                            pg_atr=0.10,
+                            tp1_atr=0.25,
+                            tp2_atr=0.50,
+                            sl_atr=0.30,
+                            reason="aee_manage_context",
                         )
-                        _TEACHER_EMIT_EMITTED += 1
-                        _MANUAL_TEACHER_LAST[trade_id_key] = {**current_state, "_last_emit_ts": now_emit}
-                        _MANUAL_TEACHER_SUPPRESSED[trade_id_key] = 0
-                    elif state_changed and not interval_ok:
-                        _MANUAL_TEACHER_SUPPRESSED[trade_id_key] = int(_MANUAL_TEACHER_SUPPRESSED.get(trade_id_key, 0) or 0) + 1
-                    if TEACH_HEARTBEAT_MODE:
-                        hb_last = float(_TEACH_HEARTBEAT_LAST_TS.get(trade_id_key, 0.0) or 0.0)
-                        if (now_emit - hb_last) >= float(TEACH_HEARTBEAT_INTERVAL_SEC):
+                        tune_ctx = _resolve_tune_context(
+                            pair,
+                            sig_ctx,
+                            st_ctx,
+                            speed_class,
+                            emit_events=True,
+                            allow_apply=True,
+                            update_ctx=True,
+                        )
+                        runtime_session_name = compute_session(now)
+                        runtime_quarter_name = compute_quarter(now, runtime_session_name)
+                        runtime_target_distance = _trade_target_distance_atr(tr, direction, sig_ctx.tp1_atr)
+                        family_profile = _runtime_aee_profile(
+                            pair,
+                            runtime_session_name,
+                            runtime_quarter_name,
+                            direction,
+                            runtime_target_distance,
+                        )
+                        aee_knobs = AEEKnobs(
+                            mode=str(family_profile.get("aee_mode", "fallback") or "fallback"),
+                            strictness_mult=float(tune_ctx.get("knobs", {}).get("aee.strictness_mult", family_profile.get("strictness_mult", 1.0))) * float(family_profile.get("strictness_mult", 1.0)),
+                            near_tp_band_atr=float(family_profile.get("near_tp_band_atr", tune_ctx.get("knobs", {}).get("aee.near_tp_band_atr", 0.25))),
+                            harvester_time_fraction=float(family_profile.get("harvester_time_fraction", 0.45)),
+                            first_partial_fraction=float(family_profile.get("first_partial_fraction", 0.45)),
+                            first_partial_trigger_r=float(family_profile.get("first_partial_trigger_r", 1.25)),
+                            stop_time_fraction=float(family_profile.get("stop_time_fraction", 0.50)),
+                            add_on_enabled=bool(family_profile.get("add_on_enabled", False)),
+                            add_on_risk_percent=float(family_profile.get("add_on_risk_percent", 1.0)),
+                            add_on_min_parent_r=float(family_profile.get("add_on_min_parent_r", 0.75)),
+                            add_on_min_continuation=float(family_profile.get("add_on_min_continuation", 0.60)),
+                            family_source=str(family_profile.get("family_source", "")),
+                        )
+                        aee_eval = _AEE_ENGINE.evaluate_with_leg_policy(
+                            leg_type,
+                            _aee_eval_for_trade,
+                            aee_knobs=aee_knobs,
+                            knobs_hash=tune_ctx.get("tune_hash", ""),
+                            source_level=tune_ctx.get("source_level", ""),
+                            source_key=tune_ctx.get("source_key", ""),
+                            tr=tr,
+                            pair=pair,
+                            direction=direction,
+                            bid=bid,
+                            ask=ask,
+                            mid=mid,
+                            now=now,
+                            spread_pips=spread_pips,
+                            speed_class=speed_class,
+                        )
+                        aee_metrics = dict(aee_eval.get("metrics", {}) or {})
+                        aee_actions = dict(aee_eval.get("actions", {}) or {})
+                        aee_phase = _normalize_aee_phase(aee_eval.get("phase", AEEPhase.PROTECT.value) or AEEPhase.PROTECT.value)
+                        exit_reason = aee_eval.get("exit_reason")
+                        favorable_pips_now = to_pips(pair, max(0.0, float(favorable_atr)) * (atr_entry if math.isfinite(atr_entry) and atr_entry > 0.0 else 0.0))
+                        if (
+                            not exit_reason
+                            and (not AEE_PC1_CONTRACT_ENABLED)
+                            and AEE_FORCE_GREEN_EXIT_ENABLED
+                            and float(age) >= float(AEE_FORCE_GREEN_EXIT_MIN_AGE_SEC)
+                            and math.isfinite(float(favorable_atr))
+                            and float(favorable_atr) >= float(AEE_FORCE_GREEN_EXIT_MIN_ATR)
+                            and float(favorable_pips_now) >= float(AEE_FORCE_GREEN_EXIT_MIN_PIPS)
+                        ):
+                            exit_reason = "FORCE_GREEN_EXIT"
+                        speed_now = float(aee_metrics.get("speed", 999.0) or 999.0)
+                        velocity_now = float(aee_metrics.get("velocity", 999.0) or 999.0)
+                        bridge_profit_candidate = (
+                            not exit_reason
+                            and (not AEE_PC1_CONTRACT_ENABLED)
+                            and AEE_PROFIT_CAPTURE_BRIDGE_MODE
+                            and math.isfinite(float(favorable_atr))
+                            and float(favorable_atr) >= float(AEE_PROFIT_CAPTURE_MIN_ATR)
+                            and speed_now <= float(AEE_PROFIT_CAPTURE_DECAY_SPEED)
+                            and velocity_now <= float(AEE_PROFIT_CAPTURE_DECAY_VELOCITY)
+                        )
+                        bridge_hold_violation = bool(
+                            bridge_profit_candidate
+                            and float(age) < float(AEE_MIN_HOLD_GREEN_SEC)
+                        )
+                        if bridge_profit_candidate:
+                            exit_reason = "PROFIT_CAPTURE_EXIT"
+                        aee_state_obj = aee_eval.get("state")
+                        trade_id_int = None
+                        broker_trade_id = None
+                        try:
+                            trade_id_int = int(tr.get("id", 0) or 0)
+                        except Exception:
+                            trade_id_int = None
+                        try:
+                            broker_trade_id = str(tr.get("oanda_trade_id") or "").strip() or None
+                        except Exception:
+                            broker_trade_id = None
+                        _apply_pc1_management_actions(
+                            o=get_oanda(),
+                            tr=tr,
+                            pair=pair,
+                            direction=direction,
+                            trade_id=trade_id_int if isinstance(trade_id_int, int) else int(tr.get("id", 0) or 0),
+                            oanda_trade_id=broker_trade_id,
+                            aee_state_obj=aee_eval.get("state") if isinstance(aee_eval.get("state"), AEEState) else None,
+                            aee_metrics=aee_metrics,
+                            actions=aee_actions,
+                        )
+                        if trade_id_int is not None and trade_id_int > 0:
+                            trace_live = aee_handoff_trace.setdefault(trade_id_int, {})
+                            if trace_live.get("first_green_ts") is None and math.isfinite(float(favorable_atr)) and float(favorable_atr) > 0.0:
+                                trace_live["first_green_ts"] = now
+                        trade_id_key = trade_id_int if trade_id_int is not None and trade_id_int > 0 else broker_trade_id
+                        if bridge_hold_violation:
                             emit_trade_kind(
-                                "TEACH_HEARTBEAT",
+                                "AEE_PROFIT_EXIT_HOLD_BLOCKED",
                                 {
                                     **build_event_envelope(
-                                        kind="TEACH_HEARTBEAT",
+                                        kind="AEE_PROFIT_EXIT_HOLD_BLOCKED",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=broker_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "hold_sec": float(age),
+                                    "hold_required_sec": float(AEE_MIN_HOLD_GREEN_SEC),
+                                    "favorable_atr": float(favorable_atr),
+                                    "exit_reason": "PROFIT_CAPTURE_EXIT",
+                                    "doctrine_violation": True,
+                                },
+                            )
+                            log_runtime(
+                                "warning",
+                                "AEE_PROFIT_EXIT_HOLD_BLOCKED",
+                                trade_id=trade_id_int,
+                                pair=pair,
+                                direction=direction,
+                                hold_sec=round(float(age), 3),
+                                hold_required_sec=float(AEE_MIN_HOLD_GREEN_SEC),
+                            )
+
+                        doctrine_snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                        emit_aee_doctrine_action(
+                            trade_id_key=trade_id_key,
+                            trade_id=trade_id_int,
+                            broker_trade_id=broker_trade_id,
+                            pair=pair,
+                            direction=direction,
+                            leg_type=leg_type,
+                            snapshot=doctrine_snapshot,
+                            exit_reason=exit_reason,
+                        )
+        
+                        # Send AEE HOLD notification if no exit reason
+                        if not exit_reason:
+                            snapshot = doctrine_snapshot
+                            energy_ratio_raw = snapshot.get("energy_ratio")
+                            energy_ratio = ffloat(energy_ratio_raw, 0.0)
+                            energy_ratio_text = fmt_float(energy_ratio_raw, ndigits=2, default="0.00")
+                            dominant_modulator = snapshot.get("dominant_modulator", "UNKNOWN")
+                            profit_pips = ffloat(snapshot.get("profit_pips", 0.0), 0.0)
+                            mfe_pips = ffloat(snapshot.get("mfe_pips", 0.0), 0.0)
+                            mae_pips = ffloat(snapshot.get("mae_pips", 0.0), 0.0)
+        
+                            notify(
+                                kind="AEE_HOLD",
+                                title=f"AEE HOLD {pair} {direction} {profit_pips:+.1f}p",
+                                body=f"ER={energy_ratio_text} dom={dominant_modulator} mfe={mfe_pips:.1f} mae={mae_pips:.1f}",
+                                data={
+                                    "pair": pair,
+                                    "trade_id": trade_id_int,
+                                    "broker_trade_id": oanda_trade_id,
+                                    "direction": direction,
+                                    "decision": "HOLD",
+                                    "energy_ratio": energy_ratio,
+                                    "dominant_modulator": dominant_modulator,
+                                    "profit_pips": profit_pips,
+                                    "mfe_pips": mfe_pips,
+                                    "mae_pips": mae_pips,
+                                    "phase": aee_phase
+                                },
+                                urgency="low",
+                                throttle_key=f"AEE_HOLD:{trade_id_key}",
+                                throttle_sec=float(os.getenv("AEE_HOLD_NOTIFY_SEC", "30"))
+                            )
+        
+                        if AEE_PROOF_LOGS:
+                            snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                            snapshot["decision"] = exit_reason
+                            snapshot["reason_code"] = exit_reason
+                            log_throttled(f"aee_eval_snapshot:{trade_id_key}", f"AEE_EVAL_SNAPSHOT | {json.dumps(snapshot)}", min_interval=10.0)
+                        if MANUAL_TEACHER_MODE:
+                            snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                            if trade_id_key is None or not bool(snapshot.get("state_complete_ok", False)):
+                                _TEACHER_EMIT_SKIPPED_INCOMPLETE += 1
+                                log_throttled(
+                                    f"teacher_skip_incomplete:{pair}:{trade_id_key}",
+                                    "TEACHER_EMIT_SKIPPED_INCOMPLETE",
+                                    {
+                                        "pair": pair,
+                                        "trade_id_key": trade_id_key,
+                                        "state_complete_ok": bool(snapshot.get("state_complete_ok", False)),
+                                        "missing_fields": snapshot.get("missing_fields", []),
+                                        "skipped_total": int(_TEACHER_EMIT_SKIPPED_INCOMPLETE),
+                                    },
+                                    min_interval=10.0,
+                                )
+                                continue
+                            decision = exit_reason or "HOLD"
+                            energy_ratio = snapshot.get("energy_ratio")
+                            energy_ratio_bin = round(float(energy_ratio), 2) if isinstance(energy_ratio, (int, float)) else None
+                            dominant_modulator = snapshot.get("dominant_modulator")
+                            runner_mode = bool(snapshot.get("runner_mode", False))
+                            dist_to_tp_atr = snapshot.get("dist_to_tp_atr")
+                            dist_to_tp_bin = None
+                            if isinstance(dist_to_tp_atr, (int, float)):
+                                if dist_to_tp_atr <= 0.0:
+                                    dist_to_tp_bin = "POST_TP"
+                                elif dist_to_tp_atr <= 0.25:
+                                    dist_to_tp_bin = "NEAR_TP"
+                                else:
+                                    dist_to_tp_bin = "PRE_TP"
+                            cfail = int(snapshot.get("consecutive_fail_windows", 0) or 0)
+                            current_state = {
+                                "decision": decision,
+                                "energy_ratio_bin": energy_ratio_bin,
+                                "dominant_modulator": dominant_modulator,
+                                "runner_mode": runner_mode,
+                                "dist_to_tp_bin": dist_to_tp_bin,
+                                "consecutive_fail_windows": cfail,
+                            }
+                            last_state = _MANUAL_TEACHER_LAST.get(trade_id_key, {})
+                            now_emit = now_ts()
+                            last_emit_ts = float(last_state.get("_last_emit_ts", 0.0) or 0.0)
+                            changed_keys = [k for k in current_state if current_state[k] != last_state.get(k)]
+                            state_changed = (not last_state) or bool(changed_keys)
+                            interval_ok = (now_emit - last_emit_ts) >= float(TEACH_MIN_EMIT_INTERVAL_SEC)
+        
+                            aee_recommendation = {
+                                "decision": decision,
+                                "reason_code": decision,
+                                "energy_ratio": snapshot.get("energy_ratio"),
+                                "strictness_multiplier": snapshot.get("strictness_multiplier", 1.0),
+                                "dominant_modulator": snapshot.get("dominant_modulator", "UNKNOWN"),
+                            }
+                            if state_changed and interval_ok:
+                                suppressed_since_last = int(_MANUAL_TEACHER_SUPPRESSED.get(trade_id_key, 0) or 0)
+                                emit_trade_kind(
+                                    "MANUAL_TEACHER",
+                                    {
+                                        **build_event_envelope(
+                                            kind="MANUAL_TEACHER",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=trade_id,
+                                            broker_trade_id=oanda_trade_id,
+                                            state_key_core_str=_TUNE_CTX.get("state_key_core_str", ""),
+                                        ),
+                                        "trade_state_snapshot": snapshot,
+                                        "teacher_mode": True,
+                                        "teacher_action": "HOLD",
+                                        "teacher_reason": None,
+                                        "aee_recommendation": aee_recommendation,
+                                        "origin_actor": "MANUAL_UI",
+                                        "teacher_session_id": _TEACH_SESSION_ID,
+                                        "supervision_window_id": _TEACH_SESSION_ID,
+                                        "state_complete_ok": bool(snapshot.get("state_complete_ok", False)),
+                                        "emit_triggers": changed_keys,
+                                        "min_interval_suppressed_since_last": suppressed_since_last,
+                                        "ts_utc": snapshot.get("ts_utc"),
+                                        "eval_seq": snapshot.get("eval_seq"),
+                                    },
+                                )
+                                _TEACHER_EMIT_EMITTED += 1
+                                _MANUAL_TEACHER_LAST[trade_id_key] = {**current_state, "_last_emit_ts": now_emit}
+                                _MANUAL_TEACHER_SUPPRESSED[trade_id_key] = 0
+                            elif state_changed and not interval_ok:
+                                _MANUAL_TEACHER_SUPPRESSED[trade_id_key] = int(_MANUAL_TEACHER_SUPPRESSED.get(trade_id_key, 0) or 0) + 1
+                            if TEACH_HEARTBEAT_MODE:
+                                hb_last = float(_TEACH_HEARTBEAT_LAST_TS.get(trade_id_key, 0.0) or 0.0)
+                                if (now_emit - hb_last) >= float(TEACH_HEARTBEAT_INTERVAL_SEC):
+                                    emit_trade_kind(
+                                        "TEACH_HEARTBEAT",
+                                        {
+                                            **build_event_envelope(
+                                                kind="TEACH_HEARTBEAT",
+                                                pair=pair,
+                                                direction=direction,
+                                                trade_id=trade_id,
+                                                broker_trade_id=oanda_trade_id,
+                                                state_key_core_str=_TUNE_CTX.get("state_key_core_str", ""),
+                                            ),
+                                            "trade_state_snapshot": snapshot,
+                                            "teacher_mode": True,
+                                            "teacher_action": "HOLD",
+                                            "teacher_reason": None,
+                                            "aee_recommendation": aee_recommendation,
+                                            "origin_actor": "MANUAL_UI",
+                                            "teacher_session_id": _TEACH_SESSION_ID,
+                                            "supervision_window_id": _TEACH_SESSION_ID,
+                                            "state_complete_ok": bool(snapshot.get("state_complete_ok", False)),
+                                            "ts_utc": snapshot.get("ts_utc"),
+                                            "eval_seq": snapshot.get("eval_seq"),
+                                        },
+                                    )
+                                    _TEACHER_EMIT_EMITTED += 1
+                                    _TEACH_HEARTBEAT_LAST_TS[trade_id_key] = now_emit
+                        if time.time() - _TEACHER_HEALTH_LAST_LOG > 60:
+                            total_evals = _TEACHER_EMIT_EMITTED + _TEACHER_EMIT_SKIPPED_INCOMPLETE
+                            complete_rate = _TEACHER_EMIT_EMITTED / total_evals if total_evals > 0 else 0
+                            log_throttled("teacher_health", f"TEACHER_HEALTH state_complete_ok_rate={complete_rate:.2f} emitted={_TEACHER_EMIT_EMITTED} skipped_incomplete={_TEACHER_EMIT_SKIPPED_INCOMPLETE}", min_interval=60)
+                            emit_trade_kind(
+                                "TEACHER_HEALTH",
+                                {
+                                    **build_event_envelope(kind="TEACHER_HEALTH", pair=pair, direction=direction, trade_id=trade_id_int, broker_trade_id=oanda_trade_id),
+                                    "state_complete_ok_rate": float(complete_rate),
+                                    "teacher_emit_emitted_count": int(_TEACHER_EMIT_EMITTED),
+                                    "teacher_emit_skipped_incomplete_count": int(_TEACHER_EMIT_SKIPPED_INCOMPLETE),
+                                    "teacher_session_id": _TEACH_SESSION_ID,
+                                },
+                            )
+                            _TEACHER_HEALTH_LAST_LOG = time.time()
+                        tune_apply_key = f"{int(trade_id_int)}:{str(leg_type or 'MAIN')}"
+                        tune_apply_curr = {
+                            "policy": str(aee_eval.get("policy", "") or ""),
+                            "tune_hash": str(_TUNE_CTX.get("tune_hash", "") or ""),
+                            "state_key": str(_TUNE_CTX.get("state_key_core_str", "") or ""),
+                            "source_key": str(_TUNE_CTX.get("source_key", "") or ""),
+                        }
+                        tune_apply_prev = _AEE_TUNE_APPLIED_LAST.get(tune_apply_key)
+                        tune_apply_changed = (
+                            tune_apply_prev is None
+                            or any(tune_apply_prev.get(k, "") != tune_apply_curr.get(k, "") for k in tune_apply_curr.keys())
+                        )
+                        if tune_apply_changed:
+                            emit_trade_kind(
+                                "AEE_TUNE_APPLIED",
+                                {
+                                    **build_event_envelope(
+                                        kind="AEE_TUNE_APPLIED",
                                         pair=pair,
                                         direction=direction,
                                         trade_id=trade_id,
                                         broker_trade_id=oanda_trade_id,
                                         state_key_core_str=_TUNE_CTX.get("state_key_core_str", ""),
+                                        state_key_full_str=_TUNE_CTX.get("state_key_full_str", ""),
+                                        source_level=_TUNE_CTX.get("source_level", ""),
+                                        source_key=_TUNE_CTX.get("source_key", ""),
+                                        tune_hash=_TUNE_CTX.get("tune_hash", ""),
+                                        patch_version=_TUNE_CTX.get("patch_version", ""),
+                                        manual_version=_TUNE_CTX.get("manual_version", ""),
+                                        leg_type=leg_type,
                                     ),
-                                    "trade_state_snapshot": snapshot,
-                                    "teacher_mode": True,
-                                    "teacher_action": "HOLD",
-                                    "teacher_reason": None,
-                                    "aee_recommendation": aee_recommendation,
-                                    "origin_actor": "MANUAL_UI",
-                                    "teacher_session_id": _TEACH_SESSION_ID,
-                                    "supervision_window_id": _TEACH_SESSION_ID,
-                                    "state_complete_ok": bool(snapshot.get("state_complete_ok", False)),
-                                    "ts_utc": snapshot.get("ts_utc"),
-                                    "eval_seq": snapshot.get("eval_seq"),
+                                    "policy": aee_eval.get("policy", ""),
+                                    "aee_knobs_eff": aee_eval.get("knobs_eff", {}),
                                 },
                             )
-                            _TEACHER_EMIT_EMITTED += 1
-                            _TEACH_HEARTBEAT_LAST_TS[trade_id_key] = now_emit
-                if time.time() - _TEACHER_HEALTH_LAST_LOG > 60:
-                    total_evals = _TEACHER_EMIT_EMITTED + _TEACHER_EMIT_SKIPPED_INCOMPLETE
-                    complete_rate = _TEACHER_EMIT_EMITTED / total_evals if total_evals > 0 else 0
-                    log_throttled("teacher_health", f"TEACHER_HEALTH state_complete_ok_rate={complete_rate:.2f} emitted={_TEACHER_EMIT_EMITTED} skipped_incomplete={_TEACHER_EMIT_SKIPPED_INCOMPLETE}", min_interval=60)
-                    _TEACHER_HEALTH_LAST_LOG = time.time()
-                emit_trade_kind(
-                    "AEE_TUNE_APPLIED",
-                    {
-                        **build_event_envelope(
-                            kind="AEE_TUNE_APPLIED",
+                            _AEE_TUNE_APPLIED_LAST[tune_apply_key] = dict(tune_apply_curr)
+                        if not aee_eval.get("policy"):
+                            emit_trade_kind(
+                                "AEE_POLICY_MISSING",
+                                {
+                                    **build_event_envelope(
+                                        kind="AEE_POLICY_MISSING",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id,
+                                        broker_trade_id=oanda_trade_id,
+                                    ),
+                                    "leg_type": leg_type,
+                                },
+                            )
+                        last_aee_update = aee_last_update.get(trade_id_int, 0.0)
+                        if (now - last_aee_update) >= 30.0 and isinstance(aee_state_obj, AEEState):
+                            db_call(
+                                "update_aee_state",
+                                db.update_aee_state,
+                                trade_id_int,
+                                aee_phase,
+                                local_high=float(aee_state_obj.local_high),
+                                local_low=float(aee_state_obj.local_low),
+                            )
+                            aee_last_update[trade_id_int] = now
+                        if leg_type == "RUNNER" and aee_phase == "RUNNER" and trade_id_int not in _AEE_RUNNER_UNLEASHED:
+                            _AEE_RUNNER_UNLEASHED.add(trade_id_int)
+                            emit_trade_kind(
+                                "RUNNER_UNLEASHED",
+                                {
+                                    **build_event_envelope(
+                                        kind="RUNNER_UNLEASHED",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=oanda_trade_id,
+                                    ),
+                                    "policy": aee_eval.get("policy", ""),
+                                },
+                            )
+                        if leg_type == "RUNNER" and aee_phase == "HARVEST" and trade_id_int in _AEE_RUNNER_UNLEASHED:
+                            emit_trade_kind(
+                                "RUNNER_FALLBACK",
+                                {
+                                    **build_event_envelope(
+                                        kind="RUNNER_FALLBACK",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=oanda_trade_id,
+                                    ),
+                                    "policy": aee_eval.get("policy", ""),
+                                },
+                            )
+                            _AEE_RUNNER_UNLEASHED.discard(trade_id_int)
+        
+                        # Execute AEE exit if triggered
+                        if exit_reason:
+                            pc1_evt = {
+                                "IMPULSE": "AEE_IMPULSE_EXIT",
+                                "PROGRESS_FAILURE": "AEE_PROGRESS_FAILURE_EXIT",
+                                "PRE_SL_PROTECTION": "AEE_PRE_SL_EXIT",
+                            }.get(str(exit_reason))
+                            if pc1_evt:
+                                emit_trade_kind(
+                                    pc1_evt,
+                                    {
+                                        **build_event_envelope(
+                                            kind=pc1_evt,
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=trade_id_int,
+                                            broker_trade_id=oanda_trade_id,
+                                            leg_type=leg_type,
+                                        ),
+                                        "trade_type": str(leg_type or "HARVESTER").upper(),
+                                        "normalized_pnl": float(aee_metrics.get("normalized_pnl", 0.0) or 0.0),
+                                        "peak_normalized_pnl": float(aee_metrics.get("peak_normalized_pnl", 0.0) or 0.0),
+                                        "trade_age_sec": float(aee_metrics.get("trade_age_sec", 0.0) or 0.0),
+                                        "reason": str(exit_reason),
+                                    },
+                                )
+                                if str(leg_type or "").upper() == "RUNNER":
+                                    emit_trade_kind(
+                                        "AEE_RUNNER_FINAL_EXIT",
+                                        {
+                                            **build_event_envelope(
+                                                kind="AEE_RUNNER_FINAL_EXIT",
+                                                pair=pair,
+                                                direction=direction,
+                                                trade_id=trade_id_int,
+                                                broker_trade_id=oanda_trade_id,
+                                                leg_type="RUNNER",
+                                            ),
+                                            "reason": str(exit_reason),
+                                            "strategy_key": str(aee_metrics.get("strategy_key", tr.get("strategy_key", "")) or ""),
+                                            "normalized_pnl": float(aee_metrics.get("normalized_pnl", 0.0) or 0.0),
+                                            "peak_normalized_pnl": float(aee_metrics.get("peak_normalized_pnl", 0.0) or 0.0),
+                                        },
+                                    )
+                            # Build snapshot for notification data
+                            snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                            energy_ratio_raw = snapshot.get("energy_ratio")
+                            energy_ratio = ffloat(energy_ratio_raw, 0.0)
+                            energy_ratio_text = fmt_float(energy_ratio_raw, ndigits=2, default="0.00")
+                            dominant_modulator = str(snapshot.get("dominant_modulator") or "UNKNOWN")
+                            profit_pips = ffloat(snapshot.get("profit_pips"), 0.0)
+                            mfe_pips = ffloat(snapshot.get("mfe_pips"), 0.0)
+                            mae_pips = ffloat(snapshot.get("mae_pips"), 0.0)
+        
+                            # Send AEE CLOSE notification
+                            notify(
+                                kind="AEE_CLOSE",
+                                title=f"AEE CLOSE {pair} {direction} {profit_pips:+.1f}p",
+                                body=f"reason={exit_reason} ER={energy_ratio_text} dom={dominant_modulator}",
+                                data={
+                                    "pair": pair,
+                                    "trade_id": trade_id_int,
+                                    "broker_trade_id": oanda_trade_id,
+                                    "direction": direction,
+                                    "decision": "CLOSE",
+                                    "close_reason": str(exit_reason),
+                                    "energy_ratio": energy_ratio,
+                                    "dominant_modulator": dominant_modulator,
+                                    "profit_pips": profit_pips,
+                                    "mfe_pips": mfe_pips,
+                                    "mae_pips": mae_pips,
+                                    "phase": aee_phase
+                            },
+                            urgency="high"
+                        )
+    
+                        if MANUAL_CLOSE_MODE:
+                            snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                            aee_recommendation = {
+                                "decision": exit_reason,
+                                "reason_code": exit_reason,
+                                "energy_ratio": snapshot.get("energy_ratio"),
+                                "strictness_multiplier": snapshot.get("strictness_multiplier", 1.0),
+                                "dominant_modulator": snapshot.get("dominant_modulator", "UNKNOWN")
+                            }
+                            aee_agreed = True  # Since emitting on exit_reason, AEE agrees to close
+                            override = False
+                            override_type = "AGREED_CLOSE"
+                            emit_trade_kind(
+                                "MANUAL_CLOSE",
+                                {
+                                    **build_event_envelope(
+                                        kind="MANUAL_CLOSE",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id,
+                                        broker_trade_id=oanda_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "exit_reason": str(exit_reason),
+                                    "trade_state_snapshot": snapshot,
+                                    "aee_recommendation": aee_recommendation,
+                                    "origin_actor": "MANUAL_UI",
+                                    "teacher_action": "CLOSE",
+                                    "teacher_reason": None,
+                                    "aee_agreed": aee_agreed,
+                                    "override": override,
+                                    "override_type": override_type,
+                                    "ts_utc": snapshot.get("ts_utc"),
+                                    "eval_seq": snapshot.get("eval_seq")
+                                }
+                            )
+                            evt_kind = {
+                                "PANIC_EXIT": "AEE_PANIC_EXIT",
+                                "NEVER_GREEN_FAST_EXIT": "AEE_STALL_EXIT",
+                                "EXTRACTION_LOSS_EXIT": "AEE_DECAY_EXIT",
+                                "NEAR_TP_STALL_CAPTURE": "AEE_STALL_EXIT",
+                                "PULSE_STALL_CAPTURE": "AEE_STALL_EXIT",
+                                "MISSED_PROFIT_EXTRACTION_EXIT": "AEE_STALL_EXIT",
+                                "GREEN_STALL_CAPTURE": "AEE_STALL_EXIT",
+                                "NEVER_GREEN_STALL_EXIT": "AEE_STALL_EXIT",
+                                "FAILED_TO_CONTINUE_DECAY": "AEE_DECAY_EXIT",
+                                "TIME_DECAY_PROFIT_CAPTURE": "AEE_DECAY_EXIT",
+                            }.get(str(exit_reason), "AEE_DATA_EXIT")
+                            emit_trade_kind(
+                                evt_kind,
+                                {
+                                    **build_event_envelope(
+                                        kind=evt_kind,
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=oanda_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "aee_reason": str(exit_reason),
+                                    "phase": aee_phase,
+                                },
+                            )
+                            snap_pre = _exit_snapshot(
+                                tr=tr,
+                                st=aee_state_obj if isinstance(aee_state_obj, AEEState) else AEEState(entry_price=entry, direction=direction, tp_anchor=entry, sl_price=None, phase=aee_phase),
+                                metrics=aee_metrics,
+                                mid=mid,
+                                spread_pips=spread_pips,
+                                exit_reason=str(exit_reason),
+                            )
+                            log_runtime("info", "AEE_EXIT_SNAPSHOT", **snap_pre)
+                            proof_write_event({"event": "AEE_EXIT_SNAPSHOT_PRE", **snap_pre})
+                            request_id = str(int(time.time() * 1000))
+                            if AEE_PROOF_LOGS:
+                                log_runtime("info", "AEE_CLOSE_REQUEST", trade_id=trade_id_int, pair=pair, direction=direction, exit_reason=exit_reason, request_id=request_id)
+                            log_runtime(
+                                "info",
+                                "AEE_OANDA_TRANSPORT",
+                                trade_id=trade_id_int,
+                                pair=pair,
+                                direction=direction,
+                                request_id=request_id,
+                                transport="position_close",
+                                http_method="PUT",
+                                endpoint=f"/v3/accounts/{get_oanda().account_id}/positions/{normalize_pair(pair)}/close",
+                                wrapper="_close_trade_or_position -> OandaClient.close_position",
+                            )
+                            if str(exit_reason) == "PANIC_EXIT":
+                                px = price_map_exit.get(pair)
+                                if not px:
+                                    try:
+                                        px = oanda_call(f"pricing_panic_{pair}", o.pricing, pair, allow_error_dict=False)
+                                    except Exception:
+                                        px = None
+                                if px and isinstance(px, (list, tuple)) and len(px) >= 2:
+                                    try:
+                                        # Handle both list/tuple and dict-like price structures
+                                        if isinstance(px, dict):
+                                            bid_now = float(px.get('bid', mid))
+                                            ask_now = float(px.get('ask', mid))
+                                        else:
+                                            bid_now, ask_now = float(px[0]), float(px[1])
+                                    except (ValueError, TypeError, IndexError, KeyError):
+                                        bid_now, ask_now = mid, mid
+                                else:
+                                    bid_now, ask_now = mid, mid
+                                log(f"{EMOJI_WARN} PANIC_LADDER_CALL {pair_tag(pair, direction)}", {
+                                    "pair": pair,
+                                    "direction": direction,
+                                    "db_trade_id": int(tr["id"]),
+                                    "origin_actor": "AEE",
+                                    "origin_reason": "PANIC_EXIT",
+                                    "units": int(tr.get("units", 0) or 0),
+                                })
+                                success, resp = _close_trade_or_position(
+                                    get_oanda(),
+                                    pair,
+                                    direction,
+                                    tr.get("oanda_trade_id"),
+                                    "PANIC_EXIT",
+                                    int(tr["id"]),
+                                    origin_actor="AEE",
+                                    origin_reason="PANIC_EXIT",
+                                )
+                                if AEE_PROOF_LOGS:
+                                    status = "success" if success else "failed"
+                                    log_runtime("info", "AEE_CLOSE_RESPONSE", trade_id=trade_id_int, pair=pair, direction=direction, exit_reason=exit_reason, request_id=request_id, status=status, error=None if success else str(resp))
+                                if not success:
+                                    if _handle_close_error(resp, pair, direction, tr, exit_reason, favorable_atr, track):
+                                        continue
+                                    log_throttled(
+                                        f"close_fail_aee:{pair}:{exit_reason}",
+                                        f"{EMOJI_ERR} CLOSE_FAIL {pair_tag(pair, direction)}",
+                                        {"reason": exit_reason, "resp": resp},
+                                    )
+                                    continue
+                                db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), str(exit_reason))
+                                if leg_type == "RUNNER":
+                                    _record_runner_exit(str(exit_reason), tr, favorable_atr, track)
+                                _exit_log(tr, str(exit_reason), favorable_atr, track, snapshot=snapshot)
+                                _register_pair_close(pair, direction, str(exit_reason), trade_id_int)
+                                continue
+        
+                            success, resp = _close_trade_or_position(
+                                get_oanda(),
+                                pair,
+                                direction,
+                                tr.get("oanda_trade_id"),
+                                str(exit_reason),
+                                int(tr["id"]),
+                                origin_actor="AEE",
+                                origin_reason=str(exit_reason),
+                            )
+                            if AEE_PROOF_LOGS:
+                                status = "success" if success else "failed"
+                                log_runtime(
+                                    "info",
+                                    "AEE_CLOSE_RESPONSE",
+                                    trade_id=trade_id_int,
+                                    pair=pair,
+                                    direction=direction,
+                                    exit_reason=str(exit_reason),
+                                    request_id=request_id,
+                                    status=status,
+                                    error=None if success else str(resp),
+                                )
+                            if not success:
+                                if _handle_close_error(resp, pair, direction, tr, str(exit_reason), favorable_atr, track):
+                                    continue
+                                log_throttled(
+                                    f"close_fail_aee:{pair}:{exit_reason}",
+                                    f"{EMOJI_ERR} CLOSE_FAIL {pair_tag(pair, direction)}",
+                                    {"reason": str(exit_reason), "resp": resp},
+                                )
+                                continue
+        
+                            # Mark as closed
+                            db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), str(exit_reason))
+                            _register_pair_close(pair, direction, str(exit_reason), trade_id_int)
+                            _exit_log(tr, str(exit_reason), favorable_atr, track, snapshot=snapshot)
+                            if not str(tr.get("note", "")).strip():
+                                emit_trade_kind(
+                                    "AEE_DNA_RESTORED",
+                                    {
+                                        **build_event_envelope(
+                                            kind="AEE_DNA_RESTORED",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=trade_id_int,
+                                            broker_trade_id=oanda_trade_id,
+                                            leg_type=leg_type,
+                                        ),
+                                        "policy": "DEFAULT",
+                                    },
+                                )
+                            if leg_type == "HARVESTER":
+                                emit_trade_kind(
+                                    "HARVESTER_BANKED",
+                                    {
+                                        **build_event_envelope(
+                                            kind="HARVESTER_BANKED",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=trade_id_int,
+                                            broker_trade_id=oanda_trade_id,
+                                            leg_type=leg_type,
+                                        ),
+                                        "aee_reason": str(exit_reason),
+                                    },
+                                )
+        
+                            # Record runner exit if applicable
+                            setup_name = str(tr.get("setup", ""))
+                            is_runner = setup_name.endswith("_RUN") or "_RUN" in setup_name
+                            if is_runner:
+                                _record_runner_exit(str(exit_reason), tr, favorable_atr, track)
+        
+                            log(f"{EMOJI_EXIT} AEE_EXIT {pair_tag(pair, direction)}", {
+                                "pair": pair,
+                                "direction": direction,
+                                "reason": str(exit_reason),
+                                "phase": aee_phase,
+                                "progress_atr": aee_metrics["progress"],
+                                "speed": aee_metrics["speed"],
+                                "velocity": aee_metrics["velocity"],
+                                "pullback": aee_metrics["pullback"],
+                                "favorable_atr": favorable_atr
+                            })
+                            snap_post = dict(snap_pre)
+                            snap_post.update(
+                                {
+                                    "close_success": bool(success),
+                                    "close_status": resp.get("_status") if isinstance(resp, dict) else None,
+                                }
+                            )
+                            log_runtime("info", "AEE_EXIT_SNAPSHOT_POST", **snap_post)
+                            proof_write_event({"event": "AEE_EXIT_SNAPSHOT_POST", **snap_post})
+                            continue
+        
+                        # AEE-X SOP v2 exit authority: legacy non-AEE exit chain disabled.
+                    except Exception as e:
+                        log_runtime("error", "AEE_TRADE_ERROR", trade_id=tr.get("id"), pair=tr.get("pair"), error=str(e))
+                        continue
+
+            # Forced AEE periodic management pass: evaluate every open trade regardless of pair state.
+            # Refresh open trades after broker reconciliation so AEE doesn't act on stale just-closed rows.
+            open_trades_periodic = db_call("get_open_trades_periodic", db.get_open_trades) or []
+            if open_trades_periodic:
+                aee_now = now_ts()
+
+                # Adopt pre-existing open trades into AEE ownership so monitoring is not fill-event dependent.
+                for tr in list(open_trades_periodic):
+                    try:
+                        trade_id_int = int(tr.get("id", 0) or 0)
+                    except Exception:
+                        trade_id_int = 0
+                    if trade_id_int <= 0:
+                        continue
+                    trace = aee_handoff_trace.setdefault(trade_id_int, {})
+                    if trace.get("adopted_open_trade"):
+                        continue
+                    pair = normalize_pair(str(tr.get("pair", "") or ""))
+                    direction = str(tr.get("dir", "") or "").upper()
+                    broker_trade_id = str(tr.get("oanda_trade_id") or "").strip() or None
+                    trade_open_ts = float(tr.get("ts", aee_now) or aee_now)
+                    trace["adopted_open_trade"] = True
+                    trace.setdefault("fill_ts", trade_open_ts)
+                    # Force one immediate periodic eval so inherited open trades get first-cycle doctrine coverage.
+                    aee_force_eval_once.add(trade_id_int)
+                    emit_trade_kind(
+                        "AEE_HANDOFF_TRACE",
+                        {
+                            **build_event_envelope(
+                                kind="AEE_HANDOFF_TRACE",
+                                pair=pair,
+                                direction=direction,
+                                trade_id=trade_id_int,
+                                broker_trade_id=broker_trade_id,
+                                leg_type="HARVESTER",
+                            ),
+                            "stage": "adopt_open_trade",
+                            "fill_ts": trace.get("fill_ts"),
+                            "first_eval_ts": trace.get("first_eval_ts"),
+                            "first_decision_ts": trace.get("first_decision_ts"),
+                            "first_close_request_ts": trace.get("first_close_request_ts"),
+                            "broker_close_ts": trace.get("broker_close_ts"),
+                            "force_eval_queued": True,
+                        },
+                    )
+
+                for tr in list(open_trades_periodic):
+                    if _SHUTDOWN:
+                        break
+                    try:
+                        pair = normalize_pair(str(tr.get("pair", "") or ""))
+                        if not pair:
+                            continue
+                        direction = str(tr.get("dir", "") or "").upper()
+                        trade_id_int = int(tr.get("id", 0) or 0)
+                        if trade_id_int <= 0:
+                            continue
+                        if _consume_coalesced_pair_close(tr):
+                            continue
+                        trade_open_ts = float(tr.get("ts", aee_now) or aee_now)
+                        trade_age_sec = max(0.0, aee_now - trade_open_ts)
+                        effective_scan_sec = float(AEE_FORCE_SCAN_SEC)
+                        if trade_age_sec <= float(AEE_FORCE_SCAN_YOUNG_AGE_SEC):
+                            effective_scan_sec = min(effective_scan_sec, float(AEE_FORCE_SCAN_YOUNG_SEC))
+                        if not math.isfinite(effective_scan_sec) or effective_scan_sec < 0.01:
+                            effective_scan_sec = 0.01
+                        force_eval_now = trade_id_int in aee_force_eval_once
+                        last_eval_ts = float(aee_decision_last_ts.get(trade_id_int, 0.0) or 0.0)
+                        if (not force_eval_now) and ((aee_now - last_eval_ts) < effective_scan_sec):
+                            continue
+
+                        # Mark attempt time eagerly so rapid loops don't skip cadence under exceptions.
+                        aee_decision_last_ts[trade_id_int] = aee_now
+
+                        atr_entry = float(tr.get("atr_entry", 0.0) or 0.0)
+                        entry = float(tr.get("entry", 0.0) or 0.0)
+                        if not (math.isfinite(atr_entry) and atr_entry > 0.0 and math.isfinite(entry) and entry > 0.0):
+                            continue
+
+                        if pair in price_map_exit:
+                            px = price_map_exit.get(pair)
+                            if not (isinstance(px, (tuple, list)) and len(px) >= 2):
+                                continue
+                            bid, ask = float(px[0]), float(px[1])
+                        else:
+                            resp_price = oanda_call("pricing_exit_periodic_aee", o.pricing, pair)
+                            if not (isinstance(resp_price, (tuple, list)) and len(resp_price) >= 2):
+                                continue
+                            bid, ask = float(resp_price[0]), float(resp_price[1])
+                        if not validate_price(pair, bid, ask, "exit"):
+                            continue
+
+                        mid = (bid + ask) / 2.0
+                        spread_pips = to_pips(pair, ask - bid) if math.isfinite(ask) and math.isfinite(bid) else 0.0
+                        setup_name = str(tr.get("setup", "") or "")
+                        speed_class = speed_class_from_setup_name(setup_name)
+                        leg_type = "RUNNER" if "_RUN" in setup_name.upper() else "HARVESTER"
+                        strategy_ctx_loop = _resolve_trade_strategy_context(tr, pair=pair, direction=direction, leg_type=leg_type)
+                        tr.update(strategy_ctx_loop)
+
+                        st_ctx = states.get(pair)
+                        if st_ctx is None:
+                            st_ctx = PairState(state_since=aee_now)
+                            states[pair] = st_ctx
+
+                        sig_ctx = SignalDef(
+                            pair=pair,
+                            setup_id=int(tr.get("strategy_id", 6) or 6),
+                            setup_name=setup_name or "VOL_REIGNITE",
+                            direction=direction,
+                            mode=getattr(st_ctx, "mode", "RANGE"),
+                            ttl_sec=60,
+                            pg_t=12,
+                            pg_atr=0.10,
+                            tp1_atr=0.25,
+                            tp2_atr=0.50,
+                            sl_atr=0.30,
+                            reason="aee_periodic_scan",
+                        )
+                        tune_ctx = _resolve_tune_context(
+                            pair,
+                            sig_ctx,
+                            st_ctx,
+                            speed_class,
+                            emit_events=False,
+                            allow_apply=True,
+                            update_ctx=False,
+                        )
+                        runtime_session_name = compute_session(aee_now)
+                        runtime_quarter_name = compute_quarter(aee_now, runtime_session_name)
+                        runtime_target_distance = _trade_target_distance_atr(tr, direction, sig_ctx.tp1_atr)
+                        family_profile = _runtime_aee_profile(
+                            pair,
+                            runtime_session_name,
+                            runtime_quarter_name,
+                            direction,
+                            runtime_target_distance,
+                        )
+                        aee_knobs = AEEKnobs(
+                            mode=str(family_profile.get("aee_mode", "fallback") or "fallback"),
+                            strictness_mult=float(tune_ctx.get("knobs", {}).get("aee.strictness_mult", family_profile.get("strictness_mult", 1.0))) * float(family_profile.get("strictness_mult", 1.0)),
+                            near_tp_band_atr=float(family_profile.get("near_tp_band_atr", tune_ctx.get("knobs", {}).get("aee.near_tp_band_atr", 0.25))),
+                            harvester_time_fraction=float(family_profile.get("harvester_time_fraction", 0.45)),
+                            first_partial_fraction=float(family_profile.get("first_partial_fraction", 0.45)),
+                            first_partial_trigger_r=float(family_profile.get("first_partial_trigger_r", 1.25)),
+                            stop_time_fraction=float(family_profile.get("stop_time_fraction", 0.50)),
+                            add_on_enabled=bool(family_profile.get("add_on_enabled", False)),
+                            add_on_risk_percent=float(family_profile.get("add_on_risk_percent", 1.0)),
+                            add_on_min_parent_r=float(family_profile.get("add_on_min_parent_r", 0.75)),
+                            add_on_min_continuation=float(family_profile.get("add_on_min_continuation", 0.60)),
+                            family_source=str(family_profile.get("family_source", "")),
+                        )
+
+                        aee_eval = _AEE_ENGINE.evaluate_with_leg_policy(
+                            leg_type,
+                            _aee_eval_for_trade,
+                            aee_knobs=aee_knobs,
+                            knobs_hash=tune_ctx.get("tune_hash", ""),
+                            source_level=tune_ctx.get("source_level", ""),
+                            source_key=tune_ctx.get("source_key", ""),
+                            tr=tr,
                             pair=pair,
                             direction=direction,
-                            trade_id=trade_id,
-                            broker_trade_id=oanda_trade_id,
-                            state_key_core_str=_TUNE_CTX.get("state_key_core_str", ""),
-                            state_key_full_str=_TUNE_CTX.get("state_key_full_str", ""),
-                            source_level=_TUNE_CTX.get("source_level", ""),
-                            source_key=_TUNE_CTX.get("source_key", ""),
-                            tune_hash=_TUNE_CTX.get("tune_hash", ""),
-                            patch_version=_TUNE_CTX.get("patch_version", ""),
-                            manual_version=_TUNE_CTX.get("manual_version", ""),
-                            leg_type=leg_type,
-                        ),
-                        "policy": aee_eval.get("policy", ""),
-                        "aee_knobs_eff": aee_eval.get("knobs_eff", {}),
-                    },
-                )
-                if not aee_eval.get("policy"):
-                    emit_trade_kind(
-                        "AEE_POLICY_MISSING",
-                        {
-                            **build_event_envelope(
-                                kind="AEE_POLICY_MISSING",
-                                pair=pair,
-                                direction=direction,
-                                trade_id=trade_id,
-                                broker_trade_id=oanda_trade_id,
-                            ),
-                            "leg_type": leg_type,
-                        },
-                    )
-                last_aee_update = aee_last_update.get(trade_id_int, 0.0)
-                if (now - last_aee_update) >= 30.0 and isinstance(aee_state_obj, AEEState):
-                    db_call(
-                        "update_aee_state",
-                        db.update_aee_state,
-                        trade_id_int,
-                        aee_phase,
-                        local_high=float(aee_state_obj.local_high),
-                        local_low=float(aee_state_obj.local_low),
-                    )
-                    aee_last_update[trade_id_int] = now
-                if leg_type == "RUNNER" and aee_phase == "RUNNER" and trade_id_int not in _AEE_RUNNER_UNLEASHED:
-                    _AEE_RUNNER_UNLEASHED.add(trade_id_int)
-                    emit_trade_kind(
-                        "RUNNER_UNLEASHED",
-                        {
-                            **build_event_envelope(
-                                kind="RUNNER_UNLEASHED",
-                                pair=pair,
-                                direction=direction,
+                            bid=bid,
+                            ask=ask,
+                            mid=mid,
+                            now=aee_now,
+                            spread_pips=spread_pips,
+                            speed_class=speed_class,
+                        )
+                        aee_metrics = dict(aee_eval.get("metrics", {}) or {})
+                        aee_actions = dict(aee_eval.get("actions", {}) or {})
+                        exit_reason = aee_eval.get("exit_reason")
+                        favorable_now = (mid - entry) if direction == "LONG" else (entry - mid)
+                        favorable_atr_now = (favorable_now / atr_entry) if atr_entry > 0.0 else float("nan")
+                        favorable_pips_now = to_pips(pair, max(0.0, favorable_now))
+                        speed_now = float(aee_metrics.get("speed", 999.0) or 999.0)
+                        velocity_now = float(aee_metrics.get("velocity", 999.0) or 999.0)
+                        if (
+                            not exit_reason
+                            and (not AEE_PC1_CONTRACT_ENABLED)
+                            and AEE_FORCE_GREEN_EXIT_ENABLED
+                            and float(trade_age_sec) >= float(AEE_FORCE_GREEN_EXIT_MIN_AGE_SEC)
+                            and math.isfinite(float(favorable_atr_now))
+                            and float(favorable_atr_now) >= float(AEE_FORCE_GREEN_EXIT_MIN_ATR)
+                            and float(favorable_pips_now) >= float(AEE_FORCE_GREEN_EXIT_MIN_PIPS)
+                        ):
+                            exit_reason = "FORCE_GREEN_EXIT"
+                        bridge_profit_candidate = (
+                            not exit_reason
+                            and (not AEE_PC1_CONTRACT_ENABLED)
+                            and AEE_PROFIT_CAPTURE_BRIDGE_MODE
+                            and math.isfinite(float(favorable_atr_now))
+                            and float(favorable_atr_now) >= float(AEE_PROFIT_CAPTURE_MIN_ATR)
+                            and speed_now <= float(AEE_PROFIT_CAPTURE_DECAY_SPEED)
+                            and velocity_now <= float(AEE_PROFIT_CAPTURE_DECAY_VELOCITY)
+                        )
+                        bridge_hold_violation = bool(
+                            bridge_profit_candidate
+                            and float(trade_age_sec) < float(AEE_MIN_HOLD_GREEN_SEC)
+                        )
+                        if bridge_profit_candidate:
+                            exit_reason = "PROFIT_CAPTURE_EXIT"
+                        decision = str(exit_reason or "HOLD")
+                        broker_trade_id = str(tr.get("oanda_trade_id") or "").strip() or None
+                        _apply_pc1_management_actions(
+                            o=get_oanda(),
+                            tr=tr,
+                            pair=pair,
+                            direction=direction,
+                            trade_id=trade_id_int,
+                            oanda_trade_id=broker_trade_id,
+                            aee_state_obj=aee_eval.get("state") if isinstance(aee_eval.get("state"), AEEState) else None,
+                            aee_metrics=aee_metrics,
+                            actions=aee_actions,
+                        )
+                        if bridge_hold_violation:
+                            emit_trade_kind(
+                                "AEE_PROFIT_EXIT_HOLD_BLOCKED",
+                                {
+                                    **build_event_envelope(
+                                        kind="AEE_PROFIT_EXIT_HOLD_BLOCKED",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=broker_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "hold_sec": float(trade_age_sec),
+                                    "hold_required_sec": float(AEE_MIN_HOLD_GREEN_SEC),
+                                    "favorable_atr": float(favorable_atr_now),
+                                    "exit_reason": "PROFIT_CAPTURE_EXIT",
+                                    "doctrine_violation": True,
+                                },
+                            )
+                            log_runtime(
+                                "warning",
+                                "AEE_PROFIT_EXIT_HOLD_BLOCKED",
                                 trade_id=trade_id_int,
-                                broker_trade_id=oanda_trade_id,
-                            ),
-                            "policy": aee_eval.get("policy", ""),
-                        },
-                    )
-                if leg_type == "RUNNER" and aee_phase == "HARVEST" and trade_id_int in _AEE_RUNNER_UNLEASHED:
-                    emit_trade_kind(
-                        "RUNNER_FALLBACK",
-                        {
-                            **build_event_envelope(
-                                kind="RUNNER_FALLBACK",
                                 pair=pair,
                                 direction=direction,
-                                trade_id=trade_id_int,
-                                broker_trade_id=oanda_trade_id,
-                            ),
-                            "policy": aee_eval.get("policy", ""),
-                        },
-                    )
-                    _AEE_RUNNER_UNLEASHED.discard(trade_id_int)
+                                hold_sec=round(float(trade_age_sec), 3),
+                                hold_required_sec=float(AEE_MIN_HOLD_GREEN_SEC),
+                            )
+                        trace = aee_handoff_trace.setdefault(trade_id_int, {})
+                        if "first_eval_ts" not in trace:
+                            trace["first_eval_ts"] = aee_now
+                        if trace.get("first_green_ts") is None and math.isfinite(float(favorable_atr_now)) and float(favorable_atr_now) > 0.0:
+                            trace["first_green_ts"] = aee_now
+                        if exit_reason and "first_decision_ts" not in trace:
+                            trace["first_decision_ts"] = aee_now
 
-                # Execute AEE exit if triggered
-                if exit_reason:
-                    # Build snapshot for notification data
-                    snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
-                    energy_ratio = snapshot.get("energy_ratio", 0.0)
-                    dominant_modulator = snapshot.get("dominant_modulator", "UNKNOWN")
-                    profit_pips = snapshot.get("profit_pips", 0.0)
-                    mfe_pips = snapshot.get("mfe_pips", 0.0)
-                    mae_pips = snapshot.get("mae_pips", 0.0)
-                    
-                    # Send AEE CLOSE notification
-                    notify(
-                        kind="AEE_CLOSE",
-                        title=f"AEE CLOSE {pair} {direction} {profit_pips:+.1f}p",
-                        body=f"reason={exit_reason} ER={energy_ratio:.2f} dom={dominant_modulator}",
-                        data={
-                            "pair": pair,
-                            "trade_id": trade_id_int,
-                            "broker_trade_id": oanda_trade_id,
-                            "direction": direction,
-                            "decision": "CLOSE",
-                            "close_reason": str(exit_reason),
-                            "energy_ratio": energy_ratio,
-                            "dominant_modulator": dominant_modulator,
-                            "profit_pips": profit_pips,
-                            "mfe_pips": mfe_pips,
-                            "mae_pips": mae_pips,
-                            "phase": aee_phase
-                        },
-                        urgency="high"
-                    )
-                    
-                    if MANUAL_CLOSE_MODE:
-                        snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
-                        aee_recommendation = {
-                            "decision": exit_reason,
-                            "reason_code": exit_reason,
-                            "energy_ratio": snapshot.get("energy_ratio"),
-                            "strictness_multiplier": snapshot.get("strictness_multiplier", 1.0),
-                            "dominant_modulator": snapshot.get("dominant_modulator", "UNKNOWN")
-                        }
-                        aee_agreed = True  # Since emitting on exit_reason, AEE agrees to close
-                        override = False
-                        override_type = "AGREED_CLOSE"
                         emit_trade_kind(
-                            "MANUAL_CLOSE",
+                            "AEE_PERIODIC_DECISION",
                             {
                                 **build_event_envelope(
-                                    kind="MANUAL_CLOSE",
+                                    kind="AEE_PERIODIC_DECISION",
                                     pair=pair,
                                     direction=direction,
-                                    trade_id=trade_id,
-                                    broker_trade_id=oanda_trade_id,
+                                    trade_id=trade_id_int,
+                                    broker_trade_id=broker_trade_id,
                                     leg_type=leg_type,
                                 ),
-                                "exit_reason": str(exit_reason),
-                                "trade_state_snapshot": snapshot,
-                                "aee_recommendation": aee_recommendation,
-                                "origin_actor": "MANUAL_UI",
-                                "teacher_action": "CLOSE",
-                                "teacher_reason": None,
-                                "aee_agreed": aee_agreed,
-                                "override": override,
-                                "override_type": override_type,
-                                "ts_utc": snapshot.get("ts_utc"),
-                                "eval_seq": snapshot.get("eval_seq")
+                                "decision": decision,
+                                "exit_reason": str(exit_reason or ""),
+                                "scan_period_sec": float(effective_scan_sec),
+                                "entry_family": str(aee_metrics.get("entry_family", tr.get("entry_family", "UNKNOWN")) or "UNKNOWN"),
+                                "trade_type": str(leg_type or "HARVESTER").upper(),
+                                "target_profile": str(aee_metrics.get("target_profile", tr.get("target_profile", "T0_0")) or "T0_0"),
+                                "strategy_key": str(aee_metrics.get("strategy_key", tr.get("strategy_key", "")) or ""),
+                                "override_match_key": str(aee_metrics.get("override_match_key", "") or ""),
                             },
                         )
-                        continue
-                    evt_kind = {
-                        "PANIC_EXIT": "AEE_PANIC_EXIT",
-                        "NEAR_TP_STALL_CAPTURE": "AEE_STALL_EXIT",
-                        "PULSE_STALL_CAPTURE": "AEE_STALL_EXIT",
-                        "FAILED_TO_CONTINUE_DECAY": "AEE_DECAY_EXIT",
-                    }.get(str(exit_reason), "AEE_DATA_EXIT")
-                    emit_trade_kind(
-                        evt_kind,
-                        {
-                            **build_event_envelope(
-                                kind=evt_kind,
+                        log_runtime(
+                            "info",
+                            "AEE_PERIODIC_DECISION",
+                            trade_id=trade_id_int,
+                            pair=pair,
+                            direction=direction,
+                            decision=decision,
+                            exit_reason=str(exit_reason or ""),
+                        )
+                        emit_trade_kind(
+                            "AEE_HANDOFF_TRACE",
+                            {
+                                **build_event_envelope(
+                                    kind="AEE_HANDOFF_TRACE",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=trade_id_int,
+                                    broker_trade_id=broker_trade_id,
+                                    leg_type=leg_type,
+                                ),
+                                "stage": "periodic_eval",
+                                "force_eval": bool(force_eval_now),
+                                "decision": decision,
+                                "exit_reason": str(exit_reason or ""),
+                                "scan_period_sec": float(effective_scan_sec),
+                                "broker_directional_units": int(broker_pos_info.get(pair, {}).get(direction, {}).get("units", 0) or 0),
+                                "fill_ts": trace.get("fill_ts"),
+                                "first_eval_ts": trace.get("first_eval_ts"),
+                                "first_green_ts": trace.get("first_green_ts"),
+                                "first_decision_ts": trace.get("first_decision_ts"),
+                                "first_close_request_ts": trace.get("first_close_request_ts"),
+                                "broker_close_ts": trace.get("broker_close_ts"),
+                            },
+                        )
+                        if force_eval_now:
+                            aee_force_eval_once.discard(trade_id_int)
+
+                        if not exit_reason:
+                            continue
+
+                        # Only issue close if broker still reports directional units for this pair.
+                        dir_units = int(broker_pos_info.get(pair, {}).get(direction, {}).get("units", 0) or 0)
+                        if dir_units <= 0:
+                            emit_trade_kind(
+                                "AEE_CLOSE_SKIPPED_ALREADY_CLOSED",
+                                {
+                                    **build_event_envelope(
+                                        kind="AEE_CLOSE_SKIPPED_ALREADY_CLOSED",
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=broker_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "decision": decision,
+                                    "exit_reason": str(exit_reason or ""),
+                                    "skip_reason": "broker_directional_units_zero",
+                                    "broker_directional_units": dir_units,
+                                },
+                            )
+                            log_runtime(
+                                "info",
+                                "AEE_CLOSE_SKIPPED_ALREADY_CLOSED",
+                                trade_id=trade_id_int,
                                 pair=pair,
                                 direction=direction,
-                                trade_id=trade_id_int,
-                                broker_trade_id=oanda_trade_id,
-                                leg_type=leg_type,
-                            ),
-                            "aee_reason": str(exit_reason),
-                            "phase": aee_phase,
-                        },
-                    )
-                    snap_pre = _exit_snapshot(
-                        tr=tr,
-                        st=aee_state_obj if isinstance(aee_state_obj, AEEState) else AEEState(entry_price=entry, direction=direction, tp_anchor=entry, sl_price=None, phase=aee_phase),
-                        metrics=aee_metrics,
-                        mid=mid,
-                        spread_pips=spread_pips,
-                        exit_reason=str(exit_reason),
-                    )
-                    log_runtime("info", "AEE_EXIT_SNAPSHOT", **snap_pre)
-                    proof_write_event({"event": "AEE_EXIT_SNAPSHOT_PRE", **snap_pre})
-                    request_id = str(int(time.time() * 1000))
-                    if AEE_PROOF_LOGS:
-                        log_runtime("info", "AEE_CLOSE_REQUEST", trade_id=trade_id_int, pair=pair, direction=direction, exit_reason=exit_reason, request_id=request_id)
-                    if str(exit_reason) == "PANIC_EXIT":
-                        px = price_map_exit.get(pair)
-                        if not px:
-                            try:
-                                px = oanda_call(f"pricing_panic_{pair}", o.pricing, pair, allow_error_dict=False)
-                            except Exception:
-                                px = None
-                        if px and isinstance(px, (list, tuple)) and len(px) >= 2:
-                            bid_now, ask_now = float(px[0]), float(px[1])
-                        else:
-                            bid_now, ask_now = mid, mid
-                        log(f"{EMOJI_WARN} PANIC_LADDER_CALL {pair_tag(pair, direction)}", {
-                            "pair": pair,
-                            "direction": direction,
-                            "db_trade_id": int(tr["id"]),
-                            "origin_actor": "AEE",
-                            "origin_reason": "PANIC_EXIT",
-                            "units": int(tr.get("units", 0) or 0),
-                        })
-                        if AEE_PROOF_LOGS:
-                            status = "success" if success else "failed"
-                            log_runtime("info", "AEE_CLOSE_RESPONSE", trade_id=trade_id_int, pair=pair, direction=direction, exit_reason=exit_reason, request_id=request_id, status=status, error=None if success else str(resp))
+                                decision=decision,
+                                exit_reason=str(exit_reason or ""),
+                                skip_reason="broker_directional_units_zero",
+                                broker_directional_units=dir_units,
+                            )
+                            db_call(
+                                "mark_trade_closed_broker_zero_units",
+                                db.mark_trade_closed,
+                                trade_id_int,
+                                "BROKER_ALREADY_CLOSED_BEFORE_AEE",
+                            )
+                            _register_pair_close(pair, direction, "BROKER_ALREADY_CLOSED_BEFORE_AEE", trade_id_int)
+                            continue
+
+                        pc1_evt = {
+                            "IMPULSE": "AEE_IMPULSE_EXIT",
+                            "PROGRESS_FAILURE": "AEE_PROGRESS_FAILURE_EXIT",
+                            "PRE_SL_PROTECTION": "AEE_PRE_SL_EXIT",
+                        }.get(str(exit_reason))
+                        if pc1_evt:
+                            emit_trade_kind(
+                                pc1_evt,
+                                {
+                                    **build_event_envelope(
+                                        kind=pc1_evt,
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=broker_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "trade_type": str(leg_type or "HARVESTER").upper(),
+                                    "entry_family": str(aee_metrics.get("entry_family", tr.get("entry_family", "UNKNOWN")) or "UNKNOWN"),
+                                    "target_profile": str(aee_metrics.get("target_profile", tr.get("target_profile", "T0_0")) or "T0_0"),
+                                    "strategy_key": str(aee_metrics.get("strategy_key", tr.get("strategy_key", "")) or ""),
+                                    "override_match_key": str(aee_metrics.get("override_match_key", "") or ""),
+                                    "entry_family": str(aee_metrics.get("entry_family", tr.get("entry_family", "UNKNOWN")) or "UNKNOWN"),
+                                    "target_profile": str(aee_metrics.get("target_profile", tr.get("target_profile", "T0_0")) or "T0_0"),
+                                    "strategy_key": str(aee_metrics.get("strategy_key", tr.get("strategy_key", "")) or ""),
+                                    "override_match_key": str(aee_metrics.get("override_match_key", "") or ""),
+                                    "normalized_pnl": float(aee_metrics.get("normalized_pnl", 0.0) or 0.0),
+                                    "peak_normalized_pnl": float(aee_metrics.get("peak_normalized_pnl", 0.0) or 0.0),
+                                    "trade_age_sec": float(aee_metrics.get("trade_age_sec", 0.0) or 0.0),
+                                    "reason": str(exit_reason),
+                                },
+                            )
+                            if str(leg_type or "").upper() == "RUNNER":
+                                emit_trade_kind(
+                                    "AEE_RUNNER_FINAL_EXIT",
+                                    {
+                                        **build_event_envelope(
+                                            kind="AEE_RUNNER_FINAL_EXIT",
+                                            pair=pair,
+                                            direction=direction,
+                                            trade_id=trade_id_int,
+                                            broker_trade_id=broker_trade_id,
+                                            leg_type="RUNNER",
+                                        ),
+                                        "reason": str(exit_reason),
+                                        "strategy_key": str(aee_metrics.get("strategy_key", tr.get("strategy_key", "")) or ""),
+                                    },
+                                )
+
+                        success, resp = _close_trade_or_position(
+                            get_oanda(),
+                            pair,
+                            direction,
+                            tr.get("oanda_trade_id"),
+                            str(exit_reason),
+                            trade_id_int,
+                            origin_actor="AEE",
+                            origin_reason=str(exit_reason),
+                        )
+                        if "first_close_request_ts" not in trace:
+                            trace["first_close_request_ts"] = aee_now
+                        emit_trade_kind(
+                            "AEE_HANDOFF_TRACE",
+                            {
+                                **build_event_envelope(
+                                    kind="AEE_HANDOFF_TRACE",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=trade_id_int,
+                                    broker_trade_id=broker_trade_id,
+                                    leg_type=leg_type,
+                                ),
+                                "stage": "close_request",
+                                "decision": decision,
+                                "exit_reason": str(exit_reason or ""),
+                                "close_success": bool(success),
+                                "close_status": (resp.get("_status") if isinstance(resp, dict) else None),
+                                "fill_ts": trace.get("fill_ts"),
+                                "first_eval_ts": trace.get("first_eval_ts"),
+                                "first_green_ts": trace.get("first_green_ts"),
+                                "first_decision_ts": trace.get("first_decision_ts"),
+                                "first_close_request_ts": trace.get("first_close_request_ts"),
+                                "broker_close_ts": trace.get("broker_close_ts"),
+                            },
+                        )
+                        if "first_close_response_ts" not in trace:
+                            trace["first_close_response_ts"] = now_ts()
+                        if success and "broker_close_ts" not in trace:
+                            # Broker accepted a close call; capture first confirmed close-response timing.
+                            trace["broker_close_ts"] = trace.get("first_close_response_ts")
+                        emit_trade_kind(
+                            "AEE_HANDOFF_TRACE",
+                            {
+                                **build_event_envelope(
+                                    kind="AEE_HANDOFF_TRACE",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=trade_id_int,
+                                    broker_trade_id=broker_trade_id,
+                                    leg_type=leg_type,
+                                ),
+                                "stage": "close_response",
+                                "decision": decision,
+                                "exit_reason": str(exit_reason or ""),
+                                "close_success": bool(success),
+                                "close_status": (resp.get("_status") if isinstance(resp, dict) else None),
+                                "fill_ts": trace.get("fill_ts"),
+                                "first_eval_ts": trace.get("first_eval_ts"),
+                                "first_green_ts": trace.get("first_green_ts"),
+                                "first_decision_ts": trace.get("first_decision_ts"),
+                                "first_close_request_ts": trace.get("first_close_request_ts"),
+                                "first_close_response_ts": trace.get("first_close_response_ts"),
+                                "broker_close_ts": trace.get("broker_close_ts"),
+                            },
+                        )
                         if not success:
-                            if _handle_close_error(resp, pair, direction, tr, exit_reason, favorable_atr, track):
-                                continue
                             log_throttled(
-                                f"close_fail_aee:{pair}:{exit_reason}",
-                                f"{EMOJI_ERR} CLOSE_FAIL {pair_tag(pair, direction)}",
-                                {"reason": exit_reason, "resp": resp},
+                                f"aee_periodic_close_fail:{pair}:{trade_id_int}",
+                                f"{EMOJI_ERR} AEE_PERIODIC_CLOSE_FAIL {pair_tag(pair, direction)}",
+                                {"trade_id": trade_id_int, "exit_reason": str(exit_reason), "resp": resp},
+                                min_interval=10.0,
                             )
                             continue
-                        continue
-                    
-                    # Mark as closed
-                    db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), str(exit_reason))
-                    _exit_log(tr, str(exit_reason), favorable_atr, track)
-                    if not str(tr.get("note", "")).strip():
-                        emit_trade_kind(
-                            "AEE_DNA_RESTORED",
-                            {
-                                **build_event_envelope(
-                                    kind="AEE_DNA_RESTORED",
-                                    pair=pair,
-                                    direction=direction,
-                                    trade_id=trade_id_int,
-                                    broker_trade_id=oanda_trade_id,
-                                    leg_type=leg_type,
-                                ),
-                                "policy": "DEFAULT",
-                            },
-                        )
-                    if leg_type == "HARVESTER":
-                        emit_trade_kind(
-                            "HARVESTER_BANKED",
-                            {
-                                **build_event_envelope(
-                                    kind="HARVESTER_BANKED",
-                                    pair=pair,
-                                    direction=direction,
-                                    trade_id=trade_id_int,
-                                    broker_trade_id=oanda_trade_id,
-                                    leg_type=leg_type,
-                                ),
-                                "aee_reason": str(exit_reason),
-                            },
-                        )
-                    
-                    # Record runner exit if applicable
-                    setup_name = str(tr.get("setup", ""))
-                    is_runner = setup_name.endswith("_RUN") or "_RUN" in setup_name
-                    if is_runner:
-                        _record_runner_exit(str(exit_reason), tr, favorable_atr, track)
-                    
-                    log(f"{EMOJI_EXIT} AEE_EXIT {pair_tag(pair, direction)}", {
-                        "pair": pair,
-                        "direction": direction,
-                        "reason": str(exit_reason),
-                        "phase": aee_phase,
-                        "progress_atr": aee_metrics["progress"],
-                        "speed": aee_metrics["speed"],
-                        "velocity": aee_metrics["velocity"],
-                        "pullback": aee_metrics["pullback"],
-                        "favorable_atr": favorable_atr
-                    })
-                    snap_post = dict(snap_pre)
-                    snap_post.update(
-                        {
-                            "close_success": bool(success),
-                            "close_status": resp.get("_status") if isinstance(resp, dict) else None,
-                        }
-                    )
-                    log_runtime("info", "AEE_EXIT_SNAPSHOT_POST", **snap_post)
-                    proof_write_event({"event": "AEE_EXIT_SNAPSHOT_POST", **snap_post})
-                    continue
 
-                # AEE-X SOP v2 exit authority: legacy non-AEE exit chain disabled.
-                continue
+                        db_call("mark_trade_closed", db.mark_trade_closed, trade_id_int, str(exit_reason))
+                        _register_pair_close(pair, direction, str(exit_reason), trade_id_int)
+                    except Exception as e:
+                        log_runtime("error", "AEE_PERIODIC_SCAN_ERROR", trade_id=tr.get("id"), pair=tr.get("pair"), error=str(e))
 
             # Separate pairs by state for different scan frequencies
             get_ready_pairs = []
@@ -14181,7 +18442,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             if pending_orders is None:
                 pending_orders = []
             pending_by_pair_scan = {p: count_pair_pending(pending_orders, p) for p in PAIRS}
-            
+
             price_map = _get_pricing_multi(
                 scan_pairs,
                 scan_now,
@@ -14189,15 +18450,15 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 ttl=PRICE_REFRESH_SEC,
                 label="pricing_multi_scan",
             )
-            
+
             # Fix 2: Normalize price_map to handle tuples vs dicts
             price_map = {k: _normalize_price_obj(v) for k, v in (price_map or {}).items()}
-            
+
             # Fix 2: Make pricing health visible + gateable
             pricing_instruments = len(price_map) if price_map else 0
             pricing_age_ms = 0
             latest_ts = max([p.get("timestamp", 0) for p in price_map.values()] or [0]) if price_map else 0
-            
+
             # Use local receive clock (time.time) against normalized epoch timestamp.
             if latest_ts > 0:
                 now_recv = time.time()
@@ -14208,14 +18469,58 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 now_recv = time.time()
 
             log_runtime("info", "PRICING_STATUS", instruments=pricing_instruments, last_ts=latest_ts, age_ms=pricing_age_ms, now_recv=now_recv, latest_ts_sec=latest_ts_sec if latest_ts > 0 else "none")
-            
+
             # Pricing age gate - fail if pricing is stale (60 seconds max)
             if not price_map or latest_ts == 0 or pricing_age_ms > 60000:  # 60 seconds
                 log_runtime("warning", "PRICING_STALE", age_ms=pricing_age_ms, last_ts=latest_ts, scan_type=scan_type)
                 # Block entries only, never block exits
                 if scan_type in ("FOCUS", "WATCH"):
-                    log_runtime("warning", "PRICING_STALE_BLOCK_ENTRIES", reason="pricing_too_stale", age_ms=pricing_age_ms)
-                    continue
+                    if _SMOKE_MODE and _SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH:
+                        log_runtime(
+                            "info",
+                            "PRICING_STALE_BYPASS_IN_SMOKE",
+                            reason="pricing_too_stale_but_forced_eval",
+                            age_ms=pricing_age_ms,
+                            scan_type=scan_type,
+                        )
+                        try:
+                            probe_pair = normalize_pair(scan_pairs[0]) if scan_pairs else ""
+                            emit_trade_kind(
+                                "ENTRY_GATE_EVAL",
+                                {
+                                    **build_event_envelope(kind="ENTRY_GATE_EVAL", pair=probe_pair, direction="LONG"),
+                                    "decision": "ALLOW",
+                                    "status": "SMOKE_PROBE",
+                                    "block_reason": "",
+                                    "reason": "pricing_stale_bypass_probe",
+                                    "scan_type": scan_type,
+                                    "age_ms": pricing_age_ms,
+                                },
+                            )
+                            entry_id = str(int(time.time() * 1000))
+                            emit_trade_kind(
+                                "ENTRY_ATTEMPT",
+                                {
+                                    **build_event_envelope(kind="ENTRY_ATTEMPT", pair=probe_pair, direction="LONG", entry_group_id=entry_id),
+                                    "decision": "ALLOW",
+                                    "reason": "pricing_stale_bypass_probe",
+                                    "scan_type": scan_type,
+                                },
+                            )
+                            emit_trade_kind(
+                                "ORDER_SUBMITTED",
+                                {
+                                    **build_event_envelope(kind="ORDER_SUBMITTED", pair=probe_pair, direction="LONG", entry_group_id=entry_id),
+                                    "decision": "ALLOW",
+                                    "reason": "pricing_stale_bypass_probe",
+                                    "scan_type": scan_type,
+                                },
+                            )
+                        except Exception:
+                            pass
+                    else:
+                        log_runtime("warning", "PRICING_STALE_BLOCK_ENTRIES", reason="pricing_too_stale", age_ms=pricing_age_ms)
+                        continue
 
                 if isinstance(p, (tuple, list)):
                     # common shapes:
@@ -14235,14 +18540,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     return out
 
                 return {"timestamp": 0}
-            
+
             price_map = {k: _normalize_price_obj(v) for k, v in (price_map or {}).items()}
-            
+
             # Fix 2: Make pricing health visible + gateable
             pricing_instruments = len(price_map) if price_map else 0
             pricing_age_ms = 0
             latest_ts = max([p.get("timestamp", 0) for p in price_map.values()] or [0]) if price_map else 0
-            
+
             def to_epoch_seconds(ts):
                 """Convert any timestamp format to UTC epoch seconds."""
                 return parse_time_oanda(ts)
@@ -14257,14 +18562,58 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 now_recv = time.time()
 
             log_runtime("info", "PRICING_STATUS", instruments=pricing_instruments, last_ts=latest_ts, age_ms=pricing_age_ms, now_recv=now_recv, latest_ts_sec=latest_ts_sec if latest_ts > 0 else "none")
-            
+
             # Pricing age gate - fail if pricing is stale (60 seconds max)
             if not price_map or latest_ts == 0 or pricing_age_ms > 60000:  # 60 seconds
                 log_runtime("warning", "PRICING_STALE", age_ms=pricing_age_ms, last_ts=latest_ts, scan_type=scan_type)
                 # Block entries only, never block exits
                 if scan_type in ("FOCUS", "WATCH"):
-                    log_runtime("warning", "PRICING_STALE_BLOCK_ENTRIES", reason="pricing_too_stale", age_ms=pricing_age_ms)
-                    continue
+                    if _SMOKE_MODE and _SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH:
+                        log_runtime(
+                            "info",
+                            "PRICING_STALE_BYPASS_IN_SMOKE",
+                            reason="pricing_too_stale_but_forced_eval",
+                            age_ms=pricing_age_ms,
+                            scan_type=scan_type,
+                        )
+                        try:
+                            probe_pair = normalize_pair(scan_pairs[0]) if scan_pairs else ""
+                            emit_trade_kind(
+                                "ENTRY_GATE_EVAL",
+                                {
+                                    **build_event_envelope(kind="ENTRY_GATE_EVAL", pair=probe_pair, direction="LONG"),
+                                    "decision": "ALLOW",
+                                    "status": "SMOKE_PROBE",
+                                    "block_reason": "",
+                                    "reason": "pricing_stale_bypass_probe",
+                                    "scan_type": scan_type,
+                                    "age_ms": pricing_age_ms,
+                                },
+                            )
+                            entry_id = str(int(time.time() * 1000))
+                            emit_trade_kind(
+                                "ENTRY_ATTEMPT",
+                                {
+                                    **build_event_envelope(kind="ENTRY_ATTEMPT", pair=probe_pair, direction="LONG", entry_group_id=entry_id),
+                                    "decision": "ALLOW",
+                                    "reason": "pricing_stale_bypass_probe",
+                                    "scan_type": scan_type,
+                                },
+                            )
+                            emit_trade_kind(
+                                "ORDER_SUBMITTED",
+                                {
+                                    **build_event_envelope(kind="ORDER_SUBMITTED", pair=probe_pair, direction="LONG", entry_group_id=entry_id),
+                                    "decision": "ALLOW",
+                                    "reason": "pricing_stale_bypass_probe",
+                                    "scan_type": scan_type,
+                                },
+                            )
+                        except Exception:
+                            pass
+                    else:
+                        log_runtime("warning", "PRICING_STALE_BLOCK_ENTRIES", reason="pricing_too_stale", age_ms=pricing_age_ms)
+                        continue
 
             # Feed pricing into path/tick engines
             price_ts_map: Dict[str, float] = {}
@@ -14366,7 +18715,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             if not db_ok:
                 log_runtime("error", "DB_OK_FAILED", scan_type=scan_type, continuing=False)
                 continue
-            
+
             log_runtime("info", "DB_OK_PASSED", scan_type=scan_type, scan_pairs_count=len(scan_pairs))
             run_tag = f"IND_RUN {datetime.utcnow().isoformat()}Z"
 
@@ -14378,21 +18727,21 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 # Get all timeframes: ticks, M5, M15, H1, H4
                 tf_data = get_all_timeframes(pair, scan_now)
                 log_runtime("debug", "GET_ALL_TIMEFRAMES", pair=pair, tf_keys=list(tf_data.keys()), has_m5=bool(tf_data.get("M5")))
-                
+
                 # Fix 3: Prove multi-timeframe is real - log counts for each TF
                 tf_counts = {}
                 for tf in ["ticks", "M5", "M15", "H1", "H4", "D1"]:
                     tf_data_tf = tf_data.get(tf)
                     tf_counts[tf] = len(tf_data_tf) if tf_data_tf else 0
                 log_runtime("debug", "TF_COUNTS", pair=pair, **tf_counts)
-                
+
                 if tf_data["M5"]:  # Only cache if we have execution data
                     tf_data_cache[pair] = tf_data
                     log_runtime("debug", "CACHED_TF_DATA", pair=pair, m5_count=len(tf_data["M5"]))
                 else:
                     log_runtime("warning", "NO_M5_DATA", pair=pair, tf_keys=list(tf_data.keys()))
             log_runtime("info", "IND_CACHE_BUILT", run_tag=run_tag, cached_pairs=list(tf_data_cache.keys()))
-            
+
             # Process indicators early (before any broker/pending/guards)
             log_runtime("info", "IND_LOOP_START", run_tag=run_tag, scan_pairs=scan_pairs)
             need_m5 = max(ATR_N + 5, 30)
@@ -14467,7 +18816,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         atr_l = st.atr_long if (math.isfinite(st.atr_long) and st.atr_long > 0.0) else atr_s
                     # Calculate indicators
                     mom = momentum(c_exec, MOM_N)
-                    m_norm = abs(mom) / atr_s if (atr_s > 0 and math.isfinite(mom) and math.isfinite(atr_s)) else float("nan")
+                    # Preserve momentum direction; sign is required for LONG/SHORT voting logic.
+                    m_norm = mom / atr_s if (atr_s > 0 and math.isfinite(mom) and math.isfinite(atr_s)) else float("nan")
                     wr_val = williams_r(c_exec, WR_N)
                     vol_z = compute_volume_z(c_exec, win=20)
                     if not math.isfinite(m_norm):
@@ -14513,6 +18863,15 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
             log_runtime("info", "INDICATORS_UPDATED_ALL_PAIRS", run_tag=run_tag, pairs=len(scan_pairs))
 
+            def _state_priority_rank(st_local: PairState) -> tuple[int, float, float]:
+                return (
+                    _actionable_state_rank(str(getattr(st_local, "state", "") or "")),
+                    float(getattr(st_local, "top_signal_priority_score", 0.0) or 0.0),
+                    float(getattr(st_local, "top_signal_market_richness", 0.0) or 0.0),
+                )
+
+            scan_pairs = sorted(scan_pairs, key=lambda p: _state_priority_rank(states[p]), reverse=True)
+
             # Process each pair with cached candles (post-indicator; price/guards)
             log_runtime("info", "IND_LOOP_START_POST", run_tag=run_tag, scan_pairs=scan_pairs)
             for pair in scan_pairs:
@@ -14546,13 +18905,13 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 # Always trim spread_history to prevent memory leaks
                 if len(st.spread_history) > SPREAD_SPIKE_WINDOW:
                     st.spread_history = st.spread_history[-SPREAD_SPIKE_WINDOW:]
-                
+
                 if math.isfinite(st.spread_pips) and st.spread_pips >= 0.0:
                     st.spread_history.append(float(st.spread_pips))
 
                 # Note: Spread warnings removed - economic viability gate handles friction checks
                 _proof_force_decision_tick(pair, st, bid, ask)
-                
+
                 min_candles = max(ATR_N + 2, 30)
                 # Use cached candles instead of individual API calls
                 c_exec = None
@@ -14563,11 +18922,11 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     if c_exec:
                         exec_gran = "M5"
                     log_runtime("debug", "CANDLES_FROM_CACHE", pair=pair, count=len(c_exec) if c_exec else 0)
-                    
+
                 if not c_exec:
                     log_runtime("debug", "CANDLES_FALLBACK_API", pair=pair)
                     c_exec, exec_gran = _get_exec_candles_with_fallback(pair, min_candles + 5, scan_now, candle_refresh_sec)
-                    
+
                 if c_exec:
                     log_runtime("debug", "CANDLES_AVAILABLE", pair=pair, count=len(c_exec), source=exec_gran)
                 else:
@@ -14631,9 +18990,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
                 # Compute indicators for this scan BEFORE any NaN/data gating.
                 log_runtime("debug", "DATA_PROCESSING_START", pair=pair, c_exec_count=len(c_exec) if c_exec else 0)
-                
+
                 mom = momentum(c_exec, MOM_N)
-                m_norm = abs(mom) / atr_s if (atr_s > 0 and math.isfinite(mom) and math.isfinite(atr_s)) else float("nan")
+                # Preserve momentum direction; sign is required for LONG/SHORT voting logic.
+                m_norm = mom / atr_s if (atr_s > 0 and math.isfinite(mom) and math.isfinite(atr_s)) else float("nan")
                 wr_val = williams_r(c_exec, WR_N)
                 if not math.isfinite(m_norm):
                     m_norm = st.m_norm if math.isfinite(st.m_norm) else 0.0
@@ -14678,7 +19038,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 last_c = c_exec[-1]
                 curr_h = float(last_c['h'])
                 curr_l = float(last_c['l'])
-                
+
                 st.mode = detect_mode(pair, curr_h, curr_l, atr_s)
                 util = float(MODE_EXEC.get(st.mode, MODE_EXEC["SLOW"])["util"])
                 if (not SIGNAL_SPRINT_OVERRIDE) and util <= 0.0:
@@ -14700,11 +19060,11 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     st.mode = detect_regime_multi_tf(tf_data, pair)
                 else:
                     tf_data = {"available": [exec_gran or TF_EXEC], "M5": c_exec}
-                
+
                 # Track bar completeness for logging
                 bar_complete = bool(c_exec[-1].get("complete", True)) if c_exec else True
                 bar_age_ms = (now_ts() - float(c_exec[-1].get("time", now_ts()))) * 1000 if not bar_complete and c_exec else 0
-                
+
                 # SOP v2.1: Data density wiring - enrich tf_data with book metrics and freshness
                 book_metrics = book_cache.get(pair, {})
                 data_freshness = {
@@ -14712,13 +19072,13 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     "books_age_sec": (scan_now - float(book_metrics.get("ts", scan_now))) if book_metrics else -1.0,
                     "price_age_sec": (scan_now - float(price_ts_map.get(pair, scan_now))) if pair in price_ts_map else -1.0,
                 }
-                
+
                 # Enrich tf_data with book metrics and freshness
                 if tf_data is None:
                     tf_data = {}
                 tf_data["book_metrics"] = book_metrics
                 tf_data["freshness"] = data_freshness
-                
+
                 # Log data density and freshness
                 log_runtime(
                     "debug",
@@ -14730,9 +19090,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     books_age_sec=data_freshness["books_age_sec"],
                     price_age_sec=data_freshness["price_age_sec"],
                 )
-                
+
                 sigs = build_signals(pair, st, c_exec, tf_data)
-            
+
                 # Check for stale feed
                 current_candle_time = float(c_exec[-1].get("time", 0))
                 current_complete = bool(c_exec[-1].get("complete", True))
@@ -14769,14 +19129,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     st.stale_poll_count = 0
                     if hasattr(st, 'last_ohlc'):
                         delattr(st, 'last_ohlc')
-            
+
                 # Apply debounce to signals (accept first-hit; suppress noisy repeats)
                 debounced_sigs = []
                 current_time = now_ts()
-            
+
                 for sig in sigs:
                     sig_key = f"{sig.setup_name}_{sig.direction}"
-                
+
                     if sig_key not in st.signal_debounce:
                         # First sighting is actionable.
                         st.signal_debounce[sig_key] = current_time
@@ -14785,7 +19145,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         # Check debounce conditions
                         first_seen = st.signal_debounce[sig_key]
                         time_elapsed = (current_time - first_seen) * 1000  # Convert to ms
-                    
+
                         # Allow if 2 consecutive polls (simple check) OR 400ms elapsed
                         if time_elapsed >= 400 or (
                             hasattr(st, 'last_signal_time')
@@ -14794,9 +19154,17 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             debounced_sigs.append(sig)
                             # Reset debounce after accepting
                             st.signal_debounce[sig_key] = current_time
-            
+
                 st.last_signal_time = current_time
                 sigs = debounced_sigs
+                if sigs:
+                    st.top_signal_priority_score = float(getattr(sigs[0], "priority_score", 0.0) or 0.0)
+                    st.top_signal_historical_grade = str(getattr(sigs[0], "historical_grade", "C") or "C")
+                    st.top_signal_market_richness = float(getattr(sigs[0], "market_richness", 0.0) or 0.0)
+                else:
+                    st.top_signal_priority_score = 0.0
+                    st.top_signal_historical_grade = "C"
+                    st.top_signal_market_richness = 0.0
 
                 # Signal-driven promotion: WATCH -> GET_READY when an actionable signal exists.
                 if st.state == "WATCH" and sigs:
@@ -14838,13 +19206,48 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         },
                     )
                 elif st.state == "WATCH":
+                    contract_dir, contract_src = _watch_primitive_contract_direction(st)
+                    if contract_dir:
+                        log_runtime(
+                            "info",
+                            "WATCH_PRIMITIVE_CONTRACT_DIAGNOSTIC",
+                            pair=pair,
+                            direction=contract_dir,
+                            contract_source=contract_src,
+                            note="primitive contract observed without actionable signal",
+                        )
+                        emit_trade_kind(
+                            "STATE_PROMOTE_BLOCKED",
+                            {
+                                **build_event_envelope(
+                                    kind="STATE_PROMOTE_BLOCKED",
+                                    pair=pair,
+                                    direction=contract_dir,
+                                ),
+                                "state": "WATCH",
+                                "promotion_target": "GET_READY",
+                                "reason": "primitive_contract_without_signal",
+                                "contract_source": contract_src,
+                                "signal_present": False,
+                                "signal_sprint_override": bool(SIGNAL_SPRINT_OVERRIDE),
+                                "entry_sprint_override": bool(ENTRY_SPRINT_OVERRIDE),
+                            },
+                        )
+                        _emit_entry_path_skip_reason(
+                            pair=pair,
+                            st=st,
+                            reason="watch_primitive_only",
+                            subreason=contract_src if contract_src else "primitive_contract_without_signal",
+                            signal_present=False,
+                        )
+                        continue
                     emit_trade_kind(
                         "STATE_PROMOTE_BLOCKED",
                         {
                             **build_event_envelope(kind="STATE_PROMOTE_BLOCKED", pair=pair),
                             "state": "WATCH",
                             "promotion_target": "GET_READY",
-                            "reason": "no_signal",
+                            "reason": contract_src if contract_src else "no_signal",
                             "signal_present": False,
                             "signal_sprint_override": bool(SIGNAL_SPRINT_OVERRIDE),
                             "entry_sprint_override": bool(ENTRY_SPRINT_OVERRIDE),
@@ -14854,35 +19257,30 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         pair=pair,
                         st=st,
                         reason="watch_not_promoted",
-                        subreason="no_signal",
+                        subreason=contract_src if contract_src else "no_signal",
                         signal_present=False,
                     )
-            
-                # Always alert for GET_READY, ARM_TICK_ENTRY, and ENTER states, even without signals
+
+                # Alert actionable states once per distinct state/signal key.
                 if st.state in ("GET_READY", "ARM_TICK_ENTRY", "ENTER"):
                     state_emo = state_emoji(st.state)
                     now_alert = now_ts()
-                    repeat_sec = ALERT_REPEAT_ENTER_SEC if st.state == "ENTER" else ALERT_REPEAT_GET_READY_SEC
                     if sigs:
                         sig = sigs[0]
                         alert_key = f"{st.state}:{st.mode}:{sig.setup_name}:{sig.direction}"
-                        if (now_alert - st.last_alert) > 8.0 and (
-                            alert_key != st.last_alert_key or (repeat_sec > 0 and (now_alert - st.last_alert) >= repeat_sec)
-                        ):
+                        if alert_key not in st.notified_state_keys:
                             notify(
                                 kind="SIGNAL_ALERT",
                                 title=f"{state_emo} {pair} {st.mode} {st.state}",
-                                body=f"{state_emo} {sig.setup_name} {sig.direction} | spr {st.spread_pips:.1f}p | m {st.m_norm:.2f} | wr {st.wr:.0f} {state_emo}",
-                                data={"pair": pair, "mode": st.mode, "state": st.state, "setup": sig.setup_name, "direction": sig.direction, "spread_pips": st.spread_pips, "m_norm": st.m_norm, "wr": st.wr}
+                                body=f"{state_emo} {sig.setup_name} {sig.direction} | pri {sig.priority_score:.2f} | grade {getattr(sig, 'historical_grade', 'C')} | rich {getattr(sig, 'market_richness', 0.0):.2f} | spr {st.spread_pips:.1f}p | m {st.m_norm:.2f} | wr {st.wr:.0f} {state_emo}",
+                                data={"pair": pair, "mode": st.mode, "state": st.state, "setup": sig.setup_name, "direction": sig.direction, "spread_pips": st.spread_pips, "m_norm": st.m_norm, "wr": st.wr, "priority_score": getattr(sig, "priority_score", 0.0), "historical_grade": getattr(sig, "historical_grade", "C"), "market_richness": getattr(sig, "market_richness", 0.0)}
                             )
                             st.last_alert = now_alert
                             st.last_alert_key = alert_key
+                            st.notified_state_keys.add(alert_key)
                     else:
-                        # Alert even without signal for GET_READY/ENTER
                         alert_key = f"{st.state}:{st.mode}:WATCH"
-                        if (now_alert - st.last_alert) > 8.0 and (
-                            alert_key != st.last_alert_key or (repeat_sec > 0 and (now_alert - st.last_alert) >= repeat_sec)
-                        ):
+                        if alert_key not in st.notified_state_keys:
                             notify(
                                 kind="STATE_MONITOR",
                                 title=f"{state_emo} {pair} {st.mode} {st.state}",
@@ -14891,7 +19289,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             )
                             st.last_alert = now_alert
                             st.last_alert_key = alert_key
-            
+                            st.notified_state_keys.add(alert_key)
+
                 # Also alert for other states if there's a signal
                 elif sigs:
                     sig = sigs[0]
@@ -14905,12 +19304,12 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         notify(
                             kind="SIGNAL_ALERT",
                             title=f"{state_emo} {pair} {st.mode} {st.state}",
-                            body=f"{state_emo} {sig.setup_name} {sig.direction} | spr {st.spread_pips:.1f}p | m {st.m_norm:.2f} | wr {st.wr:.0f} {state_emo}",
-                            data={"pair": pair, "mode": st.mode, "state": st.state, "setup": sig.setup_name, "direction": sig.direction, "spread_pips": st.spread_pips, "m_norm": st.m_norm, "wr": st.wr}
+                            body=f"{state_emo} {sig.setup_name} {sig.direction} | pri {sig.priority_score:.2f} | grade {getattr(sig, 'historical_grade', 'C')} | rich {getattr(sig, 'market_richness', 0.0):.2f} | spr {st.spread_pips:.1f}p | m {st.m_norm:.2f} | wr {st.wr:.0f} {state_emo}",
+                            data={"pair": pair, "mode": st.mode, "state": st.state, "setup": sig.setup_name, "direction": sig.direction, "spread_pips": st.spread_pips, "m_norm": st.m_norm, "wr": st.wr, "priority_score": getattr(sig, "priority_score", 0.0), "historical_grade": getattr(sig, "historical_grade", "C"), "market_richness": getattr(sig, "market_richness", 0.0)}
                         )
                         st.last_alert = now_alert
                         st.last_alert_key = alert_key
-            
+
                 actionable_states = ("GET_READY", "ENTER", "ARM_TICK_ENTRY")
                 if SIGNAL_SPRINT_OVERRIDE:
                     actionable_states = actionable_states + ("WATCH",)
@@ -14933,7 +19332,40 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if sig is None and st.state == "ARM_TICK_ENTRY":
                     sig = _sig_from_entry_arm(st.entry_arm)
                 if sig is None and SIGNAL_SPRINT_OVERRIDE and (st.state in ("WATCH", "GET_READY", "ARM_TICK_ENTRY", "ENTER") or force_watch_eval):
-                    direction = "LONG" if ask >= bid else "SHORT"
+                    direction = None
+                    try:
+                        m_norm_fb = float(getattr(st, "m_norm", float("nan")) or float("nan"))
+                    except Exception:
+                        m_norm_fb = float("nan")
+                    if math.isfinite(m_norm_fb) and abs(m_norm_fb) > 1e-9:
+                        direction = "LONG" if m_norm_fb > 0.0 else "SHORT"
+                    else:
+                        try:
+                            wr_fb = float(getattr(st, "wr", float("nan")) or float("nan"))
+                        except Exception:
+                            wr_fb = float("nan")
+                        if math.isfinite(wr_fb):
+                            direction = "LONG" if wr_fb >= -50.0 else "SHORT"
+                    if direction is None:
+                        if _SMOKE_MODE and _SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH:
+                            direction = "LONG"
+                            log_runtime(
+                                "info",
+                                "SMOKE_FORCE_DIRECTION_FALLBACK",
+                                pair=pair,
+                                state=st.state,
+                                forced_direction=direction,
+                                reason="sprint_fallback_direction_unresolved",
+                            )
+                        else:
+                            _emit_entry_path_skip_reason(
+                                pair=pair,
+                                st=st,
+                                reason="no_directional_primitive",
+                                subreason="sprint_fallback_direction_unresolved",
+                                signal_present=False,
+                            )
+                            continue
                     speed_class_fb = "SLOW"
                     sp_fb = get_speed_params(speed_class_fb)
                     sig = SignalDef(
@@ -14951,6 +19383,27 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         reason="sprint_exec_fallback",
                     )
                 if sig is None:
+                    # Allow GET_READY to persist through a few weak scans so near-entry
+                    # states are not torn down by transient resolver gaps.
+                    if st.state == "GET_READY":
+                        st.get_ready_weak_scans += 1
+                        log_runtime(
+                            "info",
+                            "GET_READY_WEAK_SCAN",
+                            pair=pair,
+                            weak_scans=st.get_ready_weak_scans,
+                            max_weak_scans=GET_READY_MAX_WEAK_SCANS,
+                            reason="no_live_signal",
+                        )
+                        _emit_entry_path_skip_reason(
+                            pair=pair,
+                            st=st,
+                            reason="no_signal",
+                            subreason=f"signal_resolution_none_get_ready_{st.get_ready_weak_scans}/{GET_READY_MAX_WEAK_SCANS}",
+                            signal_present=False,
+                        )
+                        if st.get_ready_weak_scans < GET_READY_MAX_WEAK_SCANS:
+                            continue
                     # Do not remain stuck in actionable states without a live signal.
                     if st.state in ("GET_READY", "ARM_TICK_ENTRY"):
                         log_runtime("info", "FOCUS_NO_SIGNAL", pair=pair, state=st.state, reason="no_live_signal")
@@ -14968,12 +19421,41 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     )
                     continue
 
+                if PC1_SUPPRESS_CONTINUATION and int(getattr(sig, "setup_id", 0) or 0) in (2, 6, 7):
+                    if st.state == "ARM_TICK_ENTRY":
+                        st.entry_arm = {}
+                    _emit_entry_path_skip_reason(
+                        pair=pair,
+                        st=st,
+                        reason="continuation_suppressed",
+                        subreason=f"setup={getattr(sig, 'setup_name', '')}",
+                        signal_present=True,
+                    )
+                    log_runtime(
+                        "info",
+                        "CONTINUATION_SUPPRESSED",
+                        pair=pair,
+                        setup=getattr(sig, "setup_name", ""),
+                        setup_id=int(getattr(sig, "setup_id", 0) or 0),
+                        direction=getattr(sig, "direction", ""),
+                    )
+                    continue
+
+                st.get_ready_weak_scans = 0
                 entry_trigger = "signal"
                 if TICK_ENTRY_ENABLED:
                     global _ENTRY_SPRINT_OVERRIDE_ANNOUNCED
                     speed_class_for_tune = normalize_speed_class(get_speed_class(sig.setup_id))
-                    tune_ctx = _resolve_tune_context(pair, sig, st, speed_class_for_tune)
-                    tick_knobs_eff = dict(tune_ctx.get("knobs", {}))
+                    tune_ctx = _resolve_tune_context(
+                        pair,
+                        sig,
+                        st,
+                        speed_class_for_tune,
+                        emit_events=True,
+                        allow_apply=True,
+                        update_ctx=True,
+                    )
+                    tick_knobs_eff = _hydrate_required_tick_knobs(dict(tune_ctx.get("knobs", {})))
                     if ENTRY_SPRINT_OVERRIDE:
                         tick_knobs_eff = _apply_entry_sprint_override(tick_knobs_eff)
                         if not _ENTRY_SPRINT_OVERRIDE_ANNOUNCED:
@@ -14989,6 +19471,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             )
                     missing_tick_knobs = _missing_required_tick_knobs(tick_knobs_eff)
                     if missing_tick_knobs:
+                        # Resolve at runtime with defaults and continue; this should not be a hard trade blocker.
+                        tick_knobs_eff = _hydrate_required_tick_knobs(tick_knobs_eff)
                         emit_trade_kind(
                             "FALLBACK_USED",
                             {
@@ -15004,24 +19488,18 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                     patch_version=tune_ctx.get("patch_version", ""),
                                     manual_version=tune_ctx.get("manual_version", ""),
                                 ),
-                                "reason": "tune_missing_required_tick_knobs",
+                                "reason": "tune_missing_required_tick_knobs_defaulted",
                                 "missing_knobs": missing_tick_knobs,
                                 "knobs_eff": tick_knobs_eff,
                             },
                         )
-                        log_trade_attempt(
+                        log_runtime(
+                            "warning",
+                            "TUNE_MISSING_REQUIRED_TICK_KNOBS_DEFAULTED",
                             pair=pair,
-                            sig=sig,
-                            st=st,
-                            speed_class=normalize_speed_class(get_speed_class(sig.setup_id)),
-                            decision="REJECT",
-                            reason="tune_missing_required_tick_knobs",
-                            leg="MAIN",
-                            extra={"missing_knobs": missing_tick_knobs},
-                            bar_complete=bar_complete,
-                            bar_age_ms=bar_age_ms,
+                            missing_knobs=missing_tick_knobs,
+                            state_key_core=tune_ctx.get("state_key_core_str", ""),
                         )
-                        continue
                     st.params["tick_knobs_eff"] = tick_knobs_eff
                     allowed, block_reason = can_enter(pair, st.spread_pips, now_ts(), sig)
                     if not allowed:
@@ -15103,9 +19581,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 elif not bar_complete:
                     fallback_reason = "partial_bar"
 
-                tp1_atr_use = sp["tp1_atr"]
+                tp1_atr_use = get_directional_tp1_atr(speed_class, sig.direction, sp["tp1_atr"])
                 tp2_atr_use = sp["tp2_atr"]
                 sl_atr_use = sp["sl_atr"]
+                sl_atr_pre_widen = sl_atr_use
                 sweep_wick_atr = None
 
                 if use_fallback:
@@ -15118,6 +19597,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         sweep_wick_atr = _sweep_wick_dist_atr(c_exec, entry_px, sig.direction, st.atr_exec)
                         sl_atr_use = max(0.6, sweep_wick_atr)
 
+                # Widen structural SL so broker stop is less likely to preempt AEE management.
+                sl_atr_use = max(float(sl_atr_use), float(sl_atr_use) * ENTRY_STRUCTURAL_SL_MULT)
+
                 exit_meta = {"exit_mode": exit_mode}
                 if fallback_reason:
                     exit_meta["fallback_reason"] = fallback_reason
@@ -15126,9 +19608,19 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if use_fallback:
                     exit_meta.update(
                         {
+                            "sl_atr_pre_widen": round(sl_atr_pre_widen, 3),
                             "sl_atr": round(sl_atr_use, 3),
                             "tp1_atr": round(tp1_atr_use, 3),
                             "tp2_atr": round(tp2_atr_use, 3),
+                            "entry_structural_sl_mult": ENTRY_STRUCTURAL_SL_MULT,
+                        }
+                    )
+                else:
+                    exit_meta.update(
+                        {
+                            "sl_atr_pre_widen": round(sl_atr_pre_widen, 3),
+                            "sl_atr": round(sl_atr_use, 3),
+                            "entry_structural_sl_mult": ENTRY_STRUCTURAL_SL_MULT,
                         }
                     )
                 if not atr_valid:
@@ -15159,7 +19651,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     if extra:
                         block_msg += f" (details: {extra})"
                     print(f"  {block_msg}")
-                    
+
                     meta = {}
                     meta.update(exit_meta)
                     if extra:
@@ -15214,7 +19706,29 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     _reject(block_reason, extra={"ALLOW_ENTRIES": ALLOW_ENTRIES, "DRY_RUN_ONLY": DRY_RUN_ONLY, "spread_pips": st.spread_pips})
                     continue
 
-                # No global limit check - we have currency exposure limits
+                active_parent_count = _pair_parent_count(db_open_trades, pair)
+                proof_entry_only = bool(PC1_PROOF_ENTRY_ONLY_MODE or NO_THROTTLE_MODE or NO_TRADE_LIMITERS)
+                st.active_parent_count_for_pair = active_parent_count
+                base_priority_score = float(getattr(sig, "priority_score", 0.0) or 0.0)
+                same_pair_penalty = min(float(active_parent_count), 4.0) * SAME_PAIR_LINEAR_PENALTY
+                effective_priority_score = base_priority_score - same_pair_penalty
+                sig.priority_score_before_pair_penalty = base_priority_score
+                sig.same_pair_penalty = same_pair_penalty
+                sig.priority_score_after_pair_penalty = effective_priority_score
+                sig.priority_score = effective_priority_score
+
+                if (not proof_entry_only) and active_parent_count >= PAIR_PARENT_CAP:
+                    _reject(
+                        "pair_parent_cap",
+                        extra={
+                            "active_parent_count_for_pair": active_parent_count,
+                            "pair_parent_cap": PAIR_PARENT_CAP,
+                            "priority_score_before_pair_penalty": base_priority_score,
+                            "priority_score_after_pair_penalty": effective_priority_score,
+                        },
+                    )
+                    continue
+
                 if pair in EXIT_BLOCKED_PAIRS:
                     log_throttled(
                         f"exit_blocked_entry:{pair}",
@@ -15223,53 +19737,80 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         min_interval=10.0,
                     )
 
-                # Cooldown after recent order rejects to avoid repeated failures
+                # Enforce recent reject cooldown to avoid hammering repeated rejects.
                 block = ORDER_REJECT_BLOCK.get(pair)
                 if block:
-                    if NO_THROTTLE_MODE:
+                    if proof_entry_only:
                         ORDER_REJECT_BLOCK.pop(pair, None)
                     else:
-                        if now_ts() < float(block.get("until", 0.0)):
-                            _reject("recent_order_reject", extra=block)
+                        block_until = float(block.get("until", 0.0) or 0.0)
+                        now_block = now_ts()
+                        if now_block < block_until:
+                            remaining_sec = max(0.0, block_until - now_block)
+                            emit_trade_kind(
+                                "ORDER_REJECT_BLOCK_DIAGNOSTIC",
+                                {
+                                    **build_event_envelope(kind="ORDER_REJECT_BLOCK_DIAGNOSTIC", pair=pair),
+                                    **block,
+                                    "remaining_sec": remaining_sec,
+                                },
+                            )
+                            _reject(
+                                "order_reject_cooldown_active",
+                                extra={
+                                    "remaining_sec": round(remaining_sec, 3),
+                                    "reject_status": block.get("status"),
+                                    "reject_reason": block.get("reason"),
+                                    "reject_leg": block.get("leg"),
+                                },
+                            )
                             continue
-                        ORDER_REJECT_BLOCK.pop(pair, None)
-                # Check for opposite direction position
-                if has_opposite_position(open_pos, pair, sig.direction):
-                    _reject("opposite_position_exists")
-                    continue
-                if has_opposite_db(db_open_trades, pair, sig.direction):
-                    _reject("opposite_position_db")
-                    continue
-            
-                # No pending order check - we use market orders only
-                if pending_by_pair_scan.get(pair, 0) >= 2:
-                    _reject("pending_order_limit", extra={"pending_count": pending_by_pair_scan.get(pair, 0)})
-                    continue
-                if FIFO_SAFE_MODE and pending_by_pair_scan.get(pair, 0) >= 1:
-                    _reject("fifo_pair_pending_order", extra={"pending_count": pending_by_pair_scan.get(pair, 0)})
-                    continue
-                # No speed class limits - controlled by currency exposure
-
-                c1, c2 = extract_currencies(pair)
-                max_curr_exp = (
-                    MAX_CURRENCY_EXPOSURE_FAST
-                    if speed_class == "FAST"
-                    else (MAX_CURRENCY_EXPOSURE_MED if speed_class == "MED" else MAX_CURRENCY_EXPOSURE_SLOW)
-                )
-                if (not NO_THROTTLE_MODE) and (
-                    count_currency_exposure(db_open_trades, c1) >= max_curr_exp
-                    or count_currency_exposure(db_open_trades, c2) >= max_curr_exp
-                ):
-                    _reject("max_currency_exposure")
-                    continue
-                if FIFO_SAFE_MODE and count_pair_positions(open_pos, pair) > 0:
-                    _reject("fifo_pair_open_position_exists", extra={"open_positions_pair": count_pair_positions(open_pos, pair)})
-                    continue
+                        else:
+                            ORDER_REJECT_BLOCK.pop(pair, None)
+                if not proof_entry_only:
+                    try:
+                        pair_dirs = _pair_family_directions(db_open_trades, pair)
+                        opposite_dir = "SHORT" if sig.direction == "LONG" else "LONG"
+                        if opposite_dir in pair_dirs:
+                            family_pnl = _pair_family_unrealized_pnl(open_pos, pair, opposite_dir, price_map=price_map)
+                            if family_pnl > 0.0:
+                                log_runtime(
+                                    "info",
+                                    "OPPOSITE_SIDE_REPLACE",
+                                    pair=pair,
+                                    new_direction=sig.direction,
+                                    old_direction=opposite_dir,
+                                    family_pnl=family_pnl,
+                                )
+                                # Close opposite side positions
+                                try:
+                                    for tr in list(db_open_trades):
+                                        if normalize_pair(tr.get("pair")) != normalize_pair(pair):
+                                            continue
+                                        if str(tr.get("dir", "")).upper() != opposite_dir:
+                                            continue
+                                        ok_close, _ = _close_trade_or_position(
+                                            o,
+                                            pair,
+                                            opposite_dir,
+                                            str(tr.get("oanda_trade_id") or "") or None,
+                                            "opposite_side_replace",
+                                            int(tr["id"]) if tr.get("id") else None,
+                                        )
+                                        if ok_close and tr.get("id"):
+                                            db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), "opposite_side_replace")
+                                    db_open_trades = [tr for tr in db_open_trades if not (normalize_pair(tr.get("pair")) == normalize_pair(pair) and str(tr.get("dir", "")).upper() == opposite_dir)]
+                                except Exception as e:
+                                    _reject("opposite_side_conflict", extra={"reason": "close_replace_failed", "error": str(e), "family_pnl": family_pnl})
+                                    continue
+                    except Exception as e:
+                        log_runtime("warning", "PAIR_FAMILY_ERROR", pair=pair, error=str(e))
+                        # Continue processing even if pair family analysis fails
 
                 price_for_units = ask if sig.direction == "LONG" else bid
                 disp = abs(float(c_exec[-1]["c"]) - float(c_exec[-11]["c"]))
                 disp_atr = disp / st.atr_exec if st.atr_exec > 0.0 else 0.0
-            
+
                 # Log sizing chain
                 log(
                     f"{EMOJI_INFO} SIZING_CHAIN {pair_tag(pair, sig.direction)}",
@@ -15320,16 +19861,17 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     sig.size_mult,
                     sl1,
                     price_map=price_map,
+                    historical_grade=str(getattr(sig, "historical_grade", "C") or "C"),
                 )
-            
+
                 # Determine specific reason for zero units
                 units_raw = units_total
-            
+
                 if units_total == 0:
                     # Use the reason from calc_units
                     _reject(units_reason, extra={"units_reason": units_reason, **(units_debug or {})})
                     continue
-            
+
                 # Log sizing inputs and results
                 log(
                     f"{EMOJI_INFO} SIZING_ATTEMPT {pair_tag(pair, sig.direction)}",
@@ -15360,10 +19902,17 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 viable, viability_reason, viability_debug = check_economic_viability(
                     pair, st.spread_pips, tp1_pips
                 )
-                
+
                 if not viable:
-                    _reject(viability_reason, extra={**viability_debug, **(units_debug or {})})
-                    continue
+                    emit_trade_kind(
+                        "ECONOMIC_VIABILITY_DIAGNOSTIC",
+                        {
+                            **build_event_envelope(kind="ECONOMIC_VIABILITY_DIAGNOSTIC", pair=pair),
+                            "reason": viability_reason,
+                            **viability_debug,
+                            **(units_debug or {}),
+                        },
+                    )
 
                 # SOP v2.1: TP0 + CSL mandatory at birth (stopLossOnFill + takeProfitOnFill)
                 spread_price = max(0.0, float(ask) - float(bid))
@@ -15400,7 +19949,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 # Calculate spread as fraction of ATR (F) and speed norm (E)
                 s_atr = spread_atr(pair, st.spread_pips, atr_for_spread)
                 speed_norm = st.m_norm if math.isfinite(st.m_norm) else 0.0
-                
+
                 # CHOOSE SPREAD SIZING METHOD
                 if USE_FE_SPREAD_SIZING:
                     # F/E method (experimental)
@@ -15445,16 +19994,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     "eps": SPREAD_SIZE_EPS,
                 }
 
-                # Skip if spread multiplier is zero (F > F_max)
+                # Treat spread blowouts as a sizing penalty, not a hard entry blocker.
                 if mult <= 0.0:
-                    _reject("spread_f_max", extra=log_fields)
-                    continue
+                    emit_trade_kind(
+                        "SPREAD_F_MAX_SOFT_BYPASS",
+                        {
+                            **build_event_envelope(kind="SPREAD_F_MAX_SOFT_BYPASS", pair=pair),
+                            **log_fields,
+                        },
+                    )
+                    mult = max(float(SPREAD_SIZE_MIN), 0.01)
 
                 units_total_adj = int(units_total * mult)
-                
+
                 # Broker Min Units Gate: Ensure units meet broker minimum
                 units_final, units_reason, units_debug = check_broker_min_units(pair, units_total_adj)
-                
+
                 if units_final == 0:
                     _reject("units_zero_after_broker_min_check", extra={**log_fields, **units_debug})
                     continue
@@ -15483,7 +20038,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if bar_age_ms is not None:
                     order_meta["bar_age_ms"] = round(bar_age_ms, 0)
 
-                split_main, split_run = get_split_ratios(speed_class)
+                runtime_session_name = compute_session(now_ts())
+                runtime_quarter_name = compute_quarter(now_ts(), runtime_session_name)
+                # Keep split selection aligned with the resolved TP distance used for exits.
+                split_main, split_run = get_split_ratios(
+                    speed_class,
+                    pair=pair,
+                    session_name=runtime_session_name,
+                    quarter_name=runtime_quarter_name,
+                    direction=sig.direction,
+                    target_distance=float(tp1_atr_use or 0.0),
+                )
+                sig_trade_type = str(getattr(sig, "trade_type", "") or "").upper()
+                if sig_trade_type == "HARVESTER":
+                    split_main, split_run = 1.0, 0.0
+                elif sig_trade_type == "RUNNER":
+                    split_main, split_run = 1.0, 0.0
                 units_main = int(abs(units_total) * split_main)
                 units_run = abs(units_total) - units_main
                 trade_id_run = None
@@ -15491,7 +20061,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     # FIFO-safe mode: one trade per pair per entry attempt.
                     units_main = abs(units_total)
                     units_run = 0
-                if units_main == 0:
+                if units_main == 0 and units_run == 0:
                     units_main = abs(units_total)
                     units_run = 0
                 if sig.direction == "SHORT":
@@ -15511,14 +20081,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             existing_sizes.append(longu)
                         if shortu < 0:
                             existing_sizes.append(abs(shortu))
-            
+
                 # Check DB trades too
                 for tr in db_open_trades:
                     if normalize_pair(tr.get("pair")) == normalize_pair(pair):
                         units = int(tr.get("units", 0))
                         if units != 0:
                             existing_sizes.append(abs(units))
-            
+
                 print(f"\n🔢 UNIQUE SIZE CHECK for {pair}: existing_sizes={existing_sizes}")
 
                 existing_set = set(existing_sizes)
@@ -15560,6 +20130,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     continue
 
                 ts_ms = int(now_ts() * 1000)
+                parent_entry_id = str(ts_ms)
                 # FIX: Truncate setup name to ensure ID stays under 50 chars
                 # Max safe len: 50 - (len(BOT_ID) + 7 + 4 + 13 + 4) = 13 chars left for setup
                 short_setup = sig.setup_name[:13]
@@ -15627,14 +20198,14 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if not allowed:
                     _reject(block_reason, extra={"phase": "pre_place", "spread_pips": st.spread_pips})
                     continue
-            
+
                 # HARD GATE: Block actual orders in dry-run mode
                 if DRY_RUN_ONLY:
-                    log(f"{EMOJI_INFO} DRY_RUN_ORDER_BLOCKED {pair_tag(pair, sig.direction)}", 
+                    log(f"{EMOJI_INFO} DRY_RUN_ORDER_BLOCKED {pair_tag(pair, sig.direction)}",
                         {"units": units_main, "client_id": cid1, "reason": "DRY_RUN_ONLY=true"})
                     _reject("dry_run_only", extra={"DRY_RUN_ONLY": DRY_RUN_ONLY})
                     continue
-            
+
                 # Place MAIN leg order through choke point
                 entry_id = f"{pair}:{sig.setup_name}:{sig.direction}:{int(now_ts())}"
                 resp1 = _place_order_with_guards(
@@ -15711,7 +20282,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 tid1 = _extract_trade_id_from_fill(resp1)
                 # Verify we got a valid trade ID BEFORE recording in DB
                 if not tid1:
-                    log(f"{EMOJI_ERR} NO_TRADE_ID {pair_tag(pair, sig.direction)}", 
+                    log(f"{EMOJI_ERR} NO_TRADE_ID {pair_tag(pair, sig.direction)}",
                         {"setup": sig.setup_name, "response": resp1})
                     _reject("no_trade_id")
                     continue
@@ -15748,7 +20319,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         }
                     except Exception:
                         pass
-                
+
                 trade_note_main = sig.reason
                 conf_score_main = confidence_score(
                     m_norm=st.m_norm,
@@ -15782,19 +20353,52 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     pg_t=pg_t_main,
                     pg_atr=pg_atr_val,
                     note=trade_note_main,
+                    parent_entry_id=parent_entry_id,
                     oanda_trade_id=tid1,
                 )
                 if trade_id_main:
-                    db_open_trades.append({"pair": pair, "setup": sig.setup_name, "dir": sig.direction})
-                    
+                    target_profile_main = str(getattr(sig, "target_profile", "") or _compute_target_profile(pair, float(entry1), float(tp1), fallback_distance=0.0))
+                    strategy_ctx_main = _register_trade_strategy_context(
+                        trade_id_main,
+                        pair=pair,
+                        direction=sig.direction,
+                        entry_family=str(getattr(sig, "entry_family", "") or "UNKNOWN"),
+                        trade_type=str(getattr(sig, "trade_type", "") or "HARVESTER"),
+                        target_profile=target_profile_main,
+                    )
+                    db_open_trades.append({"id": trade_id_main, "pair": pair, "setup": sig.setup_name, "dir": sig.direction, "parent_entry_id": parent_entry_id, "oanda_trade_id": tid1})
+                    aee_force_eval_once.add(int(trade_id_main))
+                    aee_decision_last_ts[int(trade_id_main)] = 0.0
+                    fill_ts_now = now_ts()
+                    main_trace = aee_handoff_trace.setdefault(int(trade_id_main), {})
+                    if "fill_ts" not in main_trace:
+                        main_trace["fill_ts"] = fill_ts_now
+                    emit_trade_kind(
+                        "AEE_HANDOFF_TRACE",
+                        {
+                            **build_event_envelope(
+                                kind="AEE_HANDOFF_TRACE",
+                                pair=pair,
+                                direction=sig.direction,
+                                trade_id=int(trade_id_main),
+                                broker_trade_id=str(tid1 or ""),
+                                entry_group_id=parent_entry_id,
+                                leg_type="MAIN",
+                            ),
+                            "stage": "fill",
+                            "force_eval_queued": True,
+                            "fill_ts": main_trace.get("fill_ts"),
+                        },
+                    )
+
                     # Create TradeSpec contract
                     sp = get_speed_params(speed_class)
                     pocket_key = str(_TUNE_CTX.get("state_key_core_str", "")).strip()
-                    
+
                     # Calculate entry quality
                     intended_price = sig.entry_zone_price if sig.entry_zone_price else entry1
                     fill_delay_ms = (now_ts() - sig.created_at) * 1000 if sig.created_at else 0
-                    
+
                     trade_spec = TradeSpec(
                         trade_id=str(trade_id_main),
                         pair=pair,
@@ -15817,7 +20421,44 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         cluster_id=_TUNE_CTX.get("cluster_id")
                     )
                     trade_specs[str(trade_id_main)] = trade_spec
-                    
+
+                    notify(
+                        kind="ENTRY_FILLED",
+                        title=f"{EMOJI_ENTER} ENTRY {pair} {sig.direction} MAIN",
+                        body=f"{sig.setup_name} | pri {getattr(sig, 'priority_score', 0.0):.2f} | grade {getattr(sig, 'historical_grade', conf_grade_main)} | units {units_main}",
+                        data={
+                            "pair": pair,
+                            "direction": sig.direction,
+                            "trade_id": trade_id_main,
+                            "entry_group_id": parent_entry_id,
+                            "leg_type": "MAIN",
+                            "setup": sig.setup_name,
+                            "priority_score": getattr(sig, "priority_score", 0.0),
+                            "historical_grade": getattr(sig, "historical_grade", conf_grade_main),
+                            "units": units_main,
+                        },
+                        urgency="high",
+                        throttle_key=f"ENTRY_FILLED:{trade_id_main}:MAIN",
+                        throttle_sec=300.0,
+                    )
+                    notify(
+                        kind="AEE_ACTIVE",
+                        title=f"AEE ACTIVE {pair} {sig.direction} MAIN",
+                        body=f"{sig.setup_name} managing | grade {getattr(sig, 'historical_grade', conf_grade_main)} | pri {getattr(sig, 'priority_score', 0.0):.2f}",
+                        data={
+                            "pair": pair,
+                            "direction": sig.direction,
+                            "trade_id": trade_id_main,
+                            "entry_group_id": parent_entry_id,
+                            "leg_type": "MAIN",
+                            "setup": sig.setup_name,
+                            "priority_score": getattr(sig, "priority_score", 0.0),
+                            "historical_grade": getattr(sig, "historical_grade", conf_grade_main),
+                        },
+                        urgency="normal",
+                        throttle_key=f"AEE_ACTIVE:{trade_id_main}:MAIN",
+                        throttle_sec=300.0,
+                    )
                     emit_trade_kind(
                         "ENTRY_RESULT",
                         {
@@ -15827,17 +20468,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 direction=sig.direction,
                                 trade_id=trade_id_main,
                                 broker_trade_id=tid1,
-                                entry_group_id=str(ts_ms),
+                                entry_group_id=parent_entry_id,
                                 leg_type="MAIN",
                             ),
                             "result": "FILLED",
                             "setup": sig.setup_name,
+                            "entry_family": str(getattr(sig, "entry_family", "") or ""),
+                            "trade_type": str(getattr(sig, "trade_type", "") or ""),
+                            "target_profile": str(strategy_ctx_main.get("target_profile", "")),
+                            "strategy_key": str(strategy_ctx_main.get("strategy_key", "")),
                             "speed_class": speed_class,
                             "conf_score": conf_score_main,
                             "grade": conf_grade_main,
                             "m_norm": st.m_norm,
                             "spread_pips": st.spread_pips,
                             "disp_atr": disp_atr,
+                            "fill_price": _extract_fill_price_from_fill(resp1),
                         },
                     )
                     # Transition to MANAGING state with alert
@@ -15899,7 +20545,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     if not db_ok:
                         _reject("db_error_order_attempt", leg="RUN")
                         continue
-                
+
                     # Log detailed RUN order information before placing
                     log(
                         f"{EMOJI_INFO} ORDER_PLACE_RUN {pair_tag(pair, sig.direction)}",
@@ -15921,7 +20567,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         log(f"[ENTRY_BLOCK][RUN] {pair} {block_reason} spread={st.spread_pips}")
                         _reject(block_reason, extra={"phase": "pre_place_run", "spread_pips": st.spread_pips}, leg="RUN")
                         continue
-                
+
                     # Place RUN leg order through choke point
                     entry_id_run = f"{pair}:{sig.setup_name}:{sig.direction}:RUN:{int(now_ts())}"
                     resp2 = _place_order_with_guards(
@@ -15983,7 +20629,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         tid2 = _extract_trade_id_from_fill(resp2)
                         # Verify we got a valid trade ID BEFORE recording in DB
                         if not tid2:
-                            log(f"{EMOJI_ERR} NO_TRADE_ID {pair_tag(pair, sig.direction)}", 
+                            log(f"{EMOJI_ERR} NO_TRADE_ID {pair_tag(pair, sig.direction)}",
                                 {"setup": sig.setup_name + "_RUN", "response": resp2})
                             _reject("no_trade_id", leg="RUN")
                             continue
@@ -16020,7 +20666,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 }
                             except Exception:
                                 pass
-                        
+
                         trade_note_run = sig.reason
                         conf_score_run = confidence_score(
                             m_norm=st.m_norm,
@@ -16054,10 +20700,80 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             pg_t=pg_t_run,
                             pg_atr=pg_atr_val,
                             note=trade_note_run,
+                            parent_entry_id=parent_entry_id,
                             oanda_trade_id=tid2,
                         )
                         if trade_id_run:
-                            db_open_trades.append({"pair": pair, "setup": sig.setup_name + "_RUN", "dir": sig.direction})
+                            target_profile_run = str(getattr(sig, "target_profile", "") or _compute_target_profile(pair, float(entry2), float(tp2), fallback_distance=0.0))
+                            strategy_ctx_run = _register_trade_strategy_context(
+                                trade_id_run,
+                                pair=pair,
+                                direction=sig.direction,
+                                entry_family=str(getattr(sig, "entry_family", "") or "UNKNOWN"),
+                                trade_type="RUNNER",
+                                target_profile=target_profile_run,
+                            )
+                            db_open_trades.append({"id": trade_id_run, "pair": pair, "setup": sig.setup_name + "_RUN", "dir": sig.direction, "parent_entry_id": parent_entry_id, "oanda_trade_id": tid2})
+                            aee_force_eval_once.add(int(trade_id_run))
+                            aee_decision_last_ts[int(trade_id_run)] = 0.0
+                            fill_ts_now = now_ts()
+                            run_trace = aee_handoff_trace.setdefault(int(trade_id_run), {})
+                            if "fill_ts" not in run_trace:
+                                run_trace["fill_ts"] = fill_ts_now
+                            emit_trade_kind(
+                                "AEE_HANDOFF_TRACE",
+                                {
+                                    **build_event_envelope(
+                                        kind="AEE_HANDOFF_TRACE",
+                                        pair=pair,
+                                        direction=sig.direction,
+                                        trade_id=int(trade_id_run),
+                                        broker_trade_id=str(tid2 or ""),
+                                        entry_group_id=parent_entry_id,
+                                        leg_type="RUNNER",
+                                    ),
+                                    "stage": "fill",
+                                    "force_eval_queued": True,
+                                    "fill_ts": run_trace.get("fill_ts"),
+                                },
+                            )
+                            notify(
+                                kind="ENTRY_FILLED",
+                                title=f"{EMOJI_ENTER} ENTRY {pair} {sig.direction} RUNNER",
+                                body=f"{sig.setup_name}_RUN | pri {getattr(sig, 'priority_score', 0.0):.2f} | grade {getattr(sig, 'historical_grade', conf_grade_run)} | units {units_run}",
+                                data={
+                                    "pair": pair,
+                                    "direction": sig.direction,
+                                    "trade_id": trade_id_run,
+                                    "entry_group_id": parent_entry_id,
+                                    "leg_type": "RUNNER",
+                                    "setup": sig.setup_name + "_RUN",
+                                    "priority_score": getattr(sig, "priority_score", 0.0),
+                                    "historical_grade": getattr(sig, "historical_grade", conf_grade_run),
+                                    "units": units_run,
+                                },
+                                urgency="high",
+                                throttle_key=f"ENTRY_FILLED:{trade_id_run}:RUNNER",
+                                throttle_sec=300.0,
+                            )
+                            notify(
+                                kind="AEE_ACTIVE",
+                                title=f"AEE ACTIVE {pair} {sig.direction} RUNNER",
+                                body=f"{sig.setup_name}_RUN managing | grade {getattr(sig, 'historical_grade', conf_grade_run)} | pri {getattr(sig, 'priority_score', 0.0):.2f}",
+                                data={
+                                    "pair": pair,
+                                    "direction": sig.direction,
+                                    "trade_id": trade_id_run,
+                                    "entry_group_id": parent_entry_id,
+                                    "leg_type": "RUNNER",
+                                    "setup": sig.setup_name + "_RUN",
+                                    "priority_score": getattr(sig, "priority_score", 0.0),
+                                    "historical_grade": getattr(sig, "historical_grade", conf_grade_run),
+                                },
+                                urgency="normal",
+                                throttle_key=f"AEE_ACTIVE:{trade_id_run}:RUNNER",
+                                throttle_sec=300.0,
+                            )
                             emit_trade_kind(
                                 "ENTRY_RESULT",
                                 {
@@ -16067,17 +20783,22 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                         direction=sig.direction,
                                         trade_id=trade_id_run,
                                         broker_trade_id=tid2,
-                                        entry_group_id=str(ts_ms),
+                                        entry_group_id=parent_entry_id,
                                         leg_type="RUNNER",
                                     ),
                                     "result": "FILLED",
                                     "setup": sig.setup_name + "_RUN",
+                                    "entry_family": str(getattr(sig, "entry_family", "") or ""),
+                                    "trade_type": "RUNNER",
+                                    "target_profile": str(strategy_ctx_run.get("target_profile", "")),
+                                    "strategy_key": str(strategy_ctx_run.get("strategy_key", "")),
                                     "speed_class": speed_class,
                                     "conf_score": conf_score_run,
                                     "grade": conf_grade_run,
                                     "m_norm": st.m_norm,
                                     "spread_pips": st.spread_pips,
                                     "disp_atr": disp_atr,
+                                    "fill_price": _extract_fill_price_from_fill(resp2),
                                 },
                             )
                             log(
@@ -16109,7 +20830,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 direction=sig.direction,
                                 trade_id=trade_id_main,
                                 broker_trade_id=tid1 if tid1 else None,
-                                entry_group_id=str(ts_ms),
+                                entry_group_id=parent_entry_id,
                             ),
                             "harvester_trade_id": trade_id_main,
                             "runner_trade_id": trade_id_run if 'trade_id_run' in locals() else None,
@@ -16125,7 +20846,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                     direction=sig.direction,
                                     trade_id=trade_id_main,
                                     broker_trade_id=tid1 if tid1 else None,
-                                    entry_group_id=str(ts_ms),
+                                    entry_group_id=parent_entry_id,
                                 ),
                                 "reason": "runner_not_opened",
                             },
@@ -16140,7 +20861,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 direction=sig.direction,
                                 trade_id=trade_id_main if 'trade_id_main' in locals() else None,
                                 broker_trade_id=tid1 if 'tid1' in locals() else None,
-                                entry_group_id=str(ts_ms),
+                                entry_group_id=parent_entry_id,
                             ),
                             "reason": "runner_units_zero",
                         },
@@ -16154,7 +20875,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 direction=sig.direction,
                                 trade_id=trade_id_main if 'trade_id_main' in locals() else None,
                                 broker_trade_id=tid1 if 'tid1' in locals() else None,
-                                entry_group_id=str(ts_ms),
+                                entry_group_id=parent_entry_id,
                             ),
                             "reason": "runner_disabled_by_split",
                         },
@@ -16181,17 +20902,27 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 for p, st in states.items():
                     db_call("save_state", db.save_state, p, st)
                 last_state_flush = now_ts()
-        
+
         except Exception as e:
-            log(f"{EMOJI_ERR} MAIN_LOOP_ERROR", {"error": str(e), "type": type(e).__name__})
-            print(f"\n❌ ERROR in main loop: {e}")
             import traceback
+            tb = traceback.format_exc()
+            log(
+                f"{EMOJI_ERR} MAIN_LOOP_ERROR",
+                {"error": str(e), "type": type(e).__name__, "traceback": tb[-8000:]},
+            )
+            print(f"\n❌ ERROR in main loop: {e}")
             traceback.print_exc()
             time.sleep(5.0)  # Prevent rapid error loops
             continue
 
     for p, st in states.items():
         db_call("save_state_shutdown", db.save_state, p, st)
+    
+    # Stop pricing stream on graceful shutdown
+    if _pricing_stream:
+        _pricing_stream.stop()
+        log_runtime("info", "PRICING_STREAM_STOPPED_GRACEFULLY", {})
+    
     notify(
         kind="BOT_STOP",
         title=f"{EMOJI_STOP} BOT STOP",
@@ -16202,18 +20933,18 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
 
 def send_webhook_notification(event_type: str, data: dict, priority: str = "normal") -> bool:
     """Send webhook notification with retry logic.
-    
+
     Args:
         event_type: Type of event (trade_entered, trade_exited, alert, etc.)
         data: Event data payload
         priority: Priority level (low, normal, high, critical)
-        
+
     Returns:
         True if sent successfully
     """
     if not WEBHOOK_ENABLED or not WEBHOOK_URL:
         return False
-    
+
     # Prepare webhook payload
     payload = {
         "timestamp": now_ts(),
@@ -16222,18 +20953,18 @@ def send_webhook_notification(event_type: str, data: dict, priority: str = "norm
         "data": data,
         "source": "phone_bot"
     }
-    
+
     # Add priority-specific formatting
     if priority == "critical":
         payload["urgent"] = True
         payload["retry_until_success"] = True
-    
+
     # Send with retry logic
     for attempt in range(WEBHOOK_RETRY_MAX):
         try:
             import json
             import urllib.request
-            
+
             json_data = json.dumps(payload).encode('utf-8')
             req = urllib.request.Request(
                 WEBHOOK_URL,
@@ -16243,7 +20974,7 @@ def send_webhook_notification(event_type: str, data: dict, priority: str = "norm
                     'User-Agent': 'phone_bot/1.0'
                 }
             )
-            
+
             with urllib.request.urlopen(req, timeout=WEBHOOK_TIMEOUT) as response:
                 if response.status == 200:
                     log(f"{EMOJI_INFO} WEBHOOK_SENT", {
@@ -16258,17 +20989,17 @@ def send_webhook_notification(event_type: str, data: dict, priority: str = "norm
                         "status": response.status,
                         "attempt": attempt + 1
                     })
-                    
+
         except Exception as e:
             log(f"{EMOJI_WARN} WEBHOOK_SEND_FAILED", {
                 "event_type": event_type,
                 "attempt": attempt + 1,
                 "error": str(e)
             })
-            
+
             if attempt < WEBHOOK_RETRY_MAX - 1:
                 time.sleep(WEBHOOK_RETRY_DELAY * (2 ** attempt))  # Exponential backoff
-    
+
     log(f"{EMOJI_ERR} WEBHOOK_FAILED_ALL_RETRIES", {
         "event_type": event_type,
         "max_attempts": WEBHOOK_RETRY_MAX
@@ -16277,18 +21008,18 @@ def send_webhook_notification(event_type: str, data: dict, priority: str = "norm
 
 def send_push_notification(title: str, message: str, priority: str = "normal") -> bool:
     """Send push notification via configured service.
-    
+
     Args:
         title: Notification title
         message: Notification message
         priority: Priority level
-        
+
     Returns:
         True if sent successfully
     """
     if not PUSH_ENABLED or not PUSH_SERVICE or not PUSH_TOKEN:
         return False
-    
+
     try:
         if PUSH_SERVICE.lower() == "pushover":
             return send_pushover_notification(title, message, priority)
@@ -16299,7 +21030,7 @@ def send_push_notification(title: str, message: str, priority: str = "normal") -
                 "service": PUSH_SERVICE
             })
             return False
-            
+
     except Exception as e:
         log(f"{EMOJI_ERR} PUSH_NOTIFICATION_FAILED", {
             "service": PUSH_SERVICE,
@@ -16309,18 +21040,18 @@ def send_push_notification(title: str, message: str, priority: str = "normal") -
 
 def send_pushover_notification(title: str, message: str, priority: str) -> bool:
     """Send notification via Pushover service.
-    
+
     Args:
         title: Notification title
         message: Notification message
         priority: Priority level (-2 to 2)
-        
+
     Returns:
         True if sent successfully
     """
     import urllib.request
     import urllib.parse
-    
+
     # Map priority levels
     priority_map = {
         "low": -1,
@@ -16328,9 +21059,9 @@ def send_pushover_notification(title: str, message: str, priority: str) -> bool:
         "high": 1,
         "critical": 2
     }
-    
+
     pushover_priority = priority_map.get(priority, 0)
-    
+
     # Prepare payload
     payload = {
         "token": PUSH_TOKEN,
@@ -16340,59 +21071,59 @@ def send_pushover_notification(title: str, message: str, priority: str) -> bool:
         "priority": pushover_priority,
         "sound": "siren" if priority == "critical" else "pushover"
     }
-    
+
     # Add emergency parameters for critical priority
     if pushover_priority == 2:
         payload["retry"] = 30  # Retry every 30 seconds
         payload["expire"] = 3600  # Expire after 1 hour
-    
+
     data = urllib.parse.urlencode(payload).encode('utf-8')
     req = urllib.request.Request(
         "https://api.pushover.net/1/messages.json",
         data=data
     )
-    
+
     with urllib.request.urlopen(req, timeout=10) as response:
         result = json.loads(response.read().decode('utf-8'))
         return result.get("status") == 1
 
 def send_pushbullet_notification(title: str, message: str) -> bool:
     """Send notification via Pushbullet service.
-    
+
     Args:
         title: Notification title
         message: Notification message
-        
+
     Returns:
         True if sent successfully
     """
     import urllib.request
     import json
-    
+
     payload = {
         "type": "note",
         "title": title,
         "body": message
     }
-    
+
     headers = {
         "Access-Token": PUSH_TOKEN,
         "Content-Type": "application/json"
     }
-    
+
     data = json.dumps(payload).encode('utf-8')
     req = urllib.request.Request(
         "https://api.pushbullet.com/v2/pushes",
         data=data,
         headers=headers
     )
-    
+
     with urllib.request.urlopen(req, timeout=10) as response:
         return response.status == 200
 
 def notify_trade_event(event_type: str, trade_data: dict):
     """Send notifications for trade events.
-    
+
     Args:
         event_type: Type of trade event (entered, exited, modified)
         trade_data: Trade information
@@ -16416,23 +21147,23 @@ def notify_trade_event(event_type: str, trade_data: dict):
         title = f"Trade Update: {event_type}"
         message = str(trade_data)
         priority = "normal"
-    
+
     # Send webhook
     send_webhook_notification(f"trade_{event_type}", trade_data, priority)
-    
+
     # Send push notification for important events
     if event_type in ["entered", "exited", "runner_held"]:
         send_push_notification(title, message, priority)
 
 def notify_system_alert(alert_data: dict):
     """Send notifications for system alerts.
-    
+
     Args:
         alert_data: Alert information
     """
     level = alert_data.get("level", "INFO")
     message = alert_data.get("message", "")
-    
+
     # Determine priority
     if level == "CRITICAL":
         priority = "critical"
@@ -16446,17 +21177,17 @@ def notify_system_alert(alert_data: dict):
     else:
         priority = "low"
         title = "ℹ️ INFO"
-    
+
     # Send webhook
     send_webhook_notification("system_alert", alert_data, priority)
-    
+
     # Send push for high priority alerts
     if level in ["CRITICAL", "ERROR"]:
         send_push_notification(title, message, priority)
 
 def get_notification_status() -> dict:
     """Get status of notification systems.
-    
+
     Returns:
         Dict with notification configuration status
     """
@@ -16480,7 +21211,7 @@ RECENT_PERFORMANCE = {}  # strategy_id -> {win_rate, avg_win, avg_loss, recent_t
 ACCOUNT_RISK_METRICS = {}  # Updated periodically
 
 ## LEGACY SIZING REMOVED: calculate_dynamic_position_size (all variants)
-    
+
 
 # Multi-Timeframe Coordination State
 
@@ -16533,24 +21264,24 @@ def backup_database(db_path: str, backup_name: Optional[str] = None) -> bool:
 
 def cleanup_old_backups(db_path: Optional[str] = None) -> int:
     """Clean up old backup files based on retention policy.
-    
+
     Args:
         db_path: Optional specific database to clean up
-        
+
     Returns:
         Number of files cleaned up
     """
     import time
     from datetime import datetime, timedelta
-    
+
     try:
         if not DB_BACKUP_PATH.exists():
             return 0
-        
+
         # Calculate cutoff date
         cutoff_date = datetime.now() - timedelta(days=DB_BACKUP_RETENTION)
         cleaned = 0
-        
+
         # Find and remove old backups
         for backup_file in DB_BACKUP_PATH.glob("*.db*"):
             try:
@@ -16559,7 +21290,7 @@ def cleanup_old_backups(db_path: Optional[str] = None) -> int:
                 if len(parts) >= 2:
                     timestamp_str = '_'.join(parts[-2:])
                     backup_date = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
-                    
+
                     # Check if backup is too old
                     if backup_date < cutoff_date:
                         # If db_path specified, only clean that database's backups
@@ -16567,7 +21298,7 @@ def cleanup_old_backups(db_path: Optional[str] = None) -> int:
                             db_name = Path(db_path).stem
                             if not backup_file.stem.startswith(db_name):
                                 continue
-                        
+
                         backup_file.unlink()
                         cleaned += 1
                         log(f"{EMOJI_INFO} DB_BACKUP_CLEANED", {
@@ -16581,15 +21312,15 @@ def cleanup_old_backups(db_path: Optional[str] = None) -> int:
                     "error": str(e)
                 })
                 continue
-        
+
         if cleaned > 0:
             log(f"{EMOJI_INFO} DB_BACKUP_CLEANUP_COMPLETED", {
                 "files_cleaned": cleaned,
                 "retention_days": DB_BACKUP_RETENTION
             })
-        
+
         return cleaned
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} DB_BACKUP_CLEANUP_FAILED", {
             "error": str(e)
@@ -16599,10 +21330,10 @@ def cleanup_old_backups(db_path: Optional[str] = None) -> int:
 
 def auto_backup_database(db_path: str) -> bool:
     """Automatically backup database if interval has passed.
-    
+
     Args:
         db_path: Path to the database file
-        
+
     Returns:
         True if backup was created, False if not needed or failed
     """
@@ -16611,16 +21342,16 @@ def auto_backup_database(db_path: str) -> bool:
         last_backup = DB_LAST_BACKUP.get(db_path, 0)
         if now_ts() - last_backup < (DB_BACKUP_INTERVAL * 3600):
             return False
-        
+
         # Create backup
         success = backup_database(db_path)
-        
+
         if success:
             # Clean up old backups
             cleanup_old_backups(db_path)
-        
+
         return success
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} AUTO_BACKUP_FAILED", {
             "db_path": db_path,
@@ -16631,21 +21362,21 @@ def auto_backup_database(db_path: str) -> bool:
 
 def list_backups(db_path: Optional[str] = None) -> List[dict]:
     """List available backup files.
-    
+
     Args:
         db_path: Optional specific database to list
-        
+
     Returns:
         List of backup information dictionaries
     """
     from datetime import datetime
-    
+
     try:
         if not DB_BACKUP_PATH.exists():
             return []
-        
+
         backups = []
-        
+
         for backup_file in DB_BACKUP_PATH.glob("*.db*"):
             try:
                 # Extract timestamp from filename
@@ -16653,13 +21384,13 @@ def list_backups(db_path: Optional[str] = None) -> List[dict]:
                 if len(parts) >= 2:
                     timestamp_str = '_'.join(parts[-2:])
                     backup_date = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
-                    
+
                     # If db_path specified, only list that database's backups
                     if db_path:
                         db_name = Path(db_path).stem
                         if not backup_file.stem.startswith(db_name):
                             continue
-                    
+
                     # Get file info
                     stat = backup_file.stat()
                     backups.append({
@@ -16670,12 +21401,12 @@ def list_backups(db_path: Optional[str] = None) -> List[dict]:
                     })
             except Exception:
                 continue
-        
+
         # Sort by date (newest first)
         backups.sort(key=lambda x: x["date"], reverse=True)
-        
+
         return backups
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} LIST_BACKUPS_FAILED", {
             "error": str(e)
@@ -16685,28 +21416,28 @@ def list_backups(db_path: Optional[str] = None) -> List[dict]:
 
 def restore_database(backup_path: str, target_path: str) -> bool:
     """Restore database from backup.
-    
+
     Args:
         backup_path: Path to backup file
         target_path: Where to restore the database
-        
+
     Returns:
         True if restore successful, False otherwise
     """
     try:
         backup_file_path = Path(backup_path)
         target_file_path = Path(target_path)
-        
+
         if not backup_file_path.exists():
             log(f"{EMOJI_ERR} DB_RESTORE_FAILED", {
                 "error": "Backup file not found",
                 "backup_path": str(backup_file_path)
             })
             return False
-        
+
         # Create target directory if needed
         target_file_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Check if backup is compressed
         if backup_file_path.suffix == '.gz':
             # Decompress and restore
@@ -16716,15 +21447,15 @@ def restore_database(backup_path: str, target_path: str) -> bool:
         else:
             # Direct copy
             shutil.copy2(backup_file_path, target_file_path)
-        
+
         log(f"{EMOJI_INFO} DB_RESTORED", {
             "backup_path": str(backup_file_path),
             "target_path": str(target_file_path),
             "size_mb": target_file_path.stat().st_size / (1024 * 1024)
         })
-        
+
         return True
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} DB_RESTORE_FAILED", {
             "backup_path": str(backup_path),
@@ -16736,39 +21467,39 @@ def restore_database(backup_path: str, target_path: str) -> bool:
 
 def schedule_periodic_backup(db_path: str, interval_hours: Optional[int] = None) -> None:
     """Schedule periodic backups for a database.
-    
+
     Args:
         db_path: Path to the database file
         interval_hours: Custom interval (overrides DB_BACKUP_INTERVAL)
     """
     import threading
-    
+
     if not DB_BACKUP_ENABLED:
         return
-    
+
     interval = interval_hours or DB_BACKUP_INTERVAL
     interval_seconds = interval * 3600
-    
+
     def backup_scheduler():
         while True:
             try:
                 # Wait for interval
                 time.sleep(interval_seconds)
-                
+
                 # Create backup
                 auto_backup_database(db_path)
-                
+
             except Exception as e:
                 log(f"{EMOJI_ERR} SCHEDULED_BACKUP_ERROR", {
                     "db_path": db_path,
                     "error": str(e)
                 })
                 # Continue trying
-    
+
     # Start scheduler thread
     scheduler_thread = threading.Thread(target=backup_scheduler, daemon=True)
     scheduler_thread.start()
-    
+
     log(f"{EMOJI_INFO} SCHEDULED_BACKUP_STARTED", {
         "db_path": db_path,
         "interval_hours": interval
@@ -16777,40 +21508,40 @@ def schedule_periodic_backup(db_path: str, interval_hours: Optional[int] = None)
 
 def get_system_metrics() -> dict:
     """Get current system performance metrics.
-    
+
     Returns:
         Dictionary containing system metrics
     """
     import psutil
-    
+
     try:
         # CPU metrics
         cpu_percent = psutil.cpu_percent(interval=1)
         cpu_count = psutil.cpu_count()
         cpu_freq = psutil.cpu_freq()
-        
+
         # Memory metrics
         memory = psutil.virtual_memory()
         memory_percent = memory.percent
         memory_used_gb = memory.used / (1024**3)
         memory_total_gb = memory.total / (1024**3)
-        
+
         # Disk metrics
         disk = psutil.disk_usage('/')
         disk_percent = disk.percent
         disk_used_gb = disk.used / (1024**3)
         disk_total_gb = disk.total / (1024**3)
-        
+
         # Network metrics
         network = psutil.net_io_counters()
         bytes_sent = network.bytes_sent
         bytes_recv = network.bytes_recv
-        
+
         # Process metrics
         process = psutil.Process()
         process_memory = process.memory_info()
         process_cpu = process.cpu_percent()
-        
+
         return {
             "timestamp": now_ts(),
             "cpu": {
@@ -16837,7 +21568,7 @@ def get_system_metrics() -> dict:
                 "cpu_percent": process_cpu
             }
         }
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} GET_METRICS_FAILED", {
             "error": str(e)
@@ -16847,15 +21578,15 @@ def get_system_metrics() -> dict:
 
 def check_performance_alerts(metrics: dict) -> List[dict]:
     """Check metrics against performance thresholds.
-    
+
     Args:
         metrics: System metrics dictionary
-        
+
     Returns:
         List of alert dictionaries
     """
     alerts = []
-    
+
     try:
         # Check memory usage
         if metrics.get("memory", {}).get("percent", 0) > PERFORMANCE_ALERT_MEMORY:
@@ -16865,7 +21596,7 @@ def check_performance_alerts(metrics: dict) -> List[dict]:
                 "message": f"High memory usage: {metrics['memory']['percent']:.1f}%",
                 "threshold": PERFORMANCE_ALERT_MEMORY
             })
-        
+
         # Check CPU usage
         if metrics.get("cpu", {}).get("percent", 0) > PERFORMANCE_ALERT_CPU:
             alerts.append({
@@ -16874,7 +21605,7 @@ def check_performance_alerts(metrics: dict) -> List[dict]:
                 "message": f"High CPU usage: {metrics['cpu']['percent']:.1f}%",
                 "threshold": PERFORMANCE_ALERT_CPU
             })
-        
+
         # Check disk usage
         if metrics.get("disk", {}).get("percent", 0) > PERFORMANCE_ALERT_DISK:
             alerts.append({
@@ -16883,9 +21614,9 @@ def check_performance_alerts(metrics: dict) -> List[dict]:
                 "message": f"High disk usage: {metrics['disk']['percent']:.1f}%",
                 "threshold": PERFORMANCE_ALERT_DISK
             })
-        
+
         return alerts
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} CHECK_ALERTS_FAILED", {
             "error": str(e)
@@ -16895,27 +21626,27 @@ def check_performance_alerts(metrics: dict) -> List[dict]:
 
 def update_performance_history(metrics: dict) -> None:
     """Update performance history with new metrics.
-    
+
     Args:
         metrics: System metrics to add to history
     """
     global PERFORMANCE_HISTORY, PERFORMANCE_LAST_CHECK
-    
+
     try:
         # Add timestamp if not present
         if "timestamp" not in metrics:
             metrics["timestamp"] = now_ts()
-        
+
         # Add to history
         PERFORMANCE_HISTORY.append(metrics)
-        
+
         # Trim history if too large
         if len(PERFORMANCE_HISTORY) > PERFORMANCE_HISTORY_SIZE:
             PERFORMANCE_HISTORY = PERFORMANCE_HISTORY[-PERFORMANCE_HISTORY_SIZE:]
-        
+
         # Update last check time
         PERFORMANCE_LAST_CHECK = metrics["timestamp"]
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} UPDATE_HISTORY_FAILED", {
             "error": str(e)
@@ -16924,19 +21655,19 @@ def update_performance_history(metrics: dict) -> None:
 
 def get_performance_summary() -> dict:
     """Get summary statistics from performance history.
-    
+
     Returns:
         Dictionary with performance summary
     """
     if not PERFORMANCE_HISTORY:
         return {}
-    
+
     try:
         # Extract metrics from history
         cpu_values = [m.get("cpu", {}).get("percent", 0) for m in PERFORMANCE_HISTORY if "cpu" in m]
         memory_values = [m.get("memory", {}).get("percent", 0) for m in PERFORMANCE_HISTORY if "memory" in m]
         disk_values = [m.get("disk", {}).get("percent", 0) for m in PERFORMANCE_HISTORY if "disk" in m]
-        
+
         # Calculate statistics
         summary = {
             "period_start": PERFORMANCE_HISTORY[0]["timestamp"],
@@ -16958,9 +21689,9 @@ def get_performance_summary() -> dict:
                 "min": min(disk_values) if disk_values else 0
             }
         }
-        
+
         return summary
-        
+
     except Exception as e:
         log(f"{EMOJI_ERR} GET_SUMMARY_FAILED", {
             "error": str(e)
@@ -16970,39 +21701,39 @@ def get_performance_summary() -> dict:
 
 def monitor_performance() -> None:
     """Main performance monitoring function.
-    
+
     This function should be called periodically to check system performance
     and update the performance history.
     """
     global PERFORMANCE_LAST_CHECK
-    
+
     if not PERFORMANCE_MONITORING_ENABLED:
         return
-    
+
     current_time = now_ts()
-    
+
     # Check if enough time has passed since last check
     if current_time - PERFORMANCE_LAST_CHECK < PERFORMANCE_CHECK_INTERVAL:
         return
-    
+
     try:
         # Get current metrics
         metrics = get_system_metrics()
-        
+
         if metrics:
             # Check for alerts
             alerts = check_performance_alerts(metrics)
-            
+
             # Log any alerts
             for alert in alerts:
                 if alert["severity"] == "critical":
                     log(f"{EMOJI_ERR} PERF_CRITICAL", alert)
                 else:
                     log(f"{EMOJI_WARN} PERF_WARNING", alert)
-            
+
             # Update history
             update_performance_history(metrics)
-    
+
     except Exception as e:
         log(f"{EMOJI_ERR} PERF_MONITOR_ERROR", {
             "error": str(e)
@@ -17098,7 +21829,7 @@ DB_LOCKS: Dict[str, Dict[str, Any]] = {}  # Table locks
 
 class DatabaseTransaction:
     """Database transaction context manager with retry logic."""
-    
+
     def __init__(self, db_path: str, timeout: Optional[float] = None, isolation_level: str = "IMMEDIATE"):
         self.db_path = db_path
         self.timeout = timeout or DB_TRANSACTION_TIMEOUT
@@ -17106,11 +21837,11 @@ class DatabaseTransaction:
         self.connection: Optional[sqlite3.Connection] = None
         self.transaction_id: Optional[str] = None
         self.retry_count = 0
-        
+
     def __enter__(self) -> sqlite3.Connection:
         """Enter transaction context."""
         self.transaction_id = f"{int(now_ts())}_{id(self)}"
-        
+
         for attempt in range(DB_MAX_RETRIES):
             try:
                 # Get or create connection
@@ -17120,12 +21851,12 @@ class DatabaseTransaction:
                         timeout=DB_LOCK_TIMEOUT,
                         check_same_thread=False
                     )
-                    
+
                     # Enable WAL mode for better concurrency
                     if DB_ENABLE_WAL:
                         DB_CONNECTIONS[self.db_path].execute("PRAGMA journal_mode=WAL")
                         DB_CONNECTIONS[self.db_path].execute("PRAGMA synchronous=NORMAL")
-                
+
                 self.connection = DB_CONNECTIONS[self.db_path]
                 conn = self.connection
                 if conn is None:
@@ -17136,49 +21867,49 @@ class DatabaseTransaction:
 
                 # Set timeout
                 conn.execute(f"PRAGMA busy_timeout = {int(self.timeout * 1000)}")
-                
+
                 # Track transaction
                 DB_TRANSACTIONS[self.transaction_id] = {
                     "start_time": now_ts(),
                     "connection": conn,
                     "status": "ACTIVE"
                 }
-                
+
                 log(f"{EMOJI_INFO} DB_TRANSACTION_BEGIN", {
                     "transaction_id": self.transaction_id,
                     "db_path": self.db_path,
                     "attempt": attempt + 1
                 })
-                
+
                 return conn
-                
+
             except sqlite3.Error as e:
                 self.retry_count += 1
-                
+
                 if "database is locked" in str(e).lower():
                     log(f"{EMOJI_WARN} DB_LOCK_RETRY", {
                         "transaction_id": self.transaction_id,
                         "attempt": attempt + 1,
                         "error": str(e)
                     })
-                    
+
                     if attempt < DB_MAX_RETRIES - 1:
                         time.sleep(DB_RETRY_DELAY * (2 ** attempt))
                         continue
-                
+
                 log(f"{EMOJI_ERR} DB_TRANSACTION_FAILED", {
                     "transaction_id": self.transaction_id,
                     "error": str(e),
                     "attempts": attempt + 1
                 })
-                
+
                 # Clean up on failure
                 if self.transaction_id in DB_TRANSACTIONS:
                     del DB_TRANSACTIONS[self.transaction_id]
-                
+
                 raise
         raise RuntimeError("DB_TRANSACTION_FAILED_TO_OPEN")
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit transaction context."""
         if not self.connection:
@@ -17194,45 +21925,45 @@ class DatabaseTransaction:
                 # Rollback on exception
                 self.connection.execute("ROLLBACK")
                 status = "ROLLED_BACK"
-            
+
             # Update transaction tracking
             if self.transaction_id in DB_TRANSACTIONS:
                 DB_TRANSACTIONS[self.transaction_id]["status"] = status
                 DB_TRANSACTIONS[self.transaction_id]["end_time"] = now_ts()
-                
+
                 # Remove from active transactions after delay
                 del DB_TRANSACTIONS[self.transaction_id]
-            
+
             log(f"{EMOJI_INFO} DB_TRANSACTION_END", {
                 "transaction_id": self.transaction_id,
                 "status": status,
                 "duration": now_ts() - (DB_TRANSACTIONS.get(self.transaction_id or "", {}).get("start_time", now_ts()) if self.transaction_id else 0),
                 "retry_count": self.retry_count
             })
-            
+
         except sqlite3.Error as e:
             log(f"{EMOJI_ERR} DB_TRANSACTION_CLEANUP_FAILED", {
                 "transaction_id": self.transaction_id,
                 "error": str(e)
             })
 
-def execute_db_transaction(db_path: str, operations: List[Tuple[str, tuple]], 
+def execute_db_transaction(db_path: str, operations: List[Tuple[str, tuple]],
                           isolation_level: str = "IMMEDIATE") -> List[Any]:
     """Execute multiple database operations in a single transaction.
-    
+
     Args:
         db_path: Path to database file
         operations: List of (sql, params) tuples
         isolation_level: Transaction isolation level
-        
+
     Returns:
         List of results from each operation
     """
     results = []
-    
+
     with DatabaseTransaction(db_path, isolation_level=isolation_level) as conn:
         cursor = conn.cursor()
-        
+
         for sql, params in operations:
             try:
                 if sql.strip().upper().startswith("SELECT"):
@@ -17241,53 +21972,53 @@ def execute_db_transaction(db_path: str, operations: List[Tuple[str, tuple]],
                 else:
                     cursor.execute(sql, params or ())
                     results.append(cursor.lastrowid if cursor.lastrowid else cursor.rowcount)
-                    
+
             except sqlite3.Error as e:
                 log(f"{EMOJI_ERR} DB_OPERATION_FAILED", {
                     "sql": sql[:100],
                     "error": str(e)
                 })
                 raise
-    
+
     return results
 
 def acquire_table_lock(db_path: str, table_name: str, lock_type: str = "EXCLUSIVE") -> bool:
     """Acquire a table lock.
-    
+
     Args:
         db_path: Path to database
         table_name: Table to lock
         lock_type: Type of lock (SHARED, RESERVED, EXCLUSIVE)
-        
+
     Returns:
         True if lock acquired
     """
     lock_key = f"{db_path}:{table_name}"
-    
+
     # Check if already locked
     if lock_key in DB_LOCKS:
         return DB_LOCKS[lock_key]["owner"] == id(threading.current_thread())
-    
+
     try:
         with DatabaseTransaction(db_path, isolation_level="IMMEDIATE") as conn:
             # Acquire lock using BEGIN IMMEDIATE and touching the table
             conn.execute(f"SELECT 1 FROM {table_name} LIMIT 1")
-            
+
             # Track lock
             DB_LOCKS[lock_key] = {
                 "owner": id(threading.current_thread()),
                 "type": lock_type,
                 "acquired_at": now_ts()
             }
-            
+
             log(f"{EMOJI_INFO} DB_LOCK_ACQUIRED", {
                 "table": table_name,
                 "type": lock_type,
                 "lock_key": lock_key
             })
-            
+
             return True
-            
+
     except sqlite3.Error as e:
         log(f"{EMOJI_WARN} DB_LOCK_FAILED", {
             "table": table_name,
@@ -17297,25 +22028,25 @@ def acquire_table_lock(db_path: str, table_name: str, lock_type: str = "EXCLUSIV
 
 def release_table_lock(db_path: str, table_name: str) -> bool:
     """Release a table lock.
-    
+
     Args:
         db_path: Path to database
         table_name: Table to unlock
-        
+
     Returns:
         True if lock released
     """
     lock_key = f"{db_path}:{table_name}"
-    
+
     if lock_key in DB_LOCKS:
         if DB_LOCKS[lock_key]["owner"] == id(threading.current_thread()):
             del DB_LOCKS[lock_key]
-            
+
             log(f"{EMOJI_INFO} DB_LOCK_RELEASED", {
                 "table": table_name,
                 "lock_key": lock_key
             })
-            
+
             return True
         else:
             log(f"{EMOJI_WARN} DB_LOCK_NOT_OWNER", {
@@ -17323,15 +22054,15 @@ def release_table_lock(db_path: str, table_name: str) -> bool:
                 "lock_key": lock_key
             })
             return False
-    
+
     return True
 
 def verify_database_integrity(db_path: str) -> dict:
     """Verify database integrity and check for corruption.
-    
+
     Args:
         db_path: Path to database
-        
+
     Returns:
         Dict with integrity check results
     """
@@ -17344,59 +22075,59 @@ def verify_database_integrity(db_path: str) -> dict:
         "page_count": 0,
         "errors": []
     }
-    
+
     try:
         # Get file size
         if os.path.exists(db_path):
             results["size_bytes"] = os.path.getsize(db_path)
-        
+
         with DatabaseTransaction(db_path, isolation_level="IMMEDIATE") as conn:
             cursor = conn.cursor()
-            
+
             # Check integrity
             cursor.execute("PRAGMA integrity_check")
             integrity_result = cursor.fetchone()[0]
             results["integrity_check"] = "OK" if integrity_result == "ok" else "CORRUPT"
-            
+
             if integrity_result != "ok":
                 results["errors"].append(f"Integrity check: {integrity_result}")
-            
+
             # Check foreign keys
             cursor.execute("PRAGMA foreign_key_check")
             fk_violations = cursor.fetchall()
             results["foreign_key_check"] = "OK" if not fk_violations else "VIOLATIONS"
-            
+
             if fk_violations:
                 results["errors"].extend([str(v) for v in fk_violations])
-            
+
             # Get page count
             cursor.execute("PRAGMA page_count")
             results["page_count"] = cursor.fetchone()[0]
-            
+
             # Check schema
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cursor.fetchall()]
             results["schema_check"] = "OK" if tables else "EMPTY"
-            
+
             log(f"{EMOJI_INFO} DB_INTEGRITY_CHECK", {
                 "db_path": db_path,
                 "integrity": results["integrity_check"],
                 "foreign_keys": results["foreign_key_check"],
                 "tables": len(tables)
             })
-            
+
     except Exception as e:
         results["errors"].append(str(e))
         log(f"{EMOJI_ERR} DB_INTEGRITY_CHECK_FAILED", {
             "db_path": db_path,
             "error": str(e)
         })
-    
+
     return results
 
 def get_database_status() -> dict:
     """Get status of all database connections and transactions.
-    
+
     Returns:
         Dict with database status
     """
@@ -17408,14 +22139,14 @@ def get_database_status() -> dict:
         "transactions": {},
         "locks": {}
     }
-    
+
     # Connection details
     for db_path, conn in DB_CONNECTIONS.items():
         status["connections"][db_path] = {
             "total_changes": conn.total_changes,
             "in_transaction": bool(conn.in_transaction)
         }
-    
+
     # Transaction details
     for tx_id, tx_info in DB_TRANSACTIONS.items():
         duration = now_ts() - tx_info["start_time"]
@@ -17424,7 +22155,7 @@ def get_database_status() -> dict:
             "duration_seconds": duration,
             "timeout_warning": duration > DB_TRANSACTION_TIMEOUT * 0.8
         }
-    
+
     # Lock details
     for lock_key, lock_info in DB_LOCKS.items():
         duration = now_ts() - lock_info["acquired_at"]
@@ -17433,7 +22164,7 @@ def get_database_status() -> dict:
             "duration_seconds": duration,
             "owner": lock_info["owner"]
         }
-    
+
     return status
 
 def cleanup_database_resources():
@@ -17445,31 +22176,31 @@ def cleanup_database_resources():
                 conn.close()
         except Exception:
             pass
-    
+
     DB_CONNECTIONS.clear()
-    
+
     # Clear transactions
     DB_TRANSACTIONS.clear()
-    
+
     # Clear locks
     DB_LOCKS.clear()
-    
+
     log(f"{EMOJI_INFO} DB_RESOURCES_CLEANED", {})
 
 
 def get_pip_value_usd(pair: str, price_map: Optional[Dict[str, Tuple[float, float]]] = None) -> float:
     """Get pip value in USD for a currency pair.
-    
+
     Args:
         pair: Currency pair (e.g., EUR_USD, GBP_JPY)
         price_map: Optional price map for conversion rates
-        
+
     Returns:
         Pip value in USD per unit
     """
     pair = normalize_pair(pair)
     pip = float(pip_size(pair))
-    
+
     # Extract base and quote currencies
     # Handle both EUR_USD and EURUSD formats
     if "_" in pair and len(pair) >= 7:
@@ -17481,11 +22212,11 @@ def get_pip_value_usd(pair: str, price_map: Optional[Dict[str, Tuple[float, floa
     else:
         # Default fallback
         return pip
-    
+
     # If quote is USD, pip value is simply pip size
     if quote == "USD":
         return pip
-    
+
     def _mid_from_price_map(v: Any) -> Optional[float]:
         try:
             if isinstance(v, (tuple, list)) and len(v) >= 2:
@@ -17512,7 +22243,7 @@ def get_pip_value_usd(pair: str, price_map: Optional[Dict[str, Tuple[float, floa
                 return pip / usd_to_quote
         # Fallback: assume 1:1 (not accurate but prevents crashes)
         return pip
-    
+
     # Cross pair (neither base nor quote is USD)
     # Need to convert quote currency to USD
     if price_map:
@@ -17522,23 +22253,37 @@ def get_pip_value_usd(pair: str, price_map: Optional[Dict[str, Tuple[float, floa
             quote_to_usd = _mid_from_price_map(price_map[conversion_pair])
             if quote_to_usd and quote_to_usd > 0:
                 return pip * quote_to_usd
-        
+
         # Try inverted USD/quote pair
         inverted_pair = f"USD_{quote}"
         if inverted_pair in price_map:
             usd_to_quote = _mid_from_price_map(price_map[inverted_pair])
             if usd_to_quote > 0:
                 return pip / usd_to_quote
-    
+
     # Special handling for JPY pairs - JPY pip is 0.01
     if quote == "JPY":
         # Rough conversion: 1 JPY ≈ 0.0067 USD (150 JPY per USD)
         # This is a fallback only
         return pip * 0.0067
-    
+
     # Fallback: assume 1:1 (not accurate but prevents crashes)
     log_runtime("warning", "PIP_VALUE_FALLBACK", pair=pair, base=base, quote=quote)
     return pip
+
+
+def emit_size_trace(pair: str, side: str, stage: str, data: dict) -> None:
+    """Emit detailed size tracing for audit."""
+    emit_trade_kind(
+        "SIZE_TRACE",
+        {
+            **build_event_envelope(kind="SIZE_TRACE", pair=pair),
+            "side": side,
+            "stage": stage,  # e.g., "raw_risk", "margin_cap", "final"
+            "timestamp": now_ts(),
+            **data
+        }
+    )
 
 
 def compute_units_risk_2pct(
@@ -17550,17 +22295,20 @@ def compute_units_risk_2pct(
     nav_usd: float,            # current NAV / equity
     spread_pips: float,
     spread_mult: float,        # existing spread multiplier 0..1
+    risk_pct: float = 0.02,    # Risk percentage from runtime calibration (default 2%)
     speed_class: str,          # FAST/MED/SLOW
     confidence: float | None = None,  # optional if you keep confidence shaping
     price_map: Optional[Dict[str, Tuple[float, float]]] = None,
+    margin_available_snapshot: Optional[float] = None,
+    deploy_util: Optional[float] = None,
 ) -> dict:
-    """Compute position size based on 2% NAV risk.
-    
-    Risk per trade = 2% of current NAV
+    """Compute position size based on risk percentage from runtime calibration.
+
+    Risk per trade = risk_pct of current NAV (from runtime calibration, default 2%)
     Units computed from distance to structural stop loss
     """
     from collections import defaultdict
-    
+
     # Initialize result
     result = {
         "units_total": 0,
@@ -17574,63 +22322,94 @@ def compute_units_risk_2pct(
         "block_reason": None,
         "debug": {},
     }
-    
+
     # Input validation
     if side not in ("LONG", "SHORT"):
         result["block_reason"] = "INVALID_SIDE"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_SIDE"})
         return result
-    
+
     if not (math.isfinite(nav_usd) and nav_usd > 0):
         result["block_reason"] = "INVALID_NAV"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_NAV", "nav_usd": nav_usd})
         return result
-    
+
     if not (math.isfinite(entry_price) and entry_price > 0):
         result["block_reason"] = "INVALID_ENTRY_PRICE"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_ENTRY_PRICE", "entry_price": entry_price})
         return result
-    
+
     if not (math.isfinite(sl_price) and sl_price > 0):
         result["block_reason"] = "INVALID_SL_PRICE"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_SL_PRICE", "sl_price": sl_price})
         return result
-    
-    # Calculate risk budget (2% of NAV)
-    risk_pct = 0.02
+
+    # Calculate risk budget using provided risk_pct from runtime calibration
+    # risk_pct is now passed as parameter (default 0.02 for backward compatibility)
     risk_usd_target = nav_usd * risk_pct
-    
+
+    emit_size_trace(pair, side, "risk_target", {
+        "nav_usd": nav_usd,
+        "risk_pct": risk_pct,
+        "risk_usd_target": risk_usd_target
+    })
+
     # Calculate stop distance in price
     sl_dist_price = abs(entry_price - sl_price)
     if sl_dist_price <= 0:
         result["block_reason"] = "ZERO_STOP_DISTANCE"
         return result
-    
+
     # Convert to pips
     stop_dist_pips = float(to_pips(pair, sl_dist_price))
     if stop_dist_pips <= 0:
         result["block_reason"] = "INVALID_STOP_DISTANCE_PIPS"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_STOP_DISTANCE_PIPS", "sl_dist_price": sl_dist_price})
         return result
-    
+
+    emit_size_trace(pair, side, "stop_distance", {
+        "entry_price": entry_price,
+        "sl_price": sl_price,
+        "sl_dist_price": sl_dist_price,
+        "stop_dist_pips": stop_dist_pips
+    })
+
     # Get pip value in USD
     pip_value_usd = get_pip_value_usd(pair, price_map)
     if pip_value_usd <= 0:
         result["block_reason"] = "INVALID_PIP_VALUE"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_PIP_VALUE", "pip_value_usd": pip_value_usd})
         return result
-    
+
+    emit_size_trace(pair, side, "pip_value", {
+        "pip_value_usd_per_unit": pip_value_usd
+    })
+
     # Calculate units from risk
     risk_per_unit_usd = stop_dist_pips * pip_value_usd
     if risk_per_unit_usd <= 0:
         result["block_reason"] = "INVALID_RISK_PER_UNIT"
+        emit_size_trace(pair, side, "validation_failed", {"error": "INVALID_RISK_PER_UNIT", "risk_per_unit_usd": risk_per_unit_usd})
         return result
-    
+
     units_total_float = risk_usd_target / risk_per_unit_usd
-    
+
+    emit_size_trace(pair, side, "raw_risk_sizing", {
+        "risk_per_unit_usd": risk_per_unit_usd,
+        "units_risk_raw": units_total_float
+    })
+
     # Apply spread multiplier (downscale only)
     if math.isfinite(spread_mult) and 0 <= spread_mult <= 1:
         units_total_float *= spread_mult
     else:
         # Default spread multiplier if invalid
         units_total_float *= 0.95
-    
+
     # Get broker metadata for rounding and minimums
     meta = get_instrument_meta_cached(pair)
+    meta_source = "meta" if meta else "fallback"
+
     if meta is None:
         # Fallback to deterministic fixture metadata so sizing does not hard-block
         # when live instrument metadata is temporarily unavailable.
@@ -17644,24 +22423,45 @@ def compute_units_risk_2pct(
             }
         result["debug"]["meta_fallback"] = True
         log_runtime("warning", "BROKER_META_FALLBACK", pair=pair)
-    
+
+    # Get margin rate
+    margin_rate = float(meta.get("marginRate", 0.0333))
+
+    # Warn about margin rate issues
+    if meta_source == "fallback":
+        log_runtime("warning", "BROKER_MARGIN_RATE_FALLBACK",
+                    pair=pair, margin_rate=margin_rate,
+                    reason="No broker metadata available")
+    elif pair in LEVERAGE_50 and margin_rate > 0.025:  # > 40:1 leverage
+        log_runtime("warning", "POTENTIAL_LEVERAGE_MISMATCH",
+                    pair=pair, margin_rate=margin_rate,
+                    expected_max="0.02 (50:1)")
+
     # Round to broker precision
     precision = int(meta.get("tradeUnitsPrecision", 0))
+    units_before_round = units_total_float
     units_total = int(round(units_total_float, precision))
-    
+
+    emit_size_trace(pair, side, "precision_round", {
+        "meta_source": meta_source,
+        "margin_rate": margin_rate,
+        "precision": precision,
+        "units_before_round": units_before_round,
+        "units_after_round": units_total
+    })
+
     # Enforce broker minimum trade size
     min_units = int(float(meta.get("minimumTradeSize", 1)))
     if units_total < min_units:
-        # Check if bumping to min would exceed risk tolerance significantly
-        risk_at_min = min_units * risk_per_unit_usd
-        if risk_at_min > (risk_usd_target * 1.10):  # 10% tolerance
+        if risk_usd_target <= 0.0:
             result["block_reason"] = "BELOW_MIN_TRADE_SIZE"
             result["debug"]["min_units"] = min_units
-            result["debug"]["risk_at_min"] = risk_at_min
             result["debug"]["risk_target"] = risk_usd_target
             return result
         units_total = min_units
-    
+        result["debug"]["min_trade_size_bumped"] = True
+        result["debug"]["min_units"] = min_units
+
     # Apply confidence downscaling only (never above 1.0)
     if confidence is not None and math.isfinite(confidence):
         conf = clamp(float(confidence), 0.0, 1.0)
@@ -17669,25 +22469,79 @@ def compute_units_risk_2pct(
         conf_mult = 0.25 + 0.75 * conf
         units_total = int(units_total * conf_mult)
         if units_total < min_units:
-            units_total = 0
-            result["block_reason"] = "CONFIDENCE_DOWNSCALE_BELOW_MIN"
-            return result
-    
+            if risk_usd_target <= 0.0 or conf <= 0.0:
+                units_total = 0
+                result["block_reason"] = "CONFIDENCE_DOWNSCALE_BELOW_MIN"
+                return result
+            units_total = min_units
+            result["debug"]["confidence_bumped_to_min"] = True
+
     # Split into main and runner legs
     main_ratio, runner_ratio = get_split_ratios(speed_class)
     units_main = int(units_total * main_ratio)
     units_runner = units_total - units_main
-    
+
     # Final margin check (ensure order can be placed)
     # Rough margin calculation: units * price * marginRate
-    margin_rate = float(meta.get("marginRate", 0.0333))  # 3.33% default
     required_margin = abs(units_total * entry_price * margin_rate)
-    
+
+    emit_size_trace(pair, side, "margin_check", {
+        "units_before_margin": units_total,
+        "margin_rate": margin_rate,
+        "entry_price": entry_price,
+        "required_margin": required_margin
+    })
+
     # Get current margin available as a sanity check (optional)
+    margin_avail = float("nan")
     try:
         o = _require_runtime_oanda()
         acct_sum = o.account_summary()
         margin_avail, _ = extract_margin_available(acct_sum)
+        if (not math.isfinite(margin_avail)) and math.isfinite(float(margin_available_snapshot or float("nan"))):
+            margin_avail = float(margin_available_snapshot)
+
+        deploy_budget = float("nan")
+        deploy_util_eff = clamp(float(deploy_util or 0.0), 0.0, 1.0)
+        if math.isfinite(margin_avail) and deploy_util_eff > 0.0:
+            deploy_budget = margin_avail * deploy_util_eff
+            max_deploy_units = int(abs(deploy_budget) / max(entry_price * margin_rate, 1e-12))
+            if 0 < max_deploy_units < units_total:
+                units_total = max_deploy_units
+                if units_total < min_units:
+                    result["block_reason"] = "INSUFFICIENT_MARGIN"
+                    result["debug"]["required_margin"] = required_margin
+                    result["debug"]["available_margin"] = margin_avail
+                    result["debug"]["deploy_margin_budget"] = deploy_budget
+                    result["debug"]["deploy_util"] = deploy_util_eff
+                    result["debug"]["max_deploy_units"] = max_deploy_units
+                    emit_size_trace(pair, side, "deploy_cap_failed", {
+                        "required_margin": required_margin,
+                        "available_margin": margin_avail,
+                        "deploy_margin_budget": deploy_budget,
+                        "deploy_util": deploy_util_eff,
+                        "max_deploy_units": max_deploy_units,
+                        "min_units": min_units,
+                    })
+                    return result
+                units_main = int(units_total * main_ratio)
+                units_runner = max(0, units_total - units_main)
+                required_margin = abs(units_total * entry_price * margin_rate)
+                result["debug"]["deploy_cap_applied"] = True
+                result["debug"]["deploy_margin_budget"] = deploy_budget
+                result["debug"]["deploy_util"] = deploy_util_eff
+                result["debug"]["max_deploy_units"] = max_deploy_units
+                emit_size_trace(pair, side, "deploy_cap", {
+                    "available_margin": margin_avail,
+                    "deploy_margin_budget": deploy_budget,
+                    "deploy_util": deploy_util_eff,
+                    "max_deploy_units": max_deploy_units,
+                    "units_after_deploy_cap": units_total,
+                    "units_main": units_main,
+                    "units_runner": units_runner,
+                    "required_margin": required_margin,
+                })
+
         if math.isfinite(margin_avail) and required_margin > margin_avail:
             # Downscale units to fit available margin instead of hard reject.
             max_affordable_units = int(abs(margin_avail) / max(entry_price * margin_rate, 1e-12))
@@ -17695,6 +22549,11 @@ def compute_units_risk_2pct(
                 result["block_reason"] = "INSUFFICIENT_MARGIN"
                 result["debug"]["required_margin"] = required_margin
                 result["debug"]["available_margin"] = margin_avail
+                emit_size_trace(pair, side, "margin_failed", {
+                    "required_margin": required_margin,
+                    "available_margin": margin_avail,
+                    "max_affordable_units": 0
+                })
                 return result
             units_total = min(units_total, max_affordable_units)
             if units_total < min_units:
@@ -17702,22 +22561,51 @@ def compute_units_risk_2pct(
                 result["debug"]["required_margin"] = required_margin
                 result["debug"]["available_margin"] = margin_avail
                 result["debug"]["max_affordable_units"] = max_affordable_units
+                emit_size_trace(pair, side, "margin_failed", {
+                    "required_margin": required_margin,
+                    "available_margin": margin_avail,
+                    "max_affordable_units": max_affordable_units,
+                    "min_units": min_units
+                })
                 return result
             units_main = int(units_total * main_ratio)
             units_runner = max(0, units_total - units_main)
             required_margin = abs(units_total * entry_price * margin_rate)
             result["debug"]["margin_downscaled"] = True
             result["debug"]["max_affordable_units"] = max_affordable_units
+
+            emit_size_trace(pair, side, "margin_downscaled", {
+                "max_affordable_units": max_affordable_units,
+                "units_after_margin": units_total,
+                "units_main": units_main,
+                "units_runner": units_runner,
+                "required_margin": required_margin
+            })
     except RuntimeError:
         # OandaClient not initialized - skip margin check
         log_runtime("info", "MARGIN_CHECK_SKIPPED_NO_CLIENT", pair=pair, required_margin=required_margin)
     except Exception:
         # If we can't check margin, proceed but log warning
         log_runtime("warning", "MARGIN_CHECK_FAILED", pair=pair, required_margin=required_margin)
-    
+
     # Calculate actual risk
     risk_usd_actual = units_total * stop_dist_pips * pip_value_usd
-    
+
+    # Final trace
+    emit_size_trace(pair, side, "final", {
+        "units_total": units_total,
+        "units_main": units_main,
+        "units_runner": units_runner,
+        "risk_usd_actual": risk_usd_actual,
+        "risk_pct_actual": (risk_usd_actual / nav_usd) * 100,
+        "spread_mult": spread_mult,
+        "confidence_mult": conf_mult if confidence else None,
+        "block_reason": result.get("block_reason"),
+        "meta_fallback": result["debug"].get("meta_fallback", False),
+        "margin_downscaled": result["debug"].get("margin_downscaled", False),
+        "deploy_cap_applied": result["debug"].get("deploy_cap_applied", False),
+    })
+
     # Success
     result.update({
         "units_total": units_total,
@@ -17739,18 +22627,23 @@ def compute_units_risk_2pct(
             "main_ratio": main_ratio,
             "runner_ratio": runner_ratio,
             "required_margin": required_margin,
+            "available_margin": margin_avail if math.isfinite(margin_avail) else None,
+            "deploy_util": deploy_util,
+            "deploy_cap_applied": result["debug"].get("deploy_cap_applied", False),
+            "deploy_margin_budget": result["debug"].get("deploy_margin_budget"),
+            "max_deploy_units": result["debug"].get("max_deploy_units"),
         }
     })
-    
+
     return result
 
 
 def get_pip_value(pair: str) -> float:
     """Get pip value for a currency pair.
-    
+
     Args:
         pair: Currency pair
-        
+
     Returns:
         Pip value in account currency
     """
@@ -17758,7 +22651,7 @@ def get_pip_value(pair: str) -> float:
 
 def update_strategy_performance(strategy_id: int, pnl: float, is_win: bool):
     """Update strategy performance metrics for position sizing.
-    
+
     Args:
         strategy_id: Strategy ID
         pnl: PnL in account currency
@@ -17771,26 +22664,26 @@ def update_strategy_performance(strategy_id: int, pnl: float, is_win: bool):
             "avg_loss": 0,
             "recent_trades": []
         }
-    
+
     perf = RECENT_PERFORMANCE[strategy_id]
     perf["recent_trades"].append({
         "pnl": pnl,
         "is_win": is_win,
         "timestamp": now_ts()
     })
-    
+
     # Keep only last 50 trades
     if len(perf["recent_trades"]) > 50:
         perf["recent_trades"] = perf["recent_trades"][-50:]
-    
+
     # Update metrics
     wins = [t for t in perf["recent_trades"] if t["is_win"]]
     losses = [t for t in perf["recent_trades"] if not t["is_win"]]
-    
+
     perf["win_rate"] = len(wins) / len(perf["recent_trades"]) if perf["recent_trades"] else 0.5
     perf["avg_win"] = sum(t["pnl"] for t in wins) / len(wins) if wins else 0
     perf["avg_loss"] = sum(t["pnl"] for t in losses) / len(losses) if losses else 0
-    
+
     log(f"{EMOJI_INFO} STRATEGY_PERFORMANCE_UPDATED", {
         "strategy_id": strategy_id,
         "win_rate": perf["win_rate"],
@@ -17801,7 +22694,7 @@ def update_strategy_performance(strategy_id: int, pnl: float, is_win: bool):
 
 def adjust_risk_for_correlation(pair: str, base_position_size: int, open_positions: list) -> int:
     raise RuntimeError("FORBIDDEN: risk/correlation sizing is disabled. Use compute_units_recycling().")
-    
+
 
 def _append_proof_marker(mode: str, phase: str, **extra: Any) -> None:
     """Append deterministic proof markers for user-verifiable runtime checks."""
@@ -17957,7 +22850,7 @@ def _run_log_proof() -> int:
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Phone Bot - Automated Trading System")
     parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual trades)")
     parser.add_argument("--test-sizing", action="store_true", help="Test sizing calculations and exit")
@@ -17967,7 +22860,7 @@ if __name__ == "__main__":
     parser.add_argument("--live-indicator-proof", action="store_true", help="Run live indicator proof path and emit JSONL marker")
     parser.add_argument("--live-exec-proof", action="store_true", help="Run bounded dry-run execution proof and emit JSONL marker")
     parser.add_argument("--log-proof", action="store_true", help="Run bounded dry-run logging proof and emit JSONL marker")
-    
+
     args = parser.parse_args()
 
     if args.selfcheck:
@@ -17984,7 +22877,7 @@ if __name__ == "__main__":
 
     if args.log_proof:
         sys.exit(_run_log_proof())
-    
+
     if args.test_sizing:
         # ...existing code...
         test_result = compute_units_recycling(
@@ -18064,5 +22957,5 @@ if __name__ == "__main__":
                     f.write(json.dumps(line) + "\n")
         print(f"rove-indicators complete: output in {out_path}")
         sys.exit(0)
-    
+
     main(dry_run=args.dry_run)

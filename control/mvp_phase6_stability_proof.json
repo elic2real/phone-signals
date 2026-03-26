@@ -1,0 +1,110 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T03:59:20.039110+00:00",
+  "task_id": "MVP_PHASE6_STABILITY_PROOF_3WINDOW_NO_TUNING",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE"
+  },
+  "dependency": {
+    "phase5_full_loop_validation_status": "PASS",
+    "phase5_path": "control/mvp_phase5_full_loop_validation.json"
+  },
+  "windows": [
+    {
+      "window": "W1",
+      "EUR_USD": {
+        "net_pph_keep_tune": 0.1227,
+        "hours": 9282.4,
+        "accepted_trades": 893,
+        "entry_session_not_included": 3506,
+        "contexts": [
+          "EUR_USD__monday__london"
+        ]
+      },
+      "GBP_USD": {
+        "net_pph_keep_tune": 0.3609,
+        "hours": 5068.12,
+        "accepted_trades": 1042,
+        "entry_session_not_included": 2288,
+        "contexts": [
+          "GBP_USD__monday__london"
+        ]
+      },
+      "weighted_net_pph_keep_tune": 0.2068242118055652,
+      "window_status": "PASS"
+    },
+    {
+      "window": "W2",
+      "EUR_USD": {
+        "net_pph_keep_tune": 0.0696,
+        "hours": 16367.62,
+        "accepted_trades": 893,
+        "entry_session_not_included": 14470,
+        "contexts": [
+          "EUR_USD__monday__london"
+        ]
+      },
+      "GBP_USD": {
+        "net_pph_keep_tune": 0.2708,
+        "hours": 6755.43,
+        "accepted_trades": 1042,
+        "entry_session_not_included": 3624,
+        "contexts": [
+          "GBP_USD__monday__london"
+        ]
+      },
+      "weighted_net_pph_keep_tune": 0.12838084923917906,
+      "window_status": "PASS"
+    },
+    {
+      "window": "W3",
+      "EUR_USD": {
+        "net_pph_keep_tune": 0.0504,
+        "hours": 22604.88,
+        "accepted_trades": 893,
+        "entry_session_not_included": 16008,
+        "contexts": [
+          "EUR_USD__monday__london"
+        ]
+      },
+      "GBP_USD": {
+        "net_pph_keep_tune": 0.2708,
+        "hours": 6755.43,
+        "accepted_trades": 1042,
+        "entry_session_not_included": 3624,
+        "contexts": [
+          "GBP_USD__monday__london"
+        ]
+      },
+      "weighted_net_pph_keep_tune": 0.10111120747703276,
+      "window_status": "PASS"
+    }
+  ],
+  "aggregates": {
+    "weighted_net_pph_values": [
+      0.2068242118055652,
+      0.12838084923917906,
+      0.10111120747703276
+    ],
+    "weighted_net_pph_mean": 0.14543875617392568,
+    "weighted_net_pph_min": 0.10111120747703276,
+    "weighted_net_pph_max": 0.2068242118055652,
+    "weighted_net_relative_spread": 0.7268558059044011
+  },
+  "pass_conditions": {
+    "phase5_dependency_passed": true,
+    "all_windows_positive_weighted_net": true,
+    "all_windows_pair_positive_net": true,
+    "all_windows_have_trades": true,
+    "session_lock_enforced_all_windows": true,
+    "london_context_only_all_windows": true,
+    "weighted_net_relative_spread_bounded": true
+  },
+  "status": "PASS"
+}

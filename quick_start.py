@@ -26,6 +26,7 @@ from pathlib import Path
 
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from artifact_validator import ensure_core_artifacts
 from aee_validator import AEEValidator
 from tick_generator import export_ticks_csv, sample_scenario_mix
 
@@ -172,7 +173,18 @@ if __name__ == "__main__":
     p_batch.add_argument("--bucket-sec", type=float, default=5.0)
     p_batch.add_argument("--seed", type=int, default=123)
 
+    parser.add_argument(
+        "--skip-artifact-checks",
+        action="store_true",
+        help="Bypass compiled artifact guard (or set SKIP_ARTIFACT_CHECKS=1)",
+    )
+
     args = parser.parse_args()
+
+    if args.skip_artifact_checks:
+        os.environ["SKIP_ARTIFACT_CHECKS"] = "1"
+    ensure_core_artifacts()
+
     if args.mode == "test" or args.mode is None:
         raise SystemExit(run_test_mode(bucket_sec=getattr(args, "bucket_sec", 5.0), seed=getattr(args, "seed", 123)))
     if args.mode == "batch":

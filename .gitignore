@@ -1,41 +1,83 @@
-# Python
+# Python cache/build
 __pycache__/
 *.py[cod]
 *.pyd
+*.so
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 
-# Local DB / locks / state
+# Virtual environments
+.venv/
+venv/
+
+# Local DB / locks / runtime state
 *.db
 *.sqlite
 *.sqlite3
 *.lock
+phone_bot.lock
 
-# Logs
+# Secrets and machine-local config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*secret*
+!control/github_secret_sweep_report.json
+*token*
+
+# Logs and transient run output
 *.log
+*.out
+*.err
 logs/
+runs/
 artifacts/
 proof_artifacts/
+proof_artifacts_*.json
 
-# Snapshots tool
-.snapshots/
-
-# OS / editor
+# Local/editor/OS
 .DS_Store
 .vscode/
 .idea/
 
-# Misc large generated outputs
+# Generated ledgers and scratch files
 *.jsonl
 *.patch
 *.diff
-*.out
-*.err
 
-# Generated simulation/optimizer artifacts
-best_config.json
-optimizer_report*.json
-extraction_audit_report*.json
-sim_results*.json
-failure_atlas*.json
-scenario_breakdown*.json
-delta_table_baseline_vs_best.*
-stable_candidates.json
+# Large data and compiled artifact trees
+compiled_*/
+data_tape*/
+sim_outputs*/
+optimizer_artifacts*/
+.stability_windows/
+_repo_backup_*/
+
+# High-volume generated lock/report files
+dataset_lock__*.json
+entry_v*_candidate_table.json
+entry_v*_ci_report.json
+entry_v*_dist.json
+entry_v*_run.json
+entry_v*_runbook.json
+entry_v*_decisions.jsonl
+aee_*_candidate_table.json
+aee_*_ci_report.json
+aee_*_distribution_report.json
+aee_*_run.json
+aee_*_runbook.json
+
+# Binary/large data bundles
+*.parquet
+*.zip
+
+# Keep canonical repo metadata and docs
+!.github/
+!.gitignore
+!README.md
+!requirements.txt

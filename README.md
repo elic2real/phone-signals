@@ -31,11 +31,44 @@ Repository includes the production bot plus a **no-touch simulation harness** fo
 - `aee_validator.py` - post-run validation report generator
 - `quick_start.py` - one-command synthetic test flow
 
+## Environment setup
+
+1. Install Python **3.11** (matches CI toolchain) plus system `gcc`/`make` for NumPy/SciPy wheels.
+2. Create a virtual environment and install pinned dependencies:
+   ```bash
+   python3.11 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+3. (Optional) populate `.env` with broker/OANDA credentials. Gates that require `python-dotenv` will fall back to process env vars if `.env` is absent.
+
 ## Run MVP locally/Termux
 
 ```bash
 PYTHONUNBUFFERED=1 timeout 25s python3 phone_bot.py
 ```
+
+For deterministic harness runs, ensure the expected compiled artifacts exist (e.g., `compiled_session_templates/<pair>__<session>/session_template_report.json`) or run the corresponding `build_*` scripts to materialize them.
+
+## Artifact & data expectations
+
+- **Calibration / session templates** – generated via the `build_*` pipeline into `compiled_*` directories. Validate freshness with the reports that live alongside the artifacts.
+- **Proof & replay assets** – massive (>80 MB) JSON blobs are under `proof_artifacts/` together with historical `.venv` snapshots that power cold replay audits.
+- **Data tapes** – canonical tick/history bundles live under `data_tape*/` and are addressed by path in build scripts; do not edit them manually.
+- **Logs / runs** – transient run outputs live in `logs/` and `runs/`. These are safe to delete when not debugging.
+
+You can reproduce artifacts via `quick_start.py` or the scripted compilers, but expect multi-hour runtimes and 100GB+ disk usage unless you trim the target set.
+
+## Large artifact management
+
+The repository currently checks in heavyweight trees such as `proof_artifacts/` (~105 GB), `compiled_market_nodes/` (~65 GB), and `compiled_session_templates/` (~11 GB). Consider:
+
+1. **Publishing release bundles** – move immutable proof artifacts and compiled nodes into versioned archives (e.g., S3/GCS) and fetch them on demand via a `tools/fetch_artifacts.py` helper.
+2. **Git-LFS or git submodules** – if artifacts must remain in-repo, store them via LFS to avoid bloating clones.
+3. **Pruning generated outputs** – add targeted `.gitignore` rules for `runs/`, `logs/`, and other per-run outputs once reproducible build scripts exist.
+
+Document any relocation plan in `LOCKED_CEILING_PROCESS.md` or a new `ARTIFACT_MANIFEST.md` so engineers know where to retrieve required bundles.
 
 ## CHANGELOG (2026-02-23)
 

@@ -14,8 +14,18 @@ class LegPolicy:
 
 @dataclass(frozen=True)
 class AEEKnobs:
+    mode: str
     strictness_mult: float
     near_tp_band_atr: float
+    harvester_time_fraction: float = 0.45
+    first_partial_fraction: float = 0.45
+    first_partial_trigger_r: float = 1.25
+    stop_time_fraction: float = 0.50
+    add_on_enabled: bool = False
+    add_on_risk_percent: float = 1.0
+    add_on_min_parent_r: float = 0.75
+    add_on_min_continuation: float = 0.60
+    family_source: str = ""
 
 
 def select_leg_policy(leg_type: str) -> LegPolicy:

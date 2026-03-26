@@ -142,6 +142,7 @@ import os
 from datetime import datetime
 from dataclasses import dataclass, asdict
 from typing import Callable, Dict, List, Tuple
+from pathlib import Path
 
 # === SOURCE OF TRUTH VERSION ===
 SCENARIO_VERSION = "v1.0"
@@ -566,6 +567,36 @@ def scenario_multi_whipsaw_sweep(
     return out
 
 
+def scenario_stats_driven_session(seed: int = 123) -> List[Dict[str, float]]:
+    """Generate a session from extracted historical stats."""
+    from artificial_data import generate_session
+
+    stats_path = Path(os.getenv("SYNTH_STATS_PATH", "stats/session_LONDON.json"))
+    if not stats_path.exists():
+        raise FileNotFoundError(f"Stats file not found: {stats_path}")
+    stats = json.loads(stats_path.read_text(encoding="utf-8"))
+    pair = str(os.getenv("SYNTH_PAIR", "EUR_USD") or "EUR_USD")
+    start_price = float(os.getenv("SYNTH_START_PRICE", "1.1000") or "1.1000")
+    n_ticks = int(os.getenv("SYNTH_TICKS", "650") or "650")
+    rows = generate_session(
+        stats,
+        pair=pair,
+        start_price=start_price,
+        n_ticks=max(600, n_ticks),
+        seed=seed,
+    )
+    return [
+        {
+            "instrument": str(r["instrument"]),
+            "ts": float(r["ts"]),
+            "bid": float(r["bid"]),
+            "ask": float(r["ask"]),
+            "mid": float(r["mid"]),
+        }
+        for r in rows
+    ]
+
+
 SCENARIO_REGISTRY: Dict[str, Callable[[int], List[Dict[str, float]]]] = {
     # Original pattern-based scenarios
     "trend_continuation": scenario_smooth_runner,
@@ -582,6 +613,7 @@ SCENARIO_REGISTRY: Dict[str, Callable[[int], List[Dict[str, float]]]] = {
     "energy_depletion": scenario_energy_depletion,
     "random_walk": scenario_random_walk,
     "universal_energy_morph": scenario_universal_energy_morph,
+    "stats_driven_session": scenario_stats_driven_session,
 }
 
 def export_ticks_csv(ticks: List[Dict[str, float]], filepath: str, manifest: dict = None) -> None:

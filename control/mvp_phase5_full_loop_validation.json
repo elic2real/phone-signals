@@ -1,0 +1,63 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T03:49:36.312649+00:00",
+  "task_id": "MVP_PHASE5_FULL_LOOP_VALIDATION",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON"
+  },
+  "dependency_proofs": {
+    "phase2_entry_supply": "PASS",
+    "phase3_priority_pressure": "PASS",
+    "phase4_allocation_capacity": "PASS"
+  },
+  "full_loop_runs": {
+    "EUR_USD": {
+      "net_pph_keep_tune": 0.0438,
+      "accepted_trades": 893,
+      "hours": 25977.35,
+      "session_lock_skip_count": 17313,
+      "family_verdict_counts": {
+        "KEEP": 1,
+        "TUNE": 2,
+        "KILL": 0
+      },
+      "contexts": [
+        "EUR_USD__monday__london"
+      ]
+    },
+    "GBP_USD": {
+      "net_pph_keep_tune": 0.2708,
+      "accepted_trades": 1042,
+      "hours": 6755.43,
+      "session_lock_skip_count": 3624,
+      "family_verdict_counts": {
+        "KEEP": 2,
+        "TUNE": 1,
+        "KILL": 0
+      },
+      "contexts": [
+        "GBP_USD__monday__london"
+      ]
+    },
+    "weighted_net_pph_keep_tune": 0.09064852951689407,
+    "total_accepted_trades": 1935,
+    "total_hours": 32732.78
+  },
+  "pass_conditions": {
+    "phase2_passed": true,
+    "phase3_passed": true,
+    "phase4_passed": true,
+    "eur_usd_positive_net_pph": true,
+    "gbp_usd_positive_net_pph": true,
+    "weighted_positive_net_pph": true,
+    "accepted_trades_exist": true,
+    "session_lock_enforced": true,
+    "keep_family_exists_each_pair": true
+  },
+  "status": "PASS"
+}

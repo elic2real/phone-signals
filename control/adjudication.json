@@ -1,0 +1,55 @@
+{
+  "protocol": "RCP",
+  "stage": 5,
+  "generated_at": "2026-03-26T03:59:20Z",
+  "task_id": "MVP_PHASE6_STABILITY_PROOF_3WINDOW_NO_TUNING",
+  "verdict": "PROMOTE",
+  "why": "Three no-tuning windows passed under locked scope: both pairs remain positive in each window, weighted net PPH stays positive, session lock remains enforced, and London-only active contexts are preserved.",
+  "evidence": [
+    "control/mvp_phase6_w1_eur_usd.json",
+    "control/mvp_phase6_w1_gbp_usd.json",
+    "control/mvp_phase6_w2_eur_usd.json",
+    "control/mvp_phase6_w2_gbp_usd.json",
+    "control/mvp_phase6_w3_eur_usd.json",
+    "control/mvp_phase6_w3_gbp_usd.json",
+    "control/mvp_phase6_stability_proof.json",
+    "control/validation_result.json"
+  ],
+  "key_findings": {
+    "window_statuses": {
+      "W1": "PASS",
+      "W2": "PASS",
+      "W3": "PASS"
+    },
+    "pair_net_pph_by_window": {
+      "EUR_USD": [
+        0.1227,
+        0.0696,
+        0.0504
+      ],
+      "GBP_USD": [
+        0.3609,
+        0.2708,
+        0.2708
+      ]
+    },
+    "weighted_net_pph": {
+      "values": [
+        0.2068242118055652,
+        0.12838084923917906,
+        0.10111120747703276
+      ],
+      "mean": 0.14543875617392568,
+      "relative_spread": 0.7268558059044011
+    },
+    "lock_enforcement": {
+      "session_not_included_present_all_windows": true,
+      "london_only_contexts": true
+    }
+  },
+  "next_recommended_task": "MVP_PHASE7_RELEASE_GUARDRAILS_AND_PAPER_PROMOTION",
+  "do_not_try_next": [
+    "any AEE tuning before release guardrails are frozen",
+    "any priority tuning before post-promotion monitoring baseline is established"
+  ]
+}

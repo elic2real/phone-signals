@@ -1,0 +1,62 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "stage": 2,
+  "generated_at": "2026-03-26T03:59:20Z",
+  "task_id": "MVP_PHASE6_STABILITY_PROOF_3WINDOW_NO_TUNING",
+  "component": "mvp_stability_proof_3window",
+  "intervention_class": "MEASUREMENT_ONLY",
+  "research_layer": "STABILITY",
+  "champion_reference": [
+    "entry_v23_policy_guarded_active.json",
+    "control/mvp_phase5_full_loop_validation.json",
+    "control/mvp_phase6_w1_eur_usd.json",
+    "control/mvp_phase6_w1_gbp_usd.json",
+    "control/mvp_phase6_w2_eur_usd.json",
+    "control/mvp_phase6_w2_gbp_usd.json",
+    "control/mvp_phase6_w3_eur_usd.json",
+    "control/mvp_phase6_w3_gbp_usd.json",
+    "control/mvp_phase6_stability_proof.json"
+  ],
+  "expected_signature": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "sessions": [
+      "LONDON"
+    ],
+    "required_metrics": [
+      "all_windows_pair_positive_net",
+      "all_windows_positive_weighted_net",
+      "all_windows_have_trades",
+      "session_lock_enforced_all_windows",
+      "london_context_only_all_windows",
+      "weighted_net_relative_spread_bounded"
+    ]
+  },
+  "files_planned_to_modify": [
+    "run_mvp_phase6_stability_proof.py",
+    "control/mvp_phase6_stability_proof.json",
+    "control/preflight_report.json",
+    "control/validation_result.json",
+    "control/adjudication.json"
+  ],
+  "validation_commands": [
+    "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase6_stability_proof.py",
+    "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase6_stability_proof.py"
+  ],
+  "success_criteria": [
+    "Three windows complete with no tuning",
+    "Both pairs keep positive net PPH in every window",
+    "Weighted net PPH remains positive in every window",
+    "Session lock is enforced in every window",
+    "Contexts remain London-only under lock",
+    "Relative spread remains bounded"
+  ],
+  "constraints_respected": [
+    "no AEE tuning",
+    "no priority tuning",
+    "no architecture expansion"
+  ]
+}

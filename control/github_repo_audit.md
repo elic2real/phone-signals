@@ -1,0 +1,151 @@
+# GitHub Repo Audit
+
+- Generated at: 2026-03-26T13:48:35.158193+00:00
+- Top-level entries audited: 2147
+
+## Classification Counts
+- KEEP_IN_REPO: 361
+- EXCLUDE_FROM_REPO: 496
+- OPTIONAL_ARCHIVE_ONLY: 1173
+- REVIEW_NEEDED: 117
+
+## Largest Entries (Top 20)
+- compiled_market_nodes/ | 128483340571 bytes | EXCLUDE_FROM_REPO
+- proof_artifacts/ | 111921516210 bytes | EXCLUDE_FROM_REPO
+- compiled_session_templates/ | 15730035130 bytes | EXCLUDE_FROM_REPO
+- reports/ | 3836089184 bytes | REVIEW_NEEDED
+- artifacts/ | 3626158500 bytes | EXCLUDE_FROM_REPO
+- runs/ | 3389215190 bytes | EXCLUDE_FROM_REPO
+- .stability_windows/ | 1541650313 bytes | EXCLUDE_FROM_REPO
+- _repo_backup_20260302T040941Z/ | 1185231669 bytes | REVIEW_NEEDED
+- logs/ | 701719958 bytes | EXCLUDE_FROM_REPO
+- .venv/ | 608537096 bytes | EXCLUDE_FROM_REPO
+- sim_results/ | 163529059 bytes | REVIEW_NEEDED
+- data_tape_15_full/ | 142336595 bytes | EXCLUDE_FROM_REPO
+- compiled_target_entry_stage_11_sessions/ | 131845073 bytes | EXCLUDE_FROM_REPO
+- data_tape_stitched_15_full/ | 111031989 bytes | EXCLUDE_FROM_REPO
+- PC2/ | 106053490 bytes | REVIEW_NEEDED
+- compiled_aee_stage_11_sessions_canonical_v2/ | 101563798 bytes | EXCLUDE_FROM_REPO
+- compiled_aee_stage_11_sessions_canonical_v3/ | 101563798 bytes | EXCLUDE_FROM_REPO
+- compiled_aee_stage_11_sessions/ | 101512189 bytes | EXCLUDE_FROM_REPO
+- compiled_aee_stage_11_sessions_canonical/ | 95626478 bytes | EXCLUDE_FROM_REPO
+- compiled_aee_stage_11_sessions_seeded/ | 94668420 bytes | EXCLUDE_FROM_REPO
+
+## Review Needed
+- .bot_supervisor.lock (Needs explicit human review for canonical publish intent.)
+- _audit_smoke/ (Needs explicit human review for canonical publish intent.)
+- _kpi_smoke/ (Needs explicit human review for canonical publish intent.)
+- _repo_backup_20260302T040941Z/ (Needs explicit human review for canonical publish intent.)
+- AEE_IMPLEMENTATION_CONTRACT.md (Needs explicit human review for canonical publish intent.)
+- AEE_MONITORING_2026-03-15.md (Needs explicit human review for canonical publish intent.)
+- AEE_STATE_AUDIT.md (Needs explicit human review for canonical publish intent.)
+- ai-assistant-contract.yml (Needs explicit human review for canonical publish intent.)
+- audit_404_ids.txt (Needs explicit human review for canonical publish intent.)
+- audit_no_periodic_ids.txt (Needs explicit human review for canonical publish intent.)
+- calibration/ (Needs explicit human review for canonical publish intent.)
+- check_thursday_progress.sh (Needs explicit human review for canonical publish intent.)
+- chop_mean_reversion.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- COMPILER_FIXES_VERIFICATION_REPORT.md (Needs explicit human review for canonical publish intent.)
+- complete_london_monday.sh (Needs explicit human review for canonical publish intent.)
+- complete_london_monday_fast.sh (Needs explicit human review for canonical publish intent.)
+- COMPONENT_MAX_IMPLEMENTATION.md (Needs explicit human review for canonical publish intent.)
+- CONCURRENCY_AUDIT_NOTE.md (Needs explicit human review for canonical publish intent.)
+- CONCURRENCY_CAPS_IMPLEMENTATION.md (Needs explicit human review for canonical publish intent.)
+- coordination/ (Needs explicit human review for canonical publish intent.)
+- copy_static_artifacts.sh (Needs explicit human review for canonical publish intent.)
+- CURRENT_PERFORMANCE_SUMMARY.md (Needs explicit human review for canonical publish intent.)
+- data/ (Needs explicit human review for canonical publish intent.)
+- data_audit_outputs/ (Needs explicit human review for canonical publish intent.)
+- debug_output.txt (Needs explicit human review for canonical publish intent.)
+- donchian_breakout.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- edge_case_trap.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- entry_block_reason_inventory.txt (Needs explicit human review for canonical publish intent.)
+- ENTRY_STATE_REVERSE_ENGINEERING_PLAN.md (Needs explicit human review for canonical publish intent.)
+- entry_type_labeling_notes.md (Needs explicit human review for canonical publish intent.)
+- entry_type_labeling_notes_afterfix.md (Needs explicit human review for canonical publish intent.)
+- fallback_system_test_output.txt (Needs explicit human review for canonical publish intent.)
+- forced_full_chain_handoff_proof_report.md (Needs explicit human review for canonical publish intent.)
+- github_repo/ (Needs explicit human review for canonical publish intent.)
+- historical_data/ (Needs explicit human review for canonical publish intent.)
+- integration_guide (Needs explicit human review for canonical publish intent.)
+- JPY_CALCULATION_PROOF.md (Needs explicit human review for canonical publish intent.)
+- JPY_COLLAPSE_ROOT_CAUSE.md (Needs explicit human review for canonical publish intent.)
+- jpy_debug_patch.txt (Needs explicit human review for canonical publish intent.)
+- JPY_FINAL_INVESTIGATION_SUMMARY.md (Needs explicit human review for canonical publish intent.)
+- JPY_SIZING_FINAL_REPORT.md (Needs explicit human review for canonical publish intent.)
+- JPY_SIZING_INVESTIGATION_FINDINGS.md (Needs explicit human review for canonical publish intent.)
+- JPY_SIZING_ISSUE_ANALYSIS.md (Needs explicit human review for canonical publish intent.)
+- keep_bot_alive.sh (Needs explicit human review for canonical publish intent.)
+- LOCKED_CEILING_PROCESS.md (Needs explicit human review for canonical publish intent.)
+- london_session_data/ (Needs explicit human review for canonical publish intent.)
+- london_session_data_11/ (Needs explicit human review for canonical publish intent.)
+- manual_whipsaw.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- MARKET_EXPANSION_TODO.md (Needs explicit human review for canonical publish intent.)
+- market_node_data/ (Needs explicit human review for canonical publish intent.)
+- microstructure_noise.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- momentum_burst.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- monday_nodes_missing_stage6.txt (Needs explicit human review for canonical publish intent.)
+- monday_sim_frozen_config.yml (Needs explicit human review for canonical publish intent.)
+- monitor_audit_latest.txt (Needs explicit human review for canonical publish intent.)
+- operational_split_runtime_proof.md (Needs explicit human review for canonical publish intent.)
+- panic_reversal.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- partial_candle_support.diff (Needs explicit human review for canonical publish intent.)
+- PC2/ (Needs explicit human review for canonical publish intent.)
+- phase1_11_sessions_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase1_correct_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase1_eurusd_monday_newyork_11/ (Needs explicit human review for canonical publish intent.)
+- phase1_proven_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase2_11_sessions_outputs/ (Needs explicit human review for canonical publish intent.)
+- PHASE2_ENHANCED_OUTPUT.md (Needs explicit human review for canonical publish intent.)
+- PHASE2_OUTPUT.md (Needs explicit human review for canonical publish intent.)
+- phase2_proven_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase2_quantile_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase3_11_sessions_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase3_entry_fit_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase3_oea_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase4_11_sessions_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase4_aee_fit_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase5_11_sessions_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase7_entry_outputs/ (Needs explicit human review for canonical publish intent.)
+- phase8_aee_outputs/ (Needs explicit human review for canonical publish intent.)
+- phone signals/ (Needs explicit human review for canonical publish intent.)
+- phone_bot.lock (Needs explicit human review for canonical publish intent.)
+- phone_bot_changes.patch (Needs explicit human review for canonical publish intent.)
+- policy_enabled_key_scoreboard.md (Needs explicit human review for canonical publish intent.)
+- policy_enforcement_bounded_report.md (Needs explicit human review for canonical publish intent.)
+- profitable_strategy_ranking.md (Needs explicit human review for canonical publish intent.)
+- PUSH_README.md (Needs explicit human review for canonical publish intent.)
+- real_live_full_chain_capture_report.md (Needs explicit human review for canonical publish intent.)
+- recompile_all_non_thursday_nodes.sh (Needs explicit human review for canonical publish intent.)
+- recompile_thursday_nodes.sh (Needs explicit human review for canonical publish intent.)
+- recompile_tue_wed_fri.sh (Needs explicit human review for canonical publish intent.)
+- REDLINE_FORENSIC_ANALYSIS.md (Needs explicit human review for canonical publish intent.)
+- regime_switch.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- reports/ (Needs explicit human review for canonical publish intent.)
+- RISK_SIZING_EXAMPLES.md (Needs explicit human review for canonical publish intent.)
+- RISK_SIZING_IMPLEMENTATION.md (Needs explicit human review for canonical publish intent.)
+- run_monday_downstream.sh (Needs explicit human review for canonical publish intent.)
+- scenarios/ (Needs explicit human review for canonical publish intent.)
+- sim_results/ (Needs explicit human review for canonical publish intent.)
+- SIMULATION_ACTION_PLAN.md (Needs explicit human review for canonical publish intent.)
+- SIZING_AUDIT_DIRECTIVE.md (Needs explicit human review for canonical publish intent.)
+- STAGE6_VALIDATION_SUMMARY.md (Needs explicit human review for canonical publish intent.)
+- stats/ (Needs explicit human review for canonical publish intent.)
+- strategy_live_postfix_scoreboard.md (Needs explicit human review for canonical publish intent.)
+- strategy_merged_decision_sheet.md (Needs explicit human review for canonical publish intent.)
+- strategy_optimization_execution.md (Needs explicit human review for canonical publish intent.)
+- strategy_override_live_proof_report.md (Needs explicit human review for canonical publish intent.)
+- strategy_runtime_override_rollout.md (Needs explicit human review for canonical publish intent.)
+- strategy_sim_sweep_scoreboard.md (Needs explicit human review for canonical publish intent.)
+- synthetic/ (Needs explicit human review for canonical publish intent.)
+- SYSTEM_PROOF_INDEX.md (Needs explicit human review for canonical publish intent.)
+- test_data.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- THU_FRI_GO_LIVE_CHECKLIST.md (Needs explicit human review for canonical publish intent.)
+- tick generator (Needs explicit human review for canonical publish intent.)
+- tmp_missing_aee_nodes.txt (Needs explicit human review for canonical publish intent.)
+- train_global_pipeline.sh (Needs explicit human review for canonical publish intent.)
+- trend_continuation.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- tunes/ (Needs explicit human review for canonical publish intent.)
+- VERIFICATION_SUMMARY.md (Needs explicit human review for canonical publish intent.)
+- volatility_breakout.csv.sha256 (Needs explicit human review for canonical publish intent.)
+- volatility_squeeze_burst.csv.sha256 (Needs explicit human review for canonical publish intent.)

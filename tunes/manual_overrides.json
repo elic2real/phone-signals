@@ -1,42 +1,17 @@
 {
-  "expiry_utc": "2026-03-04T20:48:39.701416+00:00",
-  "history": [
-    {
-      "action": "set",
-      "key": "entry.tick.confirm_m1_closes",
-      "prev": null,
-      "ts": "manual-20260304T140131Z"
-    },
-    {
-      "action": "set",
-      "key": "entry.tick.confirm_sec",
-      "prev": null,
-      "ts": "manual-20260304T140131Z"
-    },
-    {
-      "action": "set",
-      "key": "entry.tick.base_max_dist_atr",
-      "prev": 0.99,
-      "ts": "manual-20260304T144839Z"
-    },
-    {
-      "action": "clear",
-      "key": "entry.tick.confirm_m1_closes",
-      "prev": 1,
-      "ts": "manual-20260304T144848Z"
-    },
-    {
-      "action": "clear",
-      "key": "entry.tick.confirm_sec",
-      "prev": 2,
-      "ts": "manual-20260304T144848Z"
-    }
-  ],
-  "meta": {
-    "version": "manual_test_1"
-  },
+  "version": "manual-throughput-boost-20260307",
   "overrides": {
-    "entry.tick.base_max_dist_atr": 0.85
+    "entry.tick.confirm_disp_atr": 0.16,
+    "entry.tick.base_max_dist_atr": 0.6,
+    "entry.tick.confirm_m1_closes": 0,
+    "entry.tick.confirm_sec": 0.0,
+    "entry.tick.require_pullback": false,
+    "entry.tick.pullback_atr_min": 0.3,
+    "entry.tick.require_reclaim": false,
+    "entry.tick.reclaim_tolerance_atr": 0.08,
+    "aee.strictness_mult": 1.2,
+    "aee.fail_windows": 3,
+    "aee.near_tp_band_atr": 0.2
   },
-  "version": "manual-20260304T144848Z"
+  "history": []
 }
