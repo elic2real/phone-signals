@@ -1,0 +1,26 @@
+{
+  "name": "aee_baseline_adjustment_note_v4",
+  "based_on": "aee_band_baseline_floor_v3",
+  "intent": "speed recycling and reduce post-peak giveback while preserving branch distribution behavior",
+  "exact_change_count": 3,
+  "changes": [
+    {
+      "field": "band_width_r",
+      "from": 0.08,
+      "to": 0.09,
+      "why": "Slightly tighter green qualification to avoid weak-positive drift."
+    },
+    {
+      "field": "near_entry.timeout_sec",
+      "from": 14,
+      "to": 12,
+      "why": "Cut never-green dwell time to improve recycle rate."
+    },
+    {
+      "field": "fallback.drop_positive_bands",
+      "from": 3,
+      "to": 2,
+      "why": "Exit earlier after peak deterioration to reduce giveback."
+    }
+  ]
+}

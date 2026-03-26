@@ -1,0 +1,107 @@
+{
+  "run_id": "AEE_MVP_USD_JPY_MVP_SMOKE_20260325",
+  "detector_logic_path": [
+    {
+      "name": "BREAKOUT__clean_expansion",
+      "count": 49
+    },
+    {
+      "name": "RANGE_ESCAPE__true_escape",
+      "count": 30
+    },
+    {
+      "name": "RANGE_ESCAPE__noise_escape",
+      "count": 21
+    },
+    {
+      "name": "BREAKOUT__weak_expansion",
+      "count": 10
+    },
+    {
+      "name": "BREAKOUT__fake_breakout",
+      "count": 5
+    }
+  ],
+  "gating_path": {
+    "top_block_reasons": [
+      {
+        "name": "ENTRY_MICRO_CONFIRM_FILTER",
+        "count": 226
+      },
+      {
+        "name": "ENTRY_DISPLACEMENT_FILTER",
+        "count": 54
+      },
+      {
+        "name": "ENTRY_FAMILY_NOT_INCLUDED",
+        "count": 39
+      }
+    ],
+    "filter_config": {
+      "include_families": [
+        "EXPANSION_BREAKOUT",
+        "OTHER",
+        "RANGE_ESCAPE"
+      ],
+      "exclude_families": [],
+      "exclude_contexts": [
+        "eur_chf__monday__asia",
+        "eur_chf__monday__london",
+        "eur_chf__monday__new_york",
+        "eur_chf__monday__sydney",
+        "eur_chf__wednesday__london",
+        "eur_gbp__monday__asia",
+        "eur_gbp__monday__london",
+        "eur_gbp__monday__new_york",
+        "eur_gbp__monday__sydney",
+        "eur_gbp__thursday__sydney",
+        "eur_usd__friday__asia",
+        "eur_usd__tuesday__new_york",
+        "usd_cad__monday__london"
+      ]
+    }
+  },
+  "exit_logic_path": [
+    {
+      "name": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "count": 61
+    },
+    {
+      "name": "AEE_V3_FAMILY_PROTECTION_EXIT",
+      "count": 38
+    },
+    {
+      "name": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "count": 13
+    },
+    {
+      "name": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "count": 7
+    },
+    {
+      "name": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "count": 1
+    }
+  ],
+  "state_transitions_used": [
+    {
+      "name": "RUNNER",
+      "count": 68
+    },
+    {
+      "name": "GREEN_UNPROTECTED",
+      "count": 38
+    },
+    {
+      "name": "NEGATIVE_UNPROVEN",
+      "count": 14
+    }
+  ],
+  "overrides_triggered": [
+    {
+      "name": "raw_core_mode",
+      "enabled": false,
+      "effect": "disables non-core entry gates when true"
+    }
+  ]
+}

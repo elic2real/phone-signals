@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-03-25T15:43:55.635394Z",
+  "objective": "stability_proof_no_tuning",
+  "lock": {
+    "config": "entry_v36_firehose_all_families.json",
+    "aee_and_routing": "frozen",
+    "cost_model": {
+      "spread_pips": 0.8,
+      "slippage_pips_per_side": 0.15,
+      "commission_pips_roundtrip": 0.0,
+      "latency_penalty_pips": 0.0
+    },
+    "tuning_changes": "none"
+  },
+  "windows": [
+    {
+      "name": "window_1",
+      "stream_count": 11,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_1_run.json",
+      "verdict": "BASELINE_REJECTED",
+      "trade_count": 15053,
+      "avg_pips_per_trade": 0.42823357470271706,
+      "gross_realized_pips_per_hour": 0.35708205542004484,
+      "net_realized_pips_per_hour": -0.560151632374583,
+      "net_delta_realized_pips_per_hour": -0.7275085722515707
+    },
+    {
+      "name": "window_2",
+      "stream_count": 10,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_2_run.json",
+      "verdict": "BASELINE_REJECTED",
+      "trade_count": 16151,
+      "avg_pips_per_trade": 0.5413349018636617,
+      "gross_realized_pips_per_hour": 0.5179837787559762,
+      "net_realized_pips_per_hour": -0.5345664164558537,
+      "net_delta_realized_pips_per_hour": -0.781344976924125
+    },
+    {
+      "name": "window_3",
+      "stream_count": 10,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_3_run.json",
+      "verdict": "BASELINE_REJECTED",
+      "trade_count": 8698,
+      "avg_pips_per_trade": 0.7299954012416647,
+      "gross_realized_pips_per_hour": 0.4324452561787217,
+      "net_realized_pips_per_hour": -0.21918868697692423,
+      "net_delta_realized_pips_per_hour": -0.8371369188630218
+    }
+  ],
+  "window_generation": {
+    "mode": "disjoint",
+    "streams_per_window": 6,
+    "seed": 20260324,
+    "total_streams_available": 31
+  },
+  "pass_criteria": {
+    "all_three_positive_net_delta": false,
+    "all_three_baseline_accepted": false
+  },
+  "stability_verdict": "NOT_YET_PROVEN"
+}

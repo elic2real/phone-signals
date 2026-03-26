@@ -1,0 +1,97 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T10:12:09.774696+00:00",
+  "task_id": "MVP_PHASE24_POLICY_PACKAGE_HARDENING_AND_RELEASE_GUARD_RECHECK",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "PAPER_ONLY_HARDENING_AND_GUARD_RECHECK"
+  },
+  "dependency": {
+    "phase23_status": "PASS",
+    "phase23_path": "control/mvp_phase23_guarded_parallel_rerun_with_tiered_kill_gates.json",
+    "phase18_status": "PASS",
+    "phase18_path": "control/mvp_phase18_policy_package_proposal_paper_only.json"
+  },
+  "hardened_policy_package": {
+    "candidate_package_id": "PKG_V3_M3_ANCHOR_HARDENED_P24",
+    "base_package_id": "PKG_V3_M3_ANCHOR",
+    "source_phase23_variant": "V3",
+    "hardening_mode": "NO_TUNING_GUARD_LOCK",
+    "scope_lock": {
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "session": "LONDON",
+      "tuning": "NONE"
+    },
+    "lock_matrix": {
+      "variant_lock": "V3",
+      "tier1": {
+        "max_false_cut_rate_on_winners": 0.15,
+        "tail_loss_tolerance_pips": 0.25
+      },
+      "tier2": {
+        "drawdown_efficiency_tolerance_seconds": 120.0,
+        "rank_outcome_non_degrade_floor": -0.01
+      },
+      "slice_balance": {
+        "minimum_archetype_coverage": 3,
+        "weighted_archetype_scoring": true
+      },
+      "forbidden_changes": [
+        "parameter tuning",
+        "pair or session scope expansion",
+        "live rollout before release-guard stage pass"
+      ]
+    },
+    "release_guard_recheck": {
+      "pair_checks": {
+        "EUR_USD": {
+          "selected_variant": "V3",
+          "expected_variant": "V3",
+          "v3_passes_tiered_gates": true,
+          "false_cut_rate_on_winners": 0.0,
+          "tier1_max_false_cut_allowed": 0.15,
+          "weighted_delta": 0.6978971588635455
+        },
+        "GBP_USD": {
+          "selected_variant": "V3",
+          "expected_variant": "V3",
+          "v3_passes_tiered_gates": true,
+          "false_cut_rate_on_winners": 0.0,
+          "tier1_max_false_cut_allowed": 0.15,
+          "weighted_delta": 1.3533104395604396
+        }
+      },
+      "cross_pair_survival": true,
+      "cross_pair_variant": "V3",
+      "release_action": "ALLOW_SHADOW_BENCHMARK_STAGE_ONLY",
+      "live_promotion_allowed": false,
+      "reason": "Package hardened and lock-held; proceed to benchmark shadow validation only."
+    }
+  },
+  "pass_conditions": {
+    "phase23_dependency_passed": true,
+    "phase23_verdict_promote": true,
+    "phase23_promoted_variant_v3": true,
+    "pair_selected_variant_v3": true,
+    "pair_tiered_gate_survival": true,
+    "cross_pair_survival_confirmed": true,
+    "no_tuning_applied": true,
+    "scope_lock_preserved": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Policy package hardened with lock-held release guard recheck; ready for shadow benchmark stage."
+  },
+  "next_recommended_task": "MVP_PHASE25_SHADOW_BENCHMARK_EXECUTION_AND_DRIFT_PROOF",
+  "status": "PASS"
+}

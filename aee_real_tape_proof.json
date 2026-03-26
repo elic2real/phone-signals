@@ -1,0 +1,36 @@
+{
+  "metric_definitions": {
+    "meaningful_green_r_threshold": 0.1,
+    "strong_continuation_r_threshold": 1.0,
+    "allowed_extend_min_realized_r": 0.7,
+    "green_closed_in_profit_rule": "exit_reason != HOLD and aee_R > 0"
+  },
+  "summary": {
+    "trades": 1468,
+    "went_green_pct": 98.5,
+    "green_closed_in_profit_pct": 26.56,
+    "strong_continuations_allowed_pct": 58.89,
+    "gross_r_before_aee": 712.6015,
+    "net_r_after_aee": 1832.1989,
+    "delta_r": 1119.5974,
+    "one_line_lock": "AEE works if it can consistently harvest temporary favorable excursions, close decaying trades in profit, and still allow the minority of genuinely strong trades to extend."
+  },
+  "by_mode": {
+    "HARVESTER": {
+      "trades": 1435,
+      "went_green_pct": 98.47,
+      "green_closed_in_profit_pct": 26.82,
+      "strong_continuations_allowed_pct": 58.87,
+      "gross_r_before_aee": 701.0858,
+      "net_r_after_aee": 1795.2295
+    },
+    "RUNNER": {
+      "trades": 33,
+      "went_green_pct": 100.0,
+      "green_closed_in_profit_pct": 15.15,
+      "strong_continuations_allowed_pct": 60.0,
+      "gross_r_before_aee": 11.5157,
+      "net_r_after_aee": 36.9694
+    }
+  }
+}

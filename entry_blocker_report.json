@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-03-25T00:50:16.897411Z",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "blockers_preventing_entry": {
+    "ENTRY_CONTEXT_CUT": 23384,
+    "ENTRY_DISPLACEMENT_FILTER": 2343,
+    "ENTRY_MICRO_CONFIRM_FILTER": 16867,
+    "ENTRY_NOISE_FILTER": 63,
+    "ENTRY_PROGRESS_FILTER": 3
+  },
+  "blockers_resolved_before_strong_trades": {
+    "range_edge_wait_resolved": 1403,
+    "break_not_crossed_resolved": 2173,
+    "unknown_or_mixed": 101,
+    "pullback_pending_resolved": 11,
+    "reclaim_pending_resolved": 11
+  },
+  "blockers_resolved_before_weak_trades": {
+    "break_not_crossed_resolved": 716,
+    "range_edge_wait_resolved": 618,
+    "unknown_or_mixed": 51,
+    "reclaim_pending_resolved": 7,
+    "pullback_pending_resolved": 1
+  },
+  "gate_redundancy": {
+    "require_break_cross": {
+      "pass_count": 2919,
+      "pass_rate": 0.5732521602513747,
+      "redundant": false
+    },
+    "require_pullback": {
+      "pass_count": 12,
+      "pass_rate": 0.002356637863315004,
+      "redundant": true
+    },
+    "require_reclaim": {
+      "pass_count": 18,
+      "pass_rate": 0.003534956794972506,
+      "redundant": true
+    }
+  },
+  "gates_passing_low_excursion_trades": {
+    "require_break_cross": {
+      "pass_count": 2919,
+      "low_excursion_count": 12,
+      "low_excursion_share": 0.0041109969167523125
+    },
+    "require_pullback": {
+      "pass_count": 12,
+      "low_excursion_count": 0,
+      "low_excursion_share": 0.0
+    },
+    "require_reclaim": {
+      "pass_count": 18,
+      "low_excursion_count": 0,
+      "low_excursion_share": 0.0
+    }
+  }
+}

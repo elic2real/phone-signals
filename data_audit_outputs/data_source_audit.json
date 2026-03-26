@@ -1,0 +1,30 @@
+{
+  "source": "OANDA",
+  "file_paths": [
+    "london_session_data/pair=EUR_USD/year=2024/month=01/part-000.parquet"
+  ],
+  "row_count": 540,
+  "first_timestamp": "2024-01-15T08:00:00+00:00",
+  "last_timestamp": "2024-01-15T16:59:00+00:00",
+  "pair": "EUR_USD",
+  "timeframe": "M1",
+  "sessions_used": [
+    "london",
+    "other"
+  ],
+  "synthetic_rows_used": 0,
+  "fallback_used": false,
+  "validation_checks": {
+    "price_range_valid": true,
+    "volume_non_negative": true,
+    "timestamps_sequential": true,
+    "realistic_volatility": true,
+    "sufficient_data_volume": true
+  },
+  "data_characteristics": {
+    "avg_price_change_pips": 0.86,
+    "price_range": "1.09338 - 1.09636",
+    "total_sessions": 2,
+    "data_files": 1
+  }
+}

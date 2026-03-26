@@ -1,0 +1,110 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T07:15:23.216944+00:00",
+  "task_id": "MVP_PHASE9_PRIORITY_AND_TRADE_LIFE_TELEMETRY_CLOSURE_NO_TUNING",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE"
+  },
+  "dependency": {
+    "phase8_status": "PASS",
+    "phase8_path": "control/mvp_phase8_decay_source_attribution_no_tuning.json"
+  },
+  "telemetry_closure": {
+    "EUR_USD": {
+      "priority": {
+        "available": true,
+        "cycle_count": 300,
+        "top_n": 5,
+        "selected_count": 24,
+        "avg_selected_rank": 1.0,
+        "median_selected_rank": 1.0,
+        "selected_present_top_n_rate": 0.08,
+        "field_presence": {
+          "priority_score": true,
+          "rank": true,
+          "selected": true
+        },
+        "reason": ""
+      },
+      "trade_lifecycle": {
+        "summary": {
+          "avg_trade_life_seconds": 5817.5812,
+          "median_trade_life_seconds": 5940.0,
+          "avg_time_to_first_profit_seconds": 0.0,
+          "median_time_to_first_profit_seconds": 0.0,
+          "avg_time_in_drawdown_seconds": 1771.243,
+          "median_time_in_drawdown_seconds": 1140.0,
+          "avg_time_from_peak_to_close_seconds": 2628.0403,
+          "median_time_from_peak_to_close_seconds": 2400.0
+        },
+        "sample_count": 200,
+        "required_fields_present_in_sample": true
+      }
+    },
+    "GBP_USD": {
+      "priority": {
+        "available": true,
+        "cycle_count": 300,
+        "top_n": 5,
+        "selected_count": 33,
+        "avg_selected_rank": 1.0,
+        "median_selected_rank": 1.0,
+        "selected_present_top_n_rate": 0.11,
+        "field_presence": {
+          "priority_score": true,
+          "rank": true,
+          "selected": true
+        },
+        "reason": ""
+      },
+      "trade_lifecycle": {
+        "summary": {
+          "avg_trade_life_seconds": 5822.9942,
+          "median_trade_life_seconds": 5940.0,
+          "avg_time_to_first_profit_seconds": 0.0,
+          "median_time_to_first_profit_seconds": 0.0,
+          "avg_time_in_drawdown_seconds": 1912.4568,
+          "median_time_in_drawdown_seconds": 1260.0,
+          "avg_time_from_peak_to_close_seconds": 2596.7562,
+          "median_time_from_peak_to_close_seconds": 2460.0
+        },
+        "sample_count": 200,
+        "required_fields_present_in_sample": true
+      }
+    },
+    "combined_summary": {
+      "runtime_net_pph": {
+        "EUR_USD": 0.0438,
+        "GBP_USD": 0.2708
+      },
+      "priority": {
+        "avg_selected_rank_mean": 1.0,
+        "selected_present_top_n_rate_mean": 0.095
+      },
+      "trade_life": {
+        "avg_trade_life_seconds_mean": 5820.2877,
+        "avg_time_to_first_profit_seconds_mean": 0.0,
+        "avg_time_in_drawdown_seconds_mean": 1841.8499
+      }
+    }
+  },
+  "pass_conditions": {
+    "phase8_dependency_passed": true,
+    "priority_telemetry_available_eur": true,
+    "priority_telemetry_available_gbp": true,
+    "priority_fields_present_eur": true,
+    "priority_fields_present_gbp": true,
+    "trade_life_fields_present_eur": true,
+    "trade_life_fields_present_gbp": true,
+    "capital_efficiency_proxies_present": true,
+    "aee_timing_present": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

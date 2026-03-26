@@ -1,0 +1,708 @@
+{
+  "task_id": "MVP_PHASE36_MULTI_SESSION_DEEP_VALIDATION",
+  "generated_at": "2026-03-26T18:49:25.838298+00:00",
+  "status": "PASS",
+  "mode": "DETERMINISTIC_MODELLED_DEEP_VALIDATION",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD",
+      "USD_JPY",
+      "USD_CHF",
+      "AUD_USD",
+      "USD_CAD",
+      "NZD_USD"
+    ],
+    "sessions": [
+      "LONDON",
+      "ASIA",
+      "NEW_YORK",
+      "LONDON_NY_OVERLAP"
+    ],
+    "tuning": "NONE"
+  },
+  "policy_sensitivity": {
+    "enabled_executable_families": [
+      "EXPANSION_BREAKOUT",
+      "OTHER",
+      "RANGE_ESCAPE",
+      "RECLAIM_CONTINUATION"
+    ],
+    "exclude_context_count": 15,
+    "family_throughput_mult": 1.05,
+    "entry_logic_pack": {
+      "confirm_push_major": 0.6,
+      "confirm_window_major": 1.8,
+      "global_quality_tph_mult": 0.992,
+      "global_quality_wr_bonus": 0.0006
+    },
+    "asia_context_uplift": {
+      "enabled": true,
+      "context_block_mult": 0.9,
+      "context_quality_bonus": 0.006
+    }
+  },
+  "rows": [
+    {
+      "pair": "EUR_USD",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.101597,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.014359,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.028719,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "EUR_USD",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.05535,
+      "win_rate_est": 0.55491,
+      "expected_r_per_hour": 0.006079,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.012157,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "EUR_USD",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.095,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.014331,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.028661,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "EUR_USD",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.120332,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.021288,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.042577,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "GBP_USD",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.106677,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.015077,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.030154,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "GBP_USD",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.058117,
+      "win_rate_est": 0.55491,
+      "expected_r_per_hour": 0.006382,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.012765,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "GBP_USD",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.09975,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.015047,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.030095,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "GBP_USD",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.126349,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.022353,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.044706,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.111757,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.015795,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.03159,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.060885,
+      "win_rate_est": 0.55491,
+      "expected_r_per_hour": 0.006686,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.013373,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.1045,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.015764,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.031528,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.132366,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.023417,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.046835,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CHF",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.086358,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.012205,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.024411,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CHF",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.047047,
+      "win_rate_est": 0.55491,
+      "expected_r_per_hour": 0.005167,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.010334,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CHF",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.08075,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.012181,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.024362,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CHF",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.102282,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.018095,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.03619,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "AUD_USD",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.081278,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.011487,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.022975,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "AUD_USD",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.039852,
+      "win_rate_est": 0.56091,
+      "expected_r_per_hour": 0.004855,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.00971,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 0.9,
+        "context_quality_bonus": 0.006,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "AUD_USD",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.076,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.011465,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.022929,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "AUD_USD",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.096266,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.017031,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.034061,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CAD",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.079246,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.0112,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.0224,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CAD",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.038856,
+      "win_rate_est": 0.56091,
+      "expected_r_per_hour": 0.004733,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.009467,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 0.9,
+        "context_quality_bonus": 0.006,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CAD",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.0741,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.011178,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.022356,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "USD_CAD",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.093859,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.016605,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.03321,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "NZD_USD",
+      "session": "LONDON",
+      "weighted_delta_pph": 0.077215,
+      "false_cut_rate_on_winners": 0.076923,
+      "weighted_intervention_relative_spread": 0.425079,
+      "trades_per_hour_est": 0.066038,
+      "win_rate_est": 0.570667,
+      "expected_r_per_hour": 0.009334,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.018667,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "NZD_USD",
+      "session": "ASIA",
+      "weighted_delta_pph": 0.049385,
+      "false_cut_rate_on_winners": 0.090769,
+      "weighted_intervention_relative_spread": 0.476088,
+      "trades_per_hour_est": 0.03238,
+      "win_rate_est": 0.56091,
+      "expected_r_per_hour": 0.003945,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.007889,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 0.9,
+        "context_quality_bonus": 0.006,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "NZD_USD",
+      "session": "NEW_YORK",
+      "weighted_delta_pph": 0.084762,
+      "false_cut_rate_on_winners": 0.084615,
+      "weighted_intervention_relative_spread": 0.446333,
+      "trades_per_hour_est": 0.06175,
+      "win_rate_est": 0.575425,
+      "expected_r_per_hour": 0.009315,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.01863,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    },
+    {
+      "pair": "NZD_USD",
+      "session": "LONDON_NY_OVERLAP",
+      "weighted_delta_pph": 0.107364,
+      "false_cut_rate_on_winners": 0.086154,
+      "weighted_intervention_relative_spread": 0.416577,
+      "trades_per_hour_est": 0.078216,
+      "win_rate_est": 0.588457,
+      "expected_r_per_hour": 0.013837,
+      "expected_equity_pct_per_hour_at_2pct_risk": 0.027675,
+      "policy_effects": {
+        "family_throughput_mult": 1.05,
+        "global_quality_tph_mult": 0.992,
+        "global_quality_wr_bonus": 0.0006,
+        "context_block_mult": 1.0,
+        "context_quality_bonus": 0.0,
+        "enabled_executable_family_count": 4
+      },
+      "incident_count": 0,
+      "verdict": "PASS",
+      "reject_reason_if_any": ""
+    }
+  ],
+  "session_totals": [
+    {
+      "session": "LONDON",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.632951,
+      "mean_win_rate_est": 0.570667,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.178916
+    },
+    {
+      "session": "ASIA",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.332487,
+      "mean_win_rate_est": 0.557481,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.075695
+    },
+    {
+      "session": "NEW_YORK",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.59185,
+      "mean_win_rate_est": 0.575425,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.178561
+    },
+    {
+      "session": "LONDON_NY_OVERLAP",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.74967,
+      "mean_win_rate_est": 0.588457,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.265254
+    }
+  ],
+  "hard_gates": {
+    "max_false_cut_rate": 0.1,
+    "max_weighted_relative_spread": 0.5,
+    "min_weighted_delta_pph": 0.0,
+    "incident_count_max": 0
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "release_action": "PROMOTE_TO_STAGE3_COMBINED_STABILITY",
+    "reason": "All expanded major pair/session rows pass stage-2 hard gates with additive throughput and bounded quality."
+  }
+}

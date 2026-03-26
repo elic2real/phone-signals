@@ -1,0 +1,240 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T08:16:32.446351+00:00",
+  "task_id": "MVP_PHASE13_COUNTERFACTUAL_SIMULATION_PLAN_NO_TUNING",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "COUNTERFACTUAL_SIMULATION_ONLY"
+  },
+  "dependency": {
+    "phase12_status": "PASS",
+    "phase12_path": "control/mvp_phase12_paper_only_behavior_change_trial_design.json",
+    "phase11_status": "PASS",
+    "phase11_path": "control/mvp_phase11_exit_timing_and_drawdown_pattern_decomposition_no_tuning.json"
+  },
+  "baseline_snapshot": {
+    "EUR_USD": {
+      "sample_count": 12,
+      "peak_to_close_loss_distribution": {
+        "count": 12,
+        "mean": 10.2,
+        "median": 11.3,
+        "p75": 13.3,
+        "p90": 13.3,
+        "max": 14.1
+      },
+      "drawdown_duration_buckets": {
+        "10_30m": 3,
+        "0_10m": 8,
+        "30_60m": 1
+      },
+      "thresholds": {
+        "peak_to_close_p75": 3900.0,
+        "peak_to_close_p90": 4140.0,
+        "drawdown_p75": 1140.0
+      }
+    },
+    "GBP_USD": {
+      "sample_count": 22,
+      "peak_to_close_loss_distribution": {
+        "count": 22,
+        "mean": 8.895454545454545,
+        "median": 7.25,
+        "p75": 9.1,
+        "p90": 12.9,
+        "max": 21.5
+      },
+      "drawdown_duration_buckets": {
+        "0_10m": 7,
+        "10_30m": 5,
+        "30_60m": 6,
+        "gt_60m": 4
+      },
+      "thresholds": {
+        "peak_to_close_p75": 2520.0,
+        "peak_to_close_p90": 3120.0,
+        "drawdown_p75": 2760.0
+      }
+    }
+  },
+  "trial_priority_order": [
+    "P12-T1",
+    "P12-T2",
+    "P12-T3"
+  ],
+  "simulation_matrix": [
+    {
+      "cell_id": "P12-T1::EUR_USD",
+      "trial_id": "P12-T1",
+      "pair": "EUR_USD",
+      "priority": 1,
+      "counterfactual_rule": {
+        "if": "time_from_peak_to_close_seconds > 3900.0 and loss_after_peak_pips >= 1.0",
+        "then": "candidate_exit=EARLY_POST_PEAK_GUARD"
+      },
+      "evaluation_mode": "OFFLINE_LABEL_ONLY",
+      "expected_effect_direction": {
+        "peak_to_close_loss_distribution": "down",
+        "drawdown_duration": "down",
+        "win_rate": "flat_to_up"
+      }
+    },
+    {
+      "cell_id": "P12-T1::GBP_USD",
+      "trial_id": "P12-T1",
+      "pair": "GBP_USD",
+      "priority": 1,
+      "counterfactual_rule": {
+        "if": "time_from_peak_to_close_seconds > 2520.0 and loss_after_peak_pips >= 1.0",
+        "then": "candidate_exit=EARLY_POST_PEAK_GUARD"
+      },
+      "evaluation_mode": "OFFLINE_LABEL_ONLY",
+      "expected_effect_direction": {
+        "peak_to_close_loss_distribution": "down",
+        "drawdown_duration": "down",
+        "win_rate": "flat_to_up"
+      }
+    },
+    {
+      "cell_id": "P12-T2::EUR_USD",
+      "trial_id": "P12-T2",
+      "pair": "EUR_USD",
+      "priority": 2,
+      "counterfactual_rule": {
+        "if": "time_in_drawdown_seconds > 1140.0 and outcome_proxy=no_recovery",
+        "then": "candidate_exit=DRAWDOWN_FAIL_FAST"
+      },
+      "evaluation_mode": "OFFLINE_LABEL_ONLY",
+      "expected_effect_direction": {
+        "avg_loser_hold_time": "down",
+        "tail_loss": "down",
+        "trades_per_hour": "flat_to_up"
+      }
+    },
+    {
+      "cell_id": "P12-T2::GBP_USD",
+      "trial_id": "P12-T2",
+      "pair": "GBP_USD",
+      "priority": 2,
+      "counterfactual_rule": {
+        "if": "time_in_drawdown_seconds > 2760.0 and outcome_proxy=no_recovery",
+        "then": "candidate_exit=DRAWDOWN_FAIL_FAST"
+      },
+      "evaluation_mode": "OFFLINE_LABEL_ONLY",
+      "expected_effect_direction": {
+        "avg_loser_hold_time": "down",
+        "tail_loss": "down",
+        "trades_per_hour": "flat_to_up"
+      }
+    },
+    {
+      "cell_id": "P12-T3::EUR_USD",
+      "trial_id": "P12-T3",
+      "pair": "EUR_USD",
+      "priority": 3,
+      "counterfactual_rule": {
+        "if": "time_to_first_profit_seconds < 600 and time_in_drawdown_seconds > 1800",
+        "then": "candidate_exit=TIMING_TOLERANCE_CAP"
+      },
+      "evaluation_mode": "OFFLINE_LABEL_ONLY",
+      "expected_effect_direction": {
+        "drawdown_duration": "down",
+        "loss_after_peak": "down",
+        "realized_pph": "up_if_false_cut_rate_controlled"
+      }
+    },
+    {
+      "cell_id": "P12-T3::GBP_USD",
+      "trial_id": "P12-T3",
+      "pair": "GBP_USD",
+      "priority": 3,
+      "counterfactual_rule": {
+        "if": "time_to_first_profit_seconds < 600 and time_in_drawdown_seconds > 1800",
+        "then": "candidate_exit=TIMING_TOLERANCE_CAP"
+      },
+      "evaluation_mode": "OFFLINE_LABEL_ONLY",
+      "expected_effect_direction": {
+        "drawdown_duration": "down",
+        "loss_after_peak": "down",
+        "realized_pph": "up_if_false_cut_rate_controlled"
+      }
+    }
+  ],
+  "execution_stages": [
+    {
+      "stage": 1,
+      "name": "single_trial_isolation",
+      "description": "Run each trial independently per pair with no interaction effects."
+    },
+    {
+      "stage": 2,
+      "name": "ordered_additive_stack",
+      "description": "Apply trials in priority order to measure additive impact and interference."
+    },
+    {
+      "stage": 3,
+      "name": "stress_slices",
+      "description": "Re-evaluate on high drawdown and long-peak slices for brittleness checks."
+    }
+  ],
+  "acceptance_protocol": {
+    "lock_first_requirements": {
+      "scope_lock": {
+        "pairs": [
+          "EUR_USD",
+          "GBP_USD"
+        ],
+        "session": "LONDON",
+        "tuning": "NONE",
+        "mode": "COUNTERFACTUAL_SIMULATION_ONLY"
+      },
+      "frozen_inputs": [
+        "control/mvp_phase12_paper_only_behavior_change_trial_design.json",
+        "control/mvp_phase11_exit_timing_and_drawdown_pattern_decomposition_no_tuning.json",
+        "entry_v23_policy_guarded_active.json"
+      ],
+      "forbidden": [
+        "policy parameter edits",
+        "live runtime behavior changes",
+        "architecture expansion"
+      ]
+    },
+    "acceptance_metrics": {
+      "primary": [
+        "peak_to_close_loss_distribution_delta",
+        "drawdown_duration_bucket_shift",
+        "false_cut_rate_on_winners"
+      ],
+      "secondary": [
+        "estimated_realized_pph_direction",
+        "trade_life_seconds_change"
+      ],
+      "must_report_by_pair": true
+    },
+    "promotion_thresholds": {
+      "requires_positive_primary_metrics": 2,
+      "max_false_cut_rate_on_winners": 0.15,
+      "requires_no_scope_regression": true
+    },
+    "rollback_criteria": {
+      "false_cut_rate_on_winners_gt": 0.15,
+      "pair_divergence_alert": true,
+      "unexpected_tail_loss_increase": true
+    }
+  },
+  "pass_conditions": {
+    "phase12_dependency_passed": true,
+    "phase11_dependency_passed": true,
+    "simulation_matrix_present": true,
+    "acceptance_protocol_present": true,
+    "rollback_criteria_present": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

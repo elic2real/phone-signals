@@ -1,0 +1,179 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T08:37:00.535869+00:00",
+  "task_id": "MVP_PHASE15_FALSE_CUT_MITIGATION_TRIAL_REDESIGN_PAPER_ONLY",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "PAPER_ONLY"
+  },
+  "dependency": {
+    "phase14_status": "PASS",
+    "phase14_path": "control/mvp_phase14_counterfactual_simulation_execution_no_tuning.json",
+    "phase13_status": "PASS",
+    "phase13_path": "control/mvp_phase13_counterfactual_simulation_plan_no_tuning.json",
+    "phase14_overall_gate_pass": false
+  },
+  "failure_root": {
+    "max_false_cut_rate_allowed": 0.15,
+    "pair_false_cut_rates": {
+      "EUR_USD": 0.37662337662337664,
+      "GBP_USD": 0.46153846153846156
+    }
+  },
+  "redesign_by_pair": {
+    "EUR_USD": {
+      "stage2_snapshot": {
+        "trigger_rate": 0.475,
+        "false_cut_rate_on_winners": 0.37662337662337664,
+        "estimated_saved_loss_total_pips": 594.3,
+        "passes_pair_gate": false
+      },
+      "mitigation_cards": [
+        {
+          "card_id": "P15-EUR_USD-M1",
+          "name": "Winner-protection confirmation gate",
+          "hypothesis": "False cuts are high because exits trigger before confirmation loss of momentum.",
+          "paper_rule": "Apply mitigation if candidate exit and post-trigger confirmation fails to break local continuation for two bars.",
+          "expected_effect": {
+            "false_cut_rate_on_winners": "down_material",
+            "saved_loss_total": "down_moderate",
+            "net_effect": "up_if_false_cut_drop_dominates"
+          },
+          "risk": "May delay exits on true failures.",
+          "target": {
+            "current_false_cut_rate": 0.37662337662337664,
+            "target_false_cut_rate": 0.15
+          },
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P15-EUR_USD-M2",
+          "name": "Tiered trigger throttling",
+          "hypothesis": "Trigger density is too broad; high trigger rate captures many eventual winners.",
+          "paper_rule": "Throttle candidate exits by priority tier and only allow full trigger set in top-risk slices.",
+          "expected_effect": {
+            "trigger_rate": "down",
+            "false_cut_rate_on_winners": "down",
+            "saved_loss_total": "down_some"
+          },
+          "risk": "Could under-capture tail loss in non-top-risk trades.",
+          "target": {
+            "current_trigger_rate": 0.475,
+            "target_trigger_rate": 0.35624999999999996
+          },
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P15-EUR_USD-M3",
+          "name": "Selective trial deactivation plan",
+          "hypothesis": "Trials P12-T1 and P12-T3 contribute most to winner cuts; isolate safer subset first.",
+          "paper_rule": "Use P12-T2 as anchor and re-introduce other trials only after pair-specific false-cut compliance.",
+          "expected_effect": {
+            "false_cut_rate_on_winners": "down_to_compliant",
+            "saved_loss_total": "down",
+            "gate_pass_probability": "up"
+          },
+          "risk": "Reduced gross saved-loss potential.",
+          "status": "DESIGN_ONLY"
+        }
+      ]
+    },
+    "GBP_USD": {
+      "stage2_snapshot": {
+        "trigger_rate": 0.485,
+        "false_cut_rate_on_winners": 0.46153846153846156,
+        "estimated_saved_loss_total_pips": 857.5,
+        "passes_pair_gate": false
+      },
+      "mitigation_cards": [
+        {
+          "card_id": "P15-GBP_USD-M1",
+          "name": "Winner-protection confirmation gate",
+          "hypothesis": "False cuts are high because exits trigger before confirmation loss of momentum.",
+          "paper_rule": "Apply mitigation if candidate exit and post-trigger confirmation fails to break local continuation for two bars.",
+          "expected_effect": {
+            "false_cut_rate_on_winners": "down_material",
+            "saved_loss_total": "down_moderate",
+            "net_effect": "up_if_false_cut_drop_dominates"
+          },
+          "risk": "May delay exits on true failures.",
+          "target": {
+            "current_false_cut_rate": 0.46153846153846156,
+            "target_false_cut_rate": 0.15
+          },
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P15-GBP_USD-M2",
+          "name": "Tiered trigger throttling",
+          "hypothesis": "Trigger density is too broad; high trigger rate captures many eventual winners.",
+          "paper_rule": "Throttle candidate exits by priority tier and only allow full trigger set in top-risk slices.",
+          "expected_effect": {
+            "trigger_rate": "down",
+            "false_cut_rate_on_winners": "down",
+            "saved_loss_total": "down_some"
+          },
+          "risk": "Could under-capture tail loss in non-top-risk trades.",
+          "target": {
+            "current_trigger_rate": 0.485,
+            "target_trigger_rate": 0.36375
+          },
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P15-GBP_USD-M3",
+          "name": "Selective trial deactivation plan",
+          "hypothesis": "Trials P12-T1 and P12-T3 contribute most to winner cuts; isolate safer subset first.",
+          "paper_rule": "Use P12-T2 as anchor and re-introduce other trials only after pair-specific false-cut compliance.",
+          "expected_effect": {
+            "false_cut_rate_on_winners": "down_to_compliant",
+            "saved_loss_total": "down",
+            "gate_pass_probability": "up"
+          },
+          "risk": "Reduced gross saved-loss potential.",
+          "status": "DESIGN_ONLY"
+        }
+      ]
+    }
+  },
+  "redesign_priority_order": [
+    "Winner-protection confirmation gate",
+    "Tiered trigger throttling",
+    "Selective trial deactivation plan"
+  ],
+  "protocol_lock": {
+    "mode": "PAPER_ONLY_REDESIGN",
+    "forbidden": [
+      "production policy changes",
+      "parameter tuning",
+      "runtime execution changes"
+    ],
+    "required_before_phase16": [
+      "mitigation cards approved",
+      "counterfactual rerun protocol locked",
+      "pair-specific false-cut targets locked"
+    ]
+  },
+  "phase16_entry_gate": {
+    "requires": [
+      "all mitigation cards reviewed",
+      "rerun spec includes pair-specific false-cut guard",
+      "no scope expansion"
+    ],
+    "status": "PENDING"
+  },
+  "pass_conditions": {
+    "phase14_dependency_passed": true,
+    "failure_root_captured": true,
+    "pair_mitigation_cards_present": true,
+    "paper_only_confirmed": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

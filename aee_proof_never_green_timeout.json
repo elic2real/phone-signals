@@ -1,0 +1,144 @@
+{
+  "branch": "AEE_NEVER_GREEN_TIMEOUT",
+  "generated_at": "2026-03-23T16:22:05.850787Z",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "threshold_snapshot": {
+    "timeout_sec": 24.0,
+    "max_best_r": 0.08,
+    "max_net_r": 0.02
+  },
+  "representative_samples": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "timeout_sec": 24.0,
+          "max_best_r": 0.08,
+          "max_net_r": 0.02,
+          "max_vel_r_per_sec": 0.0015
+        },
+        "debug": {
+          "hold_sec": 36.0,
+          "best_r": 0.03,
+          "net_r": -0.02,
+          "vel_r": 0.0005
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "timeout_sec": 24.0,
+          "max_best_r": 0.08,
+          "max_net_r": 0.02,
+          "max_vel_r_per_sec": 0.0015
+        },
+        "debug": {
+          "hold_sec": 24.1,
+          "best_r": 0.079,
+          "net_r": 0.019,
+          "vel_r": 0.0014
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "timeout_sec": 24.0,
+          "max_best_r": 0.08,
+          "max_net_r": 0.02,
+          "max_vel_r_per_sec": 0.0015
+        },
+        "debug": {
+          "hold_sec": 18.0,
+          "best_r": 0.02,
+          "net_r": -0.01,
+          "vel_r": 0.0
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "timeout_sec": 24.0,
+          "max_best_r": 0.08,
+          "max_net_r": 0.02,
+          "max_vel_r_per_sec": 0.0015
+        },
+        "debug": {
+          "hold_sec": 36.0,
+          "best_r": 0.03,
+          "net_r": -0.02,
+          "vel_r": 0.0005
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "timeout_sec": 24.0,
+          "max_best_r": 0.08,
+          "max_net_r": 0.02,
+          "max_vel_r_per_sec": 0.0015
+        },
+        "debug": {
+          "hold_sec": 24.1,
+          "best_r": 0.079,
+          "net_r": 0.019,
+          "vel_r": 0.0014
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "timeout_sec": 24.0,
+          "max_best_r": 0.08,
+          "max_net_r": 0.02,
+          "max_vel_r_per_sec": 0.0015
+        },
+        "debug": {
+          "hold_sec": 18.0,
+          "best_r": 0.02,
+          "net_r": -0.01,
+          "vel_r": 0.0
+        }
+      }
+    }
+  ]
+}

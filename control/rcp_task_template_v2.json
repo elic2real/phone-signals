@@ -1,0 +1,200 @@
+{
+  "TASK_ID": "TASK-XXX",
+  "MODE": "EXECUTE",
+  "PROTOCOL_VERSION": "RCP_V2_HARD",
+  "ENFORCEMENT_MODE": "STRICT",
+  "INTERVENTION_CLASS": "SPEC_ONLY",
+  "RESEARCH_LAYER": "IMPLEMENTATION",
+  "VARIABLE_CONTRACT": {
+    "variable": "AEE_FAST_FAILURE_EXIT_BREAKOUT",
+    "layer": "AEE_INTERACTION",
+    "intervention": "RELAX",
+    "scope": "BREAKOUT_ONLY"
+  },
+  "PARALLEL_ISOLATION": {
+    "parallel_group": "AEE_BREAKOUT_FIX",
+    "max_variables": 1,
+    "variables_independent": false
+  },
+  "DEAD_PATH_POLICY": {
+    "history_artifact": "control/variable_causality_map.json",
+    "max_attempts": 3,
+    "unblock_requires": [
+      "new_hypothesis",
+      "different_layer",
+      "new_evidence"
+    ]
+  },
+  "PROTECTED_METRIC": {
+    "name": "EXPANSION_BREAKOUT_pph",
+    "minimum_allowed": "baseline * 0.9"
+  },
+  "REGRESSION_DOMINANCE_RULE": {
+    "if_primary_edge_down_and_secondary_up": "FAIL"
+  },
+  "CONCEPT_LOCK": {
+    "concept_validity": "ASSUMED_TRUE",
+    "failure_interpretation": "IMPLEMENTATION_OR_SIMULATION_ERROR"
+  },
+  "SCOPE": {
+    "Component": "unknown",
+    "Allowed Files": [
+      "control/*"
+    ]
+  },
+  "CHAMPION_REFERENCE": [
+    "control/champion_registry.json"
+  ],
+  "INTENT": "One sentence exact purpose.",
+  "PROBLEM_STATEMENT": [
+    "What is wrong",
+    "Why this task exists"
+  ],
+  "HYPOTHESIS": [
+    "What is being tested or fixed"
+  ],
+  "CHANGE_PLAN": [
+    "Bounded action 1",
+    "Bounded action 2",
+    "Bounded action 3"
+  ],
+  "CONSTRAINTS": [
+    "No scope expansion",
+    "No unrelated fixes",
+    "No hidden edits",
+    "No threshold tuning unless explicitly allowed",
+    "No structural rebuild unless explicitly allowed",
+    "Preserve baseline unless PROMOTE verdict"
+  ],
+  "EXPECTED_SIGNATURE": {
+    "trade_count": "expected direction or range",
+    "trades_per_hour": "expected direction or range",
+    "avg_pips_per_trade": "expected direction or range",
+    "net_pips_per_hour": "expected direction or range",
+    "entry_only_vs_realized_gap": "expected direction or range",
+    "loss_compression_rate": "expected direction or range",
+    "failure_to_win_conversion_rate": "expected direction or range",
+    "continuation_capture_rate": "expected direction or range",
+    "giveback_ratio": "expected direction or range"
+  },
+  "FALSIFIABLE_SIGNATURE": {
+    "expected": {
+      "breakout_pph": "+20% to +100%",
+      "entry_only_vs_realized_gap": "-10% to -50%",
+      "fast_failure_share": "-50% to -80%"
+    },
+    "failure": {
+      "breakout_pph": "<= baseline",
+      "entry_only_vs_realized_gap": ">= baseline",
+      "fast_failure_share": "unchanged or worse"
+    }
+  },
+  "EVALUATION_METRICS": [
+    "realized_pph",
+    "entry_only_vs_realized_gap",
+    "exit_reason_distribution",
+    "loss_compression_rate",
+    "failure_to_win_conversion_rate",
+    "continuation_capture_rate",
+    "giveback_ratio"
+  ],
+  "AEE_TRANSFORMATION_AUDIT": {
+    "purpose": "AEE is a distribution-shaping engine across three required transformations",
+    "required_transformations": [
+      "loss_compression",
+      "failure_to_win_conversion",
+      "continuation_capture"
+    ],
+    "branch_role_map": {
+      "AEE_BAND_FAST_FAILURE_EXIT": "loss_compression",
+      "AEE_NEVER_GREEN_TIMEOUT": "failure_detection",
+      "AEE_GIVEBACK_EXIT": "profit_protection_and_continuation_balance",
+      "AEE_CONTINUATION_FAILED_EXIT": "late_failure"
+    },
+    "overfire_checks": [
+      "AEE_GIVEBACK_EXIT share expansion vs baseline",
+      "AEE_BAND_FAST_FAILURE_EXIT early-fire damage",
+      "pullback_vs_reversal misclassification evidence"
+    ]
+  },
+  "MIN_EFFECT_SIZE": {
+    "pph": "+0.01",
+    "entry_only_vs_realized_gap": "-0.02"
+  },
+  "POST_RUN_CLASSIFICATION": {
+    "artifact": "control/post_run_classification.json",
+    "required_fields": [
+      "failure_layer",
+      "confidence",
+      "reason"
+    ]
+  },
+  "REVERSE_ENGINEERING_OUTPUTS": [
+    "control/degradation_waterfall_template.json",
+    "control/family_confusion_report_template.json"
+  ],
+  "ABLATABLE_COMPONENTS": [
+    "component_name"
+  ],
+  "STEPS": [
+    "Load control/system_state.json",
+    "Load control/execution_plan.json",
+    "Load control/task_queue.json",
+    "Load control/validation_rules.json",
+    "Read active task only",
+    "Generate control/preflight_report.json",
+    "Apply only the bounded task change",
+    "Run all validation commands",
+    "Write control/validation_result.json",
+    "Write control/adjudication.json",
+    "Update control/system_state.json",
+    "Update control/task_queue.json",
+    "Append control/run_log.jsonl",
+    "Stop"
+  ],
+  "SUCCESS_CRITERIA": [
+    "Copy exactly from active task"
+  ],
+  "VALIDATION_COMMANDS": [
+    "Exact commands to run"
+  ],
+  "OUTPUT_REQUIREMENTS": {
+    "must_produce": [
+      "control/preflight_report.json",
+      "control/validation_result.json",
+      "control/adjudication.json",
+      "control/run_summary.json",
+      "control/config_snapshot.json",
+      "control/logic_trace_summary.json",
+      "control/trade_evidence_sample.json",
+      "control/data_coverage_report.json",
+      "control/expected_vs_actual_signature.json",
+      "control/failure_layer_classification.json",
+      "control/aee_transformation_audit.json",
+      "control/aee_baseline_ab_comparison.json"
+    ]
+  },
+  "FAIL_CONDITIONS": [
+    "Missing any required artifact",
+    "Modifying files outside allowed scope",
+    "Multiple changes outside task definition",
+    "Expected signature not evaluated",
+    "No champion delta",
+    "No reverse-engineering outputs when required"
+  ],
+  "ADJUDICATION_RULES": [
+    "PROMOTE",
+    "REJECT",
+    "NO_OP",
+    "CONDITIONALLY_POSITIVE_BUT_STRUCTURALLY_BLOCKED",
+    "INCOMPLETE",
+    "BLOCKED"
+  ],
+  "OUTPUT_RULES": [
+    "Output only requested artifacts or results",
+    "No commentary",
+    "No extra explanation",
+    "No suggestions outside task scope",
+    "Stop immediately after required output"
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "proof_name": "aee_live_wiring_proof",
+  "source": {
+    "files_scanned": [
+      "logs/trades.jsonl",
+      "logs/trades.jsonl.1",
+      "logs/trades.jsonl.10",
+      "logs/trades.jsonl.2",
+      "logs/trades.jsonl.3",
+      "logs/trades.jsonl.4",
+      "logs/trades.jsonl.5",
+      "logs/trades.jsonl.6",
+      "logs/trades.jsonl.7",
+      "logs/trades.jsonl.8",
+      "logs/trades.jsonl.9",
+      "logs/archive/trades_20260305T194801Z.jsonl",
+      "logs/archive/trades_20260305T194818Z.jsonl",
+      "logs/archive/trades_cal2_20260305T200912Z.jsonl",
+      "logs/archive/trades_cal3_20260305T200934Z.jsonl",
+      "logs/archive/trades_cal_20260305T200752Z.jsonl",
+      "logs/archive/trades_cal_20260305T200821Z.jsonl"
+    ],
+    "rows_seen": 82700,
+    "rows_used": 965,
+    "event_kinds": [
+      "MANUAL_CLOSE",
+      "MANUAL_TEACHER",
+      "TEACH_HEARTBEAT"
+    ]
+  },
+  "coverage": {
+    "action_counts": {
+      "HOLD": 452,
+      "PARTIAL": 5,
+      "TIGHTEN": 0,
+      "CLOSE": 508
+    },
+    "observed_action_set": [
+      "CLOSE",
+      "HOLD",
+      "PARTIAL"
+    ],
+    "missing_action_set": [
+      "TIGHTEN"
+    ],
+    "kind_counts": {
+      "MANUAL_TEACHER": 924,
+      "TEACH_HEARTBEAT": 17,
+      "MANUAL_CLOSE": 24
+    },
+    "mode_counts": {
+      "HARVESTER": 946,
+      "RUNNER": 19
+    }
+  },
+  "data_range": {
+    "max_abs_pnl_atr": 0.5999999999999339,
+    "max_abs_mfe_atr": 15.735328367630272
+  },
+  "examples": {
+    "CLOSE": {
+      "file": "logs/trades.jsonl.5",
+      "kind": "MANUAL_TEACHER",
+      "trade_id": 3883,
+      "ts": "2026-03-13T12:54:35.516645+00:00",
+      "mode": "HARVESTER",
+      "snapshot": {
+        "pnl_atr": 4.106335727818733e-17,
+        "mfe_atr": 0.1947519999999808,
+        "mae_atr": 0.8248319999994973,
+        "energy_ratio": 3.3159844545441764e-12,
+        "time_in_trade_sec": 294.17776679992676
+      },
+      "state": {
+        "went_green": true,
+        "partial_taken": false,
+        "tightened": false,
+        "best_r": 0.1948,
+        "worst_r": 0.0,
+        "stall_s": 0.0,
+        "giveback_r": 0.1948,
+        "energy": 0.0,
+        "current_r": 0.0
+      }
+    },
+    "HOLD": {
+      "file": "logs/trades.jsonl.5",
+      "kind": "MANUAL_TEACHER",
+      "trade_id": 3917,
+      "ts": "2026-03-13T12:54:36.441222+00:00",
+      "mode": "HARVESTER",
+      "snapshot": {
+        "pnl_atr": -4.137380191692908e-05,
+        "mfe_atr": 0.0,
+        "mae_atr": 0.6265198531864843,
+        "energy_ratio": 41.57550997165067,
+        "time_in_trade_sec": 22.209348678588867
+      },
+      "state": {
+        "went_green": false,
+        "partial_taken": false,
+        "tightened": false,
+        "best_r": 0.0,
+        "worst_r": -0.0,
+        "stall_s": 0.0,
+        "giveback_r": 0.0,
+        "energy": 41.5755,
+        "current_r": -0.0
+      }
+    },
+    "PARTIAL": {
+      "file": "logs/trades.jsonl.5",
+      "kind": "MANUAL_TEACHER",
+      "trade_id": 3935,
+      "ts": "2026-03-13T12:59:17.524902+00:00",
+      "mode": "HARVESTER",
+      "snapshot": {
+        "pnl_atr": -4.432892249530179e-05,
+        "mfe_atr": 0.10931764644873665,
+        "mae_atr": 1.2434882283533932,
+        "energy_ratio": 7.744711196390122,
+        "time_in_trade_sec": 176.93858218193054
+      },
+      "state": {
+        "went_green": true,
+        "partial_taken": true,
+        "tightened": false,
+        "best_r": 0.1093,
+        "worst_r": -0.0001,
+        "stall_s": 172.86,
+        "giveback_r": 0.1094,
+        "energy": 7.7447,
+        "current_r": -0.0
+      }
+    }
+  },
+  "notes": [
+    "This proof replays real open-trade snapshots through the same LiveDoctrineEngine used by phone_bot.py.",
+    "TIGHTEN requires qualifying runner-path drawdown conditions; if absent here, no qualifying runner path was observed in scanned logs."
+  ]
+}

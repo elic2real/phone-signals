@@ -1,0 +1,85 @@
+{
+  "generated_utc": "2026-03-17T12:59:01Z",
+  "sim_min_sample_gate": 50,
+  "source_files": {
+    "runtime_overrides": "strategy_runtime_overrides.json",
+    "decision_sheet": "strategy_merged_decision_sheet.json"
+  },
+  "rollout": {
+    "enable_only_keys": [
+      "short:harvester:3.5",
+      "short:harvester:5",
+      "long:harvester:5",
+      "long:harvester:6",
+      "short:harvester:2.5",
+      "short:harvester:8"
+    ],
+    "hard_suppress_keys": [
+      "long:harvester:1.5",
+      "short:harvester:1.5",
+      "long:harvester:2.5"
+    ],
+    "parked_keys": [
+      "long:harvester:3.5",
+      "long:harvester:7",
+      "long:harvester:8",
+      "long:runner:2.5",
+      "long:runner:3.5",
+      "long:runner:5",
+      "long:runner:6",
+      "long:runner:7",
+      "long:runner:8",
+      "short:harvester:6",
+      "short:harvester:7",
+      "short:runner:2.5",
+      "short:runner:3.5",
+      "short:runner:5",
+      "short:runner:6",
+      "short:runner:7",
+      "short:runner:8"
+    ],
+    "continuation_quarantine_env": {
+      "SUPPRESS_CONTINUATION_ENTRIES": "1",
+      "PC1_SUPPRESS_CONTINUATION": "1"
+    }
+  },
+  "decision_sets": {
+    "keep_from_sim": [
+      "long:harvester:3.5",
+      "long:harvester:5",
+      "long:harvester:6",
+      "long:harvester:7",
+      "long:harvester:8",
+      "short:harvester:2.5",
+      "short:harvester:3.5",
+      "short:harvester:5",
+      "short:harvester:6",
+      "short:harvester:7",
+      "short:harvester:8"
+    ],
+    "suppress_from_sim": [
+      "long:harvester:1.5",
+      "long:harvester:2.5",
+      "short:harvester:1.5"
+    ],
+    "needs_sample_from_sim": [
+      "long:runner:2.5",
+      "long:runner:3.5",
+      "long:runner:5",
+      "long:runner:6",
+      "long:runner:7",
+      "long:runner:8",
+      "short:runner:2.5",
+      "short:runner:3.5",
+      "short:runner:5",
+      "short:runner:6",
+      "short:runner:7",
+      "short:runner:8"
+    ]
+  },
+  "notes": [
+    "BREAK|RUNNER|T8_0 is entry-family specific and cannot be disabled via side:mode:distance override table alone.",
+    "Use entry gating (family-aware) plus focus override file to enforce the suppress intent operationally.",
+    "PULLBACK_RECLAIM|HARVESTER|T8_0 remains NEEDS_SAMPLE per live evidence; not included in phase1 focus set."
+  ]
+}

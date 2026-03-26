@@ -1,0 +1,29 @@
+{
+  "pair": "EUR_USD",
+  "session": "london",
+  "weekday": "monday",
+  "rules": {
+    "harvest": {
+      "if_profit_ge_pips": 2.5,
+      "if_giveback_ge_pips": 0.6,
+      "action": "HARVEST"
+    },
+    "decay": {
+      "if_bars_since_peak_ge": 2,
+      "action": "DECAY"
+    },
+    "panic": {
+      "if_profit_le_pips": -2.5,
+      "action": "PANIC"
+    },
+    "extend": {
+      "if_profit_ge_pips": 2.5,
+      "if_giveback_lt_pips": 0.6,
+      "action": "EXTEND"
+    }
+  },
+  "derived_metrics": {
+    "avg_extraction_efficiency": 1.0,
+    "triggered_trade_count": 15
+  }
+}

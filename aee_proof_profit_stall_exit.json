@@ -1,0 +1,180 @@
+{
+  "branch": "AEE_BAND_PROFIT_STALL_EXIT",
+  "generated_at": "2026-03-23T18:36:40.716128Z",
+  "scenarios_tested": 3,
+  "pass_count": 1,
+  "fail_count": 2,
+  "false_positives": 0,
+  "false_negatives": 2,
+  "threshold_snapshot": {
+    "min_best_r": 0.05,
+    "min_green_age_sec": 1.0,
+    "min_time_since_peak_sec": 1.0
+  },
+  "representative_outputs": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_PROFIT_STALL_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.01,
+          "min_best_r": 0.05,
+          "min_stall_sec": 1.5,
+          "max_vel_r_per_sec": 0.006,
+          "min_giveback_r": 0.01,
+          "profit_min_band": 1,
+          "profit_dwell_sec": 1.5
+        },
+        "debug": {
+          "net_r": 0.05,
+          "best_r": 0.16,
+          "giveback_r": 0.06,
+          "stall_s": 8.0,
+          "vel_r": 0.0012,
+          "current_band_idx": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_PROFIT_STALL_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.01,
+          "min_best_r": 0.05,
+          "min_stall_sec": 1.5,
+          "max_vel_r_per_sec": 0.006,
+          "min_giveback_r": 0.01,
+          "profit_min_band": 1,
+          "profit_dwell_sec": 1.5
+        },
+        "debug": {
+          "net_r": 0.031,
+          "best_r": 0.11,
+          "giveback_r": 0.031,
+          "stall_s": 4.1,
+          "vel_r": 0.0019,
+          "current_band_idx": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_PROFIT_STALL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.01,
+          "min_best_r": 0.05,
+          "min_stall_sec": 1.5,
+          "max_vel_r_per_sec": 0.006,
+          "min_giveback_r": 0.01,
+          "profit_min_band": 1,
+          "profit_dwell_sec": 1.5
+        },
+        "debug": {
+          "net_r": 0.06,
+          "best_r": 0.2,
+          "giveback_r": 0.01,
+          "stall_s": 0.8,
+          "vel_r": 0.008,
+          "current_band_idx": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_PROFIT_STALL_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.01,
+          "min_best_r": 0.05,
+          "min_stall_sec": 1.5,
+          "max_vel_r_per_sec": 0.006,
+          "min_giveback_r": 0.01,
+          "profit_min_band": 1,
+          "profit_dwell_sec": 1.5
+        },
+        "debug": {
+          "net_r": 0.05,
+          "best_r": 0.16,
+          "giveback_r": 0.06,
+          "stall_s": 8.0,
+          "vel_r": 0.0012,
+          "current_band_idx": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_PROFIT_STALL_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.01,
+          "min_best_r": 0.05,
+          "min_stall_sec": 1.5,
+          "max_vel_r_per_sec": 0.006,
+          "min_giveback_r": 0.01,
+          "profit_min_band": 1,
+          "profit_dwell_sec": 1.5
+        },
+        "debug": {
+          "net_r": 0.031,
+          "best_r": 0.11,
+          "giveback_r": 0.031,
+          "stall_s": 4.1,
+          "vel_r": 0.0019,
+          "current_band_idx": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_PROFIT_STALL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.01,
+          "min_best_r": 0.05,
+          "min_stall_sec": 1.5,
+          "max_vel_r_per_sec": 0.006,
+          "min_giveback_r": 0.01,
+          "profit_min_band": 1,
+          "profit_dwell_sec": 1.5
+        },
+        "debug": {
+          "net_r": 0.06,
+          "best_r": 0.2,
+          "giveback_r": 0.01,
+          "stall_s": 0.8,
+          "vel_r": 0.008,
+          "current_band_idx": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    }
+  ]
+}

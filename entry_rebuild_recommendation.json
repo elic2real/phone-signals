@@ -1,0 +1,203 @@
+{
+  "generated_at": "2026-03-25T00:50:16.897441Z",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "how_many_real_entry_families_exist": 3,
+  "best_family": {
+    "entry_type": "EXPANSION_BREAKOUT",
+    "net_extraction_per_hour": 0.07833424424871988,
+    "avg_realized_pips": 2.4452751817237797,
+    "pct_mfe_above_friction": 0.995846313603323,
+    "trades_per_hour": 0.05822916033308935,
+    "trade_count": 2889,
+    "verdict": "KEEP"
+  },
+  "worst_family": {
+    "entry_type": "RECLAIM_CONTINUATION",
+    "net_extraction_per_hour": 7.860634312878098e-05,
+    "avg_realized_pips": 1.3166666666666667,
+    "pct_mfe_above_friction": 1.0,
+    "trades_per_hour": 0.00036279850674822027,
+    "trade_count": 18,
+    "verdict": "NEEDS_MORE_ATTRIBUTION"
+  },
+  "strongest_post_entry_excursion_family": {
+    "entry_type": "RANGE_ESCAPE",
+    "p90_mfe_pips": 29.4
+  },
+  "fake_or_weak_trade_family": {
+    "entry_type": "RANGE_ESCAPE",
+    "pct_mfe_above_friction": 0.9940623453735774
+  },
+  "results_mainly_hurt_by": [
+    "bad_contexts"
+  ],
+  "family_to_keep": [
+    {
+      "entry_type": "EXPANSION_BREAKOUT",
+      "net_extraction_per_hour": 0.07833424424871988,
+      "avg_realized_pips": 2.4452751817237797,
+      "pct_mfe_above_friction": 0.995846313603323,
+      "trades_per_hour": 0.05822916033308935,
+      "trade_count": 2889,
+      "verdict": "KEEP"
+    },
+    {
+      "entry_type": "RANGE_ESCAPE",
+      "net_extraction_per_hour": 0.02982405280196341,
+      "avg_realized_pips": 1.832162295893122,
+      "pct_mfe_above_friction": 0.9940623453735774,
+      "trades_per_hour": 0.040734210118786286,
+      "trade_count": 2021,
+      "verdict": "KEEP"
+    },
+    {
+      "entry_type": "OTHER",
+      "net_extraction_per_hour": 0.0019147698967267174,
+      "avg_realized_pips": 1.7249999999999999,
+      "pct_mfe_above_friction": 1.0,
+      "trades_per_hour": 0.0030636318347627488,
+      "trade_count": 152,
+      "verdict": "KEEP"
+    }
+  ],
+  "family_to_kill": [],
+  "family_to_split_further": [],
+  "other_bucket_share": 0.029850746268656716,
+  "next_minimal_rebuild": {
+    "step_1": "route entry by deterministic family classifier",
+    "step_2": "keep top net_extraction_per_hour family active globally",
+    "step_3": "disable KILL families or context-family cells with negative net_extraction_per_hour",
+    "step_4": "for SPLIT_FURTHER family, split by context and rerun full-31",
+    "step_5": "retain independent per-family scorecards as release gate"
+  },
+  "runtime_trigger_evidence": {
+    "attempts_total": 18828,
+    "filled_transitions_total": 17,
+    "family_evidence": [
+      {
+        "entry_type": "EXPANSION_BREAKOUT",
+        "attempt_count": 16346,
+        "attempt_share": 0.8681750584236244,
+        "decision_arm_count": 15771,
+        "decision_reject_count": 555,
+        "decision_other_count": 20,
+        "filled_transition_count": 10,
+        "filled_transition_share": 0.5882352941176471
+      },
+      {
+        "entry_type": "RECLAIM_CONTINUATION",
+        "attempt_count": 1466,
+        "attempt_share": 0.07786275759507116,
+        "decision_arm_count": 1461,
+        "decision_reject_count": 0,
+        "decision_other_count": 5,
+        "filled_transition_count": 5,
+        "filled_transition_share": 0.29411764705882354
+      },
+      {
+        "entry_type": "OTHER",
+        "attempt_count": 12,
+        "attempt_share": 0.0006373486297004461,
+        "decision_arm_count": 0,
+        "decision_reject_count": 12,
+        "decision_other_count": 0,
+        "filled_transition_count": 2,
+        "filled_transition_share": 0.11764705882352941
+      },
+      {
+        "entry_type": "PULLBACK_CONTINUATION",
+        "attempt_count": 1004,
+        "attempt_share": 0.053324835351604,
+        "decision_arm_count": 1000,
+        "decision_reject_count": 0,
+        "decision_other_count": 4,
+        "filled_transition_count": 0,
+        "filled_transition_share": 0.0
+      },
+      {
+        "entry_type": "RANGE_ESCAPE",
+        "attempt_count": 0,
+        "attempt_share": 0.0,
+        "decision_arm_count": 0,
+        "decision_reject_count": 0,
+        "decision_other_count": 0,
+        "filled_transition_count": 0,
+        "filled_transition_share": 0.0
+      }
+    ],
+    "reconciliation_notes": [
+      "runtime traces confirm reclaim/pullback trigger families exist in live trigger domain",
+      "replay stream domain remains primary source for realized net extraction/hour ranking",
+      "use runtime evidence to prevent false zero-incidence conclusions for underrepresented replay families"
+    ]
+  },
+  "family_confidence_reconciliation": [
+    {
+      "entry_type": "EXPANSION_BREAKOUT",
+      "replay_trade_count": 2889,
+      "replay_net_extraction_per_hour": 0.07833424424871988,
+      "replay_verdict": "KEEP",
+      "runtime_attempt_count": 16346,
+      "runtime_filled_transition_count": 10,
+      "confidence_grade": "HIGH",
+      "recommended_action": "KEEP_ACTIVE"
+    },
+    {
+      "entry_type": "RANGE_ESCAPE",
+      "replay_trade_count": 2021,
+      "replay_net_extraction_per_hour": 0.02982405280196341,
+      "replay_verdict": "KEEP",
+      "runtime_attempt_count": 0,
+      "runtime_filled_transition_count": 0,
+      "confidence_grade": "LOW",
+      "recommended_action": "KEEP_GUARDED"
+    },
+    {
+      "entry_type": "OTHER",
+      "replay_trade_count": 152,
+      "replay_net_extraction_per_hour": 0.0019147698967267174,
+      "replay_verdict": "KEEP",
+      "runtime_attempt_count": 12,
+      "runtime_filled_transition_count": 2,
+      "confidence_grade": "LOW",
+      "recommended_action": "KEEP_GUARDED"
+    },
+    {
+      "entry_type": "PULLBACK_CONTINUATION",
+      "replay_trade_count": 12,
+      "replay_net_extraction_per_hour": 0.0004454359443964259,
+      "replay_verdict": "NEEDS_MORE_ATTRIBUTION",
+      "runtime_attempt_count": 1004,
+      "runtime_filled_transition_count": 0,
+      "confidence_grade": "LOW",
+      "recommended_action": "ATTRIBUTION_PRIORITY_HIGH"
+    },
+    {
+      "entry_type": "RECLAIM_CONTINUATION",
+      "replay_trade_count": 18,
+      "replay_net_extraction_per_hour": 7.860634312878098e-05,
+      "replay_verdict": "NEEDS_MORE_ATTRIBUTION",
+      "runtime_attempt_count": 1466,
+      "runtime_filled_transition_count": 5,
+      "confidence_grade": "LOW",
+      "recommended_action": "ATTRIBUTION_PRIORITY_HIGH"
+    }
+  ],
+  "promotion_policy": {
+    "selected_default_policy": "GUARDED_KEEP_LOW_CONFIDENCE",
+    "activation_summary": {
+      "keep_active": [
+        "EXPANSION_BREAKOUT"
+      ],
+      "keep_guarded": [
+        "OTHER",
+        "RANGE_ESCAPE"
+      ],
+      "attribution_priority_high": [
+        "PULLBACK_CONTINUATION",
+        "RECLAIM_CONTINUATION"
+      ],
+      "split_by_context": []
+    }
+  }
+}

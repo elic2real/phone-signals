@@ -1,0 +1,917 @@
+{
+  "protocol_version": "RCP_V2_TRANSITION",
+  "active_task_id": "TASK-016",
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Rebuild breakout as explicit structure detector",
+      "component": "entry_structure",
+      "status": "DONE",
+      "inputs": [
+        "component_structural_audit.json",
+        "control/system_state.json",
+        "run_aee_band_floor_baseline.py",
+        "phone_bot.py"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "entry_breakout_v2_spec.json",
+        "entry_breakout_v2.py",
+        "entry_breakout_v2_validation.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "entry_breakout_v2_spec.json",
+        "entry_breakout_v2.py",
+        "entry_breakout_v2_validation.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile entry_breakout_v2.py"
+      ],
+      "done_when": [
+        "breakout structure is explicit and not just threshold stacking",
+        "validation artifact exists"
+      ],
+      "on_reject_task_id": "TASK-002",
+      "on_noop_task_id": "TASK-002",
+      "on_blocked_task_id": "TASK-002"
+    },
+    {
+      "id": "TASK-002",
+      "title": "Validate breakout v2 against current reference",
+      "component": "entry_structure",
+      "status": "DONE",
+      "inputs": [
+        "entry_breakout_v2_spec.json",
+        "entry_breakout_v2.py",
+        "entry_v23_policy_strict_active_only.json"
+      ],
+      "allowed_files": [
+        "entry_breakout_v2_validation.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "entry_breakout_v2_validation.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile entry_breakout_v2.py"
+      ],
+      "done_when": [
+        "breakout v2 is compared against current breakout reference",
+        "validation artifact is updated with comparison evidence"
+      ]
+    },
+    {
+      "id": "TASK-003",
+      "title": "Rebuild pullback continuation as explicit state machine",
+      "component": "entry_structure",
+      "status": "DONE",
+      "inputs": [
+        "component_structural_audit.json",
+        "strategy_performance_report.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "entry_pullback_v2_spec.json",
+        "entry_pullback_v2.py",
+        "entry_pullback_v2_validation.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "entry_pullback_v2_spec.json",
+        "entry_pullback_v2.py",
+        "entry_pullback_v2_validation.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile entry_pullback_v2.py"
+      ],
+      "done_when": [
+        "pullback continuation is expressed as a stateful pattern contract",
+        "validation artifact exists"
+      ]
+    },
+    {
+      "id": "TASK-004",
+      "title": "Rebuild reclaim continuation as explicit state machine",
+      "component": "entry_structure",
+      "status": "DONE",
+      "inputs": [
+        "component_structural_audit.json",
+        "strategy_performance_report.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "entry_reclaim_v2_spec.json",
+        "entry_reclaim_v2.py",
+        "entry_reclaim_v2_validation.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "entry_reclaim_v2_spec.json",
+        "entry_reclaim_v2.py",
+        "entry_reclaim_v2_validation.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile entry_reclaim_v2.py"
+      ],
+      "done_when": [
+        "reclaim continuation is expressed as a stateful pattern contract",
+        "validation artifact exists"
+      ]
+    },
+    {
+      "id": "TASK-005",
+      "title": "Rebuild AEE into explicit trade-state machine",
+      "component": "aee_structure",
+      "status": "DONE",
+      "inputs": [
+        "component_structural_audit.json",
+        "aee_reverse_engineer/aee_reverse_engineer_validation_v1.json",
+        "phone_bot.py"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "aee_state_machine_v2_spec.json",
+        "aee_state_machine_v2.py",
+        "aee_state_machine_v2_validation.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "aee_state_machine_v2_spec.json",
+        "aee_state_machine_v2.py",
+        "aee_state_machine_v2_validation.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile aee_state_machine_v2.py"
+      ],
+      "done_when": [
+        "AEE phases and transitions are explicit and minimal",
+        "validation artifact exists"
+      ]
+    },
+    {
+      "id": "TASK-006",
+      "title": "Core edge firehose validation (raw entry + AEE)",
+      "component": "entry_aee_validation",
+      "status": "DONE",
+      "inputs": [
+        "entry_v36_firehose_all_families.json",
+        "control/final_execution_report.json",
+        "control/task001_breakout_firehose_report.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "run_multi_strategy_firehose.py",
+        "strategy_performance_report_raw.json",
+        "strategy_performance_by_context_raw.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "strategy_performance_report_raw.json",
+        "control/core_edge_validation_comparison.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile run_multi_strategy_firehose.py"
+      ],
+      "done_when": [
+        "raw firehose is run on EUR_USD with non-core layers disabled",
+        "per-family metrics are produced with OTHER included",
+        "comparison vs previous firehose is produced"
+      ]
+    },
+    {
+      "id": "TASK-007",
+      "title": "Strategy failure hypothesis audit",
+      "component": "entry_aee_audit",
+      "status": "DONE",
+      "inputs": [
+        "strategy_performance_report_raw.json",
+        "control/core_edge_validation_comparison.json",
+        "entry_v36_firehose_all_families.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "run_multi_strategy_firehose.py",
+        "entry_system_audit_rebuild.py",
+        "strategy_hypothesis_audit.json",
+        "strategy_entry_vs_aee_comparison.json",
+        "strategy_context_regime_breakdown.json",
+        "strategy_family_subcluster_report.json",
+        "control/*"
+      ],
+      "deliverables": [
+        "strategy_hypothesis_audit.json",
+        "strategy_entry_vs_aee_comparison.json",
+        "strategy_context_regime_breakdown.json",
+        "strategy_family_subcluster_report.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile entry_system_audit_rebuild.py"
+      ],
+      "done_when": [
+        "all hypothesis artifacts are generated with evidence fields",
+        "entry-only vs AEE-shaped behavior is explicitly separated",
+        "per-family context/regime and subcluster proposals are included"
+      ]
+    },
+    {
+      "id": "TASK-008",
+      "title": "AEE exit-path attribution audit",
+      "component": "aee_audit",
+      "status": "DONE",
+      "inputs": [
+        "strategy_entry_vs_aee_comparison.json",
+        "strategy_family_subcluster_report.json",
+        "entry_v36_firehose_all_families.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "control/*"
+      ],
+      "deliverables": [
+        "control/aee_exit_path_attribution.json",
+        "control/aee_exit_path_subcluster_matrix.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/task008_exit_path_audit.py"
+      ],
+      "done_when": [
+        "exit reasons are attributed per family",
+        "exit reasons are attributed per family subcluster",
+        "entry-only vs realized loss channels are quantified"
+      ]
+    },
+    {
+      "id": "TASK-009",
+      "title": "Family-specific AEE exit policy simulation audit",
+      "component": "aee_exit_policy_audit",
+      "status": "DONE",
+      "depends_on_task_ids": [
+        "TASK-014"
+      ],
+      "inputs": [
+        "control/aee_exit_path_attribution.json",
+        "control/aee_exit_path_subcluster_matrix.json",
+        "strategy_hypothesis_audit.json",
+        "strategy_family_subcluster_report.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "control/*",
+        "strategy_hypothesis_audit.json",
+        "strategy_family_subcluster_report.json"
+      ],
+      "deliverables": [
+        "control/aee_family_exit_policy_simulation_report.json",
+        "control/aee_subcluster_exit_policy_simulation_report.json",
+        "control/aee_exit_branch_damage_rank.json",
+        "control/aee_family_branch_recommendation.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/task009_exit_policy_sim_runner.py"
+      ],
+      "done_when": [
+        "branch_removal_delta_pph is computed per family per exit branch",
+        "subcluster-level simulation report is produced",
+        "exit branches are ranked by total damage contribution",
+        "per-family primary and secondary destructive branch recommendations are written"
+      ],
+      "protocol_version": "RCP_V1",
+      "intervention_class": "",
+      "research_layer": "",
+      "champion_reference": [],
+      "expected_signature": {},
+      "reverse_engineering_outputs": [],
+      "ablatable_components": [],
+      "fail_conditions": [],
+      "output_requirements": {
+        "must_produce": [
+          "control/aee_family_exit_policy_simulation_report.json",
+          "control/aee_subcluster_exit_policy_simulation_report.json",
+          "control/aee_exit_branch_damage_rank.json",
+          "control/aee_family_branch_recommendation.json"
+        ]
+      },
+      "adjudication_rules": [
+        "BLOCKED",
+        "INCOMPLETE",
+        "NO_OP",
+        "PROMOTE",
+        "REJECT"
+      ]
+    },
+    {
+      "id": "TASK-010",
+      "title": "AEE family state machine redesign spec",
+      "component": "aee_redesign_spec",
+      "status": "DONE",
+      "blocked_reason": "BLOCKED_BY_TASK009",
+      "depends_on_task_ids": [
+        "TASK-009"
+      ],
+      "inputs": [
+        "control/aee_family_exit_policy_simulation_report.json",
+        "control/aee_exit_branch_damage_rank.json",
+        "control/aee_family_branch_recommendation.json",
+        "aee_state_machine_v2.py",
+        "aee_state_machine_v2_spec.json"
+      ],
+      "allowed_files": [
+        "phone_bot.py",
+        "run_aee_band_floor_baseline.py",
+        "control/*",
+        "aee_state_machine_v2.py",
+        "aee_state_machine_v2_spec.json"
+      ],
+      "deliverables": [
+        "control/aee_family_state_machine_v3_spec.json",
+        "control/aee_family_state_transition_table.json",
+        "control/aee_branch_survival_map.json",
+        "control/aee_family_implementation_plan.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/task010_aee_redesign_spec_gen.py"
+      ],
+      "done_when": [
+        "7-state AEE progression is defined per family: INIT->PROBING->CONFIRMING->EXPANDING->EXHAUSTING->FAILING->EXIT",
+        "per-family early adverse allowance, time-to-green, stall tolerance, giveback tolerance are specified",
+        "branch survival map defines RETAINED/REMOVED/DIAGNOSTIC_ONLY per current AEE branch",
+        "implementation plan references current aee_state_machine_v2.py code locations"
+      ],
+      "protocol_version": "RCP_V1",
+      "intervention_class": "",
+      "research_layer": "",
+      "champion_reference": [],
+      "expected_signature": {},
+      "reverse_engineering_outputs": [],
+      "ablatable_components": [],
+      "fail_conditions": [],
+      "output_requirements": {
+        "must_produce": [
+          "control/aee_family_state_machine_v3_spec.json",
+          "control/aee_family_state_transition_table.json",
+          "control/aee_branch_survival_map.json",
+          "control/aee_family_implementation_plan.json"
+        ]
+      },
+      "adjudication_rules": [
+        "BLOCKED",
+        "INCOMPLETE",
+        "NO_OP",
+        "PROMOTE",
+        "REJECT"
+      ]
+    },
+    {
+      "id": "TASK-011",
+      "title": "Global simulation realism audit",
+      "component": "simulation_audit",
+      "status": "DONE",
+      "inputs": [
+        "strategy_performance_report_raw.json",
+        "strategy_hypothesis_audit.json",
+        "strategy_context_regime_breakdown.json",
+        "compiled_market_nodes/*"
+      ],
+      "allowed_files": [
+        "run_aee_band_floor_baseline.py",
+        "phone_bot.py",
+        "compiled_market_nodes/*",
+        "control/*",
+        "strategy_performance_report_raw.json",
+        "strategy_hypothesis_audit.json",
+        "strategy_context_regime_breakdown.json"
+      ],
+      "deliverables": [
+        "control/simulation_path_realism_report.json",
+        "control/simulation_fill_realism_report.json",
+        "control/simulation_diversity_report.json",
+        "control/simulation_sequence_fidelity_report.json",
+        "control/simulation_global_bias_report.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/task011_sim_realism_audit.py"
+      ],
+      "done_when": [
+        "all five audit sections produce quantified outputs",
+        "family_degradation_matrix compares all families",
+        "breakout_bias_score is computed",
+        "multi-stage representation capability is quantified",
+        "at least one measurable bias or limitation identified or explicitly disproven"
+      ]
+    },
+    {
+      "id": "TASK-012",
+      "title": "Lock RCP global doctrine v2",
+      "component": "control_protocol",
+      "status": "DONE",
+      "protocol_version": "RCP_V2",
+      "intervention_class": "SPEC_ONLY",
+      "research_layer": "IMPLEMENTATION",
+      "inputs": [
+        "control/orchestrator.py",
+        "control/validation_rules.json",
+        "control/task_queue.json",
+        "control/system_state.json"
+      ],
+      "allowed_files": [
+        "control/*"
+      ],
+      "champion_reference": [
+        "control/orchestrator.py",
+        "control/validation_rules.json"
+      ],
+      "intent": "Upgrade RCP from execution control to research control with enforced v2 task metadata and benchmark-stack scaffolds.",
+      "problem_statement": [
+        "RCP v1 controls coding drift but does not enforce research discipline strongly enough.",
+        "The protocol lacks mandatory intervention class, expected signature, champion reference, degradation waterfall, and gold-case scaffolds."
+      ],
+      "hypothesis": [
+        "If doctrine v2 is encoded in control artifacts and orchestrator validation, research drift and false-local-maximum behavior will be reduced."
+      ],
+      "change_plan": [
+        "Write the global doctrine v2 artifact and benchmark-stack scaffold files.",
+        "Upgrade validation rules and orchestrator rendering/validation for v2 task metadata.",
+        "Queue the next simulation reconstruction spec task under v2 discipline."
+      ],
+      "constraints": [
+        "No strategy changes",
+        "No AEE changes",
+        "No threshold tuning",
+        "No simulation logic changes",
+        "Preserve prior research artifacts"
+      ],
+      "expected_signature": {
+        "trade_count": "no change",
+        "trades_per_hour": "no change",
+        "avg_pips_per_trade": "no change",
+        "net_pips_per_hour": "no change",
+        "entry_only_vs_realized_gap": "no change"
+      },
+      "reverse_engineering_outputs": [
+        "control/degradation_waterfall_template.json",
+        "control/family_confusion_report_template.json",
+        "control/ablation_matrix_template.json",
+        "control/expected_vs_actual_signature_template.json",
+        "control/failure_layer_classification_template.json"
+      ],
+      "ablatable_components": [
+        "benchmark_stack_requirement",
+        "task_schema_requirement",
+        "champion_reference_requirement",
+        "expected_signature_requirement"
+      ],
+      "deliverables": [
+        "control/rcp_global_doctrine_v2.json",
+        "control/rcp_task_template_v2.json",
+        "control/concept_registry.json",
+        "control/strategy_form_registry.json",
+        "control/champion_registry.json",
+        "control/gold_cases.json",
+        "control/benchmark_suite.json",
+        "control/degradation_waterfall_template.json",
+        "control/family_confusion_report_template.json",
+        "control/ablation_matrix_template.json",
+        "control/expected_vs_actual_signature_template.json",
+        "control/failure_layer_classification_template.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/orchestrator.py",
+        "python3 control/orchestrator.py render"
+      ],
+      "done_when": [
+        "global doctrine v2 is written as a control artifact",
+        "benchmark-stack scaffold files exist",
+        "validation rules require v2 task metadata for RCP_V2 tasks",
+        "current task prompt renders v2 task metadata"
+      ],
+      "fail_conditions": [
+        "missing any required benchmark-stack artifact",
+        "v2 task schema not enforced for RCP_V2 tasks",
+        "orchestrator render or compile failure",
+        "scope expansion outside control/*"
+      ],
+      "output_requirements": {
+        "must_produce": [
+          "control/preflight_report.json",
+          "control/validation_result.json",
+          "control/adjudication.json",
+          "control/rcp_global_doctrine_v2.json",
+          "control/rcp_task_template_v2.json"
+        ],
+        "notes": "Output only control artifacts required for doctrine installation."
+      },
+      "adjudication_rules": [
+        "PROMOTE",
+        "REJECT",
+        "NO_OP",
+        "INCOMPLETE",
+        "BLOCKED"
+      ]
+    },
+    {
+      "id": "TASK-013",
+      "title": "Simulation reconstruction spec",
+      "component": "simulation_spec",
+      "status": "DONE",
+      "protocol_version": "RCP_V2",
+      "intervention_class": "SPEC_ONLY",
+      "research_layer": "SIMULATION",
+      "inputs": [
+        "control/simulation_path_realism_report.json",
+        "control/simulation_fill_realism_report.json",
+        "control/simulation_diversity_report.json",
+        "control/simulation_sequence_fidelity_report.json",
+        "control/simulation_global_bias_report.json",
+        "control/rcp_global_doctrine_v2.json"
+      ],
+      "allowed_files": [
+        "control/*",
+        "compiled_market_nodes/*"
+      ],
+      "champion_reference": [
+        "control/simulation_global_bias_report.json",
+        "control/benchmark_suite.json"
+      ],
+      "intent": "Design the simulation reconstruction plan required to remove breakout bias and establish a truth anchor.",
+      "problem_statement": [
+        "TASK-011 confirmed simulator bias toward breakout behavior and zero reclaim representability.",
+        "Simulation must be specified before additional AEE or strategy refinement proceeds."
+      ],
+      "hypothesis": [
+        "A reconstruction spec that adds intrabar fidelity, truth anchors, and bid/ask realism will remove a major false-negative source for multi-stage strategies."
+      ],
+      "change_plan": [
+        "Define truth anchors and extraction-efficiency measurement.",
+        "Specify intrabar path reconstruction, sequence preservation, and pricing realism requirements.",
+        "Produce an ordered implementation plan that precedes further family optimization."
+      ],
+      "constraints": [
+        "Spec only",
+        "No simulator code changes yet",
+        "No strategy changes",
+        "No threshold tuning"
+      ],
+      "expected_signature": {
+        "trade_count": "no change in this spec task",
+        "trades_per_hour": "no change in this spec task",
+        "avg_pips_per_trade": "no change in this spec task",
+        "net_pips_per_hour": "no change in this spec task",
+        "entry_only_vs_realized_gap": "spec will define expected reduction after implementation"
+      },
+      "reverse_engineering_outputs": [
+        "control/degradation_waterfall_template.json",
+        "control/failure_layer_classification_template.json",
+        "control/expected_vs_actual_signature_template.json"
+      ],
+      "ablatable_components": [
+        "intrabar_path_model",
+        "pricing_model",
+        "truth_anchor_mode",
+        "sequence_encoding"
+      ],
+      "deliverables": [
+        "control/simulation_reconstruction_spec.json",
+        "control/simulation_truth_anchor_spec.json",
+        "control/simulation_intrabar_fidelity_plan.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/orchestrator.py"
+      ],
+      "done_when": [
+        "simulation reconstruction spec addresses path fidelity, sequence preservation, and bid/ask realism",
+        "truth anchor spec defines available movement, entry-only capture, realized capture, and extraction efficiency",
+        "implementation order blocks downstream tuning until simulation layer is addressed"
+      ],
+      "fail_conditions": [
+        "no truth anchor defined",
+        "no extraction-efficiency measurement specified",
+        "no sequence preservation requirements specified"
+      ],
+      "output_requirements": {
+        "must_produce": [
+          "control/preflight_report.json",
+          "control/validation_result.json",
+          "control/adjudication.json",
+          "control/simulation_reconstruction_spec.json"
+        ]
+      },
+      "adjudication_rules": [
+        "PROMOTE",
+        "REJECT",
+        "NO_OP",
+        "INCOMPLETE",
+        "BLOCKED"
+      ]
+    },
+    {
+      "id": "TASK-014",
+      "title": "Simulation reconstruction implementation",
+      "component": "simulation_reconstruction",
+      "status": "DONE",
+      "protocol_version": "RCP_V2",
+      "intervention_class": "IMPLEMENTATION",
+      "research_layer": "SIMULATION",
+      "inputs": [
+        "control/simulation_reconstruction_spec.json",
+        "control/simulation_truth_anchor_spec.json",
+        "control/simulation_intrabar_fidelity_plan.json",
+        "control/simulation_global_bias_report.json",
+        "run_aee_band_floor_baseline.py",
+        "compiled_market_nodes/*"
+      ],
+      "allowed_files": [
+        "control/*",
+        "run_aee_band_floor_baseline.py",
+        "compiled_market_nodes/*",
+        "strategy_performance_report_raw.json"
+      ],
+      "champion_reference": [
+        "control/simulation_global_bias_report.json",
+        "strategy_performance_report_raw.json"
+      ],
+      "intent": "Implement simulation reconstruction instrumentation: truth anchors, extraction efficiency, sequence preservation diagnostics, pricing realism diagnostics, and balanced benchmark windows.",
+      "problem_statement": [
+        "Simulator remains breakout-biased and reclaim-representation is effectively zero.",
+        "AEE family redesign must not proceed while simulator cannot represent multi-stage reclaim behavior."
+      ],
+      "hypothesis": [
+        "Implementing reconstruction instrumentation and balanced evaluation outputs will expose true failure layer attribution and reduce false optimization loops."
+      ],
+      "change_plan": [
+        "Implement task014 reconstruction runner with truth-anchor and extraction-efficiency metrics.",
+        "Add sequence preservation and pricing realism diagnostics to simulation outputs.",
+        "Produce balanced benchmark windows and retest reports for raw firehose and reclaim-sensitive families."
+      ],
+      "constraints": [
+        "No strategy logic changes",
+        "No AEE logic changes",
+        "No threshold tuning",
+        "No routing changes",
+        "No calibration changes"
+      ],
+      "expected_signature": {
+        "trade_count": "stable to mildly changed due to balanced-window reporting only",
+        "trades_per_hour": "stable",
+        "avg_pips_per_trade": "measurement-only recomputation",
+        "net_pips_per_hour": "measurement-only recomputation",
+        "entry_only_vs_realized_gap": "explicitly measured for each family"
+      },
+      "reverse_engineering_outputs": [
+        "control/degradation_waterfall_template.json",
+        "control/failure_layer_classification_template.json",
+        "control/expected_vs_actual_signature_template.json"
+      ],
+      "ablatable_components": [
+        "truth_anchor_mode",
+        "sequence_preservation_mode",
+        "pricing_realism_mode",
+        "balanced_window_mode"
+      ],
+      "deliverables": [
+        "control/task014_simulation_reconstruction_impl.py",
+        "control/simulation_reconstruction_implementation_report.json",
+        "control/simulation_truth_anchor_metrics_report.json",
+        "control/simulation_sequence_preservation_report.json",
+        "control/simulation_pricing_realism_diagnostics_report.json",
+        "control/simulation_balanced_benchmark_report.json",
+        "control/simulation_retest_family_report.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile control/task014_simulation_reconstruction_impl.py",
+        "python3 control/task014_simulation_reconstruction_impl.py"
+      ],
+      "done_when": [
+        "truth-anchor and extraction-efficiency metrics are produced",
+        "sequence preservation diagnostics include reclaim representability check",
+        "pricing realism diagnostics are produced with suspicious fill signals",
+        "balanced benchmark windows are reported",
+        "retest report includes reclaim and other hypothesis-sensitive families"
+      ],
+      "fail_conditions": [
+        "missing any required deliverable",
+        "no extraction efficiency output",
+        "no reclaim representability output",
+        "no balanced benchmark report"
+      ],
+      "output_requirements": {
+        "must_produce": [
+          "control/preflight_report.json",
+          "control/validation_result.json",
+          "control/adjudication.json",
+          "control/simulation_reconstruction_implementation_report.json"
+        ]
+      },
+      "adjudication_rules": [
+        "PROMOTE",
+        "REJECT",
+        "NO_OP",
+        "INCOMPLETE",
+        "BLOCKED"
+      ]
+    },
+    {
+      "id": "TASK-015",
+      "title": "Implement AEE family state machine v3",
+      "component": "aee_v3_implementation",
+      "status": "DONE",
+      "protocol_version": "RCP_V2",
+      "intervention_class": "IMPLEMENTATION",
+      "research_layer": "AEE_INTERACTION",
+      "depends_on_task_ids": [
+        "TASK-010",
+        "TASK-014"
+      ],
+      "inputs": [
+        "control/aee_family_state_machine_v3_spec.json",
+        "control/aee_family_state_transition_table.json",
+        "control/aee_branch_survival_map.json",
+        "control/aee_family_implementation_plan.json",
+        "control/simulation_truth_anchor_metrics_report.json",
+        "run_aee_band_floor_baseline.py",
+        "aee_state_machine_v2.py"
+      ],
+      "allowed_files": [
+        "aee_state_machine_v2.py",
+        "aee_family_state_machine_v3.py",
+        "run_aee_band_floor_baseline.py",
+        "control/*"
+      ],
+      "champion_reference": [
+        "strategy_performance_report_raw.json",
+        "control/aee_family_state_machine_v3_spec.json"
+      ],
+      "intent": "Implement family-aware AEE v3 behavior that shrinks entry-only to realized damage without collapsing breakout behavior.",
+      "problem_statement": [
+        "Current AEE logic behaves as a generic trigger ladder and over-cuts non-breakout families.",
+        "TASK-009 and TASK-010 identified destructive branches and required family-specific transition behavior."
+      ],
+      "hypothesis": [
+        "Replacing universal early-failure logic with family-specific state behavior will reduce destructive branch damage and improve realized capture."
+      ],
+      "change_plan": [
+        "Implement family-aware AEE evaluator in aee_family_state_machine_v3.py.",
+        "Integrate v3 evaluator into run_aee_band_floor_baseline.py under controlled v3 mode.",
+        "Emit AEE v3 implementation report with branch treatment summary and sanity checks."
+      ],
+      "constraints": [
+        "No strategy detector changes",
+        "No routing changes",
+        "No calibration threshold sweep",
+        "Preserve baseline v2 path for comparison"
+      ],
+      "expected_signature": {
+        "trade_count": "stable",
+        "trades_per_hour": "stable",
+        "avg_pips_per_trade": "increase on non-breakout families expected",
+        "net_pips_per_hour": "increase expected",
+        "entry_only_vs_realized_gap": "decrease expected"
+      },
+      "reverse_engineering_outputs": [
+        "control/degradation_waterfall_template.json",
+        "control/expected_vs_actual_signature_template.json",
+        "control/failure_layer_classification_template.json"
+      ],
+      "ablatable_components": [
+        "aee_v3_enable",
+        "family_fail_policy",
+        "family_stall_policy",
+        "family_giveback_policy"
+      ],
+      "deliverables": [
+        "aee_family_state_machine_v3.py",
+        "control/aee_v3_implementation_report.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile aee_family_state_machine_v3.py",
+        "python3 -m py_compile run_aee_band_floor_baseline.py"
+      ],
+      "done_when": [
+        "aee_family_state_machine_v3.py is implemented and importable",
+        "run_aee_band_floor_baseline.py can run with AEE v3 evaluation path",
+        "implementation report maps retained/removed/diagnostic branch treatment"
+      ],
+      "fail_conditions": [
+        "missing v3 evaluator implementation",
+        "no integration path for v3 in baseline evaluator",
+        "syntax failure in modified files"
+      ],
+      "output_requirements": {
+        "must_produce": [
+          "control/preflight_report.json",
+          "control/validation_result.json",
+          "control/adjudication.json",
+          "control/aee_v3_implementation_report.json"
+        ]
+      },
+      "adjudication_rules": [
+        "PROMOTE",
+        "REJECT",
+        "NO_OP",
+        "INCOMPLETE",
+        "BLOCKED"
+      ]
+    },
+    {
+      "id": "TASK-016",
+      "title": "Post-implementation raw-core firehose validation",
+      "component": "aee_v3_validation",
+      "status": "DONE",
+      "protocol_version": "RCP_V2",
+      "intervention_class": "ABLATION",
+      "research_layer": "AEE_INTERACTION",
+      "depends_on_task_ids": [
+        "TASK-015"
+      ],
+      "inputs": [
+        "aee_family_state_machine_v3.py",
+        "strategy_performance_report_raw.json",
+        "control/simulation_truth_anchor_metrics_report.json",
+        "run_multi_strategy_firehose.py"
+      ],
+      "allowed_files": [
+        "control/*",
+        "strategy_performance_report_raw.json",
+        "run_multi_strategy_firehose.py",
+        "run_aee_band_floor_baseline.py"
+      ],
+      "champion_reference": [
+        "strategy_performance_report_raw.json"
+      ],
+      "intent": "Re-run raw-core EUR_USD firehose with AEE v3 and compare against current raw-core baseline.",
+      "problem_statement": [
+        "AEE v3 must prove reduction in entry-only to realized damage while preserving breakout edge.",
+        "Without post-implementation validation profitability movement remains unproven."
+      ],
+      "hypothesis": [
+        "AEE v3 reduces destructive branch suppression and improves extraction efficiency for non-breakout families while keeping breakout positive."
+      ],
+      "change_plan": [
+        "Run raw-core firehose in v3 mode.",
+        "Compare family net pph against current baseline and compute gap changes.",
+        "Report destructive branch reduction and extraction efficiency delta."
+      ],
+      "constraints": [
+        "No detector changes",
+        "No threshold tuning",
+        "No pair expansion",
+        "EUR_USD only"
+      ],
+      "expected_signature": {
+        "trade_count": "stable",
+        "trades_per_hour": "stable",
+        "avg_pips_per_trade": "improve on non-breakout families",
+        "net_pips_per_hour": "improve",
+        "entry_only_vs_realized_gap": "shrink"
+      },
+      "reverse_engineering_outputs": [
+        "control/degradation_waterfall_template.json",
+        "control/family_confusion_report_template.json",
+        "control/expected_vs_actual_signature_template.json"
+      ],
+      "ablatable_components": [
+        "aee_v2_vs_v3",
+        "family_policy_sets"
+      ],
+      "deliverables": [
+        "control/aee_v3_raw_core_firehose_report.json",
+        "control/aee_v3_vs_baseline_comparison.json"
+      ],
+      "validation_commands": [
+        "python3 -m py_compile run_multi_strategy_firehose.py"
+      ],
+      "done_when": [
+        "raw-core v3 run report exists",
+        "comparison against raw-core baseline exists",
+        "breakout net pph and family gap deltas are explicitly reported"
+      ],
+      "fail_conditions": [
+        "missing either required deliverable",
+        "no baseline comparison",
+        "no gap or extraction delta reporting"
+      ],
+      "output_requirements": {
+        "must_produce": [
+          "control/preflight_report.json",
+          "control/validation_result.json",
+          "control/adjudication.json",
+          "control/aee_v3_vs_baseline_comparison.json"
+        ]
+      },
+      "adjudication_rules": [
+        "PROMOTE",
+        "REJECT",
+        "NO_OP",
+        "INCOMPLETE",
+        "BLOCKED"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,633 @@
+{
+  "meta": {
+    "dataset": "scenarios/golden/v1.0/*.csv",
+    "method": "directional_settings_stepdown",
+    "targets": [
+      0.35,
+      0.3,
+      0.25,
+      0.2,
+      0.15,
+      0.1,
+      0.05
+    ]
+  },
+  "rows": [
+    {
+      "target": 0.35,
+      "both_pips_mean": 0.19417040358736676,
+      "validation": {
+        "long": {
+          "n": 471,
+          "pips_mean": 0.7099787685773326,
+          "win_rate": 0.6050955414012739
+        },
+        "short": {
+          "n": 421,
+          "pips_mean": -0.3828978622327612,
+          "win_rate": 0.45368171021377673
+        },
+        "both": {
+          "n": 892,
+          "pips_mean": 0.19417040358736676
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.14,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 0,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 276,
+        "trig_bad": 191,
+        "trig_noise": 4,
+        "trigger_rate_total": 0.4149779735682819,
+        "good_capture_rate": 0.42201834862385323,
+        "bad_trigger_rate": 0.4029535864978903,
+        "noise_trigger_rate": 0.5714285714285714,
+        "entry_score": -0.5523638093026084
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 178,
+        "trig_bad": 240,
+        "trig_noise": 3,
+        "trigger_rate_total": 0.37092511013215856,
+        "good_capture_rate": 0.3755274261603376,
+        "bad_trigger_rate": 0.3669724770642202,
+        "noise_trigger_rate": 0.42857142857142855,
+        "entry_score": -0.4200164794753112
+      },
+      "long_trades": 471,
+      "short_trades": 421,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 120,
+        "decay_speed_atr_per_min": 0.2,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.35,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      }
+    },
+    {
+      "target": 0.3,
+      "both_pips_mean": 0.244138335287138,
+      "validation": {
+        "long": {
+          "n": 471,
+          "pips_mean": 0.7099787685773326,
+          "win_rate": 0.6050955414012739
+        },
+        "short": {
+          "n": 382,
+          "pips_mean": -0.33023560209422737,
+          "win_rate": 0.4607329842931937
+        },
+        "both": {
+          "n": 853,
+          "pips_mean": 0.244138335287138
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.14,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 276,
+        "trig_bad": 191,
+        "trig_noise": 4,
+        "trigger_rate_total": 0.4149779735682819,
+        "good_capture_rate": 0.42201834862385323,
+        "bad_trigger_rate": 0.4029535864978903,
+        "noise_trigger_rate": 0.5714285714285714,
+        "entry_score": -0.5523638093026084
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 163,
+        "trig_bad": 216,
+        "trig_noise": 3,
+        "trigger_rate_total": 0.3365638766519824,
+        "good_capture_rate": 0.3438818565400844,
+        "bad_trigger_rate": 0.3302752293577982,
+        "noise_trigger_rate": 0.42857142857142855,
+        "entry_score": -0.4149648013891423
+      },
+      "long_trades": 471,
+      "short_trades": 382,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 120,
+        "decay_speed_atr_per_min": 0.2,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.35,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      }
+    },
+    {
+      "target": 0.25,
+      "both_pips_mean": 0.244138335287138,
+      "validation": {
+        "long": {
+          "n": 471,
+          "pips_mean": 0.7099787685773326,
+          "win_rate": 0.6050955414012739
+        },
+        "short": {
+          "n": 382,
+          "pips_mean": -0.33023560209422737,
+          "win_rate": 0.4607329842931937
+        },
+        "both": {
+          "n": 853,
+          "pips_mean": 0.244138335287138
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.14,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 276,
+        "trig_bad": 191,
+        "trig_noise": 4,
+        "trigger_rate_total": 0.4149779735682819,
+        "good_capture_rate": 0.42201834862385323,
+        "bad_trigger_rate": 0.4029535864978903,
+        "noise_trigger_rate": 0.5714285714285714,
+        "entry_score": -0.5523638093026084
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 163,
+        "trig_bad": 216,
+        "trig_noise": 3,
+        "trigger_rate_total": 0.3365638766519824,
+        "good_capture_rate": 0.3438818565400844,
+        "bad_trigger_rate": 0.3302752293577982,
+        "noise_trigger_rate": 0.42857142857142855,
+        "entry_score": -0.4149648013891423
+      },
+      "long_trades": 471,
+      "short_trades": 382,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 120,
+        "decay_speed_atr_per_min": 0.2,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.35,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      }
+    },
+    {
+      "target": 0.2,
+      "both_pips_mean": 0.244138335287138,
+      "validation": {
+        "long": {
+          "n": 471,
+          "pips_mean": 0.7099787685773326,
+          "win_rate": 0.6050955414012739
+        },
+        "short": {
+          "n": 382,
+          "pips_mean": -0.33023560209422737,
+          "win_rate": 0.4607329842931937
+        },
+        "both": {
+          "n": 853,
+          "pips_mean": 0.244138335287138
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.14,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 276,
+        "trig_bad": 191,
+        "trig_noise": 4,
+        "trigger_rate_total": 0.4149779735682819,
+        "good_capture_rate": 0.42201834862385323,
+        "bad_trigger_rate": 0.4029535864978903,
+        "noise_trigger_rate": 0.5714285714285714,
+        "entry_score": -0.5523638093026084
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 163,
+        "trig_bad": 216,
+        "trig_noise": 3,
+        "trigger_rate_total": 0.3365638766519824,
+        "good_capture_rate": 0.3438818565400844,
+        "bad_trigger_rate": 0.3302752293577982,
+        "noise_trigger_rate": 0.42857142857142855,
+        "entry_score": -0.4149648013891423
+      },
+      "long_trades": 471,
+      "short_trades": 382,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 120,
+        "decay_speed_atr_per_min": 0.2,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.35,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      }
+    },
+    {
+      "target": 0.15,
+      "both_pips_mean": 0.244138335287138,
+      "validation": {
+        "long": {
+          "n": 471,
+          "pips_mean": 0.7099787685773326,
+          "win_rate": 0.6050955414012739
+        },
+        "short": {
+          "n": 382,
+          "pips_mean": -0.33023560209422737,
+          "win_rate": 0.4607329842931937
+        },
+        "both": {
+          "n": 853,
+          "pips_mean": 0.244138335287138
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.14,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1000000000.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 276,
+        "trig_bad": 191,
+        "trig_noise": 4,
+        "trigger_rate_total": 0.4149779735682819,
+        "good_capture_rate": 0.42201834862385323,
+        "bad_trigger_rate": 0.4029535864978903,
+        "noise_trigger_rate": 0.5714285714285714,
+        "entry_score": -0.5523638093026084
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 163,
+        "trig_bad": 216,
+        "trig_noise": 3,
+        "trigger_rate_total": 0.3365638766519824,
+        "good_capture_rate": 0.3438818565400844,
+        "bad_trigger_rate": 0.3302752293577982,
+        "noise_trigger_rate": 0.42857142857142855,
+        "entry_score": -0.4149648013891423
+      },
+      "long_trades": 471,
+      "short_trades": 382,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 120,
+        "decay_speed_atr_per_min": 0.2,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.35,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      }
+    },
+    {
+      "target": 0.1,
+      "both_pips_mean": 0.37109704641330993,
+      "validation": {
+        "long": {
+          "n": 114,
+          "pips_mean": 1.055701754385869,
+          "win_rate": 0.6578947368421053
+        },
+        "short": {
+          "n": 123,
+          "pips_mean": -0.2634146341466229,
+          "win_rate": 0.44715447154471544
+        },
+        "both": {
+          "n": 237,
+          "pips_mean": 0.37109704641330993
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 0,
+        "confirm_sec": 0.25,
+        "base_max_dist_atr": 0.8,
+        "dist_vel_k": 0.4,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 0,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 1.0,
+        "dist_vel_k": 0.0,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 77,
+        "trig_bad": 37,
+        "trig_noise": 0,
+        "trigger_rate_total": 0.10044052863436123,
+        "good_capture_rate": 0.11773700305810397,
+        "bad_trigger_rate": 0.07805907172995781,
+        "noise_trigger_rate": 0.0,
+        "entry_score": 0.03967793132814616
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 59,
+        "trig_bad": 64,
+        "trig_noise": 0,
+        "trigger_rate_total": 0.10837004405286343,
+        "good_capture_rate": 0.12447257383966245,
+        "bad_trigger_rate": 0.09785932721712538,
+        "noise_trigger_rate": 0.0,
+        "entry_score": 0.02661324662253707
+      },
+      "long_trades": 114,
+      "short_trades": 123,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 90,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.5,
+        "force_sec": 600
+      }
+    },
+    {
+      "target": 0.05,
+      "both_pips_mean": 0.8594117647057198,
+      "validation": {
+        "long": {
+          "n": 94,
+          "pips_mean": 1.337765957446667,
+          "win_rate": 0.7021276595744681
+        },
+        "short": {
+          "n": 76,
+          "pips_mean": 0.2677631578945481,
+          "win_rate": 0.5263157894736842
+        },
+        "both": {
+          "n": 170,
+          "pips_mean": 0.8594117647057198
+        },
+        "overfit_verdict": "PASS"
+      },
+      "long_cfg": {
+        "confirm_disp_atr": 0.14,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.0,
+        "base_max_dist_atr": 0.8,
+        "dist_vel_k": 0.4,
+        "no_limits": false
+      },
+      "short_cfg": {
+        "confirm_disp_atr": 0.0,
+        "confirm_m1_closes": 0,
+        "confirm_sec": 1.25,
+        "base_max_dist_atr": 0.45,
+        "dist_vel_k": 0.8,
+        "no_limits": false
+      },
+      "long_stats": {
+        "good": 654,
+        "bad": 474,
+        "noise": 7,
+        "trig_good": 68,
+        "trig_bad": 26,
+        "trig_noise": 0,
+        "trigger_rate_total": 0.0828193832599119,
+        "good_capture_rate": 0.10397553516819572,
+        "bad_trigger_rate": 0.05485232067510549,
+        "noise_trigger_rate": 0.0,
+        "entry_score": 0.04912321449309023
+      },
+      "short_stats": {
+        "good": 474,
+        "bad": 654,
+        "noise": 7,
+        "trig_good": 43,
+        "trig_bad": 33,
+        "trig_noise": 0,
+        "trigger_rate_total": 0.06696035242290749,
+        "good_capture_rate": 0.09071729957805907,
+        "bad_trigger_rate": 0.05045871559633028,
+        "noise_trigger_rate": 0.0,
+        "entry_score": 0.040258583981728796
+      },
+      "long_trades": 94,
+      "short_trades": 76,
+      "aee_long": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 120,
+        "decay_speed_atr_per_min": 0.2,
+        "force_sec": 600
+      },
+      "aee_short": {
+        "min_profit_atr": 0.25,
+        "min_hold_sec": 60,
+        "decay_speed_atr_per_min": 0.35,
+        "force_sec": 600
+      }
+    }
+  ],
+  "best_profit": {
+    "target": 0.05,
+    "both_pips_mean": 0.8594117647057198,
+    "validation": {
+      "long": {
+        "n": 94,
+        "pips_mean": 1.337765957446667,
+        "win_rate": 0.7021276595744681
+      },
+      "short": {
+        "n": 76,
+        "pips_mean": 0.2677631578945481,
+        "win_rate": 0.5263157894736842
+      },
+      "both": {
+        "n": 170,
+        "pips_mean": 0.8594117647057198
+      },
+      "overfit_verdict": "PASS"
+    },
+    "long_cfg": {
+      "confirm_disp_atr": 0.14,
+      "confirm_m1_closes": 2,
+      "confirm_sec": 0.0,
+      "base_max_dist_atr": 0.8,
+      "dist_vel_k": 0.4,
+      "no_limits": false
+    },
+    "short_cfg": {
+      "confirm_disp_atr": 0.0,
+      "confirm_m1_closes": 0,
+      "confirm_sec": 1.25,
+      "base_max_dist_atr": 0.45,
+      "dist_vel_k": 0.8,
+      "no_limits": false
+    },
+    "long_stats": {
+      "good": 654,
+      "bad": 474,
+      "noise": 7,
+      "trig_good": 68,
+      "trig_bad": 26,
+      "trig_noise": 0,
+      "trigger_rate_total": 0.0828193832599119,
+      "good_capture_rate": 0.10397553516819572,
+      "bad_trigger_rate": 0.05485232067510549,
+      "noise_trigger_rate": 0.0,
+      "entry_score": 0.04912321449309023
+    },
+    "short_stats": {
+      "good": 474,
+      "bad": 654,
+      "noise": 7,
+      "trig_good": 43,
+      "trig_bad": 33,
+      "trig_noise": 0,
+      "trigger_rate_total": 0.06696035242290749,
+      "good_capture_rate": 0.09071729957805907,
+      "bad_trigger_rate": 0.05045871559633028,
+      "noise_trigger_rate": 0.0,
+      "entry_score": 0.040258583981728796
+    },
+    "long_trades": 94,
+    "short_trades": 76,
+    "aee_long": {
+      "min_profit_atr": 0.25,
+      "min_hold_sec": 120,
+      "decay_speed_atr_per_min": 0.2,
+      "force_sec": 600
+    },
+    "aee_short": {
+      "min_profit_atr": 0.25,
+      "min_hold_sec": 60,
+      "decay_speed_atr_per_min": 0.35,
+      "force_sec": 600
+    }
+  }
+}

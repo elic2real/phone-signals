@@ -1,0 +1,174 @@
+{
+  "generated_at": "2026-03-25T18:22:09.884170Z",
+  "task_id": "TASK-010",
+  "rows": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "treatment": "REMOVED",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "FAMILY_OVERRIDE",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "branch": "AEE_BAND_EXTENSION_HOLD",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "branch": "AEE_CONTINUATION_FAILED_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "treatment": "REMOVED",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "FAMILY_OVERRIDE",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "treatment": "REMOVED",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "FAMILY_OVERRIDE",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "branch": "AEE_NEVER_GREEN_TIMEOUT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "treatment": "REMOVED",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "FAMILY_OVERRIDE",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "branch": "AEE_BAND_EXTENSION_HOLD",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "branch": "AEE_CONTINUATION_FAILED_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "OTHER",
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "treatment": "REMOVED",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "OTHER",
+      "branch": "AEE_NEVER_GREEN_TIMEOUT",
+      "treatment": "FAMILY_OVERRIDE",
+      "reason": "high branch_removal_delta_pph in TASK-009"
+    },
+    {
+      "family": "OTHER",
+      "branch": "AEE_CONTINUATION_FAILED_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "OTHER",
+      "branch": "AEE_GIVEBACK_EXIT",
+      "treatment": "RETAINED",
+      "reason": "low or negative branch_removal_delta_pph"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "branch": "AEE_NEVER_GREEN_TIMEOUT",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_NEVER_GREEN_TIMEOUT",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_CONTINUATION_FAILED_EXIT",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "branch": "AEE_BAND_EXTENSION_HOLD",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "branch": "AEE_CONTINUATION_FAILED_EXIT",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "branch": "AEE_BAND_EXTENSION_HOLD",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "branch": "AEE_NEVER_GREEN_TIMEOUT",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    },
+    {
+      "family": "OTHER",
+      "branch": "AEE_BAND_EXTENSION_HOLD",
+      "treatment": "DIAGNOSTIC_ONLY",
+      "reason": "not in family top destructive set; keep for observability"
+    }
+  ]
+}

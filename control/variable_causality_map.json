@@ -1,0 +1,463 @@
+{
+  "generated_at": "2026-03-25T19:05:00Z",
+  "scope": "EUR_USD raw-core research loop",
+  "purpose": "Causal variable ledger for controlled discovery before further intervention runs",
+  "variables": [
+    {
+      "name": "confirm_push_pips_major",
+      "component": "entry_detector",
+      "layer": "CONCEPT_FORM",
+      "description": "Major confirmation push threshold for entry acceptance",
+      "expected_effects": {
+        "when_loosened": [
+          "trade_count up",
+          "avg_pips_per_trade down slightly",
+          "entry_only_pph up if detector bottleneck is real"
+        ],
+        "when_tightened": [
+          "trade_count down",
+          "avg_pips_per_trade up",
+          "entry_only_pph may drop"
+        ]
+      },
+      "primary_metrics": [
+        "trade_count",
+        "entry_only_pph",
+        "avg_pips_per_trade"
+      ],
+      "observed_effects": [
+        "Prior evidence suggests coarse cliff behavior, not fine gradient sensitivity"
+      ],
+      "supporting_artifacts": [
+        "control/aee_v3_vs_baseline_comparison.json",
+        "strategy_performance_report_raw.json"
+      ],
+      "current_belief": "suspect_nonbinding_at_current_region",
+      "current_status": "suspect",
+      "next_test_priority": "low"
+    },
+    {
+      "name": "include_families_policy",
+      "component": "entry_filter",
+      "layer": "FILTERING",
+      "description": "Family inclusion list controlling which entry families are admitted",
+      "expected_effects": {
+        "when_loosened": [
+          "family diversity up",
+          "trade_count up",
+          "realized_pph mixed"
+        ],
+        "when_tightened": [
+          "family diversity down",
+          "trade_count down",
+          "possible overfitting to local winner"
+        ]
+      },
+      "primary_metrics": [
+        "trade_count",
+        "family_distribution",
+        "realized_pph"
+      ],
+      "observed_effects": [
+        "Raw-core all-family run exposed hidden non-breakout potential and AEE bottleneck"
+      ],
+      "supporting_artifacts": [
+        "strategy_performance_report_raw.json",
+        "control/aee_family_exit_policy_simulation_report.json"
+      ],
+      "current_belief": "useful_for_discovery_not_primary_bottleneck",
+      "current_status": "proven_nonbinding",
+      "next_test_priority": "low"
+    },
+    {
+      "name": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "component": "aee_v3",
+      "layer": "AEE_INTERACTION",
+      "description": "Early-life family fast-failure exit in INIT/PROBING",
+      "expected_effects": {
+        "when_relaxed_for_breakout": [
+          "breakout_realized_pph up",
+          "breakout_gap down",
+          "avg_hold_time up moderately"
+        ],
+        "when_tightened": [
+          "breakout_realized_pph down",
+          "early_exit_share up",
+          "gap widens"
+        ]
+      },
+      "primary_metrics": [
+        "breakout_realized_pph",
+        "breakout_gap",
+        "exit_reason_distribution",
+        "avg_hold_time"
+      ],
+      "observed_effects": [
+        "Introduced as dominant v3 breakout exit reason",
+        "Still high branch damage despite breakout correction pass",
+        "AEE_ACTIVE_20260325T202025Z: secondary branch AEE_BAND_FAST_FAILURE_EXIT after giveback dominance",
+        "AEE_ACTIVE_20260325T204721Z: secondary branch AEE_BAND_FAST_FAILURE_EXIT after giveback dominance",
+        "AEE_ACTIVE_20260325T210000Z: secondary branch AEE_BAND_FAST_FAILURE_EXIT after giveback dominance",
+        "AEE_ACTIVE_GREEN_LOSS_AUDIT_20260325T220000Z: secondary branch AEE_BAND_FAST_FAILURE_EXIT after giveback dominance",
+        "AEE_ACTIVE_ECON_EXPECT_20260325T223000Z: secondary branch AEE_BAND_FAST_FAILURE_EXIT after giveback dominance",
+        "AEE_ACTIVE_ECON_EXPECT_20260325T224500Z: secondary branch AEE_GIVEBACK_EXIT after giveback dominance",
+        "AEE_ACTIVE_ROOTCAUSE_TREE_20260325T231000Z: secondary branch AEE_GIVEBACK_EXIT after giveback dominance",
+        "AEE_ACTIVE_TAXONOMY_FIRST_20260325T233000Z: secondary branch AEE_GIVEBACK_EXIT after giveback dominance",
+        "AEE_ACTIVE_TAXONOMY_SPLIT_IMPL_20260325T234500Z: secondary branch AEE_GIVEBACK_EXIT after giveback dominance",
+        "AEE_ACTIVE_STATE_MACHINE_IMPL_20260325T235900Z: secondary branch AEE_GIVEBACK_EXIT after giveback dominance",
+        "AEE_ACTIVE_STATE_MACHINE_IMPL_V3_20260326T000400Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_STATEMACHINE_MODULAR_20260325T235900Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_STATEBOUNDARY_GUARDS_20260326T001800Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_STATEBOUNDARY_GUARDS_V2_20260326T002900Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_STATEBOUNDARY_MICROPASS_20260326T003800Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_STATEBOUNDARY_PASSB_20260326T004900Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_REVERT_PASSB_20260326T014500Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_ACTIVE_RECLAIM_STALL_MICRO_20260326T020500Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_SPEED_SMOKE_RUNNER: secondary branch AEE_V3_FAMILY_PROTECTION_EXIT after giveback dominance",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_a_reclaim_stall_only: secondary branch AEE_V3_FAMILY_PROTECTION_EXIT after giveback dominance",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_baseline: secondary branch AEE_V3_FAMILY_PROTECTION_EXIT after giveback dominance",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_b_fake_runner_demotion: secondary branch AEE_V3_FAMILY_PROTECTION_EXIT after giveback dominance",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_c_failed_progress_harvest: secondary branch AEE_V3_FAMILY_PROTECTION_EXIT after giveback dominance",
+        "AEE_SLICE_SMOKE_20260326T030500Z: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_baseline: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_a_reclaim_stall_only: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_c_failed_progress_harvest: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_b_fake_runner_demotion: secondary branch AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT after giveback dominance",
+        "AEE_MATRIX_MATRIX_FAKE_RUNNER_SLICE_20260326T033000Z_baseline: secondary branch AEE_V3_FAMILY_PROTECTION_EXIT after giveback dominance"
+      ],
+      "supporting_artifacts": [
+        "control/aee_v3_transition_fault_summary.json",
+        "control/aee_v3_delta_forensic_audit.json"
+      ],
+      "current_belief": "secondary_bottleneck_after_giveback",
+      "current_status": "secondary_bottleneck",
+      "next_test_priority": "high"
+    },
+    {
+      "name": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "component": "aee_v3",
+      "layer": "AEE_INTERACTION",
+      "description": "Family never-green timeout gate",
+      "expected_effects": {
+        "when_delayed_for_breakout": [
+          "fewer premature exits",
+          "hold_time up",
+          "breakout gap down"
+        ],
+        "when_earlier": [
+          "fast exits up",
+          "gap widens",
+          "non-breakout may deteriorate"
+        ]
+      },
+      "primary_metrics": [
+        "exit_reason_distribution",
+        "avg_hold_time",
+        "entry_only_vs_realized_gap"
+      ],
+      "observed_effects": [
+        "Became major reinforcing exit after fast-failure",
+        "Contributes substantial branch damage in breakout"
+      ],
+      "supporting_artifacts": [
+        "control/aee_v3_delta_forensic_audit.json"
+      ],
+      "current_belief": "secondary_breakout_bottleneck",
+      "current_status": "suspect",
+      "next_test_priority": "high"
+    },
+    {
+      "name": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "component": "aee_v3",
+      "layer": "AEE_INTERACTION",
+      "description": "Hard giveback invalidation gate",
+      "expected_effects": {
+        "when_requiring_stronger_confirmation": [
+          "shallow_retracement exits down",
+          "breakout survival up",
+          "late-loss risk up if over-loosened"
+        ],
+        "when_aggressive": [
+          "protective cuts up",
+          "premature exit risk up"
+        ]
+      },
+      "primary_metrics": [
+        "exit_reason_distribution",
+        "realized_pph",
+        "hold_time"
+      ],
+      "observed_effects": [
+        "Significant branch share and damage across families",
+        "Particularly harmful when paired with strict early gates",
+        "AEE_ACTIVE_20260325T202025Z: dominant branch AEE_GIVEBACK_EXIT; next scope=BREAKOUT + RANGE_ESCAPE giveback logic",
+        "AEE_ACTIVE_20260325T204721Z: dominant branch AEE_GIVEBACK_EXIT; next scope=BREAKOUT + RANGE_ESCAPE giveback logic",
+        "AEE_ACTIVE_20260325T210000Z: dominant branch AEE_GIVEBACK_EXIT; next scope=BREAKOUT + RANGE_ESCAPE giveback logic",
+        "AEE_ACTIVE_GREEN_LOSS_AUDIT_20260325T220000Z: dominant branch AEE_GIVEBACK_EXIT; next scope=BREAKOUT + RANGE_ESCAPE giveback logic",
+        "AEE_ACTIVE_ECON_EXPECT_20260325T223000Z: dominant branch AEE_GIVEBACK_EXIT; next scope=BREAKOUT + RANGE_ESCAPE giveback logic",
+        "AEE_ACTIVE_ECON_EXPECT_20260325T224500Z: dominant branch AEE_BAND_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_ROOTCAUSE_TREE_20260325T231000Z: dominant branch AEE_BAND_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_TAXONOMY_FIRST_20260325T233000Z: dominant branch AEE_BAND_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_TAXONOMY_SPLIT_IMPL_20260325T234500Z: dominant branch AEE_BAND_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATE_MACHINE_IMPL_20260325T235900Z: dominant branch AEE_BAND_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATE_MACHINE_IMPL_V3_20260326T000400Z: dominant branch AEE_V3_FAMILY_TIME_INEFF_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATEMACHINE_MODULAR_20260325T235900Z: dominant branch AEE_V3_FAMILY_TIME_INEFF_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATEBOUNDARY_GUARDS_20260326T001800Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATEBOUNDARY_GUARDS_V2_20260326T002900Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATEBOUNDARY_MICROPASS_20260326T003800Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_STATEBOUNDARY_PASSB_20260326T004900Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_REVERT_PASSB_20260326T014500Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_ACTIVE_RECLAIM_STALL_MICRO_20260326T020500Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_SPEED_SMOKE_RUNNER: dominant branch AEE_V3_FAMILY_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_a_reclaim_stall_only: dominant branch AEE_V3_FAMILY_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_baseline: dominant branch AEE_V3_FAMILY_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_b_fake_runner_demotion: dominant branch AEE_V3_FAMILY_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_c_failed_progress_harvest: dominant branch AEE_V3_FAMILY_FAST_FAILURE_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_SLICE_SMOKE_20260326T030500Z: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_baseline: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_a_reclaim_stall_only: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_c_failed_progress_harvest: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_b_fake_runner_demotion: dominant branch AEE_V3_FAMILY_PROTECTION_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+        "AEE_MATRIX_MATRIX_FAKE_RUNNER_SLICE_20260326T033000Z_baseline: dominant branch AEE_V3_FAMILY_HARD_GIVEBACK_EXIT; next scope=BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning"
+      ],
+      "supporting_artifacts": [
+        "control/aee_v3_delta_forensic_audit.json"
+      ],
+      "current_belief": "top_breakout_rangeescape_bottleneck",
+      "current_status": "primary_bottleneck",
+      "next_test_priority": "critical"
+    },
+    {
+      "name": "aee_version_switch_v2_vs_v3",
+      "component": "baseline_evaluator",
+      "layer": "AEE_INTERACTION",
+      "description": "Execution path selector between v2 and family-aware v3",
+      "expected_effects": {
+        "when_v3_enabled": [
+          "exit_reason taxonomy changes",
+          "gap and hold-time signatures shift",
+          "family-specific behavior emerges"
+        ],
+        "when_v2_enabled": [
+          "legacy branch behavior returns",
+          "known bottlenecks reproducible"
+        ]
+      },
+      "primary_metrics": [
+        "exit_reason_distribution",
+        "gap",
+        "realized_pph"
+      ],
+      "observed_effects": [
+        "v3 improved some families while risking breakout regression before correction",
+        "current comparison shows slight net improvement overall"
+      ],
+      "supporting_artifacts": [
+        "control/aee_v3_vs_baseline_comparison.json",
+        "control/aee_v3_implementation_report.json"
+      ],
+      "current_belief": "validated_ablation_control",
+      "current_status": "proven_binding",
+      "next_test_priority": "medium"
+    },
+    {
+      "name": "sequence_preservation_mode",
+      "component": "simulation_reconstruction",
+      "layer": "SIMULATION",
+      "description": "Preservation of multi-stage swing sequence for reclaim/pullback behavior",
+      "expected_effects": {
+        "when_improved": [
+          "reclaim representability up",
+          "family ranking validity up",
+          "false breakout bias down"
+        ],
+        "when_degraded": [
+          "sequence-dependent families collapse",
+          "breakout appears artificially dominant"
+        ]
+      },
+      "primary_metrics": [
+        "reclaim_representable_rate",
+        "family_degradation_matrix",
+        "breakout_bias_score"
+      ],
+      "observed_effects": [
+        "Original simulation audit showed reclaim representability at 0",
+        "Reconstruction work introduced sequence diagnostics and improved observability"
+      ],
+      "supporting_artifacts": [
+        "control/simulation_sequence_fidelity_report.json",
+        "control/simulation_reconstruction_implementation_report.json"
+      ],
+      "current_belief": "structural_validity_control",
+      "current_status": "proven_binding",
+      "next_test_priority": "high"
+    },
+    {
+      "name": "pricing_realism_mode",
+      "component": "simulation_reconstruction",
+      "layer": "SIMULATION",
+      "description": "Side-aware price/spread application realism",
+      "expected_effects": {
+        "when_improved": [
+          "suspicious fill signatures down",
+          "better comparability of entry-only vs realized",
+          "reduced synthetic optimism"
+        ],
+        "when_wrong": [
+          "bar1 anomalies up",
+          "distorted branch damage estimates"
+        ]
+      },
+      "primary_metrics": [
+        "suspicious_fill_rate",
+        "pricing_consistency_score",
+        "gap estimates"
+      ],
+      "observed_effects": [
+        "Simulation audit flagged fill realism suspect",
+        "Reconstruction now emits pricing diagnostics"
+      ],
+      "supporting_artifacts": [
+        "control/simulation_fill_realism_report.json",
+        "control/simulation_pricing_realism_diagnostics_report.json"
+      ],
+      "current_belief": "important_integrity_variable",
+      "current_status": "suspect",
+      "next_test_priority": "medium"
+    },
+    {
+      "name": "balanced_window_mode",
+      "component": "benchmarking",
+      "layer": "SIMULATION",
+      "description": "Regime/quarter balancing in benchmark windows",
+      "expected_effects": {
+        "when_enabled": [
+          "less regime concentration bias",
+          "more stable cross-family ranking"
+        ],
+        "when_disabled": [
+          "top-regime dominance",
+          "false confidence in local winners"
+        ]
+      },
+      "primary_metrics": [
+        "diversity_score",
+        "regime_concentration_ratio",
+        "family_rank_stability"
+      ],
+      "observed_effects": [
+        "Initial diversity score low with concentration around compressed regime"
+      ],
+      "supporting_artifacts": [
+        "control/simulation_diversity_report.json",
+        "control/simulation_balanced_benchmark_report.json"
+      ],
+      "current_belief": "required_for_valid_ranking",
+      "current_status": "proven_binding",
+      "next_test_priority": "high"
+    },
+    {
+      "name": "total_available_pips_anchor",
+      "component": "measurement",
+      "layer": "EXPANSION",
+      "description": "Truth-anchor estimate of available movement",
+      "expected_effects": {
+        "when_tracked": [
+          "extraction efficiency visible",
+          "clear separation of market weak vs system weak"
+        ],
+        "when_missing": [
+          "profitability-only blindness",
+          "misattribution of failure layer"
+        ]
+      },
+      "primary_metrics": [
+        "total_available_pips",
+        "entry_only_capture",
+        "realized_capture",
+        "extraction_efficiency"
+      ],
+      "observed_effects": [
+        "Enabled during simulation reconstruction and now available in reports"
+      ],
+      "supporting_artifacts": [
+        "control/simulation_truth_anchor_spec.json",
+        "control/simulation_truth_anchor_metrics_report.json"
+      ],
+      "current_belief": "foundational_measurement_variable",
+      "current_status": "proven_binding",
+      "next_test_priority": "high"
+    },
+    {
+      "name": "entry_only_vs_realized_gap_metric",
+      "component": "measurement",
+      "layer": "AEE_INTERACTION",
+      "description": "Gap metric for attribution of exit damage",
+      "expected_effects": {
+        "when_gap_shrinks": [
+          "aee_damage down",
+          "realized efficiency up"
+        ],
+        "when_gap_widens": [
+          "exit logic misaligned",
+          "premature or wrong exits"
+        ]
+      },
+      "primary_metrics": [
+        "gap_pips",
+        "realized_pph",
+        "aee_damage"
+      ],
+      "observed_effects": [
+        "Gap shrank for breakout, pullback, and reclaim in latest comparison",
+        "Gap widened for range and other"
+      ],
+      "supporting_artifacts": [
+        "control/aee_v3_vs_baseline_comparison.json"
+      ],
+      "current_belief": "best_primary_aee_health_signal",
+      "current_status": "proven_binding",
+      "next_test_priority": "critical"
+    },
+    {
+      "name": "raw_vs_filtered_delta",
+      "component": "measurement",
+      "layer": "FILTERING",
+      "description": "Difference between firehose and filtered configurations",
+      "expected_effects": {
+        "when_filtered_underperforms_raw": [
+          "filters likely destructive",
+          "should block filter expansion"
+        ],
+        "when_filtered_outperforms_raw": [
+          "filter logic likely beneficial"
+        ]
+      },
+      "primary_metrics": [
+        "net_pph_delta",
+        "family_rank_delta"
+      ],
+      "observed_effects": [
+        "Raw-core runs were used as truth baseline during bottleneck isolation"
+      ],
+      "supporting_artifacts": [
+        "strategy_performance_report_raw.json",
+        "control/core_edge_validation_comparison.json"
+      ],
+      "current_belief": "guardrail_metric",
+      "current_status": "proven_binding",
+      "next_test_priority": "medium"
+    }
+  ],
+  "updated_at": "2026-03-26T02:54:02.937208Z",
+  "last_run_bottleneck_update": {
+    "run_id": "AEE_MATRIX_MATRIX_FAKE_RUNNER_SLICE_20260326T033000Z_baseline",
+    "primary_bottleneck_branch": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+    "secondary_bottleneck_branch": "AEE_V3_FAMILY_PROTECTION_EXIT",
+    "next_intervention_class": "AEE_INTERACTION",
+    "next_scope": "BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning"
+  }
+}APE bankable-green protection plus dead-trade pruning"
+  }
+}

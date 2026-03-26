@@ -1,0 +1,116 @@
+{
+  "results": [
+    {
+      "pair": "AUD_CAD",
+      "mode": "full_rebuild",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "/stage1_6/phase3\",\n    \"phase4\": \"/home/elic/Documents/phone signals/compiled_market_nodes/AUD_CAD__monday__london/stage1_6/phase4\",\n    \"phase5\": \"/home/elic/Documents/phone signals/compiled_market_nodes/AUD_CAD__monday__london/stage1_6/phase5\",\n    \"phase6\": \"/home/elic/Documents/phone signals/compiled_market_nodes/AUD_CAD__monday__london/stage1_6/phase6\"\n  },\n  \"invariants\": {\n    \"stage1_pass\": true,\n    \"stage2_pass\": true,\n    \"stage3_pass\": true,\n    \"stage4_pass\": false,\n    \"stage5_pass\": false,\n    \"stage6_pass\": false,\n    \"counts_reconcile\": false,\n    \"final_status\": \"FAIL\"\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "CHF_JPY",
+      "mode": "full_rebuild",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "/stage1_6/phase3\",\n    \"phase4\": \"/home/elic/Documents/phone signals/compiled_market_nodes/CHF_JPY__monday__london/stage1_6/phase4\",\n    \"phase5\": \"/home/elic/Documents/phone signals/compiled_market_nodes/CHF_JPY__monday__london/stage1_6/phase5\",\n    \"phase6\": \"/home/elic/Documents/phone signals/compiled_market_nodes/CHF_JPY__monday__london/stage1_6/phase6\"\n  },\n  \"invariants\": {\n    \"stage1_pass\": true,\n    \"stage2_pass\": true,\n    \"stage3_pass\": true,\n    \"stage4_pass\": false,\n    \"stage5_pass\": false,\n    \"stage6_pass\": false,\n    \"counts_reconcile\": false,\n    \"final_status\": \"FAIL\"\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "NZD_USD",
+      "mode": "full_rebuild",
+      "status": "FAIL",
+      "returncode": 1,
+      "stdout_tail": "1.0,\n        13.0,\n        15.0\n      ],\n      \"rows\": 100288,\n      \"by_direction_target\": {\n        \"LONG_4.5\": 6268,\n        \"LONG_6\": 6268,\n        \"LONG_7\": 6268,\n        \"LONG_8\": 6268,\n        \"LONG_9\": 6268,\n        \"LONG_11\": 6268,\n        \"LONG_13\": 6268,\n        \"LONG_15\": 6268,\n        \"SHORT_4.5\": 6268,\n        \"SHORT_6\": 6268,\n        \"SHORT_7\": 6268,\n        \"SHORT_8\": 6268,\n        \"SHORT_9\": 6268,\n        \"SHORT_11\": 6268,\n        \"SHORT_13\": 6268,\n        \"SHORT_15\": 6268\n      },\n      \"extension_available_rate\": 0.391822,\n      \"runner_objective_mean\": 4.309133\n    }\n  }\n}\n",
+      "stderr_tail": "de_compiler.py\", line 586, in main\n    local_fixedpop.run(\n  File \"/home/elic/Documents/phone signals/optimize_aee_target_local_from_entry_population.py\", line 325, in run\n    baseline = aee.replay_variant_with_context(subset_context, seed_rules, \"bias_plus_context_aee\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/run_aee_stage_compiler.py\", line 1004, in replay_variant_with_context\n    static_pips = float(trade[\"static_pips\"])\n                        ~~~~~^^^^^^^^^^^^^^^\nKeyError: 'static_pips'\n"
+    },
+    {
+      "pair": "GBP_USD",
+      "mode": "full_rebuild",
+      "status": "FAIL",
+      "returncode": 1,
+      "stdout_tail": "1.0,\n        13.0,\n        15.0\n      ],\n      \"rows\": 100320,\n      \"by_direction_target\": {\n        \"LONG_4.5\": 6270,\n        \"LONG_6\": 6270,\n        \"LONG_7\": 6270,\n        \"LONG_8\": 6270,\n        \"LONG_9\": 6270,\n        \"LONG_11\": 6270,\n        \"LONG_13\": 6270,\n        \"LONG_15\": 6270,\n        \"SHORT_4.5\": 6270,\n        \"SHORT_6\": 6270,\n        \"SHORT_7\": 6270,\n        \"SHORT_8\": 6270,\n        \"SHORT_9\": 6270,\n        \"SHORT_11\": 6270,\n        \"SHORT_13\": 6270,\n        \"SHORT_15\": 6270\n      },\n      \"extension_available_rate\": 0.561244,\n      \"runner_objective_mean\": 8.624918\n    }\n  }\n}\n",
+      "stderr_tail": "de_compiler.py\", line 586, in main\n    local_fixedpop.run(\n  File \"/home/elic/Documents/phone signals/optimize_aee_target_local_from_entry_population.py\", line 325, in run\n    baseline = aee.replay_variant_with_context(subset_context, seed_rules, \"bias_plus_context_aee\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/run_aee_stage_compiler.py\", line 1004, in replay_variant_with_context\n    static_pips = float(trade[\"static_pips\"])\n                        ~~~~~^^^^^^^^^^^^^^^\nKeyError: 'static_pips'\n"
+    },
+    {
+      "pair": "EUR_JPY",
+      "mode": "full_rebuild",
+      "status": "FAIL",
+      "returncode": 1,
+      "stdout_tail": "1.0,\n        13.0,\n        15.0\n      ],\n      \"rows\": 100320,\n      \"by_direction_target\": {\n        \"LONG_4.5\": 6270,\n        \"LONG_6\": 6270,\n        \"LONG_7\": 6270,\n        \"LONG_8\": 6270,\n        \"LONG_9\": 6270,\n        \"LONG_11\": 6270,\n        \"LONG_13\": 6270,\n        \"LONG_15\": 6270,\n        \"SHORT_4.5\": 6270,\n        \"SHORT_6\": 6270,\n        \"SHORT_7\": 6270,\n        \"SHORT_8\": 6270,\n        \"SHORT_9\": 6270,\n        \"SHORT_11\": 6270,\n        \"SHORT_13\": 6270,\n        \"SHORT_15\": 6270\n      },\n      \"extension_available_rate\": 0.647259,\n      \"runner_objective_mean\": 14.35618\n    }\n  }\n}\n",
+      "stderr_tail": "de_compiler.py\", line 586, in main\n    local_fixedpop.run(\n  File \"/home/elic/Documents/phone signals/optimize_aee_target_local_from_entry_population.py\", line 325, in run\n    baseline = aee.replay_variant_with_context(subset_context, seed_rules, \"bias_plus_context_aee\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/run_aee_stage_compiler.py\", line 1004, in replay_variant_with_context\n    static_pips = float(trade[\"static_pips\"])\n                        ~~~~~^^^^^^^^^^^^^^^\nKeyError: 'static_pips'\n"
+    },
+    {
+      "pair": "USD_CAD",
+      "mode": "full_rebuild",
+      "status": "FAIL",
+      "returncode": 1,
+      "stdout_tail": "1.0,\n        13.0,\n        15.0\n      ],\n      \"rows\": 100320,\n      \"by_direction_target\": {\n        \"LONG_4.5\": 6270,\n        \"LONG_6\": 6270,\n        \"LONG_7\": 6270,\n        \"LONG_8\": 6270,\n        \"LONG_9\": 6270,\n        \"LONG_11\": 6270,\n        \"LONG_13\": 6270,\n        \"LONG_15\": 6270,\n        \"SHORT_4.5\": 6270,\n        \"SHORT_6\": 6270,\n        \"SHORT_7\": 6270,\n        \"SHORT_8\": 6270,\n        \"SHORT_9\": 6270,\n        \"SHORT_11\": 6270,\n        \"SHORT_13\": 6270,\n        \"SHORT_15\": 6270\n      },\n      \"extension_available_rate\": 0.455094,\n      \"runner_objective_mean\": 6.365669\n    }\n  }\n}\n",
+      "stderr_tail": "un_market_node_compiler.py\", line 586, in main\n    [\n^^^^^\n  File \"/home/elic/Documents/phone signals/optimize_aee_target_local_from_entry_population.py\", line 325, in run\n    baseline = aee.replay_variant_with_context(subset_context, seed_rules, \"bias_plus_context_aee\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/run_aee_stage_compiler.py\", line 1004, in replay_variant_with_context\n    static_pips = float(trade[\"static_pips\"])\n                        ~~~~~^^^^^^^^^^^^^^^\nKeyError: 'static_pips'\n"
+    },
+    {
+      "pair": "AUD_JPY",
+      "mode": "entry_only",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "ee2017564cce53b3dac729346f\",\n  \"report\": \"/home/elic/Documents/phone signals/compiled_market_nodes/AUD_JPY__monday__london/target_entry_no_timeouts/target_entry_class_report.json\",\n  \"best_class\": {\n    \"direction\": \"LONG\",\n    \"target_distance\": 13.0,\n    \"trade_count\": 6,\n    \"tp_hits\": 6,\n    \"sl_hits\": 0,\n    \"timeouts\": 0,\n    \"tp_hit_rate\": 1.0,\n    \"objective_score\": 2.4128840770700095,\n    \"capture_rate\": 0.0009569377990430622,\n    \"opportunity_count\": 6270,\n    \"total_pips\": 78.0,\n    \"pips_per_hour\": 0.8863636363636364,\n    \"equity_per_hour_at_2pct_risk\": 0.0013636363636363635\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "USD_CHF",
+      "mode": "full_rebuild",
+      "status": "FAIL",
+      "returncode": 1,
+      "stdout_tail": " 11.0,\n        13.0,\n        15.0\n      ],\n      \"rows\": 100320,\n      \"by_direction_target\": {\n        \"LONG_4.5\": 6270,\n        \"LONG_6\": 6270,\n        \"LONG_7\": 6270,\n        \"LONG_8\": 6270,\n        \"LONG_9\": 6270,\n        \"LONG_11\": 6270,\n        \"LONG_13\": 6270,\n        \"LONG_15\": 6270,\n        \"SHORT_4.5\": 6270,\n        \"SHORT_6\": 6270,\n        \"SHORT_7\": 6270,\n        \"SHORT_8\": 6270,\n        \"SHORT_9\": 6270,\n        \"SHORT_11\": 6270,\n        \"SHORT_13\": 6270,\n        \"SHORT_15\": 6270\n      },\n      \"extension_available_rate\": 0.44373,\n      \"runner_objective_mean\": 5.99448\n    }\n  }\n}\n",
+      "stderr_tail": "un_market_node_compiler.py\", line 586, in main\n    [\n^^^^^\n  File \"/home/elic/Documents/phone signals/optimize_aee_target_local_from_entry_population.py\", line 325, in run\n    baseline = aee.replay_variant_with_context(subset_context, seed_rules, \"bias_plus_context_aee\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/run_aee_stage_compiler.py\", line 1004, in replay_variant_with_context\n    static_pips = float(trade[\"static_pips\"])\n                        ~~~~~^^^^^^^^^^^^^^^\nKeyError: 'static_pips'\n"
+    },
+    {
+      "pair": "AUD_USD",
+      "mode": "entry_only",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "8eef6b743c33\",\n  \"report\": \"/home/elic/Documents/phone signals/compiled_market_nodes/AUD_USD__monday__london/target_entry_no_timeouts/target_entry_class_report.json\",\n  \"best_class\": {\n    \"direction\": \"LONG\",\n    \"target_distance\": 2.5,\n    \"trade_count\": 14,\n    \"tp_hits\": 12,\n    \"sl_hits\": 2,\n    \"timeouts\": 0,\n    \"tp_hit_rate\": 0.8571428571428571,\n    \"objective_score\": 1.1814215585585688,\n    \"capture_rate\": 0.002233211038443133,\n    \"opportunity_count\": 6269,\n    \"total_pips\": 25.0,\n    \"pips_per_hour\": 0.2840909090909091,\n    \"equity_per_hour_at_2pct_risk\": 0.002272727272727273\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "EUR_CHF",
+      "mode": "entry_only",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "b2a9ae9f4dde\",\n  \"report\": \"/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__london/target_entry_no_timeouts/target_entry_class_report.json\",\n  \"best_class\": {\n    \"direction\": \"LONG\",\n    \"target_distance\": 1.5,\n    \"trade_count\": 34,\n    \"tp_hits\": 29,\n    \"sl_hits\": 5,\n    \"timeouts\": 0,\n    \"tp_hit_rate\": 0.8529411764705882,\n    \"objective_score\": 2.6509906065794064,\n    \"capture_rate\": 0.005422647527910686,\n    \"opportunity_count\": 6270,\n    \"total_pips\": 36.0,\n    \"pips_per_hour\": 0.4090909090909091,\n    \"equity_per_hour_at_2pct_risk\": 0.005454545454545454\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "USD_JPY",
+      "mode": "full_rebuild",
+      "status": "FAIL",
+      "returncode": 1,
+      "stdout_tail": ".0,\n        13.0,\n        15.0\n      ],\n      \"rows\": 100320,\n      \"by_direction_target\": {\n        \"LONG_4.5\": 6270,\n        \"LONG_6\": 6270,\n        \"LONG_7\": 6270,\n        \"LONG_8\": 6270,\n        \"LONG_9\": 6270,\n        \"LONG_11\": 6270,\n        \"LONG_13\": 6270,\n        \"LONG_15\": 6270,\n        \"SHORT_4.5\": 6270,\n        \"SHORT_6\": 6270,\n        \"SHORT_7\": 6270,\n        \"SHORT_8\": 6270,\n        \"SHORT_9\": 6270,\n        \"SHORT_11\": 6270,\n        \"SHORT_13\": 6270,\n        \"SHORT_15\": 6270\n      },\n      \"extension_available_rate\": 0.649292,\n      \"runner_objective_mean\": 14.600038\n    }\n  }\n}\n",
+      "stderr_tail": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/optimize_aee_target_local_from_entry_population.py\", line 325, in run\n    baseline = aee.replay_variant_with_context(subset_context, seed_rules, \"bias_plus_context_aee\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/run_aee_stage_compiler.py\", line 1004, in replay_variant_with_context\n    static_pips = float(trade[\"static_pips\"])\n                        ~~~~~^^^^^^^^^^^^^^^\nKeyError: 'static_pips'\n"
+    },
+    {
+      "pair": "EUR_GBP",
+      "mode": "entry_only",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "a515e7e3319\",\n  \"report\": \"/home/elic/Documents/phone signals/compiled_market_nodes/EUR_GBP__monday__london/target_entry_no_timeouts/target_entry_class_report.json\",\n  \"best_class\": {\n    \"direction\": \"LONG\",\n    \"target_distance\": 2.5,\n    \"trade_count\": 22,\n    \"tp_hits\": 17,\n    \"sl_hits\": 5,\n    \"timeouts\": 0,\n    \"tp_hit_rate\": 0.7727272727272727,\n    \"objective_score\": 1.7770466332772772,\n    \"capture_rate\": 0.0035087719298245615,\n    \"opportunity_count\": 6270,\n    \"total_pips\": 30.0,\n    \"pips_per_hour\": 0.3409090909090909,\n    \"equity_per_hour_at_2pct_risk\": 0.002727272727272727\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "GBP_JPY",
+      "mode": "entry_only",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "c44721626b05\",\n  \"report\": \"/home/elic/Documents/phone signals/compiled_market_nodes/GBP_JPY__monday__london/target_entry_no_timeouts/target_entry_class_report.json\",\n  \"best_class\": {\n    \"direction\": \"LONG\",\n    \"target_distance\": 15.0,\n    \"trade_count\": 6,\n    \"tp_hits\": 5,\n    \"sl_hits\": 1,\n    \"timeouts\": 0,\n    \"tp_hit_rate\": 0.8333333333333334,\n    \"objective_score\": 1.856064674669238,\n    \"capture_rate\": 0.0009569377990430622,\n    \"opportunity_count\": 6270,\n    \"total_pips\": 60.0,\n    \"pips_per_hour\": 0.6818181818181818,\n    \"equity_per_hour_at_2pct_risk\": 0.0009090909090909091\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "pair": "NZD_JPY",
+      "mode": "entry_only",
+      "status": "PASS",
+      "returncode": 0,
+      "stdout_tail": "511908c34b\",\n  \"report\": \"/home/elic/Documents/phone signals/compiled_market_nodes/NZD_JPY__monday__london/target_entry_no_timeouts/target_entry_class_report.json\",\n  \"best_class\": {\n    \"direction\": \"SHORT\",\n    \"target_distance\": 2.5,\n    \"trade_count\": 23,\n    \"tp_hits\": 20,\n    \"sl_hits\": 3,\n    \"timeouts\": 0,\n    \"tp_hit_rate\": 0.8695652173913043,\n    \"objective_score\": 2.574267733305392,\n    \"capture_rate\": 0.0036688467060137183,\n    \"opportunity_count\": 6269,\n    \"total_pips\": 42.5,\n    \"pips_per_hour\": 0.48295454545454547,\n    \"equity_per_hour_at_2pct_risk\": 0.003863636363636364\n  }\n}\n",
+      "stderr_tail": ""
+    }
+  ]
+}

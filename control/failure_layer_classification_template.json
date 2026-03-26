@@ -1,0 +1,22 @@
+{
+  "template": "failure_layer_classification",
+  "required_fields": [
+    "task_id",
+    "concept",
+    "family",
+    "form_id",
+    "primary_failure_layer",
+    "secondary_failure_layer",
+    "evidence_artifacts",
+    "escalation_required",
+    "tuning_blocked"
+  ],
+  "allowed_layers": [
+    "CONCEPT_FORM",
+    "IMPLEMENTATION",
+    "SIMULATION",
+    "AEE_INTERACTION",
+    "FILTERING",
+    "EXPANSION"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "baseline_ref": "reports/iter1/entry_driven_directional_audit_before.json",
+  "before": {
+    "LONG": {
+      "trade_count": 68,
+      "pips_mean": -0.6561764705880213,
+      "pph_mean": 33.70156106735844,
+      "win_rate": 0.5441176470588235,
+      "sl_hit_rate": 0.39705882352941174
+    },
+    "SHORT": {
+      "trade_count": 38,
+      "pips_mean": -2.7473684210525624,
+      "pph_mean": -164.40567152378446,
+      "win_rate": 0.34210526315789475,
+      "sl_hit_rate": 0.6052631578947368
+    },
+    "BOTH": {
+      "trade_count": 106,
+      "pips_mean": -1.4058490566036117,
+      "pph_mean": -37.31801288040977,
+      "win_rate": 0.4716981132075472,
+      "sl_hit_rate": 0.4716981132075472
+    }
+  },
+  "after": {
+    "LONG": {
+      "trade_count": 68,
+      "pips_mean": -0.6561764705880213,
+      "pph_mean": 33.70156106735844,
+      "win_rate": 0.5441176470588235,
+      "sl_hit_rate": 0.39705882352941174
+    },
+    "SHORT": {
+      "trade_count": 28,
+      "pips_mean": -1.8935714285715897,
+      "pph_mean": -219.58284717438278,
+      "win_rate": 0.4642857142857143,
+      "sl_hit_rate": 0.4642857142857143
+    },
+    "BOTH": {
+      "trade_count": 96,
+      "pips_mean": -1.0170833333332288,
+      "pph_mean": -40.173058003149414,
+      "win_rate": 0.5208333333333334,
+      "sl_hit_rate": 0.4166666666666667
+    }
+  },
+  "guardrails": {
+    "delta_pips_mean_global": 0.38876572327038295,
+    "delta_sl_hit_rate_global": -0.05503144654088049,
+    "delta_long_pips_mean": 0.0,
+    "delta_trade_count_global_pct": -0.09433962264150944
+  },
+  "guardrail_pass": {
+    "pips_improve_ge_0_20": true,
+    "sl_hit_worse_le_2pp": true,
+    "long_not_degrade_gt_0_15": true,
+    "trade_count_drop_le_15pct": true
+  },
+  "profiles_after": {
+    "LONG_ONLY": {
+      "trade_count": 68,
+      "pips_proxy": -0.7147058823527906,
+      "win_proxy": 0.45588235294117646,
+      "sl_hit_rate": 0.39705882352941174
+    },
+    "LONG_PLUS_SHORT_FAST_MED": {
+      "trade_count": 96,
+      "pips_proxy": -1.022395833333231,
+      "win_proxy": 0.4270833333333333,
+      "sl_hit_rate": 0.4166666666666667
+    },
+    "FULL": {
+      "trade_count": 96,
+      "pips_proxy": -1.022395833333231,
+      "win_proxy": 0.4270833333333333,
+      "sl_hit_rate": 0.4166666666666667
+    }
+  },
+  "profiles_ranked": [
+    {
+      "profile": "LONG_ONLY",
+      "metrics": {
+        "trade_count": 68,
+        "pips_proxy": -0.7147058823527906,
+        "win_proxy": 0.45588235294117646,
+        "sl_hit_rate": 0.39705882352941174
+      }
+    },
+    {
+      "profile": "LONG_PLUS_SHORT_FAST_MED",
+      "metrics": {
+        "trade_count": 96,
+        "pips_proxy": -1.022395833333231,
+        "win_proxy": 0.4270833333333333,
+        "sl_hit_rate": 0.4166666666666667
+      }
+    },
+    {
+      "profile": "FULL",
+      "metrics": {
+        "trade_count": 96,
+        "pips_proxy": -1.022395833333231,
+        "win_proxy": 0.4270833333333333,
+        "sl_hit_rate": 0.4166666666666667
+      }
+    }
+  ],
+  "winner_profile": "LONG_ONLY",
+  "short_weakness_primary": "mixed",
+  "lane_failure_modes": {
+    "LONG_FAST_MED": "MIXED",
+    "SHORT_FAST_MED": "MIXED",
+    "SHORT_SLOW": "NO_OPPORTUNITY"
+  }
+}

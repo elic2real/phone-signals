@@ -1,0 +1,370 @@
+{
+  "run_id": "AEE_MATRIX_MVP_EUR_USD_MVP_SMOKE_20260325B_variant_b_fake_runner_demotion",
+  "champion_reference": "strategy_performance_report_raw.json",
+  "intervention_class": "AEE_V3_ACTIVE_POLICY",
+  "expected_signature": {
+    "economic_objective": "maximize retained pips per hour after entry",
+    "realized_pph_change_pct": [
+      0.2,
+      0.8
+    ],
+    "gap_change_pct": [
+      -0.4,
+      -0.15
+    ],
+    "extraction_efficiency_abs_change": [
+      0.05,
+      0.25
+    ],
+    "bankable_green_loss_red_rate": "near_zero",
+    "giveback_ratio_change_pct": [
+      -0.3,
+      -0.1
+    ],
+    "trades_per_hour": "up",
+    "avg_loser_hold_sec": "down",
+    "avg_weak_winner_hold_sec": "down",
+    "baseline_hard_amplifier_gate_pass": true
+  },
+  "actual_signature": {
+    "trade_count": 11,
+    "trades_per_hour": 0.006519,
+    "avg_pips_per_trade": 1.4,
+    "entry_only_pph": 0.131152,
+    "realized_pph": 0.009127,
+    "gap": 0.122026,
+    "extraction_efficiency": 0.069589,
+    "loss_compression_rate": 1.0,
+    "failure_to_win_conversion_rate": 1.0,
+    "continuation_capture_rate": 0.069589,
+    "giveback_ratio": 0.930411,
+    "bankable_green_loss_red_rate": 0.0,
+    "bankable_green_protection_rate": 1.0,
+    "avg_loser_hold_sec": 0.0,
+    "avg_weak_winner_hold_sec": 321.818182,
+    "baseline_gate_all_pass": false
+  },
+  "delta_vs_champion": {
+    "breakout_net_pph": -0.0957,
+    "combined_keep_tune_net_pph": -0.0855
+  },
+  "matches_expected_model": true,
+  "hard_gates": {
+    "loss_compression_rate_pass": true,
+    "failure_to_win_conversion_rate_pass": true,
+    "continuation_capture_rate_pass": false,
+    "giveback_ratio_pass": false,
+    "blocking_overfire_absent_pass": false,
+    "baseline_amplifier_gate_pass": false,
+    "performance_core_rule_pass": false,
+    "promotion_gate_pass": false
+  },
+  "auto_verdict": "REJECT",
+  "ab_baseline_comparison": {
+    "baselines": {
+      "static_tp_sl": {
+        "trade_count": 11,
+        "total_net_pips": 9.9,
+        "avg_net_pips_per_trade": 0.9,
+        "realized_pph": 0.005867
+      },
+      "minimal_protective_only": {
+        "trade_count": 11,
+        "total_net_pips": 88.4,
+        "avg_net_pips_per_trade": 8.036364,
+        "realized_pph": 0.05239
+      },
+      "no_aee_loose": {
+        "trade_count": 11,
+        "total_net_pips": 128.3,
+        "avg_net_pips_per_trade": 11.663636,
+        "realized_pph": 0.076036
+      },
+      "aee_candidate": {
+        "trade_count": 11,
+        "total_net_pips": 15.4,
+        "avg_net_pips_per_trade": 1.4,
+        "realized_pph": 0.009127
+      }
+    },
+    "candidate_vs_baselines": {
+      "static_tp_sl": {
+        "delta_realized_pph": 0.00326,
+        "delta_avg_net_pips_per_trade": 0.5,
+        "net_expectancy_shift": 0.5
+      },
+      "minimal_protective_only": {
+        "delta_realized_pph": -0.043263,
+        "delta_avg_net_pips_per_trade": -6.636364,
+        "net_expectancy_shift": -6.636364
+      },
+      "no_aee_loose": {
+        "delta_realized_pph": -0.066909,
+        "delta_avg_net_pips_per_trade": -10.263636,
+        "net_expectancy_shift": -10.263636
+      }
+    }
+  },
+  "performance_signature": {
+    "has_prior_reference": true,
+    "immediate_signature": {
+      "expected_range": {
+        "realized_pph_change_pct": [
+          0.2,
+          0.8
+        ],
+        "gap_change_pct": [
+          -0.4,
+          -0.15
+        ],
+        "efficiency_abs_change": [
+          0.05,
+          0.25
+        ]
+      },
+      "realized_pph_change_pct": 0.0,
+      "gap_change_pct": 0.0,
+      "efficiency_abs_change": 0.069589,
+      "pass": false
+    },
+    "global_expectation": {
+      "realized_pph_change_pct": 0.0,
+      "gap_change_pct": 0.0,
+      "efficiency_abs_change": 0.069589,
+      "pass": false
+    },
+    "bankable_green_protection": {
+      "bankable_green_loss_red_rate": 0.0,
+      "prior_bankable_green_loss_red_rate": null,
+      "bankable_green_loss_red_rate_change_pct": null,
+      "near_elimination_target_max": 0.05,
+      "pass": true
+    },
+    "throughput_signature": {
+      "trades_per_hour_change_pct": null,
+      "avg_loser_hold_sec_change_pct": null,
+      "avg_weak_winner_hold_sec_change_pct": null,
+      "pass": false
+    },
+    "baseline_flip_signature": {
+      "hard_amplifier_gate_pass": false,
+      "pass": false
+    },
+    "gap_reduction_signature": {
+      "gap_change_pct": null,
+      "min_expected_reduction_pct": -0.15,
+      "pass": false
+    },
+    "giveback_fix_signature": {
+      "giveback_ratio_change_pct": 0.0,
+      "giveback_exit_share_change_pct": null,
+      "continuation_capture_change_pct": 0.0,
+      "breakout_pph_change_pct": 0.0,
+      "pass": false
+    },
+    "continuation_signature": {
+      "continuation_capture_change_pct": 0.0,
+      "pass": false
+    },
+    "loss_compression_stability": {
+      "loss_compression_rate": 1.0,
+      "pass": true
+    },
+    "core_rule_all_four": {
+      "pass": false
+    },
+    "auto_reject_patterns": [
+      "BANKABLE_GREEN_PROTECTION_FAILED",
+      "GAP_NOT_MATERIALLY_REDUCED",
+      "BASELINE_STILL_BETTER",
+      "THROUGHPUT_STALLED"
+    ]
+  },
+  "green_loss_audit": {
+    "thresholds": {
+      "micro_green_min_pips": 0.0,
+      "bankable_green_min_pips": 2.0,
+      "runner_green_min_pips": 5.0,
+      "weak_winner_max_pips": 2.0,
+      "time_inefficient_min_hold_sec": 600.0,
+      "time_value_floor_pips_per_min": 0.1
+    },
+    "summary": {
+      "losing_trade_count": 0,
+      "never_green_count": 0,
+      "micro_green_loss_count": 0,
+      "bankable_green_loss_count": 0,
+      "runner_green_loss_count": 0,
+      "green_then_loss_count": 0,
+      "green_then_loss_share_of_losers": 0.0,
+      "bankable_green_trade_count": 11,
+      "bankable_green_winner_count": 11,
+      "bankable_green_protection_rate": 1.0,
+      "bankable_green_loss_red_rate": 0.0,
+      "avg_mfe_green_then_loss": 0.0,
+      "avg_profit_given_back": 0.0,
+      "avg_profit_given_back_bankable_green": 0.0,
+      "giveback_exit_share_of_green_losses": 0.0
+    },
+    "green_tier_distribution": {},
+    "winner_taxonomy_distribution": {
+      "fake_runner": 11
+    },
+    "dead_trade_subtype_distribution": {},
+    "economic_state_distribution": {
+      "GREEN_PROTECTED": 2,
+      "RUNNER_ELIGIBLE": 4,
+      "GREEN_UNPROTECTED": 5
+    },
+    "family_distribution": {},
+    "exit_reason_distribution": {},
+    "path_shape_distribution": {},
+    "path_shape_family_matrix": {},
+    "state_transition_stress": {
+      "runner_green_unprotected_loss_count": 0,
+      "bankable_green_unprotected_loss_count": 0,
+      "threshold_reactivity_proxy_count": 0,
+      "runner_green_unprotected_loss_share": 0.0,
+      "bankable_green_unprotected_loss_share": 0.0
+    },
+    "throughput": {
+      "avg_loser_hold_sec": 0.0,
+      "avg_weak_winner_hold_sec": 321.818182,
+      "avg_bankable_green_loser_hold_sec": 0.0,
+      "time_inefficient_trade_count": 0,
+      "time_inefficient_trade_share": 0.0
+    },
+    "objective_alignment": {
+      "branch_objective_alignment": [
+        {
+          "exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "trade_count": 6,
+          "trade_share": 0.545455,
+          "avg_realized_pips": 1.916667,
+          "avg_hold_sec": 300.0,
+          "avg_retained_rate_pips_per_min": 0.416667
+        },
+        {
+          "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+          "trade_count": 5,
+          "trade_share": 0.454545,
+          "avg_realized_pips": 0.78,
+          "avg_hold_sec": 348.0,
+          "avg_retained_rate_pips_per_min": 0.142286
+        }
+      ],
+      "objective_misalignment_flags": [],
+      "overheld_winner_count": 0,
+      "fake_runner_count": 11
+    },
+    "green_then_loss_samples": [],
+    "bankable_green_loss_samples": [],
+    "dead_trade_samples": [],
+    "never_green_samples": []
+  },
+  "family_taxonomy_audit": {
+    "step": "STEP_1_SPLIT_FAMILIES",
+    "family_invalid_detected": false,
+    "family_rows": [
+      {
+        "family": "BREAKOUT__clean_expansion",
+        "cluster_count": 1,
+        "realized_pips_spread": 1.4,
+        "has_sign_split": false,
+        "dominant_exit_variety": 1,
+        "invalid_family_flag": false,
+        "clusters": [
+          {
+            "cluster": "stall_then_continuation",
+            "trade_count": 11,
+            "avg_realized_pips": 1.4,
+            "avg_hold_sec": 321.818182,
+            "avg_mfe_net_pips": 20.118182,
+            "bankable_green_red_rate": 0.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+          }
+        ]
+      }
+    ],
+    "decision": "problem_3_not_confirmed"
+  },
+  "module_collision_audit": {
+    "step": "STEP_2_MODULARIZE_AEE",
+    "objective_collision_detected": true,
+    "conflict_flags": [
+      "EXTENSION_MODULE_FALSE_POSITIVES",
+      "THROUGHPUT_COLLISION_WEAK_WINNERS_OVERHELD"
+    ],
+    "metrics": {
+      "bankable_green_loss_red_rate": 0.0,
+      "time_inefficient_trade_share": 0.0,
+      "overheld_winner_count": 0,
+      "fake_runner_count": 11,
+      "avg_weak_winner_hold_sec": 321.818182,
+      "avg_loser_hold_sec": 0.0
+    },
+    "decision": "problem_5_architecture_confirmed"
+  },
+  "simplicity_reality_check": {
+    "step": "STEP_3_COMPARE_TO_SIMPLICITY",
+    "beats_minimal_protective": false,
+    "beats_no_aee_loose": false,
+    "complexity_adds_value": false,
+    "decision": "problem_6_simplicity_wins"
+  },
+  "root_cause_decision_tree": {
+    "decision_tree": {
+      "step_1_family_split": {
+        "step": "STEP_1_SPLIT_FAMILIES",
+        "family_invalid_detected": false,
+        "family_rows": [
+          {
+            "family": "BREAKOUT__clean_expansion",
+            "cluster_count": 1,
+            "realized_pips_spread": 1.4,
+            "has_sign_split": false,
+            "dominant_exit_variety": 1,
+            "invalid_family_flag": false,
+            "clusters": [
+              {
+                "cluster": "stall_then_continuation",
+                "trade_count": 11,
+                "avg_realized_pips": 1.4,
+                "avg_hold_sec": 321.818182,
+                "avg_mfe_net_pips": 20.118182,
+                "bankable_green_red_rate": 0.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+              }
+            ]
+          }
+        ],
+        "decision": "problem_3_not_confirmed"
+      },
+      "step_2_modularize_aee": {
+        "step": "STEP_2_MODULARIZE_AEE",
+        "objective_collision_detected": true,
+        "conflict_flags": [
+          "EXTENSION_MODULE_FALSE_POSITIVES",
+          "THROUGHPUT_COLLISION_WEAK_WINNERS_OVERHELD"
+        ],
+        "metrics": {
+          "bankable_green_loss_red_rate": 0.0,
+          "time_inefficient_trade_share": 0.0,
+          "overheld_winner_count": 0,
+          "fake_runner_count": 11,
+          "avg_weak_winner_hold_sec": 321.818182,
+          "avg_loser_hold_sec": 0.0
+        },
+        "decision": "problem_5_architecture_confirmed"
+      },
+      "step_3_simplicity_vs_complexity": {
+        "step": "STEP_3_COMPARE_TO_SIMPLICITY",
+        "beats_minimal_protective": false,
+        "beats_no_aee_loose": false,
+        "complexity_adds_value": false,
+        "decision": "problem_6_simplicity_wins"
+      }
+    },
+    "root_cause_hypothesis": "PROBLEM_5_MONOLITHIC_AEE_OBJECTIVE_COLLISION"
+  }
+}

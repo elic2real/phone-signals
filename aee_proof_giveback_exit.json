@@ -1,0 +1,174 @@
+{
+  "branch": "AEE_BAND_GIVEBACK_EXIT",
+  "generated_at": "2026-03-23T18:36:40.716517Z",
+  "scenarios_tested": 3,
+  "pass_count": 1,
+  "fail_count": 2,
+  "false_positives": 0,
+  "false_negatives": 2,
+  "threshold_snapshot": {
+    "min_best_r": 0.07,
+    "min_giveback_r": 0.02,
+    "min_giveback_frac": 0.2
+  },
+  "representative_outputs": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_GIVEBACK_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.07,
+          "min_giveback_r": 0.02,
+          "min_giveback_frac": 0.2,
+          "min_time_since_peak_sec": 0.8,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.22,
+          "giveback_r": 0.11,
+          "giveback_frac": 0.5,
+          "time_since_peak_sec": 2.2,
+          "net_r": 0.04,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_GIVEBACK_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.07,
+          "min_giveback_r": 0.02,
+          "min_giveback_frac": 0.2,
+          "min_time_since_peak_sec": 0.8,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.13,
+          "giveback_r": 0.05,
+          "giveback_frac": 0.38461538461538464,
+          "time_since_peak_sec": 1.6,
+          "net_r": 0.03,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_GIVEBACK_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.07,
+          "min_giveback_r": 0.02,
+          "min_giveback_frac": 0.2,
+          "min_time_since_peak_sec": 0.8,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.19,
+          "giveback_r": 0.02,
+          "giveback_frac": 0.10526315789473684,
+          "time_since_peak_sec": 1.0,
+          "net_r": 0.07,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_GIVEBACK_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.07,
+          "min_giveback_r": 0.02,
+          "min_giveback_frac": 0.2,
+          "min_time_since_peak_sec": 0.8,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.22,
+          "giveback_r": 0.11,
+          "giveback_frac": 0.5,
+          "time_since_peak_sec": 2.2,
+          "net_r": 0.04,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_GIVEBACK_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.07,
+          "min_giveback_r": 0.02,
+          "min_giveback_frac": 0.2,
+          "min_time_since_peak_sec": 0.8,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.13,
+          "giveback_r": 0.05,
+          "giveback_frac": 0.38461538461538464,
+          "time_since_peak_sec": 1.6,
+          "net_r": 0.03,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_GIVEBACK_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.07,
+          "min_giveback_r": 0.02,
+          "min_giveback_frac": 0.2,
+          "min_time_since_peak_sec": 0.8,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.19,
+          "giveback_r": 0.02,
+          "giveback_frac": 0.10526315789473684,
+          "time_since_peak_sec": 1.0,
+          "net_r": 0.07,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    }
+  ]
+}

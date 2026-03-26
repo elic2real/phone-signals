@@ -1,0 +1,174 @@
+{
+  "branch": "AEE_BAND_EXTENSION_DECAY_EXIT",
+  "generated_at": "2026-03-23T18:36:40.717154Z",
+  "scenarios_tested": 3,
+  "pass_count": 1,
+  "fail_count": 2,
+  "false_positives": 0,
+  "false_negatives": 2,
+  "threshold_snapshot": {
+    "min_best_r": 0.1,
+    "max_vel_r_per_sec": 0.0015,
+    "min_giveback_frac": 0.25
+  },
+  "representative_outputs": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_DECAY_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.1,
+          "max_vel_r_per_sec": 0.0015,
+          "min_giveback_frac": 0.25,
+          "min_time_since_peak_sec": 1.0,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.22,
+          "giveback_r": 0.12,
+          "giveback_frac": 0.5454545454545454,
+          "vel_r": 0.0007,
+          "time_since_peak_sec": 3.0,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_DECAY_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.1,
+          "max_vel_r_per_sec": 0.0015,
+          "min_giveback_frac": 0.25,
+          "min_time_since_peak_sec": 1.0,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.15,
+          "giveback_r": 0.062,
+          "giveback_frac": 0.41333333333333333,
+          "vel_r": 0.001,
+          "time_since_peak_sec": 2.1,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_DECAY_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.1,
+          "max_vel_r_per_sec": 0.0015,
+          "min_giveback_frac": 0.25,
+          "min_time_since_peak_sec": 1.0,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.18,
+          "giveback_r": 0.03,
+          "giveback_frac": 0.16666666666666666,
+          "vel_r": 0.004,
+          "time_since_peak_sec": 1.0,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_DECAY_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.1,
+          "max_vel_r_per_sec": 0.0015,
+          "min_giveback_frac": 0.25,
+          "min_time_since_peak_sec": 1.0,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.22,
+          "giveback_r": 0.12,
+          "giveback_frac": 0.5454545454545454,
+          "vel_r": 0.0007,
+          "time_since_peak_sec": 3.0,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_DECAY_EXIT",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.1,
+          "max_vel_r_per_sec": 0.0015,
+          "min_giveback_frac": 0.25,
+          "min_time_since_peak_sec": 1.0,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.15,
+          "giveback_r": 0.062,
+          "giveback_frac": 0.41333333333333333,
+          "vel_r": 0.001,
+          "time_since_peak_sec": 2.1,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_DECAY_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_best_r": 0.1,
+          "max_vel_r_per_sec": 0.0015,
+          "min_giveback_frac": 0.25,
+          "min_time_since_peak_sec": 1.0,
+          "min_peak_band": 2,
+          "fallback_bands": 1
+        },
+        "debug": {
+          "best_r": 0.18,
+          "giveback_r": 0.03,
+          "giveback_frac": 0.16666666666666666,
+          "vel_r": 0.004,
+          "time_since_peak_sec": 1.0,
+          "current_band_idx": 0,
+          "highest_band_reached": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "baselines": {
+    "static_tp_sl": {
+      "trade_count": 20,
+      "total_net_pips": 18.0,
+      "avg_net_pips_per_trade": 0.9,
+      "realized_pph": 0.005334
+    },
+    "minimal_protective_only": {
+      "trade_count": 20,
+      "total_net_pips": -7.7,
+      "avg_net_pips_per_trade": -0.385,
+      "realized_pph": -0.002282
+    },
+    "no_aee_loose": {
+      "trade_count": 20,
+      "total_net_pips": -24.5,
+      "avg_net_pips_per_trade": -1.225,
+      "realized_pph": -0.00726
+    },
+    "aee_candidate": {
+      "trade_count": 20,
+      "total_net_pips": 50.4,
+      "avg_net_pips_per_trade": 2.52,
+      "realized_pph": 0.014935
+    }
+  },
+  "candidate_vs_baselines": {
+    "static_tp_sl": {
+      "delta_realized_pph": 0.009601,
+      "delta_avg_net_pips_per_trade": 1.62,
+      "net_expectancy_shift": 1.62
+    },
+    "minimal_protective_only": {
+      "delta_realized_pph": 0.017217,
+      "delta_avg_net_pips_per_trade": 2.905,
+      "net_expectancy_shift": 2.905
+    },
+    "no_aee_loose": {
+      "delta_realized_pph": 0.022195,
+      "delta_avg_net_pips_per_trade": 3.745,
+      "net_expectancy_shift": 3.745
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-03-25T18:55:24.000000Z",
+  "task_id": "TASK-016",
+  "pair": "EUR_USD",
+  "baseline_report": "strategy_performance_report_raw.json",
+  "v3_report": "control/aee_v3_raw_core_firehose_report.json",
+  "breakout_checkpoint": {
+    "baseline_breakout_net_pph": 0.0957,
+    "v3_breakout_net_pph": 0.0969,
+    "delta_breakout_net_pph": 0.0011999999999999927
+  },
+  "combined_keep_tune": {
+    "baseline_net_pph": 0.0946,
+    "v3_net_pph": 0.0964,
+    "delta_net_pph": 0.0018000000000000104
+  },
+  "rows": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "baseline_net_pips_per_hour": 0.0957,
+      "v3_net_pips_per_hour": 0.0969,
+      "delta_net_pips_per_hour": 0.0011999999999999927,
+      "baseline_avg_net_pips_per_trade": 0.5187,
+      "v3_avg_net_pips_per_trade": 0.5254,
+      "delta_avg_net_pips_per_trade": 0.006700000000000039,
+      "baseline_entry_only_vs_realized_gap_proxy_pips": 11.958599999999999,
+      "v3_entry_only_vs_realized_gap_proxy_pips": 11.9519,
+      "delta_gap_proxy_pips": -0.006699999999999484,
+      "baseline_win_rate": 0.3461,
+      "v3_win_rate": 0.4327,
+      "delta_win_rate": 0.0866
+    },
+    {
+      "family": "OTHER",
+      "baseline_net_pips_per_hour": -0.2435,
+      "v3_net_pips_per_hour": -0.2539,
+      "delta_net_pips_per_hour": -0.01040000000000002,
+      "baseline_avg_net_pips_per_trade": -1.7687,
+      "v3_avg_net_pips_per_trade": -1.8445,
+      "delta_avg_net_pips_per_trade": -0.07580000000000009,
+      "baseline_entry_only_vs_realized_gap_proxy_pips": 11.4571,
+      "v3_entry_only_vs_realized_gap_proxy_pips": 11.5329,
+      "delta_gap_proxy_pips": 0.0757999999999992,
+      "baseline_win_rate": 0.0604,
+      "v3_win_rate": 0.0626,
+      "delta_win_rate": 0.0022000000000000006
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "baseline_net_pips_per_hour": -0.0523,
+      "v3_net_pips_per_hour": -0.0489,
+      "delta_net_pips_per_hour": 0.0034000000000000002,
+      "baseline_avg_net_pips_per_trade": -1.294,
+      "v3_avg_net_pips_per_trade": -1.211,
+      "delta_avg_net_pips_per_trade": 0.08299999999999996,
+      "baseline_entry_only_vs_realized_gap_proxy_pips": 14.3103,
+      "v3_entry_only_vs_realized_gap_proxy_pips": 14.2273,
+      "delta_gap_proxy_pips": -0.08300000000000018,
+      "baseline_win_rate": 0.0639,
+      "v3_win_rate": 0.1525,
+      "delta_win_rate": 0.0886
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "baseline_net_pips_per_hour": -0.3334,
+      "v3_net_pips_per_hour": -0.3745,
+      "delta_net_pips_per_hour": -0.041100000000000025,
+      "baseline_avg_net_pips_per_trade": -0.7258,
+      "v3_avg_net_pips_per_trade": -0.8153,
+      "delta_avg_net_pips_per_trade": -0.08950000000000002,
+      "baseline_entry_only_vs_realized_gap_proxy_pips": 11.4119,
+      "v3_entry_only_vs_realized_gap_proxy_pips": 11.5014,
+      "delta_gap_proxy_pips": 0.08950000000000102,
+      "baseline_win_rate": 0.1581,
+      "v3_win_rate": 0.1932,
+      "delta_win_rate": 0.03510000000000002
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "baseline_net_pips_per_hour": -0.0011,
+      "v3_net_pips_per_hour": -0.0005,
+      "delta_net_pips_per_hour": 0.0006000000000000001,
+      "baseline_avg_net_pips_per_trade": -0.6767,
+      "v3_avg_net_pips_per_trade": -0.286,
+      "delta_avg_net_pips_per_trade": 0.3907,
+      "baseline_entry_only_vs_realized_gap_proxy_pips": 12.279,
+      "v3_entry_only_vs_realized_gap_proxy_pips": 11.8883,
+      "delta_gap_proxy_pips": -0.3907000000000007,
+      "baseline_win_rate": 0.1395,
+      "v3_win_rate": 0.3488,
+      "delta_win_rate": 0.20929999999999999
+    }
+  ],
+  "summary": {
+    "families_improved_net_pph": [
+      "EXPANSION_BREAKOUT",
+      "PULLBACK_CONTINUATION",
+      "RECLAIM_CONTINUATION"
+    ],
+    "families_worsened_net_pph": [
+      "OTHER",
+      "RANGE_ESCAPE"
+    ],
+    "families_gap_shrunk": [
+      "EXPANSION_BREAKOUT",
+      "PULLBACK_CONTINUATION",
+      "RECLAIM_CONTINUATION"
+    ],
+    "families_gap_widened": [
+      "OTHER",
+      "RANGE_ESCAPE"
+    ]
+  }
+}

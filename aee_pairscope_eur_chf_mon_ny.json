@@ -1,0 +1,889 @@
+{
+  "generated_at": "2026-03-23T20:44:28.303688Z",
+  "seed_sweep": "/home/elic/Documents/phone signals/aee_historical_system_scoreboard_sweep.json",
+  "seed_count": 1,
+  "family_count": 3,
+  "candidate_count": 3,
+  "stream_count": 5,
+  "streams": [
+    "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+    "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+    "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+    "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+    "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__wednesday__london/aee_stage/aee_state_stream/aee_state_stream.csv"
+  ],
+  "behavioral_bands": {
+    "noise_max": 0.35,
+    "monetize_max": 0.7,
+    "continuation_max": 1.25,
+    "runner_max": 2.2
+  },
+  "gates": {
+    "min_delta_pph": 0.03,
+    "max_hold_ratio": 1.5,
+    "min_stream_wins": 3,
+    "min_stream_win_rate": 0.6
+  },
+  "ranked_candidates": [
+    {
+      "seed_name": "eur_chf_mon_ny",
+      "seed_config_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_rules/aee_rules.json",
+      "family_name": "band_forced_monetization",
+      "stream_count": 5,
+      "stream_win_count": 0,
+      "stream_win_rate": 0.0,
+      "avg_metrics": {
+        "realized_pips_per_hour": 1.3520916815277508,
+        "realized_usd_per_hour": 1.0816733452222007,
+        "avg_realized_r": 0.47596236091652955,
+        "avg_hold_sec": 1032.834973349633,
+        "capital_recycling_rate": 1.5267171363548808
+      },
+      "avg_delta_vs_static": {
+        "realized_pips_per_hour": -0.2163681287546706,
+        "realized_usd_per_hour": -0.17309450300373647,
+        "avg_realized_r": -0.0055120440224001145,
+        "avg_hold_sec": -351.01785212667676,
+        "hold_ratio": 0.8066647319601785
+      },
+      "promoted": false,
+      "stream_rows": [
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1688.0833333333333,
+            "exit_count": 487,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                271
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                211
+              ],
+              [
+                "STATIC_TIMEOUT",
+                3
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                2
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 211,
+              "AEE_BAND_PROB_LOCK_EXIT": 271,
+              "AEE_BAND_FAST_FAILURE_EXIT": 2,
+              "STATIC_TIMEOUT": 3
+            },
+            "realized_pips_per_hour": 0.6276348916423953,
+            "realized_usd_per_hour": 0.5021079133139162,
+            "close_cycle_capture_rate": 0.28849286666337565,
+            "avg_hold_sec": 838.1519507186858,
+            "avg_realized_r": 0.6800267300575309,
+            "green_roundtrip_loss_rate": 0.01026694045174538,
+            "sl_hit_rate": 0.01026694045174538,
+            "capital_recycling_rate": 0.28849286666337565
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.3563212716591795,
+            "realized_usd_per_hour": -0.2850570173273437,
+            "avg_realized_r": -0.1926632083408264,
+            "avg_hold_sec": -1086.899383983573,
+            "hold_ratio": 0.435392
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1689.15,
+            "exit_count": 869,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                414
+              ],
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                403
+              ],
+              [
+                "STATIC_TIMEOUT",
+                28
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                24
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 414,
+              "AEE_BAND_PROB_LOCK_EXIT": 403,
+              "AEE_BAND_FAST_FAILURE_EXIT": 24,
+              "STATIC_TIMEOUT": 28
+            },
+            "realized_pips_per_hour": 0.6091821330254862,
+            "realized_usd_per_hour": 0.48734570642038894,
+            "close_cycle_capture_rate": 0.5144599354705028,
+            "avg_hold_sec": 1084.2807825086306,
+            "avg_realized_r": 0.5040665823116917,
+            "green_roundtrip_loss_rate": 0.03423848878394333,
+            "sl_hit_rate": 0.05868814729574223,
+            "capital_recycling_rate": 0.5144599354705028
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.1429713169345529,
+            "realized_usd_per_hour": -0.11437705354764233,
+            "avg_realized_r": 0.01730018415288842,
+            "avg_hold_sec": -468.33141542002295,
+            "hold_ratio": 0.6983590518966515
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1685.0,
+            "exit_count": 813,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                409
+              ],
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                364
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                23
+              ],
+              [
+                "STATIC_TIMEOUT",
+                17
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 409,
+              "AEE_BAND_PROB_LOCK_EXIT": 364,
+              "AEE_BAND_FAST_FAILURE_EXIT": 23,
+              "STATIC_TIMEOUT": 17
+            },
+            "realized_pips_per_hour": 0.5607121661721068,
+            "realized_usd_per_hour": 0.4485697329376855,
+            "close_cycle_capture_rate": 0.4824925816023739,
+            "avg_hold_sec": 977.7121771217712,
+            "avg_realized_r": 0.5357444014916339,
+            "green_roundtrip_loss_rate": 0.027672955974842768,
+            "sl_hit_rate": 0.04920049200492005,
+            "capital_recycling_rate": 0.4824925816023739
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.06332344213649854,
+            "realized_usd_per_hour": -0.05065875370919881,
+            "avg_realized_r": 0.022829272340342377,
+            "avg_hold_sec": -363.54243542435415,
+            "hold_ratio": 0.728953449983493
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1689.25,
+            "exit_count": 3899,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                1816
+              ],
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                1760
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                209
+              ],
+              [
+                "STATIC_TIMEOUT",
+                114
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_PROB_LOCK_EXIT": 1760,
+              "AEE_BAND_FORCED_MONETIZE": 1816,
+              "AEE_BAND_FAST_FAILURE_EXIT": 209,
+              "STATIC_TIMEOUT": 114
+            },
+            "realized_pips_per_hour": 2.2447239899363622,
+            "realized_usd_per_hour": 1.7957791919490902,
+            "close_cycle_capture_rate": 2.3081249075033297,
+            "avg_hold_sec": 1128.258527827648,
+            "avg_realized_r": 0.38454413736216764,
+            "green_roundtrip_loss_rate": 0.041187483284300615,
+            "sl_hit_rate": 0.08053347012054372,
+            "capital_recycling_rate": 2.3081249075033297
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.5210004439840166,
+            "realized_usd_per_hour": -0.41680035518721303,
+            "avg_realized_r": 0.025221234053626973,
+            "avg_hold_sec": -6.786355475763003,
+            "hold_ratio": 0.9940210686153554
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__wednesday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1689.35,
+            "exit_count": 6825,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                3167
+              ],
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                2905
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                507
+              ],
+              [
+                "STATIC_TIMEOUT",
+                246
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 3167,
+              "AEE_BAND_PROB_LOCK_EXIT": 2905,
+              "AEE_BAND_FAST_FAILURE_EXIT": 507,
+              "STATIC_TIMEOUT": 246
+            },
+            "realized_pips_per_hour": 2.718205226862403,
+            "realized_usd_per_hour": 2.1745641814899224,
+            "close_cycle_capture_rate": 4.040015390534822,
+            "avg_hold_sec": 1135.7714285714285,
+            "avg_realized_r": 0.2754299533596237,
+            "green_roundtrip_loss_rate": 0.06072311495673671,
+            "sl_hit_rate": 0.1093040293040293,
+            "capital_recycling_rate": 4.040015390534822
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": 0.0017758309408946182,
+            "realized_usd_per_hour": 0.001420664752715517,
+            "avg_realized_r": 0.09975229768196806,
+            "avg_hold_sec": 170.47032967032953,
+            "hold_ratio": 1.1765980893053922
+          }
+        }
+      ]
+    },
+    {
+      "seed_name": "eur_chf_mon_ny",
+      "seed_config_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_rules/aee_rules.json",
+      "family_name": "earlier_band_qualification",
+      "stream_count": 5,
+      "stream_win_count": 0,
+      "stream_win_rate": 0.0,
+      "avg_metrics": {
+        "realized_pips_per_hour": 1.2771087883131655,
+        "realized_usd_per_hour": 1.0216870306505326,
+        "avg_realized_r": 0.46002308807946746,
+        "avg_hold_sec": 1306.7592244663144,
+        "capital_recycling_rate": 1.5267171363548808
+      },
+      "avg_delta_vs_static": {
+        "realized_pips_per_hour": -0.29135102196925555,
+        "realized_usd_per_hour": -0.2330808175754045,
+        "avg_realized_r": -0.021451316859462242,
+        "avg_hold_sec": -77.09360100999523,
+        "hold_ratio": 1.019135811411746
+      },
+      "promoted": false,
+      "stream_rows": [
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1688.0833333333333,
+            "exit_count": 487,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                355
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                122
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                7
+              ],
+              [
+                "STATIC_TIMEOUT",
+                3
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 122,
+              "AEE_BAND_PROB_LOCK_EXIT": 355,
+              "AEE_BAND_FAST_FAILURE_EXIT": 7,
+              "STATIC_TIMEOUT": 3
+            },
+            "realized_pips_per_hour": 0.6487683269980747,
+            "realized_usd_per_hour": 0.5190146615984598,
+            "close_cycle_capture_rate": 0.28849286666337565,
+            "avg_hold_sec": 1046.1190965092403,
+            "avg_realized_r": 0.6901159187606826,
+            "green_roundtrip_loss_rate": 0.02053388090349076,
+            "sl_hit_rate": 0.02053388090349076,
+            "capital_recycling_rate": 0.28849286666337565
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.3351878363035,
+            "realized_usd_per_hour": -0.26815026904280015,
+            "avg_realized_r": -0.18257401963767472,
+            "avg_hold_sec": -878.9322381930185,
+            "hold_ratio": 0.543424
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1689.15,
+            "exit_count": 869,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                555
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                238
+              ],
+              [
+                "STATIC_TIMEOUT",
+                39
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                36
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                1
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 238,
+              "AEE_BAND_PROB_LOCK_EXIT": 555,
+              "AEE_BAND_FAST_FAILURE_EXIT": 36,
+              "STATIC_TIMEOUT": 39,
+              "AEE_BAND_STALL_RECLASS_EXIT": 1
+            },
+            "realized_pips_per_hour": 0.6148062635053133,
+            "realized_usd_per_hour": 0.4918450108042507,
+            "close_cycle_capture_rate": 0.5144599354705028,
+            "avg_hold_sec": 1400.506329113924,
+            "avg_realized_r": 0.4841427467175453,
+            "green_roundtrip_loss_rate": 0.05785123966942149,
+            "sl_hit_rate": 0.08170310701956271,
+            "capital_recycling_rate": 0.5144599354705028
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.13734718645472577,
+            "realized_usd_per_hour": -0.10987774916378057,
+            "avg_realized_r": -0.0026236514412579237,
+            "avg_hold_sec": -152.10586881472955,
+            "hold_ratio": 0.9020322853204074
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1685.0,
+            "exit_count": 813,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                489
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                268
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                29
+              ],
+              [
+                "STATIC_TIMEOUT",
+                25
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                2
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 268,
+              "AEE_BAND_PROB_LOCK_EXIT": 489,
+              "AEE_BAND_FAST_FAILURE_EXIT": 29,
+              "STATIC_TIMEOUT": 25,
+              "AEE_BAND_STALL_RECLASS_EXIT": 2
+            },
+            "realized_pips_per_hour": 0.5653709198813056,
+            "realized_usd_per_hour": 0.4522967359050445,
+            "close_cycle_capture_rate": 0.4824925816023739,
+            "avg_hold_sec": 1260.590405904059,
+            "avg_realized_r": 0.5307345418692282,
+            "green_roundtrip_loss_rate": 0.045283018867924525,
+            "sl_hit_rate": 0.06642066420664207,
+            "capital_recycling_rate": 0.4824925816023739
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.05866468842729977,
+            "realized_usd_per_hour": -0.046931750741839806,
+            "avg_realized_r": 0.017819412717936634,
+            "avg_hold_sec": -80.66420664206635,
+            "hold_ratio": 0.9398591394299549
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": true,
+          "rejection_reasons": [
+            "hold_time_increase_without_extraction_gain"
+          ],
+          "metrics": {
+            "window_duration_hr": 1689.25,
+            "exit_count": 3899,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                2248
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                1199
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                294
+              ],
+              [
+                "STATIC_TIMEOUT",
+                154
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                4
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_PROB_LOCK_EXIT": 2248,
+              "AEE_BAND_FORCED_MONETIZE": 1199,
+              "AEE_BAND_FAST_FAILURE_EXIT": 294,
+              "STATIC_TIMEOUT": 154,
+              "AEE_BAND_STALL_RECLASS_EXIT": 4
+            },
+            "realized_pips_per_hour": 2.145597158502294,
+            "realized_usd_per_hour": 1.7164777268018352,
+            "close_cycle_capture_rate": 2.3081249075033297,
+            "avg_hold_sec": 1405.9912798153373,
+            "avg_realized_r": 0.36096059521681473,
+            "green_roundtrip_loss_rate": 0.07354907729339395,
+            "sl_hit_rate": 0.1115670684790972,
+            "capital_recycling_rate": 2.3081249075033297
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.6201272754180849,
+            "realized_usd_per_hour": -0.49610182033446804,
+            "avg_realized_r": 0.0016376919082740637,
+            "avg_hold_sec": 270.9463965119262,
+            "hold_ratio": 1.2387098523570006
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__wednesday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": true,
+          "rejection_reasons": [
+            "hold_time_increase_without_extraction_gain"
+          ],
+          "metrics": {
+            "window_duration_hr": 1689.35,
+            "exit_count": 6825,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                3846
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                2002
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                652
+              ],
+              [
+                "STATIC_TIMEOUT",
+                325
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_PROB_LOCK_EXIT": 3846,
+              "AEE_BAND_FORCED_MONETIZE": 2002,
+              "AEE_BAND_FAST_FAILURE_EXIT": 652,
+              "STATIC_TIMEOUT": 325
+            },
+            "realized_pips_per_hour": 2.411001272678841,
+            "realized_usd_per_hour": 1.928801018143073,
+            "close_cycle_capture_rate": 4.040015390534822,
+            "avg_hold_sec": 1420.589010989011,
+            "avg_realized_r": 0.2341616378330664,
+            "green_roundtrip_loss_rate": 0.09517923362175525,
+            "sl_hit_rate": 0.14197802197802198,
+            "capital_recycling_rate": 4.040015390534822
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.3054281232426672,
+            "realized_usd_per_hour": -0.24434249859413382,
+            "avg_realized_r": 0.05848398215541073,
+            "avg_hold_sec": 455.2879120879121,
+            "hold_ratio": 1.4716537799513674
+          }
+        }
+      ]
+    },
+    {
+      "seed_name": "eur_chf_mon_ny",
+      "seed_config_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_rules/aee_rules.json",
+      "family_name": "stall_reversal_reclassification",
+      "stream_count": 5,
+      "stream_win_count": 0,
+      "stream_win_rate": 0.0,
+      "avg_metrics": {
+        "realized_pips_per_hour": 1.2622849317428286,
+        "realized_usd_per_hour": 1.0098279453942631,
+        "avg_realized_r": 0.45112962756299096,
+        "avg_hold_sec": 1286.646657565743,
+        "capital_recycling_rate": 1.5267171363548808
+      },
+      "avg_delta_vs_static": {
+        "realized_pips_per_hour": -0.30617487853959247,
+        "realized_usd_per_hour": -0.24493990283167402,
+        "avg_realized_r": -0.03034477737593877,
+        "avg_hold_sec": -97.20616791056666,
+        "hold_ratio": 1.0032097577219767
+      },
+      "promoted": false,
+      "stream_rows": [
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1688.0833333333333,
+            "exit_count": 487,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                365
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                111
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                7
+              ],
+              [
+                "STATIC_TIMEOUT",
+                3
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                1
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 111,
+              "AEE_BAND_PROB_LOCK_EXIT": 365,
+              "AEE_BAND_FAST_FAILURE_EXIT": 7,
+              "STATIC_TIMEOUT": 3,
+              "AEE_BAND_STALL_RECLASS_EXIT": 1
+            },
+            "realized_pips_per_hour": 0.6402231327442366,
+            "realized_usd_per_hour": 0.5121785061953893,
+            "close_cycle_capture_rate": 0.28849286666337565,
+            "avg_hold_sec": 1028.501026694045,
+            "avg_realized_r": 0.6779463794248188,
+            "green_roundtrip_loss_rate": 0.02053388090349076,
+            "sl_hit_rate": 0.02053388090349076,
+            "capital_recycling_rate": 0.28849286666337565
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.34373303055733817,
+            "realized_usd_per_hour": -0.2749864244458706,
+            "avg_realized_r": -0.19474355897353846,
+            "avg_hold_sec": -896.5503080082137,
+            "hold_ratio": 0.534272
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1689.15,
+            "exit_count": 869,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                564
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                228
+              ],
+              [
+                "STATIC_TIMEOUT",
+                39
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                36
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                2
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 228,
+              "AEE_BAND_STALL_RECLASS_EXIT": 2,
+              "AEE_BAND_PROB_LOCK_EXIT": 564,
+              "AEE_BAND_FAST_FAILURE_EXIT": 36,
+              "STATIC_TIMEOUT": 39
+            },
+            "realized_pips_per_hour": 0.6033211970517716,
+            "realized_usd_per_hour": 0.4826569576414173,
+            "close_cycle_capture_rate": 0.5144599354705028,
+            "avg_hold_sec": 1382.0023014959725,
+            "avg_realized_r": 0.47271837643241554,
+            "green_roundtrip_loss_rate": 0.05785123966942149,
+            "sl_hit_rate": 0.08170310701956271,
+            "capital_recycling_rate": 0.5144599354705028
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.14883225290826751,
+            "realized_usd_per_hour": -0.11906580232661396,
+            "avg_realized_r": -0.014048021726387694,
+            "avg_hold_sec": -170.60989643268113,
+            "hold_ratio": 0.8901142882554366
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": false,
+          "rejection_reasons": [],
+          "metrics": {
+            "window_duration_hr": 1685.0,
+            "exit_count": 813,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                495
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                261
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                29
+              ],
+              [
+                "STATIC_TIMEOUT",
+                25
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                3
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_FORCED_MONETIZE": 261,
+              "AEE_BAND_STALL_RECLASS_EXIT": 3,
+              "AEE_BAND_PROB_LOCK_EXIT": 495,
+              "AEE_BAND_FAST_FAILURE_EXIT": 29,
+              "STATIC_TIMEOUT": 25
+            },
+            "realized_pips_per_hour": 0.55459940652819,
+            "realized_usd_per_hour": 0.44367952522255194,
+            "close_cycle_capture_rate": 0.4824925816023739,
+            "avg_hold_sec": 1242.0664206642066,
+            "avg_realized_r": 0.5184412522696655,
+            "green_roundtrip_loss_rate": 0.045283018867924525,
+            "sl_hit_rate": 0.06642066420664207,
+            "capital_recycling_rate": 0.4824925816023739
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.06943620178041543,
+            "realized_usd_per_hour": -0.055548961424332355,
+            "avg_realized_r": 0.005526123118373971,
+            "avg_hold_sec": -99.18819188191878,
+            "hold_ratio": 0.9260482007263123
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": true,
+          "rejection_reasons": [
+            "hold_time_increase_without_extraction_gain"
+          ],
+          "metrics": {
+            "window_duration_hr": 1689.25,
+            "exit_count": 3899,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                2315
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                1132
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                292
+              ],
+              [
+                "STATIC_TIMEOUT",
+                152
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                8
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_PROB_LOCK_EXIT": 2315,
+              "AEE_BAND_FORCED_MONETIZE": 1132,
+              "AEE_BAND_FAST_FAILURE_EXIT": 292,
+              "STATIC_TIMEOUT": 152,
+              "AEE_BAND_STALL_RECLASS_EXIT": 8
+            },
+            "realized_pips_per_hour": 2.111262394553796,
+            "realized_usd_per_hour": 1.6890099156430367,
+            "close_cycle_capture_rate": 2.3081249075033297,
+            "avg_hold_sec": 1387.802000512952,
+            "avg_realized_r": 0.3539148251651458,
+            "green_roundtrip_loss_rate": 0.07247927253276278,
+            "sl_hit_rate": 0.11054116440112849,
+            "capital_recycling_rate": 2.3081249075033297
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.654462039366583,
+            "realized_usd_per_hour": -0.5235696314932665,
+            "avg_realized_r": -0.00540807814339489,
+            "avg_hold_sec": 252.75711720954087,
+            "hold_ratio": 1.2226846893260483
+          }
+        },
+        {
+          "stream_path": "/home/elic/Documents/phone signals/compiled_market_nodes/EUR_CHF__wednesday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+          "stream_win": false,
+          "rejected": true,
+          "rejection_reasons": [
+            "hold_time_increase_without_extraction_gain"
+          ],
+          "metrics": {
+            "window_duration_hr": 1689.35,
+            "exit_count": 6825,
+            "top_aee_reasons": [
+              [
+                "AEE_BAND_PROB_LOCK_EXIT",
+                3992
+              ],
+              [
+                "AEE_BAND_FORCED_MONETIZE",
+                1867
+              ],
+              [
+                "AEE_BAND_FAST_FAILURE_EXIT",
+                640
+              ],
+              [
+                "STATIC_TIMEOUT",
+                319
+              ],
+              [
+                "AEE_BAND_STALL_RECLASS_EXIT",
+                7
+              ]
+            ],
+            "counts_per_reason": {
+              "AEE_BAND_PROB_LOCK_EXIT": 3992,
+              "AEE_BAND_FORCED_MONETIZE": 1867,
+              "AEE_BAND_FAST_FAILURE_EXIT": 640,
+              "STATIC_TIMEOUT": 319,
+              "AEE_BAND_STALL_RECLASS_EXIT": 7
+            },
+            "realized_pips_per_hour": 2.40201852783615,
+            "realized_usd_per_hour": 1.9216148222689202,
+            "close_cycle_capture_rate": 4.040015390534822,
+            "avg_hold_sec": 1392.8615384615384,
+            "avg_realized_r": 0.2326273045229089,
+            "green_roundtrip_loss_rate": 0.09239802224969097,
+            "sl_hit_rate": 0.13934065934065934,
+            "capital_recycling_rate": 4.040015390534822
+          },
+          "delta_vs_static": {
+            "realized_pips_per_hour": -0.31441086808535834,
+            "realized_usd_per_hour": -0.25152869446828663,
+            "avg_realized_r": 0.05694964884525322,
+            "avg_hold_sec": 427.5604395604395,
+            "hold_ratio": 1.4429296103020863
+          }
+        }
+      ]
+    }
+  ],
+  "promoted_candidates": [],
+  "structural_batch_status": "no_promoted_structural_candidates"
+}

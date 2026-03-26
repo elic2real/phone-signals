@@ -1,0 +1,81 @@
+{
+  "thresholds": {
+    "micro_green_min_pips": 0.0,
+    "bankable_green_min_pips": 2.0,
+    "runner_green_min_pips": 5.0,
+    "weak_winner_max_pips": 2.0,
+    "time_inefficient_min_hold_sec": 600.0,
+    "time_value_floor_pips_per_min": 0.1
+  },
+  "summary": {
+    "losing_trade_count": 0,
+    "never_green_count": 0,
+    "micro_green_loss_count": 0,
+    "bankable_green_loss_count": 0,
+    "runner_green_loss_count": 0,
+    "green_then_loss_count": 0,
+    "green_then_loss_share_of_losers": 0.0,
+    "bankable_green_trade_count": 9,
+    "bankable_green_winner_count": 9,
+    "bankable_green_protection_rate": 1.0,
+    "bankable_green_loss_red_rate": 0.0,
+    "avg_mfe_green_then_loss": 0.0,
+    "avg_profit_given_back": 0.0,
+    "avg_profit_given_back_bankable_green": 0.0,
+    "giveback_exit_share_of_green_losses": 0.0
+  },
+  "green_tier_distribution": {},
+  "winner_taxonomy_distribution": {
+    "fake_runner": 9
+  },
+  "dead_trade_subtype_distribution": {},
+  "economic_state_distribution": {
+    "GREEN_PROTECTED": 7,
+    "RUNNER_ELIGIBLE": 2
+  },
+  "family_distribution": {},
+  "exit_reason_distribution": {},
+  "path_shape_distribution": {},
+  "path_shape_family_matrix": {},
+  "state_transition_stress": {
+    "runner_green_unprotected_loss_count": 0,
+    "bankable_green_unprotected_loss_count": 0,
+    "threshold_reactivity_proxy_count": 0,
+    "runner_green_unprotected_loss_share": 0.0,
+    "bankable_green_unprotected_loss_share": 0.0
+  },
+  "throughput": {
+    "avg_loser_hold_sec": 0.0,
+    "avg_weak_winner_hold_sec": 266.666667,
+    "avg_bankable_green_loser_hold_sec": 0.0,
+    "time_inefficient_trade_count": 0,
+    "time_inefficient_trade_share": 0.0
+  },
+  "objective_alignment": {
+    "branch_objective_alignment": [
+      {
+        "exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+        "trade_count": 6,
+        "trade_share": 0.666667,
+        "avg_realized_pips": 1.683333,
+        "avg_hold_sec": 310.0,
+        "avg_retained_rate_pips_per_min": 0.343056
+      },
+      {
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "trade_count": 3,
+        "trade_share": 0.333333,
+        "avg_realized_pips": 1.0,
+        "avg_hold_sec": 180.0,
+        "avg_retained_rate_pips_per_min": 0.333333
+      }
+    ],
+    "objective_misalignment_flags": [],
+    "overheld_winner_count": 0,
+    "fake_runner_count": 9
+  },
+  "green_then_loss_samples": [],
+  "bankable_green_loss_samples": [],
+  "dead_trade_samples": [],
+  "never_green_samples": []
+}

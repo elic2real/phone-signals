@@ -1,0 +1,100 @@
+{
+  "dataset": "scenarios/golden/v1.0/bear_only/*.csv",
+  "files": [
+    "low_energy_range.csv",
+    "multi_whipsaw_sweep.csv",
+    "panic_reversal.csv",
+    "random_walk.csv"
+  ],
+  "tests": {
+    "A_LONG_ONLY": {
+      "overall": {
+        "n": 32,
+        "pips_mean": -4.990000000000161,
+        "pph_mean": -282.72298426150905,
+        "win_rate": 0.5,
+        "core_exit_reason_counts": {
+          "TIME_DECAY_PROFIT_CAPTURE": 16,
+          "SL_HIT": 16
+        },
+        "sl_hit_rate": 0.5
+      },
+      "by_direction": {
+        "LONG": {
+          "n": 32,
+          "pips_mean": -4.990000000000161,
+          "pph_mean": -282.72298426150905,
+          "win_rate": 0.5,
+          "sl_hit_rate": 0.5,
+          "core_exit_reason_counts": {
+            "TIME_DECAY_PROFIT_CAPTURE": 16,
+            "SL_HIT": 16
+          }
+        }
+      }
+    },
+    "B_SHORT_ONLY": {
+      "overall": {
+        "n": 32,
+        "pips_mean": -6.334999999999313,
+        "pph_mean": -152.72105430293593,
+        "win_rate": 0.25,
+        "core_exit_reason_counts": {
+          "SL_HIT": 24,
+          "TP_HIT": 8
+        },
+        "sl_hit_rate": 0.75
+      },
+      "by_direction": {
+        "SHORT": {
+          "n": 32,
+          "pips_mean": -6.334999999999313,
+          "pph_mean": -152.72105430293593,
+          "win_rate": 0.25,
+          "sl_hit_rate": 0.75,
+          "core_exit_reason_counts": {
+            "SL_HIT": 24,
+            "TP_HIT": 8
+          }
+        }
+      }
+    },
+    "C_BOTH": {
+      "overall": {
+        "n": 32,
+        "pips_mean": 1.260000000000261,
+        "pph_mean": 24.06166392614051,
+        "win_rate": 0.75,
+        "core_exit_reason_counts": {
+          "TIME_DECAY_PROFIT_CAPTURE": 16,
+          "TP_HIT": 8,
+          "SL_HIT": 8
+        },
+        "sl_hit_rate": 0.25
+      },
+      "by_direction": {
+        "LONG": {
+          "n": 16,
+          "pips_mean": 3.470000000000084,
+          "pph_mean": 18.83974576271291,
+          "win_rate": 1.0,
+          "sl_hit_rate": 0.0,
+          "core_exit_reason_counts": {
+            "TIME_DECAY_PROFIT_CAPTURE": 16
+          }
+        },
+        "SHORT": {
+          "n": 16,
+          "pips_mean": -0.9499999999995623,
+          "pph_mean": 29.283582089568114,
+          "win_rate": 0.5,
+          "sl_hit_rate": 0.5,
+          "core_exit_reason_counts": {
+            "TP_HIT": 8,
+            "SL_HIT": 8
+          }
+        }
+      }
+    }
+  }
+}

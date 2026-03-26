@@ -1,0 +1,24 @@
+{
+  "timestamp_range_check": {
+    "check": "no_missing_timestamps",
+    "passed": true,
+    "details": "Found 0 gaps > 1 minute",
+    "total_timestamps": 540
+  },
+  "no_negative_taus": {
+    "check": "no_negative_taus",
+    "passed": true,
+    "details": "Found 0 negative tau values"
+  },
+  "up_exists_validation": {
+    "check": "up_exists_mfe_validation",
+    "passed": true,
+    "details": "Found 0 up_exists=1 with mfe_up_pips < 2.5"
+  },
+  "down_exists_validation": {
+    "check": "down_exists_mfe_validation",
+    "passed": true,
+    "details": "Found 0 down_exists=1 with mfe_down_pips < 2.5"
+  },
+  "overall_phase1_status": "PHASE1_PASS"
+}

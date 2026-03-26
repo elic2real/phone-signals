@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-03-23T16:22:05.976317Z",
+  "branches": {
+    "AEE_FAST_ADVERSE_EXIT": {
+      "implemented": true,
+      "isolated_function_exists": true,
+      "replay_proof": "pass",
+      "runtime_proof": "pass",
+      "latest_trigger_count": 10,
+      "latest_thresholds": {
+        "window_sec": 3.0,
+        "min_move_r": 0.1,
+        "min_vel_r_per_sec": 0.035
+      },
+      "current_status": "RUNTIME_PROVEN"
+    },
+    "AEE_NEVER_GREEN_TIMEOUT": {
+      "implemented": true,
+      "isolated_function_exists": true,
+      "replay_proof": "pass",
+      "runtime_proof": "fail",
+      "latest_trigger_count": 0,
+      "latest_thresholds": {
+        "timeout_sec": 24.0,
+        "max_best_r": 0.08,
+        "max_net_r": 0.02
+      },
+      "current_status": "REPLAY_PROVEN"
+    },
+    "AEE_PROFIT_STALL_EXIT": {
+      "implemented": true,
+      "isolated_function_exists": true,
+      "replay_proof": "pass",
+      "runtime_proof": "fail",
+      "latest_trigger_count": 0,
+      "latest_thresholds": {
+        "min_net_r": 0.03,
+        "min_best_r": 0.1,
+        "min_stall_sec": 4.0,
+        "min_giveback_r": 0.03
+      },
+      "current_status": "REPLAY_PROVEN"
+    },
+    "AEE_PRE_SL_EXIT": {
+      "implemented": true,
+      "isolated_function_exists": true,
+      "replay_proof": "pass",
+      "runtime_proof": "pass",
+      "latest_trigger_count": 8,
+      "latest_thresholds": {
+        "arm_mae_r": -0.45,
+        "hard_exit_r": -0.55
+      },
+      "current_status": "RUNTIME_PROVEN"
+    },
+    "AEE_PANIC_EXIT": {
+      "implemented": true,
+      "isolated_function_exists": true,
+      "replay_proof": "pass",
+      "runtime_proof": "pass",
+      "latest_trigger_count": 2,
+      "latest_thresholds": {
+        "panic_exit_r": -0.75
+      },
+      "current_status": "RUNTIME_PROVEN"
+    }
+  }
+}

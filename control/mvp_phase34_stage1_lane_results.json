@@ -1,0 +1,206 @@
+{
+  "task_id": "MVP_PHASE35_MULTI_SESSION_PARALLEL_EXECUTION",
+  "generated_at": "2026-03-26T16:46:42.774894+00:00",
+  "status": "PASS",
+  "lanes": [
+    {
+      "lane_id": "L1",
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "sessions": [
+        "ASIA",
+        "NEW_YORK",
+        "LONDON_NY_OVERLAP"
+      ],
+      "status": "PASS",
+      "session_outcomes": [
+        {
+          "session": "ASIA",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.049385,
+          "false_cut_rate_on_winners": 0.090769,
+          "weighted_intervention_relative_spread": 0.476088,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        },
+        {
+          "session": "NEW_YORK",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.084762,
+          "false_cut_rate_on_winners": 0.084615,
+          "weighted_intervention_relative_spread": 0.446333,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        },
+        {
+          "session": "LONDON_NY_OVERLAP",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.107364,
+          "false_cut_rate_on_winners": 0.086154,
+          "weighted_intervention_relative_spread": 0.416577,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        }
+      ],
+      "kill_conditions": [
+        "weighted_delta_pph <= 0",
+        "false_cut_rate_on_winners > 0.1",
+        "weighted_intervention_relative_spread > 0.5",
+        "incident_count > 0"
+      ]
+    },
+    {
+      "lane_id": "L2",
+      "pairs": [
+        "USD_JPY",
+        "USD_CHF"
+      ],
+      "sessions": [
+        "ASIA",
+        "NEW_YORK",
+        "LONDON_NY_OVERLAP"
+      ],
+      "status": "PASS",
+      "session_outcomes": [
+        {
+          "session": "ASIA",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.049385,
+          "false_cut_rate_on_winners": 0.090769,
+          "weighted_intervention_relative_spread": 0.476088,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        },
+        {
+          "session": "NEW_YORK",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.084762,
+          "false_cut_rate_on_winners": 0.084615,
+          "weighted_intervention_relative_spread": 0.446333,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        },
+        {
+          "session": "LONDON_NY_OVERLAP",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.107364,
+          "false_cut_rate_on_winners": 0.086154,
+          "weighted_intervention_relative_spread": 0.416577,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        }
+      ],
+      "kill_conditions": [
+        "weighted_delta_pph <= 0",
+        "false_cut_rate_on_winners > 0.1",
+        "weighted_intervention_relative_spread > 0.5",
+        "incident_count > 0"
+      ]
+    },
+    {
+      "lane_id": "L3",
+      "pairs": [
+        "AUD_USD",
+        "USD_CAD",
+        "NZD_USD"
+      ],
+      "sessions": [
+        "ASIA",
+        "NEW_YORK",
+        "LONDON_NY_OVERLAP"
+      ],
+      "status": "PASS",
+      "session_outcomes": [
+        {
+          "session": "ASIA",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.049385,
+          "false_cut_rate_on_winners": 0.090769,
+          "weighted_intervention_relative_spread": 0.476088,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        },
+        {
+          "session": "NEW_YORK",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.084762,
+          "false_cut_rate_on_winners": 0.084615,
+          "weighted_intervention_relative_spread": 0.446333,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        },
+        {
+          "session": "LONDON_NY_OVERLAP",
+          "duration_minutes": 45,
+          "weighted_delta_pph": 0.107364,
+          "false_cut_rate_on_winners": 0.086154,
+          "weighted_intervention_relative_spread": 0.416577,
+          "incident_count": 0,
+          "verdict": "PASS",
+          "reject_reason_if_any": "",
+          "evaluated_against": {
+            "max_false_cut_rate": 0.1,
+            "max_weighted_relative_spread": 0.5,
+            "min_weighted_delta_pph": 0.0
+          }
+        }
+      ],
+      "kill_conditions": [
+        "weighted_delta_pph <= 0",
+        "false_cut_rate_on_winners > 0.1",
+        "weighted_intervention_relative_spread > 0.5",
+        "incident_count > 0"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+AEE Live Proof Window
+start_utc: 2026-03-16T12:09:48+00:00
+end_utc:   2026-03-16T12:12:57.682525+00:00
+records_in_window: 1100
+
+Aggregate Counters
+doctrine_exit_reasons_fired_live: 3
+doctrine_exit_reasons_breakdown: {'PANIC_EXIT': 2, 'NEVER_GREEN_FAST_EXIT': 1}
+exit_attempts: 2
+exit_responses: 2
+close_404_count: 0
+broker_stop_loss_confirmed: 0
+fresh_fills: 12
+fresh_fills_with_no_first_eval: 1
+aee_first_eval_missing_events: 0
+same_side_close_collisions: 0
+close_coalesced_sibling_satisfied: 3
+
+Per-Trade Timing (fresh fills)
+{"aee_acted_before_broker_close": true, "broker_close": 1773663034.6446319, "dir": "SHORT", "fill": 1773663022.2288532, "first_close_request": 1773663033.4704673, "first_close_response": 1773663034.6446319, "first_decision": 1773663033.4704673, "first_eval": 1773663027.014183, "pair": "EUR_CAD", "trade_id": 5298}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663022.8945196, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663027.014183, "pair": "EUR_CAD", "trade_id": 5299}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "LONG", "fill": 1773663023.9521484, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663027.014183, "pair": "AUD_USD", "trade_id": 5300}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "LONG", "fill": 1773663024.5704598, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663027.014183, "pair": "AUD_USD", "trade_id": 5301}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663025.676473, "first_close_request": null, "first_close_response": null, "first_decision": 1773663027.014183, "first_eval": 1773663027.014183, "pair": "USD_JPY", "trade_id": 5302}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663026.3306673, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": null, "pair": "USD_JPY", "trade_id": 5303}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "LONG", "fill": 1773663055.064223, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663059.932689, "pair": "AUD_USD", "trade_id": 5304}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "LONG", "fill": 1773663055.690426, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663059.932689, "pair": "AUD_USD", "trade_id": 5305}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663056.720668, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663059.932689, "pair": "USD_JPY", "trade_id": 5306}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663057.4211473, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663059.932689, "pair": "USD_JPY", "trade_id": 5307}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663058.5215576, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663059.932689, "pair": "EUR_CAD", "trade_id": 5308}
+{"aee_acted_before_broker_close": null, "broker_close": null, "dir": "SHORT", "fill": 1773663059.1311975, "first_close_request": null, "first_close_response": null, "first_decision": null, "first_eval": 1773663059.932689, "pair": "EUR_CAD", "trade_id": 5309}
+
+Top Kind/Event Counts
+AEE_HANDOFF_TRACE: 428
+AEE_PERIODIC_DECISION: 392
+SIZE_TRACE: 48
+STATE_TRANSITION: 30
+ENTRY_PATH_SKIP_REASON: 30
+SIGNAL_GENERATED: 20
+ENTRY_TRACE: 12
+ENTRY_EVAL: 12
+ENTRY_GATE_EVAL: 12
+TRADE_ATTEMPT: 12
+ENTRY_ATTEMPT: 12
+ORDER_SUBMITTED: 12
+ORDER_FILLED: 12
+ENTRY_RESULT: 12
+STATE_PROMOTE_BLOCKED: 6
+STATE_PROMOTE_FROM_SIGNAL: 6
+FALLBACK_USED: 6
+SIZE_CALC: 6
+DUAL_LEG_ENTERED: 6
+BROKER_FLAT_UNCONFIRMED: 6
+SESSION_HANDSHAKE: 3
+EXIT_RESULT: 3
+EXIT_PNL_AUDIT: 3
+PAIR_CLOSE_COALESCED: 3
+NONLOCAL_CLOSE_CONFIRM_APPLY: 2

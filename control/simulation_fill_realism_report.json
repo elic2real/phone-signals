@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-03-25T17:09:39.806290Z",
+  "task_id": "TASK-011",
+  "section": "B_FILL_REALISM",
+  "scope": "audit_only_no_changes",
+  "metrics": {
+    "total_trades": 21390,
+    "avg_bar1_profit_pips": 0.1633,
+    "bar1_profit_stdev": 1.4157,
+    "suspicious_fill_rate": 0.0637,
+    "spread_applied_at_bar1_rate": 0.4072,
+    "bar1_neutral_rate": 0.1786,
+    "fill_realism_score": 0.8399,
+    "pricing_consistency_score": 0.5281
+  },
+  "interpretation": {
+    "avg_bar1_profit_pips": ">0.5 suggests backdated fills or look-ahead bias; <0 confirms spread applied up-front",
+    "suspicious_fill_rate": "rate of trades where bar-1 profit > 2 pips (unrealistic instantaneous gain)",
+    "spread_applied_at_bar1_rate": "rate where bar-1 profit is negative \u2014 consistent with correct spread application"
+  },
+  "finding": "FILL_REALISM_SUSPECT"
+}

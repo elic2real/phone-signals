@@ -1,0 +1,53 @@
+{
+  "before_pattern": "reports/promo_consensus_before/*.json",
+  "after_pattern": "reports/promo_consensus_after/*.json",
+  "before": {
+    "n": 32,
+    "pph_mean": -79.79317249483525,
+    "pips_mean": -1.4168749999996926,
+    "core_hold_mean_sec": 511.15625,
+    "runner_hold_mean_sec": 478.5625,
+    "core_left_on_table_mean": 6.767187499999785,
+    "runner_left_on_table_mean": 8.345312499999924,
+    "core_exit_reason_counts": {
+      "TIME_DECAY_PROFIT_CAPTURE": 13,
+      "SL_HIT": 13,
+      "TP_HIT": 6
+    },
+    "runner_exit_reason_counts": {
+      "RUNNER_TTL_EXPIRED": 12,
+      "TP_HIT": 7,
+      "SL_HIT": 11,
+      "SIM_EOD_CLOSE": 2
+    }
+  },
+  "after": {
+    "n": 32,
+    "pph_mean": -79.79317249483525,
+    "pips_mean": -1.4168749999996926,
+    "core_hold_mean_sec": 511.15625,
+    "runner_hold_mean_sec": 478.5625,
+    "core_left_on_table_mean": 6.767187499999785,
+    "runner_left_on_table_mean": 8.345312499999924,
+    "core_exit_reason_counts": {
+      "TIME_DECAY_PROFIT_CAPTURE": 13,
+      "SL_HIT": 13,
+      "TP_HIT": 6
+    },
+    "runner_exit_reason_counts": {
+      "RUNNER_TTL_EXPIRED": 12,
+      "TP_HIT": 7,
+      "SL_HIT": 11,
+      "SIM_EOD_CLOSE": 2
+    }
+  },
+  "delta_after_minus_before": {
+    "pph_mean": 0.0,
+    "pips_mean": 0.0,
+    "core_hold_mean_sec": 0.0,
+    "runner_hold_mean_sec": 0.0,
+    "core_left_on_table_mean": 0.0,
+    "runner_left_on_table_mean": 0.0
+  },
+  "note": "Leg-level exits are authoritative: core_exit_reason_counts and runner_exit_reason_counts."
+}

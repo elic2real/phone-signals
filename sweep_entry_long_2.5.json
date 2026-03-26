@@ -1,0 +1,119 @@
+{
+  "direction": "LONG",
+  "tp_pips": 2.5,
+  "sl_pips": 2.5,
+  "speed_threshold": 0.625,
+  "cluster_population": 10,
+  "good_clusters": 3,
+  "bad_clusters": 6,
+  "noise_clusters": 1,
+  "trades_taken": 9,
+  "traded_good_clusters": 3,
+  "traded_bad_clusters": 5,
+  "traded_noise_clusters": 1,
+  "capture_rate": 1.0,
+  "bad_trigger": 0.8333333333333334,
+  "noise_trigger": 1.0,
+  "score": -0.25,
+  "constraint_satisfied": false,
+  "verdict": "PASS",
+  "trade_count": 9,
+  "sl_tp_assumptions": {
+    "stop_loss_pips": 2.5,
+    "take_profit_pips": 2.5,
+    "stop_loss_r": 1.0,
+    "take_profit_r": 1.0
+  },
+  "trade_population_rows": [
+    {
+      "cluster_id": "EUR_USD_LONG_0001",
+      "timestamp": "2024-01-15T08:00:00.000000000Z",
+      "direction": "LONG",
+      "speed": 0.8333333333333334,
+      "future_mfe": 3.4000000000000696,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0003",
+      "timestamp": "2024-01-15T09:47:00.000000000Z",
+      "direction": "LONG",
+      "speed": 1.25,
+      "future_mfe": 2.6999999999999247,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0004",
+      "timestamp": "2024-01-15T10:26:00.000000000Z",
+      "direction": "LONG",
+      "speed": 0.625,
+      "future_mfe": 3.1999999999987594,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0005",
+      "timestamp": "2024-01-15T12:33:00.000000000Z",
+      "direction": "LONG",
+      "speed": 2.5,
+      "future_mfe": 4.20000000000087,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0006",
+      "timestamp": "2024-01-15T13:09:00.000000000Z",
+      "direction": "LONG",
+      "speed": 1.25,
+      "future_mfe": 3.20000000000098,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0007",
+      "timestamp": "2024-01-15T13:47:00.000000000Z",
+      "direction": "LONG",
+      "speed": 0.625,
+      "future_mfe": 2.500000000000835,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0008",
+      "timestamp": "2024-01-15T14:20:00.000000000Z",
+      "direction": "LONG",
+      "speed": 0.625,
+      "future_mfe": 3.20000000000098,
+      "future_mae": 0.1999999999990898,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0009",
+      "timestamp": "2024-01-15T15:38:00.000000000Z",
+      "direction": "LONG",
+      "speed": 0.625,
+      "future_mfe": 2.60000000000149,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    },
+    {
+      "cluster_id": "EUR_USD_LONG_0010",
+      "timestamp": "2024-01-15T16:44:00.000000000Z",
+      "direction": "LONG",
+      "speed": 0.625,
+      "future_mfe": 2.60000000000149,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    }
+  ]
+}

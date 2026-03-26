@@ -1,0 +1,421 @@
+1:2026-03-16 00:34:33,644 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5191, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PANIC_EXIT', 'exit_reason': 'PANIC_EXIT'}
+3:2026-03-16 00:34:34,035 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PANIC_EXIT', 'db_trade_id': 5191, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89833', 'origin_actor': 'AEE', 'origin_reason': 'PANIC_EXIT'}
+10:2026-03-16 00:34:34,191 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+16:2026-03-16 00:34:34,309 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+23:2026-03-16 00:34:34,652 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+88:2026-03-16 00:34:38,776 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+95:2026-03-16 00:34:39,077 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5194, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+96:2026-03-16 00:34:39,077 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5194, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+97:2026-03-16 00:34:39,482 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5194, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89835', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+98:2026-03-16 00:34:39,482 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+103:2026-03-16 00:34:39,609 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+108:2026-03-16 00:34:39,736 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+113:2026-03-16 00:34:39,878 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+118:2026-03-16 00:34:39,982 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+123:2026-03-16 00:34:40,087 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+128:2026-03-16 00:34:40,215 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+135:2026-03-16 00:34:40,493 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5193, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+136:2026-03-16 00:34:40,493 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5193, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+137:2026-03-16 00:34:40,903 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5193, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89837', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+138:2026-03-16 00:34:40,903 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+144:2026-03-16 00:34:41,018 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+150:2026-03-16 00:34:41,133 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+156:2026-03-16 00:34:41,262 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+219:2026-03-16 00:34:45,470 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+226:2026-03-16 00:34:45,699 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5196, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+227:2026-03-16 00:34:45,699 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5196, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+228:2026-03-16 00:34:46,088 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5196, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89839', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+229:2026-03-16 00:34:46,088 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+234:2026-03-16 00:34:46,238 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+239:2026-03-16 00:34:46,347 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+244:2026-03-16 00:34:46,455 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+249:2026-03-16 00:34:46,574 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+254:2026-03-16 00:34:46,671 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+259:2026-03-16 00:34:46,799 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+266:2026-03-16 00:34:47,031 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5195, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+267:2026-03-16 00:34:47,031 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5195, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+268:2026-03-16 00:34:47,443 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5195, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89841', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+269:2026-03-16 00:34:47,443 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+275:2026-03-16 00:34:47,583 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+281:2026-03-16 00:34:47,687 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+287:2026-03-16 00:34:47,798 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+350:2026-03-16 00:34:51,695 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+357:2026-03-16 00:34:51,936 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5198, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+358:2026-03-16 00:34:51,936 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5198, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+359:2026-03-16 00:34:52,327 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5198, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89843', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+360:2026-03-16 00:34:52,328 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+365:2026-03-16 00:34:52,446 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+370:2026-03-16 00:34:52,542 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+375:2026-03-16 00:34:52,658 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+380:2026-03-16 00:34:52,766 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+385:2026-03-16 00:34:52,878 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+390:2026-03-16 00:34:53,134 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+397:2026-03-16 00:34:53,346 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5197, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+398:2026-03-16 00:34:53,347 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5197, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+399:2026-03-16 00:34:53,737 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5197, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89845', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+400:2026-03-16 00:34:53,737 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+406:2026-03-16 00:34:53,909 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+412:2026-03-16 00:34:54,007 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+418:2026-03-16 00:34:54,110 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+482:2026-03-16 00:34:58,421 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+489:2026-03-16 00:34:58,640 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5200, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+490:2026-03-16 00:34:58,641 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5200, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+491:2026-03-16 00:34:59,059 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5200, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89847', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+492:2026-03-16 00:34:59,059 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+497:2026-03-16 00:34:59,197 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+502:2026-03-16 00:34:59,302 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+507:2026-03-16 00:34:59,433 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+512:2026-03-16 00:34:59,537 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+517:2026-03-16 00:34:59,661 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+522:2026-03-16 00:34:59,789 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+529:2026-03-16 00:34:59,977 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5199, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+530:2026-03-16 00:34:59,977 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5199, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+531:2026-03-16 00:35:00,379 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5199, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89849', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+532:2026-03-16 00:35:00,380 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+538:2026-03-16 00:35:00,550 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+544:2026-03-16 00:35:00,654 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+550:2026-03-16 00:35:00,758 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+613:2026-03-16 00:35:04,821 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+620:2026-03-16 00:35:05,105 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5202, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+621:2026-03-16 00:35:05,105 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5202, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+622:2026-03-16 00:35:05,507 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5202, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89851', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+623:2026-03-16 00:35:05,507 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+628:2026-03-16 00:35:05,673 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+633:2026-03-16 00:35:05,818 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+638:2026-03-16 00:35:05,923 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+643:2026-03-16 00:35:06,033 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+648:2026-03-16 00:35:06,129 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+653:2026-03-16 00:35:06,244 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+660:2026-03-16 00:35:06,430 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5201, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+661:2026-03-16 00:35:06,430 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5201, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+662:2026-03-16 00:35:06,838 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5201, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89853', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+663:2026-03-16 00:35:06,838 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+669:2026-03-16 00:35:06,988 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+675:2026-03-16 00:35:07,148 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+681:2026-03-16 00:35:07,273 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+744:2026-03-16 00:35:11,457 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+751:2026-03-16 00:35:11,661 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5204, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+752:2026-03-16 00:35:11,662 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5204, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+753:2026-03-16 00:35:12,063 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5204, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89855', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+754:2026-03-16 00:35:12,063 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+759:2026-03-16 00:35:12,190 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+764:2026-03-16 00:35:12,294 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+769:2026-03-16 00:35:12,390 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+774:2026-03-16 00:35:12,574 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+779:2026-03-16 00:35:12,678 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+784:2026-03-16 00:35:12,795 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+791:2026-03-16 00:35:13,006 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5203, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+792:2026-03-16 00:35:13,007 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5203, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+793:2026-03-16 00:35:13,397 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5203, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89857', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+794:2026-03-16 00:35:13,398 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+800:2026-03-16 00:35:13,520 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+806:2026-03-16 00:35:13,617 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+812:2026-03-16 00:35:13,743 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+874:2026-03-16 00:35:17,502 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+881:2026-03-16 00:35:17,752 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5206, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+882:2026-03-16 00:35:17,752 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5206, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+883:2026-03-16 00:35:18,151 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5206, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89859', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+884:2026-03-16 00:35:18,151 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+889:2026-03-16 00:35:18,289 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+894:2026-03-16 00:35:18,398 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+899:2026-03-16 00:35:18,521 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+904:2026-03-16 00:35:18,629 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+909:2026-03-16 00:35:18,745 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+914:2026-03-16 00:35:18,859 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+921:2026-03-16 00:35:19,118 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5205, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+922:2026-03-16 00:35:19,118 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5205, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+923:2026-03-16 00:35:19,522 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5205, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89861', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+924:2026-03-16 00:35:19,522 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+930:2026-03-16 00:35:19,649 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+936:2026-03-16 00:35:19,777 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+942:2026-03-16 00:35:19,873 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1006:2026-03-16 00:35:24,045 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1013:2026-03-16 00:35:24,236 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5208, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1014:2026-03-16 00:35:24,237 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5208, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1015:2026-03-16 00:35:24,642 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5208, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89863', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1016:2026-03-16 00:35:24,643 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1021:2026-03-16 00:35:24,796 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1026:2026-03-16 00:35:24,901 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1031:2026-03-16 00:35:25,005 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1036:2026-03-16 00:35:25,127 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1041:2026-03-16 00:35:25,338 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1046:2026-03-16 00:35:25,445 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1053:2026-03-16 00:35:25,676 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5207, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1054:2026-03-16 00:35:25,676 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5207, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1055:2026-03-16 00:35:26,110 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5207, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89865', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1056:2026-03-16 00:35:26,110 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1062:2026-03-16 00:35:26,245 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1068:2026-03-16 00:35:26,380 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1074:2026-03-16 00:35:26,486 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1143:2026-03-16 00:35:30,633 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1150:2026-03-16 00:35:30,839 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5210, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1151:2026-03-16 00:35:30,839 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5210, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1152:2026-03-16 00:35:31,246 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5210, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89867', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1153:2026-03-16 00:35:31,246 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1158:2026-03-16 00:35:31,369 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1163:2026-03-16 00:35:31,488 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1168:2026-03-16 00:35:31,596 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1173:2026-03-16 00:35:31,712 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1178:2026-03-16 00:35:31,837 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1183:2026-03-16 00:35:32,000 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1190:2026-03-16 00:35:32,289 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5209, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1191:2026-03-16 00:35:32,290 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5209, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1192:2026-03-16 00:35:32,674 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5209, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89869', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1193:2026-03-16 00:35:32,674 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1199:2026-03-16 00:35:32,839 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1205:2026-03-16 00:35:32,937 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1211:2026-03-16 00:35:33,044 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1274:2026-03-16 00:35:37,047 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1281:2026-03-16 00:35:37,300 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5212, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1282:2026-03-16 00:35:37,301 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5212, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1283:2026-03-16 00:35:37,694 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5212, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89871', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1284:2026-03-16 00:35:37,694 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1289:2026-03-16 00:35:37,823 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1294:2026-03-16 00:35:37,920 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1299:2026-03-16 00:35:38,019 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1304:2026-03-16 00:35:38,147 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1309:2026-03-16 00:35:38,258 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1314:2026-03-16 00:35:38,362 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1321:2026-03-16 00:35:38,641 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5211, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1322:2026-03-16 00:35:38,642 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5211, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1323:2026-03-16 00:35:39,041 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5211, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89873', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1324:2026-03-16 00:35:39,042 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1330:2026-03-16 00:35:39,165 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1336:2026-03-16 00:35:39,307 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1342:2026-03-16 00:35:39,409 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1406:2026-03-16 00:35:43,222 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1413:2026-03-16 00:35:43,416 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5214, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1414:2026-03-16 00:35:43,417 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5214, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1415:2026-03-16 00:35:43,825 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5214, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89875', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1416:2026-03-16 00:35:43,826 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1421:2026-03-16 00:35:43,993 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1426:2026-03-16 00:35:44,216 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1431:2026-03-16 00:35:44,556 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1436:2026-03-16 00:35:44,657 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1441:2026-03-16 00:35:44,764 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1446:2026-03-16 00:35:44,901 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1453:2026-03-16 00:35:45,113 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5213, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1454:2026-03-16 00:35:45,113 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5213, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1455:2026-03-16 00:35:45,504 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5213, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89877', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1456:2026-03-16 00:35:45,504 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1462:2026-03-16 00:35:45,655 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1468:2026-03-16 00:35:45,752 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1474:2026-03-16 00:35:45,848 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1537:2026-03-16 00:35:50,237 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1544:2026-03-16 00:35:50,466 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5216, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1545:2026-03-16 00:35:50,466 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5216, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1546:2026-03-16 00:35:50,921 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5216, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89879', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1547:2026-03-16 00:35:50,922 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1552:2026-03-16 00:35:51,048 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1557:2026-03-16 00:35:51,154 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1562:2026-03-16 00:35:51,325 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1567:2026-03-16 00:35:51,557 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1572:2026-03-16 00:35:51,657 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1577:2026-03-16 00:35:51,766 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1584:2026-03-16 00:35:52,088 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5215, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1585:2026-03-16 00:35:52,088 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5215, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1586:2026-03-16 00:35:52,484 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5215, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89881', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1587:2026-03-16 00:35:52,484 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1593:2026-03-16 00:35:52,647 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1599:2026-03-16 00:35:52,844 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1605:2026-03-16 00:35:53,037 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1668:2026-03-16 00:35:56,883 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1675:2026-03-16 00:35:57,155 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5218, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1676:2026-03-16 00:35:57,155 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5218, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1677:2026-03-16 00:35:57,570 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5218, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89887', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1678:2026-03-16 00:35:57,571 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1683:2026-03-16 00:35:57,690 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1688:2026-03-16 00:35:57,781 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1693:2026-03-16 00:35:57,886 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1698:2026-03-16 00:35:57,987 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1703:2026-03-16 00:35:58,090 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1708:2026-03-16 00:35:58,186 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1715:2026-03-16 00:35:58,485 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5217, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1716:2026-03-16 00:35:58,486 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5217, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1717:2026-03-16 00:35:58,875 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5217, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89889', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1718:2026-03-16 00:35:58,876 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1724:2026-03-16 00:35:59,049 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1730:2026-03-16 00:35:59,149 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1736:2026-03-16 00:35:59,244 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1808:2026-03-16 00:36:03,757 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1815:2026-03-16 00:36:03,958 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5220, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1816:2026-03-16 00:36:03,958 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5220, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1817:2026-03-16 00:36:04,362 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5220, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89891', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1818:2026-03-16 00:36:04,362 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1823:2026-03-16 00:36:04,501 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1828:2026-03-16 00:36:04,621 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1833:2026-03-16 00:36:04,726 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1838:2026-03-16 00:36:04,821 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1843:2026-03-16 00:36:05,080 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1848:2026-03-16 00:36:05,217 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1855:2026-03-16 00:36:05,442 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5219, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1856:2026-03-16 00:36:05,443 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5219, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1857:2026-03-16 00:36:05,855 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5219, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89893', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1858:2026-03-16 00:36:05,855 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1864:2026-03-16 00:36:06,028 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1870:2026-03-16 00:36:06,124 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1876:2026-03-16 00:36:06,219 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1939:2026-03-16 00:36:10,749 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+1946:2026-03-16 00:36:11,021 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5222, 'pair': 'AUD_CAD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1947:2026-03-16 00:36:11,022 - INFO - 🏁 EXIT_ATTEMPT AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5222, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1948:2026-03-16 00:36:11,414 - INFO - 🏁 EXIT_RESPONSE AUD_CAD_SHORT | {'pair': 'AUD_CAD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5222, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89895', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1949:2026-03-16 00:36:11,414 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_CAD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1954:2026-03-16 00:36:11,548 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1959:2026-03-16 00:36:11,650 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1964:2026-03-16 00:36:11,907 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1969:2026-03-16 00:36:12,041 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1974:2026-03-16 00:36:12,175 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1979:2026-03-16 00:36:12,289 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5192, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+1986:2026-03-16 00:36:12,495 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5221, 'pair': 'AUD_USD', 'direction': 'SHORT', 'decision': 'PROFIT_CAPTURE_EXIT', 'exit_reason': 'PROFIT_CAPTURE_EXIT'}
+1987:2026-03-16 00:36:12,496 - INFO - 🏁 EXIT_ATTEMPT AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5221, 'close_mode': 'position_all', 'payload': {'shortUnits': 'ALL'}, 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1988:2026-03-16 00:36:12,888 - INFO - 🏁 EXIT_RESPONSE AUD_USD_SHORT | {'pair': 'AUD_USD', 'dir': 'SHORT', 'exit_reason': 'PROFIT_CAPTURE_EXIT', 'db_trade_id': 5221, 'close_mode': 'position_all', 'status': 404, 'resp_keys': ['shortOrderRejectTransaction', 'relatedTransactionIDs', 'lastTransactionID', 'errorMessage', 'errorCode', '_http_error', '_status', '_exception', '_json_error', '_rate_limited'], 'txid': '89897', 'origin_actor': 'AEE', 'origin_reason': 'PROFIT_CAPTURE_EXIT'}
+1989:2026-03-16 00:36:12,888 - INFO - EXIT_RECONCILED_ALREADY_FLAT | {'pair': 'AUD_USD', 'direction': 'SHORT', 'reason': 'PROFIT_CAPTURE_EXIT'}
+1995:2026-03-16 00:36:13,006 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5176, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2001:2026-03-16 00:36:13,114 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5185, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2007:2026-03-16 00:36:13,249 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5186, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2161:2026-03-16 04:35:42,241 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2168:2026-03-16 04:35:42,457 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2175:2026-03-16 04:35:42,693 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2182:2026-03-16 04:35:42,916 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2189:2026-03-16 04:35:43,225 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2196:2026-03-16 04:35:43,477 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2267:2026-03-16 04:35:47,605 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2272:2026-03-16 04:35:47,973 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2277:2026-03-16 04:35:48,129 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2282:2026-03-16 04:35:48,242 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2287:2026-03-16 04:35:48,377 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2292:2026-03-16 04:35:48,469 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2343:2026-03-16 04:35:49,151 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2348:2026-03-16 04:35:49,152 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2353:2026-03-16 04:35:49,153 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2358:2026-03-16 04:35:49,154 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2363:2026-03-16 04:35:49,156 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2368:2026-03-16 04:35:49,158 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2708:2026-03-16 04:35:59,137 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2715:2026-03-16 04:35:59,233 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2720:2026-03-16 04:35:59,345 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2725:2026-03-16 04:35:59,474 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2730:2026-03-16 04:35:59,589 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2735:2026-03-16 04:35:59,873 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2741:2026-03-16 04:35:59,984 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5223, 'pair': 'EUR_USD', 'direction': 'SHORT', 'decision': 'PANIC_EXIT', 'exit_reason': 'PANIC_EXIT'}
+2758:2026-03-16 04:36:00,252 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5225, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2765:2026-03-16 04:36:00,358 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5226, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2771:2026-03-16 04:36:00,477 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5227, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2777:2026-03-16 04:36:00,583 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5228, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2841:2026-03-16 04:36:04,482 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2846:2026-03-16 04:36:04,595 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2851:2026-03-16 04:36:04,737 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2856:2026-03-16 04:36:04,900 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2861:2026-03-16 04:36:05,008 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2866:2026-03-16 04:36:05,128 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2872:2026-03-16 04:36:05,221 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5225, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2878:2026-03-16 04:36:05,342 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5226, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2883:2026-03-16 04:36:05,476 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5227, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2888:2026-03-16 04:36:05,610 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5228, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2951:2026-03-16 04:36:09,445 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+2956:2026-03-16 04:36:09,556 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2961:2026-03-16 04:36:09,681 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2966:2026-03-16 04:36:09,807 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2971:2026-03-16 04:36:09,915 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+2976:2026-03-16 04:36:10,024 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3031:2026-03-16 04:36:11,178 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3036:2026-03-16 04:36:11,179 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3041:2026-03-16 04:36:11,180 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3046:2026-03-16 04:36:11,181 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3051:2026-03-16 04:36:11,182 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3056:2026-03-16 04:36:11,182 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3328:2026-03-16 04:36:19,070 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3335:2026-03-16 04:36:19,307 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3342:2026-03-16 04:36:19,443 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3349:2026-03-16 04:36:19,577 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3356:2026-03-16 04:36:19,703 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3363:2026-03-16 04:36:19,796 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3369:2026-03-16 04:36:19,890 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5229, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3375:2026-03-16 04:36:19,994 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5230, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3441:2026-03-16 04:36:23,826 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3446:2026-03-16 04:36:23,827 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3451:2026-03-16 04:36:23,828 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3456:2026-03-16 04:36:23,828 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3461:2026-03-16 04:36:23,829 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3466:2026-03-16 04:36:23,830 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3471:2026-03-16 04:36:23,830 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5229, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3476:2026-03-16 04:36:23,831 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5230, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3534:2026-03-16 04:36:25,174 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3539:2026-03-16 04:36:25,483 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3544:2026-03-16 04:36:25,594 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3549:2026-03-16 04:36:25,699 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3554:2026-03-16 04:36:25,794 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3559:2026-03-16 04:36:25,918 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3675:2026-03-16 04:36:31,119 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3680:2026-03-16 04:36:31,295 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3685:2026-03-16 04:36:31,394 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3690:2026-03-16 04:36:31,547 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3695:2026-03-16 04:36:31,661 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3700:2026-03-16 04:36:31,771 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3706:2026-03-16 04:36:31,883 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5231, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'NEVER_GREEN_FAST_EXIT', 'exit_reason': 'NEVER_GREEN_FAST_EXIT'}
+3773:2026-03-16 04:36:35,546 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3778:2026-03-16 04:36:35,548 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3783:2026-03-16 04:36:35,550 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3788:2026-03-16 04:36:35,552 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3793:2026-03-16 04:36:35,554 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3798:2026-03-16 04:36:35,556 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3849:2026-03-16 04:36:37,264 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3854:2026-03-16 04:36:37,456 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3859:2026-03-16 04:36:37,552 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3864:2026-03-16 04:36:37,648 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3869:2026-03-16 04:36:37,748 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3874:2026-03-16 04:36:37,847 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3882:2026-03-16 04:36:38,146 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3887:2026-03-16 04:36:38,147 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3892:2026-03-16 04:36:38,149 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3897:2026-03-16 04:36:38,151 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3902:2026-03-16 04:36:38,154 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3907:2026-03-16 04:36:38,155 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3979:2026-03-16 04:36:41,853 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+3984:2026-03-16 04:36:41,854 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3989:2026-03-16 04:36:41,855 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3994:2026-03-16 04:36:41,856 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+3999:2026-03-16 04:36:41,857 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4004:2026-03-16 04:36:41,858 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4058:2026-03-16 04:36:42,853 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4063:2026-03-16 04:36:42,973 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4068:2026-03-16 04:36:43,085 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4073:2026-03-16 04:36:43,204 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4078:2026-03-16 04:36:43,306 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4083:2026-03-16 04:36:43,508 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4493:2026-03-16 04:36:54,602 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4498:2026-03-16 04:36:54,717 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4503:2026-03-16 04:36:54,822 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4508:2026-03-16 04:36:54,938 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4513:2026-03-16 04:36:55,064 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4518:2026-03-16 04:36:55,179 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4524:2026-03-16 04:36:55,400 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5233, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4530:2026-03-16 04:36:55,693 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5234, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4536:2026-03-16 04:36:55,794 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5235, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4542:2026-03-16 04:36:55,879 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5236, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4549:2026-03-16 04:36:55,988 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5237, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4556:2026-03-16 04:36:56,089 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5238, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4615:2026-03-16 04:36:59,665 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4620:2026-03-16 04:36:59,778 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4625:2026-03-16 04:37:00,039 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4630:2026-03-16 04:37:00,155 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4635:2026-03-16 04:37:00,276 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4640:2026-03-16 04:37:00,371 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4645:2026-03-16 04:37:00,483 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5233, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4650:2026-03-16 04:37:00,592 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5234, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4655:2026-03-16 04:37:00,705 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5235, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4660:2026-03-16 04:37:00,815 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5236, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4666:2026-03-16 04:37:00,941 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5237, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4672:2026-03-16 04:37:01,068 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5238, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4723:2026-03-16 04:37:01,730 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5062, 'pair': 'USD_CAD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4728:2026-03-16 04:37:01,731 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5115, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4733:2026-03-16 04:37:01,732 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5116, 'pair': 'AUD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4738:2026-03-16 04:37:01,732 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5139, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4743:2026-03-16 04:37:01,733 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5140, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4748:2026-03-16 04:37:01,733 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5141, 'pair': 'USD_JPY', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4753:2026-03-16 04:37:01,734 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5233, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4758:2026-03-16 04:37:01,735 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5234, 'pair': 'AUD_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4763:2026-03-16 04:37:01,735 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5235, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4768:2026-03-16 04:37:01,736 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5236, 'pair': 'EUR_USD', 'direction': 'LONG', 'decision': 'HOLD', 'exit_reason': ''}
+4774:2026-03-16 04:37:01,737 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5237, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}
+4780:2026-03-16 04:37:01,737 - INFO - AEE_PERIODIC_DECISION | {'trade_id': 5238, 'pair': 'EUR_CAD', 'direction': 'SHORT', 'decision': 'HOLD', 'exit_reason': ''}

@@ -1,0 +1,70 @@
+{
+  "window": {
+    "start_ts": 1774039461.073933,
+    "end_ts": 1774039770.2707958,
+    "elapsed_sec": 309.1968629360199,
+    "requested_sec": 300,
+    "return_code": 0,
+    "log_file": "logs/mvp_postpatch_bounded.log"
+  },
+  "metrics": {
+    "entries": 35,
+    "fills": 2,
+    "aee_exits": 45,
+    "pre_sl_exits": 22,
+    "realized_closes": 22,
+    "adopt_open_trade_events": 25,
+    "inventory_violations": 0,
+    "top_kinds": [
+      [
+        "ENTRY_FAMILY_DECISION",
+        1029
+      ],
+      [
+        "AEE_HANDOFF_TRACE",
+        226
+      ],
+      [
+        "AEE_STRATEGY_OVERRIDE_DECISION",
+        155
+      ],
+      [
+        "AEE_PERIODIC_DECISION",
+        155
+      ],
+      [
+        "ENTRY_PATH_SKIP_REASON",
+        112
+      ],
+      [
+        "STATE_TRANSITION",
+        59
+      ],
+      [
+        "NO_THROTTLE_MODE_BYPASS",
+        39
+      ],
+      [
+        "ENTRY_TRACE",
+        35
+      ],
+      [
+        "ENTRY_EVAL",
+        35
+      ],
+      [
+        "ENTRY_GATE_EVAL",
+        35
+      ]
+    ],
+    "realized_pnl": -509.4
+  },
+  "risk": {
+    "degraded_blocks_in_log": 0
+  },
+  "verdicts": {
+    "runtime_stability": "PASS",
+    "inventory_compliance": "PASS",
+    "restart_open_trade_continuity": "PASS"
+  }
+}

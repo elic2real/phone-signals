@@ -1,0 +1,117 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T12:09:10.421453+00:00",
+  "task_id": "MVP_PHASE29_SHADOW_SOAK_RETROSPECTIVE_AND_LIVE_GATING_DECISION",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "SHADOW_RETROSPECTIVE_AND_LIVE_GATING"
+  },
+  "dependency": {
+    "phase28_status": "PASS",
+    "phase28_path": "control/mvp_phase28_shadow_soak_execution_and_incident_audit.json",
+    "phase26_status": "PASS",
+    "phase26_path": "control/mvp_phase26_shadow_stability_window_proof.json"
+  },
+  "retrospective": {
+    "segment_summary": [
+      {
+        "segment": "S1",
+        "duration_hours": 24,
+        "status": "PASS",
+        "hard_stop_triggered": false,
+        "metrics": {
+          "weighted_intervention_pph_estimate": 0.37070338818113097,
+          "false_cut_rate_on_winners": 0.07692307692307693,
+          "aee_first_eval_missing_events": 0,
+          "close_404_count": 0
+        }
+      },
+      {
+        "segment": "S2",
+        "duration_hours": 24,
+        "status": "PASS",
+        "hard_stop_triggered": false,
+        "metrics": {
+          "window_gate_pass_rate": 1.0,
+          "release_lock_violations": 0,
+          "same_side_close_collisions": 0,
+          "close_coalesced_sibling_satisfied": 1
+        }
+      },
+      {
+        "segment": "S3",
+        "duration_hours": 24,
+        "status": "PASS",
+        "hard_stop_triggered": false,
+        "metrics": {
+          "weighted_intervention_relative_spread": 0.4250786788545134,
+          "max_false_cut_rate": 0.07692307692307693,
+          "incident_count": 0,
+          "rollback_drill_result": "PASS"
+        }
+      }
+    ],
+    "soak_total_hours": 72,
+    "hard_stop_trigger_count": 0,
+    "incident_count": 0,
+    "release_lock_violations": 0
+  },
+  "live_entry_gates": {
+    "gate_thresholds": {
+      "max_false_cut_rate": 0.1,
+      "max_weighted_relative_spread": 0.5,
+      "min_weighted_delta_pph": 0.0
+    },
+    "observed": {
+      "max_false_cut_rate": 0.07692307692307693,
+      "weighted_relative_spread": 0.4250786788545134,
+      "min_weighted_delta_pph": 0.07721467801644938
+    },
+    "gate_results": {
+      "soak_72h_completed": true,
+      "no_hard_stop_incidents": true,
+      "no_release_lock_violations": true,
+      "rollback_drill_pass": true,
+      "false_cut_rate_within_live_cap": true,
+      "weighted_stability_spread_within_live_cap": true,
+      "min_weighted_delta_positive": true
+    }
+  },
+  "live_gating_decision": {
+    "decision": "APPROVE_MICRO_LIVE_PILOT_WITH_HARD_KILL_SWITCH",
+    "live_gate_pass": true,
+    "live_promotion_allowed": false,
+    "micro_live_pilot_allowed": true,
+    "required_safety_controls": [
+      "hard kill-switch active",
+      "instant rollback path ready",
+      "scope lock EUR_USD/GBP_USD LONDON only",
+      "no tuning during pilot"
+    ],
+    "reason": "Shadow soak retrospective passed and all live-entry safety gates are satisfied for a bounded micro pilot."
+  },
+  "pass_conditions": {
+    "phase28_dependency_passed": true,
+    "phase28_verdict_promote": true,
+    "retrospective_completed": true,
+    "all_segments_passed": true,
+    "all_live_gates_evaluated": true,
+    "live_gating_decision_made": true,
+    "no_tuning_applied": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Retrospective and live-gating decision completed with explicit safety outcome under lock-held constraints.",
+    "release_action": "ALLOW_MICRO_LIVE_PILOT_PREP_ONLY",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE30_MICRO_LIVE_PILOT_PREP_AND_GUARDRAILS",
+  "status": "PASS"
+}

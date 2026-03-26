@@ -1,0 +1,31 @@
+{
+  "version": "2026-03-17-policy-runtime-2026-03-17T16:09:39Z",
+  "source": "strategy_merged_decision_sheet.json",
+  "sim_min_sample_gate": 50,
+  "strict_enable_only": true,
+  "ENABLE": [
+    "SHORT|HARVESTER|T3_5",
+    "SHORT|HARVESTER|T5_0",
+    "LONG|HARVESTER|T5_0",
+    "LONG|HARVESTER|T6_0",
+    "SHORT|HARVESTER|T2_5",
+    "SHORT|HARVESTER|T8_0"
+  ],
+  "SUPPRESS": [
+    "BREAK|RUNNER|T8_0",
+    "LONG|HARVESTER|T1_5",
+    "SHORT|HARVESTER|T1_5",
+    "LONG|HARVESTER|T2_5"
+  ],
+  "NEEDS_SAMPLE": [
+    "PULLBACK_RECLAIM|HARVESTER|T8_0"
+  ],
+  "QUARANTINE": [],
+  "runtime_rules": {
+    "only_enable_can_place": true,
+    "suppress_blocked": true,
+    "quarantine_blocked": true,
+    "needs_sample_default_off": true,
+    "needs_sample_toggle_env": "AEE_POLICY_ENABLE_NEEDS_SAMPLE"
+  }
+}

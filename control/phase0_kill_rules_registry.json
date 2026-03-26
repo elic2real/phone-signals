@@ -1,0 +1,10 @@
+{
+  "protocol": "RCP",
+  "generated_at": "2026-03-26T09:11:21.590785+00:00",
+  "kill_rules": [
+    "if peak_to_close_delay_distribution.mean does not decrease vs baseline then discard variant",
+    "if time_in_drawdown_distribution.mean does not decrease vs baseline then discard variant",
+    "if rank_vs_outcome win_rate for selected rank does not improve then discard variant"
+  ],
+  "enforcement": "hard_fail_in_control_gate"
+}

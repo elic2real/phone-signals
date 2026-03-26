@@ -1,0 +1,63 @@
+{
+  "task_id": "TASK-013",
+  "template": "simulation_intrabar_fidelity_plan",
+  "evidence_basis": {
+    "path_complexity_score": 1.0,
+    "multi_stage_presence_rate": 0.741,
+    "sequence_resolution_score": 1.0,
+    "reclaim_representable_rate": 0.0
+  },
+  "diagnosis": "The raw paths are long and complex enough, but the derived simulator representation collapses reclaim structure out of the usable state sequence.",
+  "implementation_stages": [
+    {
+      "stage": 1,
+      "name": "preserve_micro_sequence",
+      "deliverable": "ordered swing-state encoding per trade",
+      "requirements": [
+        "store directional swing transitions rather than only cumulative progress metrics",
+        "retain timestamps for swing inflection points",
+        "label early adverse, recovery, reclaim, and continuation segments"
+      ]
+    },
+    {
+      "stage": 2,
+      "name": "side_aware_pricing_trace",
+      "deliverable": "entry/exit pricing audit trail",
+      "requirements": [
+        "attach bid, ask, or deterministic proxy prices to path state",
+        "record spread charge events explicitly",
+        "record bar-1 fill audit with mismatch flags"
+      ]
+    },
+    {
+      "stage": 3,
+      "name": "truth_anchor_overlay",
+      "deliverable": "available-movement reference layer",
+      "requirements": [
+        "derive total_available_pips and best-achievable path capture",
+        "publish entry-only and realized comparison alongside efficiency band"
+      ]
+    },
+    {
+      "stage": 4,
+      "name": "balanced_benchmark_windows",
+      "deliverable": "regime-aware benchmark suite",
+      "requirements": [
+        "weight benchmark runs across compressed, neutral, strong bullish, and strong bearish regimes",
+        "report raw and weighted outcomes separately",
+        "block promotion when one regime dominates benchmark evidence"
+      ]
+    }
+  ],
+  "acceptance_targets": {
+    "reclaim_representable_rate": "> 0.10 initial target",
+    "suspicious_fill_rate": "< 0.05",
+    "pricing_consistency_score": "> 0.70",
+    "breakout_bias_score": "<= 0.05 after reconstruction"
+  },
+  "downstream_policy": [
+    "Re-run benchmark stack before any further form tuning.",
+    "Re-run AEE family audit only after simulator truth anchors are available.",
+    "Use expected_vs_actual_signature and failure_layer_classification artifacts on reconstruction validation."
+  ]
+}

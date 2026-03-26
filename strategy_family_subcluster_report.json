@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-03-25T16:27:39.232595Z",
+  "pair": "EUR_USD",
+  "families": {
+    "EXPANSION_BREAKOUT": {
+      "clusters": [
+        {
+          "cluster": "breakout_clean",
+          "trade_count": 4791,
+          "avg_net_pips": 0.5186599874765184,
+          "net_pph_proxy": 0.09565640837113867
+        }
+      ],
+      "split_proposal": [
+        "breakout_clean"
+      ]
+    },
+    "RECLAIM_CONTINUATION": {
+      "clusters": [
+        {
+          "cluster": "reclaim_failed",
+          "trade_count": 21,
+          "avg_net_pips": -0.3285714285714286,
+          "net_pph_proxy": -0.00026561600779140287
+        },
+        {
+          "cluster": "reclaim_clean",
+          "trade_count": 22,
+          "avg_net_pips": -1.0090909090909093,
+          "net_pph_proxy": -0.000854590633763644
+        }
+      ],
+      "split_proposal": [
+        "reclaim_failed",
+        "reclaim_clean"
+      ]
+    },
+    "PULLBACK_CONTINUATION": {
+      "clusters": [
+        {
+          "cluster": "pullback_deep",
+          "trade_count": 1049,
+          "avg_net_pips": -1.2939942802669209,
+          "net_pph_proxy": -0.05225321289507975
+        }
+      ],
+      "split_proposal": [
+        "pullback_deep"
+      ]
+    },
+    "RANGE_ESCAPE": {
+      "clusters": [
+        {
+          "cluster": "range_true_expansion",
+          "trade_count": 286,
+          "avg_net_pips": 0.011538461538461432,
+          "net_pph_proxy": 0.00012703374285675671
+        },
+        {
+          "cluster": "range_noise_escape",
+          "trade_count": 11645,
+          "avg_net_pips": -0.7439244310863032,
+          "net_pph_proxy": -0.3334828225357859
+        }
+      ],
+      "split_proposal": [
+        "range_true_expansion",
+        "range_noise_escape"
+      ]
+    },
+    "OTHER": {
+      "clusters": [
+        {
+          "cluster": "other_mixed",
+          "trade_count": 3576,
+          "avg_net_pips": -1.7687080536912752,
+          "net_pph_proxy": -0.24347749096809332
+        }
+      ],
+      "split_proposal": [
+        "other_mixed"
+      ]
+    }
+  }
+}

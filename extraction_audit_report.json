@@ -1,0 +1,513 @@
+{
+  "AEE_SCORECARD": {
+    "weighted_pips_per_hour": -1651.5870967741193,
+    "median_weighted_pips_per_hour": -1506.8914285716014,
+    "clip_metrics": {
+      "n_plus_1": {
+        "better_percent": 0.25,
+        "avg_delta_pips": -1.7712500000005393
+      },
+      "n_plus_2": {
+        "better_percent": 0.5,
+        "avg_delta_pips": -1.0009999999997898
+      },
+      "n_plus_5": {
+        "better_percent": 0.6666666666666666,
+        "avg_delta_pips": 0.18666666666685336
+      }
+    },
+    "tail_loss": {
+      "p95": -7.944999999999824,
+      "p99": -8.724999999999818
+    },
+    "hold_distribution_sec": {
+      "p50": 4.5,
+      "p75": 9.0,
+      "p90": 16.200000000000003
+    },
+    "exit_mix_by_reason": {
+      "PANIC_EXIT": {
+        "count": 1,
+        "proportion": 0.25
+      },
+      "NEAR_TP_STALL_CAPTURE": {
+        "count": 2,
+        "proportion": 0.5
+      },
+      "PULSE_STALL_CAPTURE": {
+        "count": 1,
+        "proportion": 0.25
+      }
+    },
+    "exit_mix_by_leg": {
+      "core": {
+        "PANIC_EXIT": 1,
+        "NEAR_TP_STALL_CAPTURE": 2,
+        "PULSE_STALL_CAPTURE": 1
+      },
+      "runner": {
+        "RUNNER_ENERGY_DECAY": 4
+      }
+    }
+  },
+  "summary": {
+    "total_trades": 4,
+    "avg_pips_per_trade": -3.5554999999998405,
+    "std_pips": 3.1535980641166605,
+    "median_hold_time_sec": 4.5,
+    "avg_hold_time_sec": 7.75,
+    "pips_per_hour": -1651.5870967741193,
+    "weighted_pips_per_hour": -1651.5870967741193,
+    "core_pips_per_hour": -1520.593548387002,
+    "runner_pips_per_hour": -396.72000000000156,
+    "median_hold_time_core_sec": 4.5,
+    "median_hold_time_runner_sec": 25.0,
+    "avg_capture_percent": -5.475600673608317,
+    "avg_capture_percent_core": -5.805523809521826,
+    "avg_capture_percent_runner": -6.5409264486164185,
+    "cadence_switch_engagement_rate": 0.25,
+    "early_exit_bias_percent_n1": 0.25,
+    "panic_dominance_index": 0.17015890873294723,
+    "pips_percentiles": {
+      "p50": -2.241000000000195,
+      "p75": -1.7515000000001812,
+      "p90": -1.1925999999995651,
+      "p95": -1.0062999999993605
+    },
+    "hold_percentiles_sec": {
+      "p50": 4.5,
+      "p75": 9.0,
+      "p90": 16.200000000000003,
+      "p95": 18.599999999999994
+    },
+    "tail_losses": {
+      "p95": -7.944999999999824,
+      "p99": -8.724999999999818
+    }
+  },
+  "by_exit_reason": {
+    "PANIC_EXIT": {
+      "count": 1,
+      "proportion": 0.25,
+      "avg_pips": -2.4199999999998667,
+      "avg_hold_sec": 1.0,
+      "avg_capture_percent": 0.0,
+      "avg_mfe_pips": -0.40000000000040004,
+      "avg_mae_pips": -9.600000000000719
+    },
+    "NEAR_TP_STALL_CAPTURE": {
+      "count": 2,
+      "proportion": 0.5,
+      "avg_pips": -1.440999999999839,
+      "avg_hold_sec": 4.5,
+      "avg_capture_percent": -1.8419724389853533,
+      "avg_mfe_pips": 1.2670000000003956,
+      "avg_mae_pips": -3.8494999999998836
+    },
+    "PULSE_STALL_CAPTURE": {
+      "count": 1,
+      "proportion": 0.25,
+      "avg_pips": -8.919999999999817,
+      "avg_hold_sec": 21.0,
+      "avg_capture_percent": -12.742857142854243,
+      "avg_mfe_pips": 0.700000000000145,
+      "avg_mae_pips": -15.300000000000313
+    }
+  },
+  "by_exit_reason_leg": {
+    "core": {
+      "PANIC_EXIT": {
+        "count": 1,
+        "proportion": 0.25
+      },
+      "NEAR_TP_STALL_CAPTURE": {
+        "count": 2,
+        "proportion": 0.5
+      },
+      "PULSE_STALL_CAPTURE": {
+        "count": 1,
+        "proportion": 0.25
+      }
+    },
+    "runner": {
+      "RUNNER_ENERGY_DECAY": {
+        "count": 4,
+        "proportion": 1.0
+      }
+    }
+  },
+  "cadence": {
+    "armed_gap_median_ts": 1.0,
+    "unarmed_gap_median_ts": 1.0,
+    "switched_percent": 0.25,
+    "switched_count": 1,
+    "total": 4
+  },
+  "exit_delay_sensitivity": {
+    "n_plus_1": {
+      "percent_better": 0.25,
+      "count_better": 1,
+      "count_compared": 4,
+      "avg_delta_pips": -1.7712500000005393
+    },
+    "n_plus_2": {
+      "percent_better": 0.5,
+      "count_better": 2,
+      "count_compared": 4,
+      "avg_delta_pips": -1.0009999999997898
+    },
+    "n_plus_5": {
+      "percent_better": 0.6666666666666666,
+      "count_better": 2,
+      "count_compared": 3,
+      "avg_delta_pips": 0.18666666666685336
+    }
+  },
+  "early_exit_regret": {
+    "plus_30_avg_pips": 0.0,
+    "plus_60_avg_pips": 0.0,
+    "plus_120_avg_pips": 0.0,
+    "plus_30_count": 1,
+    "plus_60_count": 1,
+    "plus_120_count": 1
+  },
+  "overshoot_capture": {
+    "overshoot_pips_captured_avg": 0.0,
+    "max_overshoot_seen_pips_avg": 0.0,
+    "overshoot_capture_rate_avg": 0.0
+  },
+  "pulse_exit_quality": {
+    "avg_pips": -8.919999999999817,
+    "p50_pips": -8.919999999999817,
+    "loss_rate": 1.0,
+    "wait_30_help_rate": 1.0,
+    "pulse_wait_30_better_count": 1,
+    "pulse_wait_30_better_avg_delta": 4.2200000000001125
+  },
+  "scenario_breakdown": {
+    "unknown": {
+      "count": 4,
+      "weighted_pips_per_hour": -1651.5870967741193,
+      "avg_weighted_pips": -3.5554999999998405
+    }
+  },
+  "distributions": {
+    "MFE": [
+      -0.40000000000040004,
+      1.900000000001345,
+      0.700000000000145,
+      0.6339999999994461
+    ],
+    "MAE": [
+      -9.600000000000719,
+      -1.5999999999993797,
+      -15.300000000000313,
+      -6.0990000000003874
+    ],
+    "core_MFE": [
+      -0.40000000000040004,
+      0.5000000000010552,
+      0.700000000000145,
+      0.49999999999954525
+    ],
+    "core_MAE": [
+      -1.2999999999996348,
+      -0.4999999999988347,
+      -8.999999999999009,
+      -1.9570000000015852
+    ],
+    "runner_MFE": [
+      -0.40000000000040004,
+      1.900000000001345,
+      0.700000000000145,
+      0.6339999999994461
+    ],
+    "runner_MAE": [
+      -9.600000000000719,
+      -1.5999999999993797,
+      -15.300000000000313,
+      -6.0990000000003874
+    ],
+    "exit_pips": [
+      -2.4199999999998667,
+      -0.8199999999991547,
+      -8.919999999999817,
+      -2.0620000000005234
+    ],
+    "core_pips": [
+      -1.7000000000000348,
+      -0.8999999999992347,
+      -9.399999999999409,
+      -1.0940000000005057
+    ],
+    "runner_pips": [
+      -5.299999999999194,
+      -0.4999999999988347,
+      -7.0000000000014495,
+      -5.934000000000594
+    ],
+    "hold_sec": [
+      1.0,
+      4.0,
+      21.0,
+      5.0
+    ],
+    "core_hold_sec": [
+      1.0,
+      4.0,
+      21.0,
+      5.0
+    ],
+    "runner_hold_sec": [
+      35.0,
+      15.0,
+      107.0,
+      13.0
+    ],
+    "capture_percent": [
+      -0.43157894736767066,
+      -12.742857142854243,
+      -3.252365930603036
+    ],
+    "capture_percent_core": [
+      -1.799999999994671,
+      -13.428571428567803,
+      -2.1880000000030013
+    ],
+    "capture_percent_runner": [
+      -0.2631578947360425,
+      -10.0,
+      -9.359621451113215
+    ],
+    "left_on_table_core": [
+      1.2999999999996348,
+      1.40000000000029,
+      10.099999999999554,
+      1.594000000000051
+    ],
+    "left_on_table_runner": [
+      4.899999999998794,
+      2.4000000000001798,
+      7.7000000000015945,
+      6.5680000000000405
+    ]
+  },
+  "runs": [
+    {
+      "file": "sim_results/fast_runner.json",
+      "instrument": "EUR_USD",
+      "direction": "LONG",
+      "entry_tick_idx": 1,
+      "entry_ts": 1640000000.0,
+      "entry_price": 1.08494,
+      "exit_tick_idx": 2,
+      "exit_pair_eval_idx": 2,
+      "exit_ts": 1640000001.0,
+      "exit_price": 0.0,
+      "exit_reason": "PANIC_EXIT",
+      "exit_pips": -2.4199999999998667,
+      "core_pips": -1.7000000000000348,
+      "runner_pips": -5.299999999999194,
+      "weighted_pips": -2.4199999999998667,
+      "hold_sec": 1.0,
+      "core_hold_sec": 1.0,
+      "runner_hold_sec": 35.0,
+      "mfe_pips": -0.40000000000040004,
+      "mae_pips": -9.600000000000719,
+      "capture_pct": null,
+      "core_mfe_pips": -0.40000000000040004,
+      "core_mae_pips": -1.2999999999996348,
+      "runner_mfe_pips": -0.40000000000040004,
+      "runner_mae_pips": -9.600000000000719,
+      "core_capture_pct": null,
+      "runner_capture_pct": null,
+      "core_left_on_table_pips": 1.2999999999996348,
+      "runner_left_on_table_pips": 4.899999999998794,
+      "scenario": "unknown",
+      "overshoot_peak_atr": 0.0,
+      "overshoot_pips_captured": 0.0,
+      "max_overshoot_seen_pips": 0.0,
+      "overshoot_capture_rate": null,
+      "core_exit_reason": "PANIC_EXIT",
+      "runner_exit_reason": "RUNNER_ENERGY_DECAY",
+      "cadence_switch": false,
+      "armed_gap_median_ts": 1.0,
+      "unarmed_gap_median_ts": 1.0,
+      "panic_recovery_plus_30_pips": 0.0,
+      "panic_recovery_plus_60_pips": 0.0,
+      "panic_recovery_plus_120_pips": 0.0,
+      "delay_delta_pips": {
+        "n_plus_1": -2.380000000000493,
+        "n_plus_2": -2.5799999999995826,
+        "n_plus_5": -3.8799999999992174
+      },
+      "delay_better": {
+        "n_plus_1": false,
+        "n_plus_2": false,
+        "n_plus_5": false
+      }
+    },
+    {
+      "file": "sim_results/med_momentum.json",
+      "instrument": "GBP_USD",
+      "direction": "LONG",
+      "entry_tick_idx": 1,
+      "entry_ts": 1640000000.0,
+      "entry_price": 1.26507,
+      "exit_tick_idx": 5,
+      "exit_pair_eval_idx": 5,
+      "exit_ts": 1640000004.0,
+      "exit_price": 0.0,
+      "exit_reason": "NEAR_TP_STALL_CAPTURE",
+      "exit_pips": -0.8199999999991547,
+      "core_pips": -0.8999999999992347,
+      "runner_pips": -0.4999999999988347,
+      "weighted_pips": -0.8199999999991547,
+      "hold_sec": 4.0,
+      "core_hold_sec": 4.0,
+      "runner_hold_sec": 15.0,
+      "mfe_pips": 1.900000000001345,
+      "mae_pips": -1.5999999999993797,
+      "capture_pct": -0.43157894736767066,
+      "core_mfe_pips": 0.5000000000010552,
+      "core_mae_pips": -0.4999999999988347,
+      "runner_mfe_pips": 1.900000000001345,
+      "runner_mae_pips": -1.5999999999993797,
+      "core_capture_pct": -1.799999999994671,
+      "runner_capture_pct": -0.2631578947360425,
+      "core_left_on_table_pips": 1.40000000000029,
+      "runner_left_on_table_pips": 2.4000000000001798,
+      "scenario": "unknown",
+      "overshoot_peak_atr": 0.0,
+      "overshoot_pips_captured": 0.0,
+      "max_overshoot_seen_pips": 0.0,
+      "overshoot_capture_rate": null,
+      "core_exit_reason": "NEAR_TP_STALL_CAPTURE",
+      "runner_exit_reason": "RUNNER_ENERGY_DECAY",
+      "cadence_switch": false,
+      "armed_gap_median_ts": 1.0,
+      "unarmed_gap_median_ts": 1.0,
+      "panic_recovery_plus_30_pips": null,
+      "panic_recovery_plus_60_pips": null,
+      "panic_recovery_plus_120_pips": null,
+      "delay_delta_pips": {
+        "n_plus_1": -1.180000000000625,
+        "n_plus_2": 0.020000000000575113,
+        "n_plus_5": 0.2199999999996649
+      },
+      "delay_better": {
+        "n_plus_1": false,
+        "n_plus_2": true,
+        "n_plus_5": true
+      }
+    },
+    {
+      "file": "sim_results/multi_pair.json",
+      "instrument": "EUR_USD",
+      "direction": "LONG",
+      "entry_tick_idx": 1,
+      "entry_ts": 1640000000.0,
+      "entry_price": 1.08491,
+      "exit_tick_idx": 64,
+      "exit_pair_eval_idx": 19,
+      "exit_ts": 1640000021.0,
+      "exit_price": 0.0,
+      "exit_reason": "PULSE_STALL_CAPTURE",
+      "exit_pips": -8.919999999999817,
+      "core_pips": -9.399999999999409,
+      "runner_pips": -7.0000000000014495,
+      "weighted_pips": -8.919999999999817,
+      "hold_sec": 21.0,
+      "core_hold_sec": 21.0,
+      "runner_hold_sec": 107.0,
+      "mfe_pips": 0.700000000000145,
+      "mae_pips": -15.300000000000313,
+      "capture_pct": -12.742857142854243,
+      "core_mfe_pips": 0.700000000000145,
+      "core_mae_pips": -8.999999999999009,
+      "runner_mfe_pips": 0.700000000000145,
+      "runner_mae_pips": -15.300000000000313,
+      "core_capture_pct": -13.428571428567803,
+      "runner_capture_pct": -10.0,
+      "core_left_on_table_pips": 10.099999999999554,
+      "runner_left_on_table_pips": 7.7000000000015945,
+      "scenario": "unknown",
+      "overshoot_peak_atr": 0.0,
+      "overshoot_pips_captured": 0.0,
+      "max_overshoot_seen_pips": 0.0,
+      "overshoot_capture_rate": null,
+      "core_exit_reason": "PULSE_STALL_CAPTURE",
+      "runner_exit_reason": "RUNNER_ENERGY_DECAY",
+      "cadence_switch": false,
+      "armed_gap_median_ts": 1.0,
+      "unarmed_gap_median_ts": 1.0,
+      "panic_recovery_plus_30_pips": null,
+      "panic_recovery_plus_60_pips": null,
+      "panic_recovery_plus_120_pips": null,
+      "delay_delta_pips": {
+        "n_plus_1": 0.31999999999898776,
+        "n_plus_2": 1.5200000000001879,
+        "n_plus_5": 4.2200000000001125
+      },
+      "delay_better": {
+        "n_plus_1": true,
+        "n_plus_2": true,
+        "n_plus_5": true
+      }
+    },
+    {
+      "file": "sim_results/slow_scalp.json",
+      "instrument": "USD_JPY",
+      "direction": "SHORT",
+      "entry_tick_idx": 1,
+      "entry_ts": 1640000000.0,
+      "entry_price": 110.50688,
+      "exit_tick_idx": 6,
+      "exit_pair_eval_idx": 2,
+      "exit_ts": 1640000005.0,
+      "exit_price": 0.0,
+      "exit_reason": "NEAR_TP_STALL_CAPTURE",
+      "exit_pips": -2.0620000000005234,
+      "core_pips": -1.0940000000005057,
+      "runner_pips": -5.934000000000594,
+      "weighted_pips": -2.0620000000005234,
+      "hold_sec": 5.0,
+      "core_hold_sec": 5.0,
+      "runner_hold_sec": 13.0,
+      "mfe_pips": 0.6339999999994461,
+      "mae_pips": -6.0990000000003874,
+      "capture_pct": -3.252365930603036,
+      "core_mfe_pips": 0.49999999999954525,
+      "core_mae_pips": -1.9570000000015852,
+      "runner_mfe_pips": 0.6339999999994461,
+      "runner_mae_pips": -6.0990000000003874,
+      "core_capture_pct": -2.1880000000030013,
+      "runner_capture_pct": -9.359621451113215,
+      "core_left_on_table_pips": 1.594000000000051,
+      "runner_left_on_table_pips": 6.5680000000000405,
+      "scenario": "unknown",
+      "overshoot_peak_atr": 0.0,
+      "overshoot_pips_captured": 0.0,
+      "max_overshoot_seen_pips": 0.0,
+      "overshoot_capture_rate": null,
+      "core_exit_reason": "NEAR_TP_STALL_CAPTURE",
+      "runner_exit_reason": "RUNNER_ENERGY_DECAY",
+      "cadence_switch": true,
+      "armed_gap_median_ts": 1.0,
+      "unarmed_gap_median_ts": 5.0,
+      "panic_recovery_plus_30_pips": null,
+      "panic_recovery_plus_60_pips": null,
+      "panic_recovery_plus_120_pips": null,
+      "delay_delta_pips": {
+        "n_plus_1": -3.8450000000000273,
+        "n_plus_2": -2.9640000000003397,
+        "n_plus_5": null
+      },
+      "delay_better": {
+        "n_plus_1": false,
+        "n_plus_2": false,
+        "n_plus_5": false
+      }
+    }
+  ]
+}

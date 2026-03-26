@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-03-25T17:09:39.826033Z",
+  "task_id": "TASK-011",
+  "section": "E_GLOBAL_BIAS",
+  "scope": "audit_only_no_changes",
+  "metrics": {
+    "total_hours": 25977.4,
+    "total_trades": 21390,
+    "family_degradation_matrix": {
+      "EXPANSION_BREAKOUT": {
+        "trade_count": 4791,
+        "avg_entry_only_potential_pips": 11.3934,
+        "avg_realized_net_pips": 0.5187,
+        "entry_only_pph": 9.381404,
+        "realized_pph": 0.42707,
+        "degradation_ratio": 0.0455,
+        "realization_gap_pips": 10.8747
+      },
+      "RECLAIM_CONTINUATION": {
+        "trade_count": 43,
+        "avg_entry_only_potential_pips": 10.5023,
+        "avg_realized_net_pips": -0.6767,
+        "entry_only_pph": 8.647716,
+        "realized_pph": -0.557238,
+        "degradation_ratio": -0.0644,
+        "realization_gap_pips": 11.1791
+      },
+      "PULLBACK_CONTINUATION": {
+        "trade_count": 1049,
+        "avg_entry_only_potential_pips": 11.9244,
+        "avg_realized_net_pips": -1.294,
+        "entry_only_pph": 9.818669,
+        "realized_pph": -1.065487,
+        "degradation_ratio": -0.1085,
+        "realization_gap_pips": 13.2184
+      },
+      "RANGE_ESCAPE": {
+        "trade_count": 11931,
+        "avg_entry_only_potential_pips": 9.6887,
+        "avg_realized_net_pips": -0.7258,
+        "entry_only_pph": 7.977756,
+        "realized_pph": -0.597643,
+        "degradation_ratio": -0.0749,
+        "realization_gap_pips": 10.4145
+      },
+      "OTHER": {
+        "trade_count": 3576,
+        "avg_entry_only_potential_pips": 8.8419,
+        "avg_realized_net_pips": -1.7687,
+        "entry_only_pph": 7.280475,
+        "realized_pph": -1.456371,
+        "degradation_ratio": -0.2,
+        "realization_gap_pips": 10.6106
+      }
+    },
+    "breakout_degradation_ratio": 0.0455,
+    "non_breakout_avg_degradation_ratio": -0.112,
+    "breakout_bias_score": 0.1575
+  },
+  "interpretation": {
+    "degradation_ratio": "realized_net / entry_only_potential; 1.0 = no degradation; 0.0 = all potential destroyed; <0 = AEE creates loss",
+    "breakout_bias_score": "breakout_ratio - mean(other_ratios); >0.10 = simulator favours breakout; < -0.10 = simulator penalises breakout"
+  },
+  "finding": "SIMULATOR_BIASED_TOWARD_BREAKOUT"
+}

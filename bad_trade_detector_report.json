@@ -1,0 +1,66 @@
+{
+  "winning_trade_count_used": 1117,
+  "scenario_row_count": 213590,
+  "scenario_counts": {
+    "continuation": 71080,
+    "whipsaw-giveback": 50776,
+    "panic": 13583,
+    "noise": 9064,
+    "decay": 34371,
+    "opposite-impulse": 29703,
+    "stall": 5013
+  },
+  "action_counts": {
+    "HOLD": 71080,
+    "HARVEST": 55789,
+    "PANIC": 43286,
+    "DO_NOT_ENTER": 9064,
+    "DECAY_EXIT": 34371
+  },
+  "bad_trade_detector": {
+    "bad_trade_rate": 0.406016199260265,
+    "reversed_direction_rows": 106795,
+    "panic_rows": 13583,
+    "opposite_impulse_rows": 29703
+  },
+  "by_assumed_direction": {
+    "LONG": {
+      "rows": 106795,
+      "scenario_counts": {
+        "continuation": 36289,
+        "decay": 18068,
+        "noise": 4247,
+        "opposite-impulse": 15365,
+        "panic": 6446,
+        "stall": 2661,
+        "whipsaw-giveback": 23719
+      },
+      "action_counts": {
+        "DECAY_EXIT": 18068,
+        "DO_NOT_ENTER": 4247,
+        "HARVEST": 26380,
+        "HOLD": 36289,
+        "PANIC": 21811
+      }
+    },
+    "SHORT": {
+      "rows": 106795,
+      "scenario_counts": {
+        "continuation": 34791,
+        "decay": 16303,
+        "noise": 4817,
+        "opposite-impulse": 14338,
+        "panic": 7137,
+        "stall": 2352,
+        "whipsaw-giveback": 27057
+      },
+      "action_counts": {
+        "DECAY_EXIT": 16303,
+        "DO_NOT_ENTER": 4817,
+        "HARVEST": 29409,
+        "HOLD": 34791,
+        "PANIC": 21475
+      }
+    }
+  }
+}

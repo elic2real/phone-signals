@@ -1,0 +1,50 @@
+{
+  "ts_utc": "2026-03-14T01:41:00Z",
+  "patched_file": "PC2/production/phase1_ode_proven.py",
+  "patched_function": "load_oanda_data",
+  "inspection_source": "PC2/phase1_schema_inspection.json",
+  "discovered_schema": {
+    "timestamp_field": "timestamp",
+    "close_field": "close",
+    "other_columns_present": [
+      "pair",
+      "open",
+      "high",
+      "low",
+      "volume",
+      "complete"
+    ]
+  },
+  "mapping_behavior": {
+    "primary_mapping": {
+      "timestamp": "timestamp",
+      "close": "close"
+    },
+    "fallback_aliases": {
+      "timestamp_candidates": [
+        "timestamp",
+        "time",
+        "ts_utc"
+      ],
+      "close_candidates": [
+        "close",
+        "mid_c",
+        "c",
+        "m1_close"
+      ]
+    },
+    "normalization": {
+      "output_timestamp_column": "timestamp",
+      "output_close_column": "close"
+    }
+  },
+  "guard": {
+    "error_kind": "PHASE1_SCHEMA_ERROR",
+    "failure_mode": "raise ValueError with explicit expected candidates and found_columns"
+  },
+  "notes": [
+    "This patch is local to the PC2 appliance bundle only.",
+    "No stage7+ or experimental scripts were introduced.",
+    "This changes schema failure from deep pyarrow failure to a clear deterministic error if mapping is impossible."
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "spec_version": "2.0",
+  "rcp_task": "TASK-003",
+  "family": "PULLBACK_CONTINUATION",
+  "generated_at": "2026-03-25T00:00:00Z",
+  "description": "Explicit state machine detector for PULLBACK_CONTINUATION. Requires sequential evidence of three states: SWING_ESTABLISHED (prior directional run), PULLBACK_DEPTH (measured retrace into reference zone), and RESUMPTION (directional close back toward trend). No bias-only or position-only entry permitted.",
+  "structural_contract": "A signal is valid only when all three states are confirmed in sequence. Removing any state check must suppress the signal. The pullback detector must name what it observed, not just check if price is near a zone.",
+  "states": [
+    {
+      "state": "SWING_ESTABLISHED",
+      "state_number": 1,
+      "description": "A prior directional run must be present in the look-back window. This establishes the 'trend' that the pullback is retracing from. Without a swing, there is nothing to pull back from.",
+      "structural_requirements": [
+        "Compute swing_high = max(highs[-swing_window-1:-1]) and swing_low = min(lows[-swing_window-1:-1])",
+        "Compute swing_magnitude = (swing_high - zone_low) / atr for LONG candidate, or (zone_high - swing_low) / atr for SHORT",
+        "swing_magnitude must be >= min_swing_atr (default 0.6) — a meaningful directional move occurred",
+        "Determine candidate direction: LONG if close is in upper half of swing range, SHORT if in lower half"
+      ],
+      "fail_condition": "swing_magnitude < min_swing_atr → signal suppressed, fail_state=SWING_ESTABLISHED",
+      "what_this_rules_out": "Entries in choppy, non-trending conditions where there was no prior swing to pull back from"
+    },
+    {
+      "state": "PULLBACK_DEPTH",
+      "state_number": 2,
+      "description": "Price must have retraced from the swing extreme by a meaningful amount into the reference zone. Too shallow = not a pullback; too deep = the trend is negated.",
+      "structural_requirements": [
+        "For LONG: pullback_low = min(lows[-pullback_window-1:-1]) within last pullback_window bars",
+        "For LONG: retrace_depth = (swing_high - pullback_low) / atr",
+        "retrace_depth must be >= min_retrace_atr (default 0.25) — a real pullback occurred",
+        "retrace_depth must be <= max_retrace_atr (default 1.8) — trend not negated",
+        "Current close must be <= swing_high - min_retrace_atr * atr (still inside pullback territory, not already past swing high)"
+      ],
+      "fail_condition": "retrace_depth < min_retrace_atr OR retrace_depth > max_retrace_atr → signal suppressed, fail_state=PULLBACK_DEPTH",
+      "what_this_rules_out": [
+        "Entries where price is just drifting near zone_mid with no clear retrace (shallow or no pullback)",
+        "Entries where price fell so far it negated the original swing (not a continuation, it's a new trend)"
+      ]
+    },
+    {
+      "state": "RESUMPTION",
+      "state_number": 3,
+      "description": "Price is showing evidence of resuming in the original trend direction. Both position (close above pullback low + minimum buffer) AND directional close (green for LONG) required.",
+      "structural_requirements": [
+        "For LONG: close must be above pullback_low + resume_buffer_atr * atr (default 0.10)",
+        "For LONG: close > prev_close (directional close — bullish bar resumption)",
+        "For SHORT: close must be below pullback_high - resume_buffer_atr * atr",
+        "For SHORT: close < prev_close",
+        "Both sub-conditions required simultaneously"
+      ],
+      "fail_condition": "close not above pullback_low + buffer OR close not > prev_close → fail_state=RESUMPTION",
+      "what_this_rules_out": [
+        "Entries where price is past the pullback low but the bar closed against direction",
+        "Entries where the close matches the previous bar — indecision, no resumption evidence"
+      ]
+    }
+  ],
+  "parameters": {
+    "swing_window": {"default": 12, "description": "Bars to measure the prior directional swing"},
+    "pullback_window": {"default": 6, "description": "Bars to find the pullback low/high within"},
+    "min_swing_atr": {"default": 0.6, "description": "Minimum swing magnitude (fraction of ATR) to constitute a real move"},
+    "min_retrace_atr": {"default": 0.25, "description": "Minimum pullback depth from swing extreme (fraction of ATR)"},
+    "max_retrace_atr": {"default": 1.8, "description": "Maximum pullback depth — beyond this the swing is negated"},
+    "resume_buffer_atr": {"default": 0.10, "description": "Minimum distance above pullback low for resumption confirmation"},
+    "max_freshness_atr": {"default": 1.5, "description": "Reject if close is too far from pullback reference (stale setup)"},
+    "spread_limit_pips": {"default": 2.8, "description": "Hard spread gate, pre-structural"}
+  },
+  "implementation_contract": {
+    "module": "entry_pullback_v2.py",
+    "entry_function": "detect_pullback_continuation",
+    "return_type": "PullbackStructureResult",
+    "result_fields": {
+      "is_valid": "bool — True only when all three states confirmed",
+      "direction": "str — LONG | SHORT | NONE",
+      "states": "List[StateResult] — one per state attempted",
+      "swing_magnitude_atr": "float — swing size in ATR units",
+      "retrace_depth_atr": "float — pullback depth in ATR units",
+      "fail_state": "str | None — name of first state that failed",
+      "reason": "str — compact outcome string"
+    }
+  },
+  "what_this_is_not": [
+    "NOT: close >= zone_mid - 0.08*atr AND close >= prev_close - 0.02*atr (v1 CONTINUATION_PUSH)",
+    "NOT: macro_bias == direction alone without swing evidence",
+    "NOT: price near zone midpoint without pullback depth measurement"
+  ],
+  "separation_from_v1": {
+    "v1_mechanism": "CONTINUATION_PUSH checks if cont_direction (from macro/micro bias) is set, then checks close >= cont_lo - 0.08*atr AND close >= prev_close - 0.02*atr — a pure bias+position check",
+    "v2_mechanism": "Three sequential states: prior swing must exist, retrace depth must fall in valid range, current close must show directional resumption above pullback reference",
+    "key_difference": "v1 fires on any close near zone_mid with macro bias support. v2 requires evidence of a specific swing-then-retrace-then-resume sequence."
+  },
+  "evidence_reference": [
+    "component_structural_audit.json: entry_pattern_detection — pullback is underdefined",
+    "strategy_performance_report.json: PULLBACK_CONTINUATION -0.0523 net pph EUR_USD — structural weakness confirmed",
+    "control/system_state.json: entry_structure=PARTIAL"
+  ]
+}

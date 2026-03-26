@@ -2,21 +2,15 @@
   "protocol": "RCP",
   "protocol_version": "RCP_V2",
   "stage": 2,
-  "generated_at": "2026-03-26T03:59:20Z",
-  "task_id": "MVP_PHASE6_STABILITY_PROOF_3WINDOW_NO_TUNING",
-  "component": "mvp_stability_proof_3window",
-  "intervention_class": "MEASUREMENT_ONLY",
-  "research_layer": "STABILITY",
+  "generated_at": "2026-03-26T13:29:10Z",
+  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
+  "component": "mvp_net_layer_micro_live_execution_and_incident_audit",
+  "intervention_class": "SURGICAL_BEHAVIOR_CHANGE_NET_LAYER_EXECUTION_AUDIT",
+  "research_layer": "PHASE0_INTERVENTION_ACTION_LOOP",
   "champion_reference": [
     "entry_v23_policy_guarded_active.json",
-    "control/mvp_phase5_full_loop_validation.json",
-    "control/mvp_phase6_w1_eur_usd.json",
-    "control/mvp_phase6_w1_gbp_usd.json",
-    "control/mvp_phase6_w2_eur_usd.json",
-    "control/mvp_phase6_w2_gbp_usd.json",
-    "control/mvp_phase6_w3_eur_usd.json",
-    "control/mvp_phase6_w3_gbp_usd.json",
-    "control/mvp_phase6_stability_proof.json"
+    "control/mvp_phase31_net_layer_micro_live_execution_plan.json",
+    "control/mvp_phase29_shadow_soak_retrospective_and_live_gating_decision.json"
   ],
   "expected_signature": {
     "pairs": [
@@ -27,36 +21,33 @@
       "LONDON"
     ],
     "required_metrics": [
-      "all_windows_pair_positive_net",
-      "all_windows_positive_weighted_net",
-      "all_windows_have_trades",
-      "session_lock_enforced_all_windows",
-      "london_context_only_all_windows",
-      "weighted_net_relative_spread_bounded"
+      "micro_live_wave_execution_results",
+      "incident_audit_summary",
+      "contract_threshold_enforcement",
+      "full_live_promotion_block_enforced"
     ]
   },
   "files_planned_to_modify": [
-    "run_mvp_phase6_stability_proof.py",
-    "control/mvp_phase6_stability_proof.json",
+    "run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
+    "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json",
     "control/preflight_report.json",
     "control/validation_result.json",
     "control/adjudication.json"
   ],
   "validation_commands": [
-    "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase6_stability_proof.py",
-    "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase6_stability_proof.py"
+    "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
+    "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py"
   ],
   "success_criteria": [
-    "Three windows complete with no tuning",
-    "Both pairs keep positive net PPH in every window",
-    "Weighted net PPH remains positive in every window",
-    "Session lock is enforced in every window",
-    "Contexts remain London-only under lock",
-    "Relative spread remains bounded"
+    "Micro-live execution waves complete under contract thresholds",
+    "Incident audit shows zero critical incidents and zero hard-stop events",
+    "Scope lock and no-tuning constraints remain preserved",
+    "Full live promotion remains blocked pending final go/no-go"
   ],
   "constraints_respected": [
     "no AEE tuning",
     "no priority tuning",
-    "no architecture expansion"
+    "no architecture expansion",
+    "no production behavior changes"
   ]
 }

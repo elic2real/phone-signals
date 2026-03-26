@@ -1,0 +1,57 @@
+# Universe Configuration for Production AEE Engine
+# Basic configuration required for runtime initialization
+
+universe:
+  fx_majors:
+    - EUR_USD
+    - GBP_USD
+    - USD_JPY
+    - EUR_JPY
+    - GBP_JPY
+    - USD_CHF
+    - EUR_CHF
+    - AUD_USD
+    - NZD_USD
+    - USD_CAD
+  
+  fx_minors:
+    - EUR_GBP
+    - EUR_AUD
+    - GBP_JPY
+    - AUD_JPY
+    - NZD_JPY
+  
+  metals:
+    - XAU_USD
+    - XAG_USD
+  
+  crypto:
+    - BTC_USD
+    - ETH_USD
+    - LTC_USD
+    - XRP_USD
+    - ADA_USD
+    - DOT_USD
+    - LINK_USD
+    - BNB_USD
+  
+  sessions:
+    - london
+    - new_york
+    - asia
+    - sydney
+  
+  default_session: london
+  default_timeframe: M5
+  
+runtime:
+  allow_broker_execution: true
+  max_concurrent_trades: 5
+  risk_per_trade: 0.02
+  max_daily_risk: 0.10
+  
+logging:
+  level: INFO
+  file: logs/phone_bot.log
+  max_size_mb: 100
+  backup_count: 5

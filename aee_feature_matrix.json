@@ -1,0 +1,241 @@
+{
+  "mission": "AEE feature validation only: trigger on demand, log clearly, verify with proof artifacts, and measure saved value.",
+  "features": [
+    {
+      "feature_name": "Pre-SL protection",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "toward_sl",
+        "recovery_score",
+        "distance_to_sl_pips",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "giveback_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_PRE_SL_PROTECTION_TRIGGER",
+        "exit_reasons": [
+          "PRE_SL_PROTECTION"
+        ]
+      },
+      "proof_metric": "count_closed_before_original_sl",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Early profit lock",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "went_green",
+        "near_tp",
+        "progress_stall",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "giveback_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+        "exit_reasons": [
+          "MISSED_PROFIT_EXTRACTION_EXIT"
+        ]
+      },
+      "proof_metric": "profit_lock_trigger_rate",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Weak-trade kill",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "went_green",
+        "stagnant_bars",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "giveback_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_WEAK_TRADE_KILL_TRIGGER",
+        "exit_reasons": [
+          "NEVER_GREEN_FAST_EXIT",
+          "NEVER_GREEN_STALL_EXIT"
+        ]
+      },
+      "proof_metric": "weak_trade_early_exit_rate",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Stall capture",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "went_green",
+        "progress_stall",
+        "giveback_pips",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_STALL_CAPTURE_TRIGGER",
+        "exit_reasons": [
+          "NEAR_TP_STALL_CAPTURE",
+          "PULSE_STALL_CAPTURE",
+          "GREEN_STALL_CAPTURE"
+        ]
+      },
+      "proof_metric": "stall_capture_count",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Giveback exit",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "went_green",
+        "giveback_pips",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_GIVEBACK_EXIT_TRIGGER",
+        "exit_reasons": [
+          "EXTRACTION_LOSS_EXIT"
+        ]
+      },
+      "proof_metric": "giveback_exit_count",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Runner hold / extension hold",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "phase",
+        "extension_strength",
+        "giveback_pips",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_RUNNER_HOLD_TRIGGER",
+        "exit_reasons": [
+          "HOLD"
+        ]
+      },
+      "proof_metric": "runner_hold_count",
+      "preferred_test_method": "stress-demo",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Runner fallback",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "phase",
+        "extension_strength",
+        "giveback_pips",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_RUNNER_FALLBACK_TRIGGER",
+        "exit_reasons": [
+          "FAILED_TO_CONTINUE_DECAY"
+        ]
+      },
+      "proof_metric": "runner_fallback_count",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Panic / sharp adverse-move exit",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "adverse_velocity",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "giveback_pips",
+        "time_in_trade_sec"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_PANIC_EXIT_TRIGGER",
+        "exit_reasons": [
+          "PANIC_EXIT"
+        ]
+      },
+      "proof_metric": "panic_exit_count",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    },
+    {
+      "feature_name": "Time-pressure / no-progress exit",
+      "trigger_conditions": [
+        "obvious trigger case",
+        "borderline trigger case",
+        "should-not-trigger control case"
+      ],
+      "required_inputs": [
+        "time_in_trade_sec",
+        "no_progress_sec",
+        "current_pnl_pips",
+        "peak_pnl_pips",
+        "giveback_pips"
+      ],
+      "expected_decision": "Feature branch trigger decision",
+      "expected_exit_reason_or_log_marker": {
+        "trigger_marker": "AEE_TIME_PRESSURE_EXIT_TRIGGER",
+        "exit_reasons": [
+          "TIME_DECAY_PROFIT_CAPTURE"
+        ]
+      },
+      "proof_metric": "time_pressure_exit_count",
+      "preferred_test_method": "replay",
+      "current_status": "partial"
+    }
+  ]
+}

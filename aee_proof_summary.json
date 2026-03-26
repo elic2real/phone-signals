@@ -1,0 +1,85 @@
+{
+  "proof_standard": [
+    "input path",
+    "state updates per step",
+    "AEE action per step",
+    "final action",
+    "pass/fail against expected doctrine"
+  ],
+  "total_checks": 10,
+  "passed_checks": 10,
+  "failed_checks": 0,
+  "all_passed": true,
+  "checks": [
+    {
+      "fixture": "touch_green_stall",
+      "mode": "HARVESTER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "fixture": "touch_green_stall",
+      "mode": "RUNNER",
+      "expected_final_action": "HOLD",
+      "final_action": "HOLD",
+      "pass": true
+    },
+    {
+      "fixture": "touch_green_decay",
+      "mode": "HARVESTER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "fixture": "touch_green_decay",
+      "mode": "RUNNER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "fixture": "strong_extension",
+      "mode": "HARVESTER",
+      "expected_final_action": "HOLD",
+      "final_action": "HOLD",
+      "pass": true
+    },
+    {
+      "fixture": "strong_extension",
+      "mode": "RUNNER",
+      "expected_final_action": "HOLD",
+      "final_action": "HOLD",
+      "pass": true
+    },
+    {
+      "fixture": "immediate_failure",
+      "mode": "HARVESTER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "fixture": "immediate_failure",
+      "mode": "RUNNER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "fixture": "whipsaw",
+      "mode": "HARVESTER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "fixture": "whipsaw",
+      "mode": "RUNNER",
+      "expected_final_action": "CLOSE",
+      "final_action": "CLOSE",
+      "pass": true
+    }
+  ]
+}

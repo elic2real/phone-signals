@@ -1,0 +1,158 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T11:47:33.610082+00:00",
+  "task_id": "MVP_PHASE26_SHADOW_STABILITY_WINDOW_PROOF",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "SHADOW_MULTI_WINDOW_STABILITY_PROOF"
+  },
+  "dependency": {
+    "phase25_status": "PASS",
+    "phase25_path": "control/mvp_phase25_shadow_benchmark_execution_and_drift_proof.json",
+    "phase6_stability_status": "PASS",
+    "phase6_stability_path": "control/mvp_phase6_stability_proof.json"
+  },
+  "intervention_reference": {
+    "intervention_name": "Intervention_V1",
+    "focus": [
+      "long_peak_to_close_delay",
+      "prolonged_drawdown_selected"
+    ],
+    "phase25_pair_delta_mean_net_pips": {
+      "EUR_USD": 0.8364999999999999,
+      "GBP_USD": 0.746
+    }
+  },
+  "window_results": [
+    {
+      "window": "W1",
+      "EUR_USD": {
+        "baseline_pph": 0.1227,
+        "trades_per_hour": 0.09620356804274757,
+        "delta_mean_net_pips_from_phase25": 0.8364999999999999,
+        "estimated_pph_delta": 0.08047428466775834,
+        "estimated_intervention_pph": 0.20317428466775833,
+        "accepted_trades": 893,
+        "hours": 9282.4
+      },
+      "GBP_USD": {
+        "baseline_pph": 0.3609,
+        "trades_per_hour": 0.20559892030970064,
+        "delta_mean_net_pips_from_phase25": 0.746,
+        "estimated_pph_delta": 0.15337679455103667,
+        "estimated_intervention_pph": 0.5142767945510367,
+        "accepted_trades": 1042,
+        "hours": 5068.12
+      },
+      "weighted_baseline_pph": 0.250971007751938,
+      "weighted_estimated_intervention_pph": 0.37070338818113097,
+      "weighted_estimated_delta_pph": 0.11973238042919299,
+      "window_gate": {
+        "both_pairs_positive_delta": true,
+        "weighted_pph_positive": true,
+        "weighted_pph_improved": true
+      }
+    },
+    {
+      "window": "W2",
+      "EUR_USD": {
+        "baseline_pph": 0.0696,
+        "trades_per_hour": 0.054558940151347594,
+        "delta_mean_net_pips_from_phase25": 0.8364999999999999,
+        "estimated_pph_delta": 0.04563855343660226,
+        "estimated_intervention_pph": 0.11523855343660225,
+        "accepted_trades": 893,
+        "hours": 16367.62
+      },
+      "GBP_USD": {
+        "baseline_pph": 0.2708,
+        "trades_per_hour": 0.1542462878010726,
+        "delta_mean_net_pips_from_phase25": 0.746,
+        "estimated_pph_delta": 0.11506773069960016,
+        "estimated_intervention_pph": 0.3858677306996001,
+        "accepted_trades": 1042,
+        "hours": 6755.43
+      },
+      "weighted_baseline_pph": 0.1779464599483204,
+      "weighted_estimated_intervention_pph": 0.26097271504282643,
+      "weighted_estimated_delta_pph": 0.08302625509450604,
+      "window_gate": {
+        "both_pairs_positive_delta": true,
+        "weighted_pph_positive": true,
+        "weighted_pph_improved": true
+      }
+    },
+    {
+      "window": "W3",
+      "EUR_USD": {
+        "baseline_pph": 0.0504,
+        "trades_per_hour": 0.03950474410835182,
+        "delta_mean_net_pips_from_phase25": 0.8364999999999999,
+        "estimated_pph_delta": 0.03304571844663629,
+        "estimated_intervention_pph": 0.08344571844663629,
+        "accepted_trades": 893,
+        "hours": 22604.88
+      },
+      "GBP_USD": {
+        "baseline_pph": 0.2708,
+        "trades_per_hour": 0.1542462878010726,
+        "delta_mean_net_pips_from_phase25": 0.746,
+        "estimated_pph_delta": 0.11506773069960016,
+        "estimated_intervention_pph": 0.3858677306996001,
+        "accepted_trades": 1042,
+        "hours": 6755.43
+      },
+      "weighted_baseline_pph": 0.16908568475452196,
+      "weighted_estimated_intervention_pph": 0.24630036277097134,
+      "weighted_estimated_delta_pph": 0.07721467801644938,
+      "window_gate": {
+        "both_pairs_positive_delta": true,
+        "weighted_pph_positive": true,
+        "weighted_pph_improved": true
+      }
+    }
+  ],
+  "stability_summary": {
+    "weighted_intervention_pph_values": [
+      0.37070338818113097,
+      0.26097271504282643,
+      0.24630036277097134
+    ],
+    "weighted_intervention_pph_mean": 0.29265882199830956,
+    "weighted_intervention_pph_min": 0.24630036277097134,
+    "weighted_intervention_pph_max": 0.37070338818113097,
+    "weighted_intervention_relative_spread": 0.4250786788545134,
+    "weighted_delta_pph_values": [
+      0.11973238042919299,
+      0.08302625509450604,
+      0.07721467801644938
+    ],
+    "max_false_cut_rate_from_phase25": 0.07692307692307693
+  },
+  "pass_conditions": {
+    "phase25_dependency_passed": true,
+    "phase6_dependency_passed": true,
+    "all_windows_window_gate_pass": true,
+    "all_windows_weighted_intervention_positive": true,
+    "all_windows_weighted_delta_positive": true,
+    "weighted_stability_relative_spread_bounded": true,
+    "false_cut_guard_still_respected": true,
+    "no_tuning_applied": true,
+    "shadow_only_release_lock": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Intervention V1 remains stable and positive across W1/W2/W3 in shadow mode with guards intact.",
+    "release_action": "SHADOW_ONLY_CONTINUE",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE27_SHADOW_RELEASE_READINESS_AND_SOAK_PLAN",
+  "status": "PASS"
+}

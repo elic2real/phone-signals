@@ -1,0 +1,17 @@
+{
+  "name": "mvp_proof_ny_majors",
+  "baseline_config": "entry_v23_policy_guarded_active.json",
+  "variant_spec": "control/variant_spec_template.json",
+  "pairs": ["EUR_USD", "GBP_USD", "USD_JPY"],
+  "session": "new_york",
+  "aee_version": "v3",
+  "max_trades_per_pair": 120,
+  "matrix_workers": 2,
+  "run_matrix_on_slice": "fake_runner_slice",
+  "require_positive_net": true,
+  "require_positive_realized_pph": true,
+  "require_collision_clear": true,
+  "max_fake_runner_count": 25,
+  "max_overheld_winner_count": 2,
+  "require_complexity_adds_value": false
+}

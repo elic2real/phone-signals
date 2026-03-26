@@ -1,0 +1,106 @@
+{
+  "branch": "AEE_PANIC_EXIT",
+  "generated_at": "2026-03-23T16:22:05.852396Z",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "threshold_snapshot": {
+    "panic_exit_r": -0.75
+  },
+  "representative_samples": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PANIC_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "panic_exit_r": -0.75
+        },
+        "debug": {
+          "net_r": -0.95
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PANIC_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "panic_exit_r": -0.75
+        },
+        "debug": {
+          "net_r": -0.76
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_PANIC_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "panic_exit_r": -0.75
+        },
+        "debug": {
+          "net_r": -0.4
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PANIC_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "panic_exit_r": -0.75
+        },
+        "debug": {
+          "net_r": -0.95
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PANIC_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "panic_exit_r": -0.75
+        },
+        "debug": {
+          "net_r": -0.76
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_PANIC_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "panic_exit_r": -0.75
+        },
+        "debug": {
+          "net_r": -0.4
+        }
+      }
+    }
+  ]
+}

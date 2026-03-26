@@ -1,0 +1,150 @@
+{
+  "feature_distributions": {
+    "velocity_before": {
+      "good": {
+        "count": 103,
+        "min": 0.625,
+        "max": 2.5,
+        "median": 1.25,
+        "p5": 0.625,
+        "p95": 2.5
+      },
+      "bad": {
+        "count": 260,
+        "min": 0.07142857142857142,
+        "max": 1.25,
+        "median": 0.4166666666666667,
+        "p5": 0.14705882352941177,
+        "p95": 0.8333333333333334
+      }
+    },
+    "acceleration_before": {
+      "good": {
+        "count": 103,
+        "min": 0.625,
+        "max": 2.5,
+        "median": 1.25,
+        "p5": 0.625,
+        "p95": 2.5
+      },
+      "bad": {
+        "count": 260,
+        "min": 0.009157509157506377,
+        "max": 0.9797297297296081,
+        "median": 0.2415034562211334,
+        "p5": 0.042096305778805417,
+        "p95": 0.625
+      }
+    },
+    "compression_before": {
+      "good": {
+        "count": 103,
+        "min": 0.4587155963302113,
+        "max": 0.9090909090906331,
+        "median": 0.7692307692308474,
+        "p5": 0.5376344086021552,
+        "p95": 0.8771929824563651
+      },
+      "bad": {
+        "count": 260,
+        "min": 0.37593984962394933,
+        "max": 0.9090909090906331,
+        "median": 0.7692307692303219,
+        "p5": 0.5154639175256382,
+        "p95": 0.9090909090906331
+      }
+    },
+    "structure_distance": {
+      "good": {
+        "count": 103,
+        "min": 25.0,
+        "max": 25.0,
+        "median": 25.0,
+        "p5": 25.0,
+        "p95": 25.0
+      },
+      "bad": {
+        "count": 260,
+        "min": 25.0,
+        "max": 25.0,
+        "median": 25.0,
+        "p5": 25.0,
+        "p95": 25.0
+      }
+    },
+    "micro_volatility": {
+      "good": {
+        "count": 1,
+        "min": 8.00000000005241,
+        "max": 8.00000000005241,
+        "median": 8.00000000005241,
+        "p5": 8.00000000005241,
+        "p95": 8.00000000005241
+      },
+      "bad": {
+        "count": 147,
+        "min": 3.999999999937387,
+        "max": 88.0000000000436,
+        "median": 27.99999999991698,
+        "p5": 7.999999999963592,
+        "p95": 68.00000000000139
+      }
+    },
+    "trend_alignment": {
+      "good": {
+        "count": 103,
+        "min": 0.4987905176584013,
+        "max": 0.7435897435897318,
+        "median": 0.5522980164489351,
+        "p5": 0.50135462022252,
+        "p95": 0.7202564102564232
+      },
+      "bad": {
+        "count": 260,
+        "min": 0.08618506664094519,
+        "max": 0.4987905176584013,
+        "median": 0.26753103858140126,
+        "p5": 0.09896809031522272,
+        "p95": 0.4743704211246894
+      }
+    }
+  },
+  "derived_boundaries": {
+    "velocity_min": {
+      "value": 0.625,
+      "derived_from": "velocity_before GOOD distribution",
+      "boundary_type": "min",
+      "dataset_percentile": "0%"
+    },
+    "acceleration_min": {
+      "value": 0.625,
+      "derived_from": "acceleration_before GOOD distribution",
+      "boundary_type": "min",
+      "dataset_percentile": "0%"
+    },
+    "compression_max": {
+      "value": 0.9090909090906331,
+      "derived_from": "compression_before GOOD distribution",
+      "boundary_type": "max",
+      "dataset_percentile": "100%"
+    },
+    "structure_distance_max": {
+      "value": 25.0,
+      "derived_from": "structure_distance GOOD distribution",
+      "boundary_type": "max",
+      "dataset_percentile": "100%"
+    },
+    "micro_volatility_min": {
+      "value": 8.00000000005241,
+      "derived_from": "micro_volatility GOOD distribution",
+      "boundary_type": "min",
+      "dataset_percentile": "0%"
+    },
+    "trend_alignment_min": {
+      "value": 0.4987905176584013,
+      "derived_from": "trend_alignment GOOD distribution",
+      "boundary_type": "min",
+      "dataset_percentile": "0%"
+    }
+  }
+}

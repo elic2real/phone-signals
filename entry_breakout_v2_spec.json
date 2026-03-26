@@ -1,0 +1,91 @@
+{
+  "spec_version": "2.0",
+  "rcp_task": "TASK-001",
+  "family": "EXPANSION_BREAKOUT",
+  "generated_at": "2026-03-25T00:00:00Z",
+  "description": "Explicit structure detector for EXPANSION_BREAKOUT. Requires sequential observation of three named phases: COMPRESSION, RELEASE, and EXPANSION_HOLD. No threshold-only entry is permitted without structural evidence of all three phases in sequence.",
+  "structural_contract": "A signal is valid only when all three phases pass independently. Removing any single phase check must suppress the signal for at least the test cases in entry_breakout_v2_validation.json.",
+  "phases": [
+    {
+      "phase": "COMPRESSION",
+      "phase_number": 1,
+      "description": "Price must have been coiling in a tight range prior to the breakout bar. This confirms a real energy buildup, not just a threshold crossing on a wide-ranging bar.",
+      "structural_requirements": [
+        "Compute zone_range = max(highs[-compression_window-1:-1]) - min(lows[-compression_window-1:-1])",
+        "Compute range_ratio = zone_range / atr",
+        "range_ratio must be <= compression_ratio_max (default 1.2)",
+        "At least compression_min_bars (default 5) valid bars must be in the lookback window"
+      ],
+      "fail_condition": "range_ratio > compression_ratio_max → signal suppressed, fail_phase=COMPRESSION",
+      "what_this_rules_out": "Breakouts from wide trending bars where there was no consolidation preceding the escape"
+    },
+    {
+      "phase": "RELEASE",
+      "phase_number": 2,
+      "description": "The current close must have escaped the compression zone with a directional close — not just a wick through. Both conditions are required: minimum escape distance AND directional close (green for LONG, red for SHORT).",
+      "structural_requirements": [
+        "For LONG: close > zone_high + release_min_atr * atr (default release_min_atr=0.05)",
+        "For LONG: close > prev_close (directional close — no bearish-close breakout)",
+        "For SHORT: close < zone_low - release_min_atr * atr",
+        "For SHORT: close < prev_close (directional close)",
+        "One of [LONG, SHORT] must satisfy both sub-conditions simultaneously"
+      ],
+      "fail_condition": "Neither direction satisfies both escape+directional simultaneously → signal suppressed, fail_phase=RELEASE",
+      "what_this_rules_out": [
+        "Wick-through breakouts where the close retreated back into the zone",
+        "Indecision bars that technically cleared the edge but closed against direction",
+        "Stale setups: freshness_atr > max_freshness_atr (default 1.6) → fail_phase=RELEASE_STALE"
+      ]
+    },
+    {
+      "phase": "EXPANSION_HOLD",
+      "phase_number": 3,
+      "description": "The breakout must show holding evidence — the move is not an immediate spike rejection. Holding is confirmed by EITHER the prior close also outside the zone, OR the current close being clearly away from the zone edge.",
+      "structural_requirements": [
+        "For LONG: prior_close > zone_high (prior bar closed outside) OR close >= zone_high + hold_clear_atr * atr (default 0.15)",
+        "For SHORT: prior_close < zone_low OR close <= zone_low - hold_clear_atr * atr",
+        "At least one holding condition must be True"
+      ],
+      "fail_condition": "Neither prior_outside nor clearly_away is True → signal suppressed, fail_phase=EXPANSION_HOLD",
+      "what_this_rules_out": "Immediate spike reversals where the current bar escaped briefly but prior bar was still inside the zone and the close is barely past the edge"
+    }
+  ],
+  "parameters": {
+    "compression_window": {"default": 8, "description": "Number of bars used to measure the compression zone (excludes current bar)"},
+    "compression_ratio_max": {"default": 1.2, "description": "Maximum zone_range/atr for the compression to qualify"},
+    "compression_min_bars": {"default": 5, "description": "Minimum valid bars required in the compression window"},
+    "release_min_atr": {"default": 0.05, "description": "Minimum escape distance beyond zone edge (fraction of ATR)"},
+    "hold_clear_atr": {"default": 0.15, "description": "Clear distance from zone edge defining a 'hard hold' (fraction of ATR)"},
+    "max_freshness_atr": {"default": 1.6, "description": "Maximum freshness (distance from zone / ATR); rejects stale setups"},
+    "spread_limit_pips": {"default": 2.8, "description": "Hard spread gate; pre-structural, independent of phases"}
+  },
+  "implementation_contract": {
+    "module": "entry_breakout_v2.py",
+    "entry_function": "detect_expansion_breakout",
+    "return_type": "BreakoutStructureResult",
+    "result_fields": {
+      "is_valid": "bool — True only when all three phases confirmed",
+      "direction": "str — LONG | SHORT | NONE",
+      "phases": "List[PhaseResult] — one per phase attempted",
+      "freshness_atr": "float — distance from zone edge in ATR units",
+      "fail_phase": "str | None — name of first phase that failed",
+      "reason": "str — compact human-readable outcome string"
+    }
+  },
+  "what_this_is_not": [
+    "NOT: close > zone_high + buffer alone (current threshold-only COMPRESSION_EXPANSION check)",
+    "NOT: additive heuristic score >= threshold (current _infer_trade_family fallback)",
+    "NOT: macro_bias alone without zone escape",
+    "NOT: near_edge softening without compression evidence (current near_edge=0.12*atr relaxation)"
+  ],
+  "separation_from_v1": {
+    "v1_mechanism": "close > zone_high + PC1_ENTRY_BREAK_BUFFER_ATR * atr (0.00 default, so literally just close > zone_high), with soft extension: close near edge + bias_supportive",
+    "v2_mechanism": "Three sequential phases: compression proved, directional close escape, holding evidence. All required.",
+    "key_difference": "v1 fires on any close above zone_high (with optional bias softening). v2 requires prior coil AND directional close AND hold. v1 is a position threshold. v2 is a structural sequence."
+  },
+  "evidence_reference": [
+    "component_structural_audit.json: entry_pattern_detection diagnosis — breakout is the only family with strong replay evidence",
+    "strategy_performance_report.json: EXPANSION_BREAKOUT +0.1211 net pph EUR_USD vs RANGE_ESCAPE -0.3570",
+    "control/system_state.json: entry_structure=PARTIAL, recommendation=SPLIT"
+  ]
+}

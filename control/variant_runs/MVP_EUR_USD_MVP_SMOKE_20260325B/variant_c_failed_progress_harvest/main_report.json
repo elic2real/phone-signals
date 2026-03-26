@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-03-26T03:14:59.020281Z",
+  "run_id": "AEE_MATRIX_MVP_EUR_USD_MVP_SMOKE_20260325B_variant_c_failed_progress_harvest",
+  "config": "/home/elic/Documents/phone signals/control/variant_runs/MVP_EUR_USD_MVP_SMOKE_20260325B/configs/variant_c_failed_progress_harvest.json",
+  "pair": "EUR_USD",
+  "total_streams": 16,
+  "total_hours": 1687.35,
+  "total_accepted_trades": 11,
+  "friction_per_trade_pips": 1.1,
+  "family_distribution_in_data": {
+    "EXPANSION_BREAKOUT": 11
+  },
+  "skipped_by_entry_filter": {},
+  "ranked_families": [
+    {
+      "family": "BREAKOUT__clean_expansion",
+      "trade_count": 11,
+      "trades_per_hour": 0.0065,
+      "win_count": 11,
+      "win_rate": 1.0,
+      "avg_gross_pips_per_trade": 2.5,
+      "avg_net_pips_per_trade": 1.4,
+      "avg_mfe_pips": 21.2182,
+      "avg_mae_pips": -1.2455,
+      "avg_hold_sec": 321.82,
+      "avg_entry_only_pips": 20.1182,
+      "entry_only_vs_realized_gap_pips": 18.7182,
+      "gross_pips_per_hour": 0.0163,
+      "net_pips_per_hour": 0.0091,
+      "total_net_pips": 15.4,
+      "total_gross_pips": 27.5,
+      "verdict": "TUNE"
+    }
+  ],
+  "combined_keep_tune_net_pph": 0.0091
+}

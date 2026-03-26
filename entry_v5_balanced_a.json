@@ -1,0 +1,67 @@
+{
+  "name": "entry_v5_balanced_a",
+  "doctrine": "profit_side_tolerant_hold_loss_side_aggressive",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "extraction": {
+    "never_green_timeout_sec": 10,
+    "min_improvement_pips": 0.2,
+    "strong_profit_pips": 2.0,
+    "weak_green_timeout_sec": 2.5,
+    "strong_green_timeout_sec": 5.0,
+    "giveback_pips": 1.0
+  },
+  "fast_adverse": {
+    "adverse_r": 0.45,
+    "window_sec": 1.5
+  },
+  "defensive": {
+    "pre_sl_exit_enabled": true,
+    "panic_exit_enabled": true
+  },
+  "branch_set": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_PRE_SL_EXIT",
+    "AEE_PANIC_EXIT",
+    "AEE_NEVER_GREEN_TIMEOUT",
+    "AEE_CONTINUATION_FAILED_EXIT",
+    "AEE_GIVEBACK_EXIT"
+  ],
+  "optional_branch": "AEE_BAND_EXTENSION_HOLD",
+  "entry_filters": {
+    "exclude_contexts": [
+      "EUR_GBP__thursday__sydney",
+      "EUR_GBP__monday__asia",
+      "EUR_GBP__monday__sydney",
+      "EUR_CHF__wednesday__london",
+      "EUR_GBP__monday__london"
+    ],
+    "min_profit_now_pips_by_bar": [
+      {
+        "bar": 2,
+        "min_pips": 0.15
+      },
+      {
+        "bar": 3,
+        "min_pips": 0.35
+      }
+    ],
+    "min_progress_ratio_by_bar": [
+      {
+        "bar": 3,
+        "min_ratio": 0.05
+      }
+    ],
+    "min_release_quality_by_bar": [
+      {
+        "bar": 2,
+        "min_release_quality": 0.05
+      }
+    ],
+    "max_noise_by_bar": [
+      {
+        "bar": 2,
+        "max_noise": 0.85
+      }
+    ]
+  }
+}

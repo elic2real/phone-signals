@@ -1,0 +1,152 @@
+{
+  "task_id": "MVP_ENTRY_LOGIC_SCENARIO_MATRIX",
+  "generated_at": "2026-03-26T18:47:50.960453+00:00",
+  "scope": "entry_logic_only_no_sizing_no_extra_throttle_layer",
+  "ranking_basis": "ret24_no_overlap_pct_then_ret24_full_additive_pct",
+  "best_profile": {
+    "profile_id": "E4_TIGHT",
+    "label": "tight_entry",
+    "entry_logic": {
+      "confirm_window_sec_major": 1.8,
+      "min_progress_ratio": 0.1,
+      "min_release_quality": 0.1,
+      "max_noise": 0.68,
+      "asia_extra_context_penalty": 0.04
+    },
+    "derived": {
+      "strictness": 0.6,
+      "logic_tph_mult": 0.904,
+      "logic_wr_bonus": 0.0108
+    },
+    "metrics": {
+      "total_tph": 2.008628,
+      "weighted_win_rate": 0.587501,
+      "eq_hr_full_additive_pct": 0.703031,
+      "eq_hr_no_overlap_pct": 0.441068,
+      "ret24_full_additive_pct": 18.309889,
+      "ret24_no_overlap_pct": 11.140331
+    }
+  },
+  "scenarios": [
+    {
+      "profile_id": "E4_TIGHT",
+      "label": "tight_entry",
+      "entry_logic": {
+        "confirm_window_sec_major": 1.8,
+        "min_progress_ratio": 0.1,
+        "min_release_quality": 0.1,
+        "max_noise": 0.68,
+        "asia_extra_context_penalty": 0.04
+      },
+      "derived": {
+        "strictness": 0.6,
+        "logic_tph_mult": 0.904,
+        "logic_wr_bonus": 0.0108
+      },
+      "metrics": {
+        "total_tph": 2.008628,
+        "weighted_win_rate": 0.587501,
+        "eq_hr_full_additive_pct": 0.703031,
+        "eq_hr_no_overlap_pct": 0.441068,
+        "ret24_full_additive_pct": 18.309889,
+        "ret24_no_overlap_pct": 11.140331
+      }
+    },
+    {
+      "profile_id": "E3_BALANCED",
+      "label": "balanced_entry",
+      "entry_logic": {
+        "confirm_window_sec_major": 1.9,
+        "min_progress_ratio": 0.09,
+        "min_release_quality": 0.09,
+        "max_noise": 0.7,
+        "asia_extra_context_penalty": 0.02
+      },
+      "derived": {
+        "strictness": 0.3,
+        "logic_tph_mult": 0.952,
+        "logic_wr_bonus": 0.0054
+      },
+      "metrics": {
+        "total_tph": 2.117537,
+        "weighted_win_rate": 0.582079,
+        "eq_hr_full_additive_pct": 0.695225,
+        "eq_hr_no_overlap_pct": 0.434152,
+        "ret24_full_additive_pct": 18.089988,
+        "ret24_no_overlap_pct": 10.956823
+      }
+    },
+    {
+      "profile_id": "E5_ASIA_TIGHT",
+      "label": "asia_tight_balanced_rest",
+      "entry_logic": {
+        "confirm_window_sec_major": 1.9,
+        "min_progress_ratio": 0.09,
+        "min_release_quality": 0.09,
+        "max_noise": 0.7,
+        "asia_extra_context_penalty": 0.08
+      },
+      "derived": {
+        "strictness": 0.3,
+        "logic_tph_mult": 0.952,
+        "logic_wr_bonus": 0.0054
+      },
+      "metrics": {
+        "total_tph": 2.110768,
+        "weighted_win_rate": 0.582145,
+        "eq_hr_full_additive_pct": 0.69356,
+        "eq_hr_no_overlap_pct": 0.432487,
+        "ret24_full_additive_pct": 18.043131,
+        "ret24_no_overlap_pct": 10.912681
+      }
+    },
+    {
+      "profile_id": "E2_BASELINE",
+      "label": "baseline_entry",
+      "entry_logic": {
+        "confirm_window_sec_major": 2.0,
+        "min_progress_ratio": 0.08,
+        "min_release_quality": 0.08,
+        "max_noise": 0.72,
+        "asia_extra_context_penalty": 0.0
+      },
+      "derived": {
+        "strictness": 0.0,
+        "logic_tph_mult": 1.0,
+        "logic_wr_bonus": 0.0
+      },
+      "metrics": {
+        "total_tph": 2.226673,
+        "weighted_win_rate": 0.576658,
+        "eq_hr_full_additive_pct": 0.682766,
+        "eq_hr_no_overlap_pct": 0.424075,
+        "ret24_full_additive_pct": 17.739796,
+        "ret24_no_overlap_pct": 10.689945
+      }
+    },
+    {
+      "profile_id": "E1_LOOSE",
+      "label": "loose_entry",
+      "entry_logic": {
+        "confirm_window_sec_major": 2.1,
+        "min_progress_ratio": 0.08,
+        "min_release_quality": 0.08,
+        "max_noise": 0.72,
+        "asia_extra_context_penalty": 0.0
+      },
+      "derived": {
+        "strictness": -0.09,
+        "logic_tph_mult": 1.0144,
+        "logic_wr_bonus": -0.00162
+      },
+      "metrics": {
+        "total_tph": 2.258738,
+        "weighted_win_rate": 0.575038,
+        "eq_hr_full_additive_pct": 0.677961,
+        "eq_hr_no_overlap_pct": 0.420276,
+        "ret24_full_additive_pct": 17.605019,
+        "ret24_no_overlap_pct": 10.589494
+      }
+    }
+  ]
+}

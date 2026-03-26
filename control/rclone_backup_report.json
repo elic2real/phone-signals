@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-03-26T07:46:04-07:00",
+  "install_status": {
+    "status": "success",
+    "method": "apt",
+    "rclone_version": "v1.60.1-DEV",
+    "notes": [
+      "rclone installed successfully",
+      "apt returned non-zero due unrelated dkms/virtualbox kernel post-install issues"
+    ]
+  },
+  "auth_status": {
+    "status": "success",
+    "remote_name": "gdrive",
+    "notes": [
+      "OAuth flow completed via browser",
+      "token stored in local rclone config (not included in backup)"
+    ]
+  },
+  "backup_strategy": "safe_resumable_sync_no_zip",
+  "backup_root": "gdrive:/TradingBackup",
+  "include_policy": [
+    "control/",
+    "latest phase outputs under control/",
+    "proof_artifacts deferred (quota)",
+    "compiled_market_nodes deferred (quota)"
+  ],
+  "exclude_policy_file": "control/rclone_backup_exclude.txt",
+  "sync_execution": {
+    "command_scope": "rclone sync ./control gdrive:/TradingBackup/control",
+    "flags": [
+      "--bind 0.0.0.0",
+      "--transfers 4",
+      "--checkers 8",
+      "--drive-chunk-size 64M",
+      "--exclude-from control/rclone_backup_exclude.txt"
+    ],
+    "status": "completed",
+    "duration_seconds": 1531,
+    "log_file": "control/rclone_sync_control.log"
+  },
+  "verification": {
+    "remote_structure": [
+      "TradingBackup/control"
+    ],
+    "local_totals": {
+      "objects": 1201,
+      "bytes": 9058575,
+      "human": "8.639 MiB"
+    },
+    "remote_totals_filtered": {
+      "objects": 1191,
+      "bytes": 8683176,
+      "human": "8.281 MiB"
+    },
+    "check_with_policy": {
+      "differences": 0,
+      "matching_files": 1191,
+      "status": "pass"
+    },
+    "excluded_differences": [
+      "control/github_secret_sweep_report.json",
+      "control/rclone_sync_control.log",
+      "control/run_log.jsonl",
+      "control/__pycache__/*.pyc"
+    ]
+  },
+  "capacity_and_stop_conditions": {
+    "google_drive_free_human": "12.013 GiB",
+    "planned_large_scope_bytes": 257637291212,
+    "planned_large_scope_gib": 239.94,
+    "large_scope_sync_status": "deferred",
+    "stop_conditions_triggered": [
+      "remote_quota_insufficient_for_full_dataset"
+    ]
+  },
+  "totals": {
+    "total_files_synced": 1191,
+    "total_size_bytes": 8683176,
+    "total_size_human": "8.281 MiB"
+  },
+  "errors": [
+    "Initial sync attempt hit IPv6 route issue to Google APIs; workaround applied with --bind 0.0.0.0.",
+    "No active sync errors remain after workaround and resume."
+  ]
+}

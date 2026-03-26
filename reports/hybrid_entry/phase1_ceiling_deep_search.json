@@ -1,0 +1,642 @@
+{
+  "source": "data_tape_oanda_m5_15_stitched/pair=EUR_USD/stitched.parquet",
+  "session": "LONDON",
+  "trades_per_dir": 12000,
+  "grid": {
+    "long": {
+      "confirm_disp_atr": [
+        0.12,
+        0.13,
+        0.14,
+        0.15,
+        0.16,
+        0.17,
+        0.18,
+        0.19
+      ],
+      "confirm_sec": [
+        0.5,
+        0.75,
+        1.0,
+        1.25
+      ],
+      "base_max_dist_atr": [
+        0.25,
+        0.3,
+        0.35,
+        0.4
+      ]
+    },
+    "short": {
+      "confirm_disp_atr": [
+        0.09,
+        0.1,
+        0.11,
+        0.12,
+        0.13,
+        0.14
+      ],
+      "confirm_sec": [
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "base_max_dist_atr": [
+        0.25,
+        0.3,
+        0.35,
+        0.4
+      ]
+    },
+    "ladders": [
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5
+    ],
+    "max_hold_bars": 20,
+    "path_bank_count": 5997
+  },
+  "long": {
+    "best": {
+      "direction": "LONG",
+      "knobs": {
+        "confirm_disp_atr": 0.19,
+        "confirm_sec": 1.25,
+        "base_max_dist_atr": 0.25
+      },
+      "candidate_count": 53,
+      "trades_simulated": 12000,
+      "best_ladder": 3.5,
+      "best": {
+        "trade_count": 12000,
+        "tp_hit_rate": 0.49733333333333335,
+        "sl_hit_rate": 0.42675,
+        "timeout_rate": 0.07591666666666666,
+        "pips_mean": 0.3663265099018846,
+        "pph_mean": -0.9485168137522911,
+        "avg_resolution_min": 32.5725,
+        "mfe_mean": 9.919458213015375,
+        "mae_mean": 8.782192026791122
+      },
+      "ladders": {
+        "1.5": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5169166666666667,
+          "sl_hit_rate": 0.4830833333333333,
+          "timeout_rate": 0.0,
+          "pips_mean": 0.07065297788803564,
+          "pph_mean": -0.5347302841588428,
+          "avg_resolution_min": 13.088333333333333,
+          "mfe_mean": 9.919458213015375,
+          "mae_mean": 8.782192026791122
+        },
+        "2.0": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.53975,
+          "sl_hit_rate": 0.46025,
+          "timeout_rate": 0.0,
+          "pips_mean": 0.23201660380520311,
+          "pph_mean": 0.15717934369658765,
+          "avg_resolution_min": 17.5325,
+          "mfe_mean": 9.919458213015375,
+          "mae_mean": 8.782192026791122
+        },
+        "2.5": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5350833333333334,
+          "sl_hit_rate": 0.46258333333333335,
+          "timeout_rate": 0.0023333333333333335,
+          "pips_mean": 0.2674046784779689,
+          "pph_mean": 0.12760486756860734,
+          "avg_resolution_min": 20.945,
+          "mfe_mean": 9.919458213015375,
+          "mae_mean": 8.782192026791122
+        },
+        "3.0": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.51875,
+          "sl_hit_rate": 0.445,
+          "timeout_rate": 0.03625,
+          "pips_mean": 0.32860381013803175,
+          "pph_mean": -0.22581300562252735,
+          "avg_resolution_min": 26.514166666666668,
+          "mfe_mean": 9.919458213015375,
+          "mae_mean": 8.782192026791122
+        },
+        "3.5": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.49733333333333335,
+          "sl_hit_rate": 0.42675,
+          "timeout_rate": 0.07591666666666666,
+          "pips_mean": 0.3663265099018846,
+          "pph_mean": -0.9485168137522911,
+          "avg_resolution_min": 32.5725,
+          "mfe_mean": 9.919458213015375,
+          "mae_mean": 8.782192026791122
+        }
+      }
+    },
+    "top10": [
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.19,
+          "confirm_sec": 1.25,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.49733333333333335,
+          "sl_hit_rate": 0.42675,
+          "timeout_rate": 0.07591666666666666,
+          "pips_mean": 0.3663265099018846,
+          "pph_mean": -0.9485168137522911,
+          "avg_resolution_min": 32.5725,
+          "mfe_mean": 9.919458213015375,
+          "mae_mean": 8.782192026791122
+        },
+        "candidate_count": 53
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.16,
+          "confirm_sec": 1.25,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.4969166666666667,
+          "sl_hit_rate": 0.43016666666666664,
+          "timeout_rate": 0.07291666666666667,
+          "pips_mean": 0.34394248417318385,
+          "pph_mean": -1.2409396835573174,
+          "avg_resolution_min": 31.737916666666667,
+          "mfe_mean": 9.956512995744815,
+          "mae_mean": 8.63305602887599
+        },
+        "candidate_count": 57
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.16,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.3
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5279166666666667,
+          "sl_hit_rate": 0.42641666666666667,
+          "timeout_rate": 0.04566666666666667,
+          "pips_mean": 0.33845406087506946,
+          "pph_mean": 0.84553453772514,
+          "avg_resolution_min": 29.59375,
+          "mfe_mean": 8.63281776239836,
+          "mae_mean": 9.568535665588323
+        },
+        "candidate_count": 188
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.15,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.3
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5249166666666667,
+          "sl_hit_rate": 0.4275833333333333,
+          "timeout_rate": 0.0475,
+          "pips_mean": 0.32662650463278764,
+          "pph_mean": 0.45397404948295694,
+          "avg_resolution_min": 29.290416666666665,
+          "mfe_mean": 8.486231997830128,
+          "mae_mean": 9.721109464665846
+        },
+        "candidate_count": 192
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.15,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.3
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5229166666666667,
+          "sl_hit_rate": 0.42925,
+          "timeout_rate": 0.04783333333333333,
+          "pips_mean": 0.30939260894296405,
+          "pph_mean": 0.3776862123647016,
+          "avg_resolution_min": 29.537916666666668,
+          "mfe_mean": 8.571732433723476,
+          "mae_mean": 9.628503897113557
+        },
+        "candidate_count": 192
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.16,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5219166666666667,
+          "sl_hit_rate": 0.42933333333333334,
+          "timeout_rate": 0.04875,
+          "pips_mean": 0.3087624357594952,
+          "pph_mean": -0.12120488128204501,
+          "avg_resolution_min": 30.547916666666666,
+          "mfe_mean": 8.610585398752685,
+          "mae_mean": 9.729313823630303
+        },
+        "candidate_count": 160
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.17,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.523,
+          "sl_hit_rate": 0.42941666666666667,
+          "timeout_rate": 0.04758333333333333,
+          "pips_mean": 0.3070357662078078,
+          "pph_mean": 0.14028298549272472,
+          "avg_resolution_min": 29.97625,
+          "mfe_mean": 8.748694798004188,
+          "mae_mean": 9.881946446596658
+        },
+        "candidate_count": 159
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.19,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.3
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5223333333333333,
+          "sl_hit_rate": 0.43433333333333335,
+          "timeout_rate": 0.043333333333333335,
+          "pips_mean": 0.30514986061606847,
+          "pph_mean": 0.6457472583494018,
+          "avg_resolution_min": 29.17625,
+          "mfe_mean": 8.693096980777348,
+          "mae_mean": 9.777664009948074
+        },
+        "candidate_count": 179
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.17,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.3
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5225833333333333,
+          "sl_hit_rate": 0.42991666666666667,
+          "timeout_rate": 0.0475,
+          "pips_mean": 0.30390862979015854,
+          "pph_mean": 0.5316407660493453,
+          "avg_resolution_min": 29.604583333333334,
+          "mfe_mean": 8.565466667695883,
+          "mae_mean": 9.560251793499305
+        },
+        "candidate_count": 187
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.18,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.0,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.522,
+          "sl_hit_rate": 0.42775,
+          "timeout_rate": 0.05025,
+          "pips_mean": 0.30209215048407745,
+          "pph_mean": 0.08529724417809759,
+          "avg_resolution_min": 30.07625,
+          "mfe_mean": 8.712941979558304,
+          "mae_mean": 9.758231829173324
+        },
+        "candidate_count": 157
+      }
+    ],
+    "plateau": {
+      "top1": 0.3663265099018846,
+      "top5_mean": 0.3369484337051779,
+      "top10_mean": 0.3211691011383497,
+      "top1_minus_top5_mean": 0.02937807619670668,
+      "top1_minus_top10_mean": 0.04515740876353491
+    }
+  },
+  "short": {
+    "best": {
+      "direction": "SHORT",
+      "knobs": {
+        "confirm_disp_atr": 0.09,
+        "confirm_sec": 0.25,
+        "base_max_dist_atr": 0.25
+      },
+      "candidate_count": 350,
+      "trades_simulated": 12000,
+      "best_ladder": 3.5,
+      "best": {
+        "trade_count": 12000,
+        "tp_hit_rate": 0.49433333333333335,
+        "sl_hit_rate": 0.44583333333333336,
+        "timeout_rate": 0.059833333333333336,
+        "pips_mean": 0.30497559871161267,
+        "pph_mean": 0.7396125290511572,
+        "avg_resolution_min": 34.100833333333334,
+        "mfe_mean": 9.75412783377022,
+        "mae_mean": 8.8466158205864
+      },
+      "ladders": {
+        "1.5": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5458333333333333,
+          "sl_hit_rate": 0.45416666666666666,
+          "timeout_rate": 0.0,
+          "pips_mean": 0.19480062916911586,
+          "pph_mean": 1.9270520737673211,
+          "avg_resolution_min": 12.008333333333333,
+          "mfe_mean": 9.75412783377022,
+          "mae_mean": 8.8466158205864
+        },
+        "2.0": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5421666666666667,
+          "sl_hit_rate": 0.45716666666666667,
+          "timeout_rate": 0.0006666666666666666,
+          "pips_mean": 0.23760349110342563,
+          "pph_mean": 1.7237708601569235,
+          "avg_resolution_min": 16.37875,
+          "mfe_mean": 9.75412783377022,
+          "mae_mean": 8.8466158205864
+        },
+        "2.5": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5329166666666667,
+          "sl_hit_rate": 0.45925,
+          "timeout_rate": 0.007833333333333333,
+          "pips_mean": 0.269269655039244,
+          "pph_mean": 1.3787679205546028,
+          "avg_resolution_min": 21.292916666666667,
+          "mfe_mean": 9.75412783377022,
+          "mae_mean": 8.8466158205864
+        },
+        "3.0": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.5126666666666667,
+          "sl_hit_rate": 0.45766666666666667,
+          "timeout_rate": 0.029666666666666668,
+          "pips_mean": 0.27060207255845786,
+          "pph_mean": 0.8678797225791373,
+          "avg_resolution_min": 27.668333333333333,
+          "mfe_mean": 9.75412783377022,
+          "mae_mean": 8.8466158205864
+        },
+        "3.5": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.49433333333333335,
+          "sl_hit_rate": 0.44583333333333336,
+          "timeout_rate": 0.059833333333333336,
+          "pips_mean": 0.30497559871161267,
+          "pph_mean": 0.7396125290511572,
+          "avg_resolution_min": 34.100833333333334,
+          "mfe_mean": 9.75412783377022,
+          "mae_mean": 8.8466158205864
+        }
+      }
+    },
+    "top10": [
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.09,
+          "confirm_sec": 0.25,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.49433333333333335,
+          "sl_hit_rate": 0.44583333333333336,
+          "timeout_rate": 0.059833333333333336,
+          "pips_mean": 0.30497559871161267,
+          "pph_mean": 0.7396125290511572,
+          "avg_resolution_min": 34.100833333333334,
+          "mfe_mean": 9.75412783377022,
+          "mae_mean": 8.8466158205864
+        },
+        "candidate_count": 350
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.11,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.48233333333333334,
+          "sl_hit_rate": 0.43833333333333335,
+          "timeout_rate": 0.07933333333333334,
+          "pips_mean": 0.30145879164073675,
+          "pph_mean": -0.03053071453947486,
+          "avg_resolution_min": 36.239583333333336,
+          "mfe_mean": 9.197945521253416,
+          "mae_mean": 7.430912131277175
+        },
+        "candidate_count": 140
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.09,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.47725,
+          "sl_hit_rate": 0.43675,
+          "timeout_rate": 0.086,
+          "pips_mean": 0.30139325924308785,
+          "pph_mean": 0.14187698073321822,
+          "avg_resolution_min": 37.129583333333336,
+          "mfe_mean": 9.176496565121248,
+          "mae_mean": 7.95594551388912
+        },
+        "candidate_count": 144
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.11,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.4810833333333333,
+          "sl_hit_rate": 0.4405,
+          "timeout_rate": 0.07841666666666666,
+          "pips_mean": 0.27764092715706085,
+          "pph_mean": -0.029504902661959848,
+          "avg_resolution_min": 35.8475,
+          "mfe_mean": 9.042688255383494,
+          "mae_mean": 7.4977616158282645
+        },
+        "candidate_count": 140
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.11,
+          "confirm_sec": 0.5,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.49491666666666667,
+          "sl_hit_rate": 0.4489166666666667,
+          "timeout_rate": 0.05616666666666666,
+          "pips_mean": 0.2694387815711673,
+          "pph_mean": 0.3277611320829659,
+          "avg_resolution_min": 33.85041666666667,
+          "mfe_mean": 9.79959137683911,
+          "mae_mean": 8.435924783419278
+        },
+        "candidate_count": 341
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.1,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.47825,
+          "sl_hit_rate": 0.4415833333333333,
+          "timeout_rate": 0.08016666666666666,
+          "pips_mean": 0.26361812539956025,
+          "pph_mean": -0.10097788254283431,
+          "avg_resolution_min": 36.245,
+          "mfe_mean": 9.058046329212408,
+          "mae_mean": 7.999930664688548
+        },
+        "candidate_count": 141
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.09,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.47391666666666665,
+          "sl_hit_rate": 0.44458333333333333,
+          "timeout_rate": 0.0815,
+          "pips_mean": 0.2521463057189646,
+          "pph_mean": -0.2101114164112113,
+          "avg_resolution_min": 36.60916666666667,
+          "mfe_mean": 9.0540662890782,
+          "mae_mean": 8.181453778756932
+        },
+        "candidate_count": 144
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.13,
+          "confirm_sec": 0.25,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.49141666666666667,
+          "sl_hit_rate": 0.45408333333333334,
+          "timeout_rate": 0.0545,
+          "pips_mean": 0.23838307552736368,
+          "pph_mean": 0.5220962781588294,
+          "avg_resolution_min": 33.46083333333333,
+          "mfe_mean": 9.860165347718025,
+          "mae_mean": 8.395963792006022
+        },
+        "candidate_count": 332
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.1,
+          "confirm_sec": 0.75,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.47891666666666666,
+          "sl_hit_rate": 0.44583333333333336,
+          "timeout_rate": 0.07525,
+          "pips_mean": 0.23702983168339858,
+          "pph_mean": -0.07809053199931877,
+          "avg_resolution_min": 36.14375,
+          "mfe_mean": 9.131626578833371,
+          "mae_mean": 8.10598475212555
+        },
+        "candidate_count": 141
+      },
+      {
+        "knobs": {
+          "confirm_disp_atr": 0.12,
+          "confirm_sec": 1.0,
+          "base_max_dist_atr": 0.25
+        },
+        "best_ladder": 3.5,
+        "best": {
+          "trade_count": 12000,
+          "tp_hit_rate": 0.47975,
+          "sl_hit_rate": 0.44716666666666666,
+          "timeout_rate": 0.07308333333333333,
+          "pips_mean": 0.23110543086971913,
+          "pph_mean": -0.1386159563507393,
+          "avg_resolution_min": 35.77625,
+          "mfe_mean": 9.044910986329779,
+          "mae_mean": 7.52965741262009
+        },
+        "candidate_count": 138
+      }
+    ],
+    "plateau": {
+      "top1": 0.30497559871161267,
+      "top5_mean": 0.2909814716647331,
+      "top10_mean": 0.26771901275226717,
+      "top1_minus_top5_mean": 0.013994127046879579,
+      "top1_minus_top10_mean": 0.0372565859593455
+    }
+  }
+}

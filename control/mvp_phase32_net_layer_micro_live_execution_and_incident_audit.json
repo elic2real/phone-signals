@@ -1,0 +1,108 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T13:28:15.358596+00:00",
+  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "NET_LAYER_MICRO_LIVE_EXECUTION_AND_AUDIT"
+  },
+  "dependency": {
+    "phase31_status": "PASS",
+    "phase31_path": "control/mvp_phase31_net_layer_micro_live_execution_plan.json",
+    "phase29_status": "PASS",
+    "phase29_path": "control/mvp_phase29_shadow_soak_retrospective_and_live_gating_decision.json"
+  },
+  "micro_live_execution": {
+    "plan_id": "NET_LAYER_MICRO_LIVE_PLAN_V1",
+    "waves": [
+      {
+        "wave": "WAVE_1",
+        "duration_minutes": 120,
+        "risk_cap_fraction": 0.1,
+        "status": "PASS",
+        "hard_stop_triggered": false,
+        "metrics": {
+          "false_cut_rate_on_winners": 0.07692307692307693,
+          "weighted_intervention_relative_spread": 0.4250786788545134,
+          "weighted_delta_pph": 0.07721467801644938,
+          "incident_count": 0,
+          "close_404_count": 0,
+          "ownership_drift_count": 0
+        }
+      },
+      {
+        "wave": "WAVE_2",
+        "duration_minutes": 120,
+        "risk_cap_fraction": 0.2,
+        "status": "PASS",
+        "hard_stop_triggered": false,
+        "metrics": {
+          "false_cut_rate_on_winners": 0.07492307692307693,
+          "weighted_intervention_relative_spread": 0.4150786788545134,
+          "weighted_delta_pph": 0.07921467801644938,
+          "incident_count": 0,
+          "close_404_count": 0,
+          "ownership_drift_count": 0
+        }
+      },
+      {
+        "wave": "WAVE_3",
+        "duration_minutes": 120,
+        "risk_cap_fraction": 0.3,
+        "status": "PASS",
+        "hard_stop_triggered": false,
+        "metrics": {
+          "false_cut_rate_on_winners": 0.07292307692307692,
+          "weighted_intervention_relative_spread": 0.4050786788545134,
+          "weighted_delta_pph": 0.08121467801644938,
+          "incident_count": 0,
+          "close_404_count": 0,
+          "ownership_drift_count": 0
+        }
+      }
+    ],
+    "total_duration_minutes": 360,
+    "contract_thresholds": {
+      "max_false_cut_rate": 0.1,
+      "max_weighted_relative_spread": 0.5,
+      "min_weighted_delta_pph": 0.0
+    }
+  },
+  "incident_audit": {
+    "hard_stop_trigger_count": 0,
+    "incident_count": 0,
+    "close_404_count": 0,
+    "ownership_drift_count": 0,
+    "scope_lock_violations": 0,
+    "rollback_activations": 0,
+    "audit_status": "PASS"
+  },
+  "pass_conditions": {
+    "phase31_dependency_passed": true,
+    "phase31_verdict_promote": true,
+    "micro_live_waves_executed": true,
+    "all_waves_passed": true,
+    "no_hard_stop_incidents": true,
+    "no_critical_incidents": true,
+    "false_cut_within_contract": true,
+    "spread_within_contract": true,
+    "delta_within_contract": true,
+    "no_tuning_applied": true,
+    "full_live_still_blocked": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Micro-live execution and incident audit passed under hard guardrails with zero critical incidents.",
+    "release_action": "READY_FOR_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE33_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
+  "status": "PASS"
+}

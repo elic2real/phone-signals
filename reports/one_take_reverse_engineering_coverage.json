@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "pair": "EURUSD",
+    "session": "London",
+    "weekday": "Monday",
+    "dataset_glob": "scenarios/golden/v1.0/*.csv",
+    "fixed_dataset_files": [
+      "energy_depletion.csv",
+      "energy_transition.csv",
+      "high_energy_trend.csv",
+      "low_energy_range.csv",
+      "multi_whipsaw_sweep.csv",
+      "panic_reversal.csv",
+      "random_walk.csv",
+      "slow_grind_break.csv",
+      "spread_widening.csv",
+      "trend_continuation.csv",
+      "universal_energy_morph.csv",
+      "whipsaw_spike_fade.csv"
+    ],
+    "horizon_min": 100,
+    "tp_pips": 3.0,
+    "sl_pips": 3.0,
+    "entry_fit_mode": "coverage"
+  },
+  "entry": {
+    "long": {
+      "confirm_disp_atr": 0.0,
+      "confirm_m1_closes": 0,
+      "confirm_sec": 0.0,
+      "base_max_dist_atr": 999.0,
+      "dist_vel_k": 0.0
+    },
+    "short": {
+      "confirm_disp_atr": 0.0,
+      "confirm_m1_closes": 0,
+      "confirm_sec": 0.0,
+      "base_max_dist_atr": 999.0,
+      "dist_vel_k": 0.0
+    }
+  },
+  "aee": {
+    "long": {
+      "min_profit_atr": 0.25,
+      "min_hold_sec": 120,
+      "decay_speed_atr_per_min": 0.5,
+      "force_sec": 600
+    },
+    "short": {
+      "min_profit_atr": 0.25,
+      "min_hold_sec": 60,
+      "decay_speed_atr_per_min": 0.5,
+      "force_sec": 600
+    }
+  },
+  "scorecard": {
+    "long_good_capture": 1.0,
+    "long_bad_trigger": 1.0,
+    "long_noise_trigger": 1.0,
+    "short_good_capture": 1.0,
+    "short_bad_trigger": 1.0,
+    "short_noise_trigger": 1.0,
+    "long_entry_score": 1.05,
+    "short_entry_score": 1.05,
+    "long_triggered_trades": 1135,
+    "short_triggered_trades": 1135,
+    "long": {
+      "n": 1135,
+      "pips_mean": 0.6345814977972961,
+      "win_rate": 0.5911894273127754
+    },
+    "short": {
+      "n": 1135,
+      "pips_mean": -0.4970484581497053,
+      "win_rate": 0.4105726872246696
+    },
+    "both": {
+      "n": 2270,
+      "pips_mean": 0.06876651982379542
+    },
+    "overfit_verdict": "PASS"
+  },
+  "diagnostics": {
+    "opportunity_rows": 1135,
+    "long_counts": {
+      "good": 654,
+      "bad": 474,
+      "noise": 7,
+      "trig_good": 654,
+      "trig_bad": 474,
+      "trig_noise": 7
+    },
+    "short_counts": {
+      "good": 474,
+      "bad": 654,
+      "noise": 7,
+      "trig_good": 474,
+      "trig_bad": 654,
+      "trig_noise": 7
+    },
+    "aee_long_fit": {
+      "score": 0.33857565904068654,
+      "avg_good_exit_pips": 3.0759174311924764,
+      "avg_bad_exit_pips": -2.73734177215179
+    },
+    "aee_short_fit": {
+      "score": -0.1940434715285586,
+      "avg_good_exit_pips": 2.3952531645568826,
+      "avg_bad_exit_pips": -2.5892966360854412
+    }
+  }
+}

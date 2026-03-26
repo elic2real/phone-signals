@@ -1,0 +1,63 @@
+{
+  "version": "2026-03-17-focus-phase1-2026-03-17T12:59:01Z",
+  "source": "strategy_runtime_overrides.json + strategy_merged_decision_sheet.json",
+  "policy": {
+    "sim_min_sample_gate": 50,
+    "phase": "focus_phase1",
+    "intent": "prioritize empirically strongest mid-range harvester buckets",
+    "continuation_quarantine_env": {
+      "SUPPRESS_CONTINUATION_ENTRIES": "1"
+    }
+  },
+  "enabled_keys": [
+    "short:harvester:3.5",
+    "short:harvester:5",
+    "long:harvester:5",
+    "long:harvester:6",
+    "short:harvester:2.5",
+    "short:harvester:8"
+  ],
+  "suppressed_keys": [
+    "long:harvester:1.5",
+    "short:harvester:1.5",
+    "long:harvester:2.5"
+  ],
+  "strategy_overrides": {
+    "short:harvester:3.5": {
+      "harvest_trigger_pips": 3.5,
+      "giveback_trigger_pips": 1.4,
+      "panic_trigger_pips": -4.9,
+      "panic_mode": "dynamic"
+    },
+    "short:harvester:5": {
+      "harvest_trigger_pips": 5.5,
+      "giveback_trigger_pips": 0.6,
+      "panic_trigger_pips": -7.0,
+      "panic_mode": "dynamic"
+    },
+    "long:harvester:5": {
+      "harvest_trigger_pips": 5.0,
+      "giveback_trigger_pips": 0.9,
+      "panic_trigger_pips": -7.0,
+      "panic_mode": "dynamic"
+    },
+    "long:harvester:6": {
+      "harvest_trigger_pips": 6.6,
+      "giveback_trigger_pips": 0.72,
+      "panic_trigger_pips": -8.4,
+      "panic_mode": "dynamic"
+    },
+    "short:harvester:2.5": {
+      "harvest_trigger_pips": 2.75,
+      "giveback_trigger_pips": 0.4,
+      "panic_trigger_pips": -3.5,
+      "panic_mode": "dynamic"
+    },
+    "short:harvester:8": {
+      "harvest_trigger_pips": 8.8,
+      "giveback_trigger_pips": 0.96,
+      "panic_trigger_pips": -9.6,
+      "panic_mode": "dynamic"
+    }
+  }
+}

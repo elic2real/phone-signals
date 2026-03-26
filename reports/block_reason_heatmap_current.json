@@ -1,0 +1,54 @@
+{
+  "log": "logs/trades.jsonl",
+  "last_n": 120000,
+  "stage_counts": {
+    "ENTRY_ARMED": 1270,
+    "ENTRY_PATH_SKIP_REASON": 3385,
+    "STATE_PROMOTE_FROM_SIGNAL": 1269,
+    "STATE_PROMOTE_BLOCKED": 599,
+    "CAL_HANDSHAKE_TRIGGER": 44,
+    "SESSION_HANDSHAKE": 261,
+    "SEED_LOADED": 43,
+    "PATCH_LOAD_OK": 42,
+    "MANUAL_OVERRIDE_LOADED": 42,
+    "STATE_TRANSITION": 4,
+    "ENTRY_GATE_EVAL": 6,
+    "ENTRY_ATTEMPT": 5,
+    "ORDER_SUBMITTED": 5
+  },
+  "entry_gate_block_reasons": [],
+  "entry_path_skip_reasons": [
+    [
+      "state_not_actionable",
+      2786
+    ],
+    [
+      "watch_not_promoted",
+      599
+    ]
+  ],
+  "entry_path_skip_reasons_actionable": [
+    [
+      "watch_not_promoted",
+      599
+    ],
+    [
+      "state_not_actionable",
+      599
+    ]
+  ],
+  "knob_priority": [
+    {
+      "knob": "entry.tick.confirm_disp_atr",
+      "score": 0.5
+    },
+    {
+      "knob": "entry.tick.confirm_m1_closes",
+      "score": 0.5
+    },
+    {
+      "knob": "entry.tick.confirm_sec",
+      "score": 0.5
+    }
+  ]
+}

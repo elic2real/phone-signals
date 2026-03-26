@@ -1,0 +1,141 @@
+{
+  "proof_contract": "strategy_override_live_enforcement",
+  "window": {
+    "cutoff_trade_id": 6555,
+    "max_entry_trade_id": 6595
+  },
+  "strategy_keys_seen_live": [
+    "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T12340_0",
+    "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T12860_0",
+    "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T13040_0",
+    "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T8_0",
+    "BREAK|RUNNER|T8_0",
+    "PULLBACK_RECLAIM|HARVESTER|T19391_4"
+  ],
+  "override_keys_loaded": [
+    "long:harvester:1.5",
+    "long:harvester:2.5",
+    "long:harvester:3.5",
+    "long:harvester:5",
+    "long:harvester:6",
+    "long:harvester:7",
+    "long:harvester:8",
+    "long:runner:2.5",
+    "long:runner:3.5",
+    "long:runner:5",
+    "long:runner:6",
+    "long:runner:7",
+    "long:runner:8",
+    "short:harvester:1.5",
+    "short:harvester:2.5",
+    "short:harvester:3.5",
+    "short:harvester:5",
+    "short:harvester:6",
+    "short:harvester:7",
+    "short:harvester:8",
+    "short:runner:2.5",
+    "short:runner:3.5",
+    "short:runner:5",
+    "short:runner:6",
+    "short:runner:7",
+    "short:runner:8"
+  ],
+  "trades_with_overrides_applied": [
+    6555,
+    6558,
+    6559,
+    6560,
+    6561,
+    6564,
+    6565,
+    6566,
+    6567,
+    6568,
+    6569,
+    6575,
+    6577,
+    6585,
+    6595
+  ],
+  "aee_exits_by_strategy_key": [
+    {
+      "strategy_key": "UNKNOWN|HARVESTER|T0_0",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 21
+    },
+    {
+      "strategy_key": "UNKNOWN|HARVESTER|T1_5",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 5
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T8_0",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 3
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T8_0",
+      "exit_kind": "AEE_RUNNER_FINAL_EXIT",
+      "count": 3
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T12340_0",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 1
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T12340_0",
+      "exit_kind": "AEE_RUNNER_FINAL_EXIT",
+      "count": 1
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T12860_0",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 1
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T12860_0",
+      "exit_kind": "AEE_RUNNER_FINAL_EXIT",
+      "count": 1
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T13040_0",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 1
+    },
+    {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T13040_0",
+      "exit_kind": "AEE_RUNNER_FINAL_EXIT",
+      "count": 1
+    },
+    {
+      "strategy_key": "PULLBACK_RECLAIM|HARVESTER|T19391_4",
+      "exit_kind": "AEE_PRE_SL_EXIT",
+      "count": 1
+    }
+  ],
+  "realized_pnl_by_strategy_key_pips": [],
+  "proof_chain_sample": {
+    "trade_id": 6595,
+    "entry_result": {
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T8_0",
+      "target_profile": "T8_0",
+      "entry_family": "BIAS_ALIGNMENT_CONTINUATION",
+      "trade_type": "RUNNER"
+    },
+    "override_decision": {
+      "override_match_key": "long:runner:8",
+      "harvest_trigger_pips": 7.2,
+      "giveback_trigger_pips": 3.6,
+      "panic_trigger_pips": -8.0,
+      "decision": "EXIT",
+      "exit_reason": "PRE_SL_PROTECTION"
+    },
+    "aee_action": {
+      "kind": "AEE_PRE_SL_EXIT",
+      "reason": "PRE_SL_PROTECTION",
+      "strategy_key": "BIAS_ALIGNMENT_CONTINUATION|RUNNER|T8_0",
+      "override_match_key": "long:runner:8"
+    }
+  }
+}

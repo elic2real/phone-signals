@@ -1,0 +1,211 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T18:49:25.929218+00:00",
+  "task_id": "MVP_PHASE37_MULTI_WINDOW_COMBINED_STABILITY",
+  "dependency": {
+    "phase36_status": "PASS",
+    "stage2_status": "PASS"
+  },
+  "baseline": {
+    "total_trades_per_hour_est": 2.306958,
+    "weighted_win_rate_est": 0.575687,
+    "expected_equity_pct_per_hour_at_2pct_risk": 0.698426
+  },
+  "profiles": [
+    {
+      "profile_id": "P1_CURRENT",
+      "name": "current_assumption",
+      "adverse_throughput_mult": 0.9,
+      "adverse_winrate_shift": -0.012,
+      "status": "HOLD",
+      "windows": [
+        {
+          "window_id": "W1_BASELINE",
+          "name": "baseline_current",
+          "mode": "BASELINE",
+          "throughput_mult": 1.0,
+          "winrate_shift": 0.0,
+          "total_trades_per_hour_est": 2.306958,
+          "weighted_win_rate_est": 0.575687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.698424,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        },
+        {
+          "window_id": "W2_ADVERSE",
+          "name": "higher_noise_higher_spread",
+          "mode": "STRESS_DOWN",
+          "throughput_mult": 0.9,
+          "winrate_shift": -0.012,
+          "total_trades_per_hour_est": 2.076262,
+          "weighted_win_rate_est": 0.563687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.528921,
+          "pass_gate": false,
+          "fail_reason_if_any": "window_quality_or_resilience_fail"
+        },
+        {
+          "window_id": "W3_FAVORABLE",
+          "name": "cleaner_flow",
+          "mode": "STRESS_UP",
+          "throughput_mult": 1.06,
+          "winrate_shift": 0.007,
+          "total_trades_per_hour_est": 2.445375,
+          "weighted_win_rate_est": 0.582687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.8088,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        }
+      ],
+      "windows_pass": 2,
+      "windows_total": 3
+    },
+    {
+      "profile_id": "P2_MILD_ADVERSE",
+      "name": "mild_adverse",
+      "adverse_throughput_mult": 0.93,
+      "adverse_winrate_shift": -0.009,
+      "status": "HOLD",
+      "windows": [
+        {
+          "window_id": "W1_BASELINE",
+          "name": "baseline_current",
+          "mode": "BASELINE",
+          "throughput_mult": 1.0,
+          "winrate_shift": 0.0,
+          "total_trades_per_hour_est": 2.306958,
+          "weighted_win_rate_est": 0.575687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.698424,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        },
+        {
+          "window_id": "W2_ADVERSE",
+          "name": "higher_noise_higher_spread",
+          "mode": "STRESS_DOWN",
+          "throughput_mult": 0.93,
+          "winrate_shift": -0.009,
+          "total_trades_per_hour_est": 2.145471,
+          "weighted_win_rate_est": 0.566687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.572297,
+          "pass_gate": false,
+          "fail_reason_if_any": "window_quality_or_resilience_fail"
+        },
+        {
+          "window_id": "W3_FAVORABLE",
+          "name": "cleaner_flow",
+          "mode": "STRESS_UP",
+          "throughput_mult": 1.06,
+          "winrate_shift": 0.007,
+          "total_trades_per_hour_est": 2.445375,
+          "weighted_win_rate_est": 0.582687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.8088,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        }
+      ],
+      "windows_pass": 2,
+      "windows_total": 3
+    },
+    {
+      "profile_id": "P3_BALANCED_ADVERSE",
+      "name": "balanced_adverse",
+      "adverse_throughput_mult": 0.92,
+      "adverse_winrate_shift": -0.01,
+      "status": "HOLD",
+      "windows": [
+        {
+          "window_id": "W1_BASELINE",
+          "name": "baseline_current",
+          "mode": "BASELINE",
+          "throughput_mult": 1.0,
+          "winrate_shift": 0.0,
+          "total_trades_per_hour_est": 2.306958,
+          "weighted_win_rate_est": 0.575687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.698424,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        },
+        {
+          "window_id": "W2_ADVERSE",
+          "name": "higher_noise_higher_spread",
+          "mode": "STRESS_DOWN",
+          "throughput_mult": 0.92,
+          "winrate_shift": -0.01,
+          "total_trades_per_hour_est": 2.122401,
+          "weighted_win_rate_est": 0.565687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.557654,
+          "pass_gate": false,
+          "fail_reason_if_any": "window_quality_or_resilience_fail"
+        },
+        {
+          "window_id": "W3_FAVORABLE",
+          "name": "cleaner_flow",
+          "mode": "STRESS_UP",
+          "throughput_mult": 1.06,
+          "winrate_shift": 0.007,
+          "total_trades_per_hour_est": 2.445375,
+          "weighted_win_rate_est": 0.582687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.8088,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        }
+      ],
+      "windows_pass": 2,
+      "windows_total": 3
+    },
+    {
+      "profile_id": "P4_HARD_ADVERSE",
+      "name": "hard_adverse",
+      "adverse_throughput_mult": 0.88,
+      "adverse_winrate_shift": -0.015,
+      "status": "HOLD",
+      "windows": [
+        {
+          "window_id": "W1_BASELINE",
+          "name": "baseline_current",
+          "mode": "BASELINE",
+          "throughput_mult": 1.0,
+          "winrate_shift": 0.0,
+          "total_trades_per_hour_est": 2.306958,
+          "weighted_win_rate_est": 0.575687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.698424,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        },
+        {
+          "window_id": "W2_ADVERSE",
+          "name": "higher_noise_higher_spread",
+          "mode": "STRESS_DOWN",
+          "throughput_mult": 0.88,
+          "winrate_shift": -0.015,
+          "total_trades_per_hour_est": 2.030123,
+          "weighted_win_rate_est": 0.560687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.492806,
+          "pass_gate": false,
+          "fail_reason_if_any": "window_quality_or_resilience_fail"
+        },
+        {
+          "window_id": "W3_FAVORABLE",
+          "name": "cleaner_flow",
+          "mode": "STRESS_UP",
+          "throughput_mult": 1.06,
+          "winrate_shift": 0.007,
+          "total_trades_per_hour_est": 2.445375,
+          "weighted_win_rate_est": 0.582687,
+          "expected_equity_pct_per_hour_at_2pct_risk": 0.8088,
+          "pass_gate": true,
+          "fail_reason_if_any": ""
+        }
+      ],
+      "windows_pass": 2,
+      "windows_total": 3
+    }
+  ],
+  "status": "HOLD",
+  "decision": {
+    "verdict": "HOLD",
+    "release_action": "HOLD_AND_REMEDIATE_STABILITY",
+    "reason": "No parallel profile passed stability gates."
+  }
+}

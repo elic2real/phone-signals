@@ -1,0 +1,26 @@
+{
+  "name": "aee_minimal_rule_set_v1",
+  "source": "aee_ped_discovery_overfit_01",
+  "rules": [
+    {
+      "id": "rule_probation_positive_escape",
+      "trigger": "trade must show early positive excursion before monetization",
+      "intent": "eliminate noise churn that never proves positive value"
+    },
+    {
+      "id": "rule_post_escape_stall_harvest",
+      "trigger": "after positive escape, close on stall/no-new-high condition",
+      "intent": "convert weak continuation into realized positive extraction"
+    },
+    {
+      "id": "rule_post_escape_fallback_protect",
+      "trigger": "after meaningful favorable excursion, close on giveback/fallback",
+      "intent": "protect realized edge from round-trip decay"
+    },
+    {
+      "id": "rule_fast_adverse_and_defense",
+      "trigger": "fast failure, pre-SL, and panic exits remain active throughout",
+      "intent": "bound downside while waiting for positive proof"
+    }
+  ]
+}

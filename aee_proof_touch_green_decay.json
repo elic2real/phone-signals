@@ -1,0 +1,197 @@
+{
+  "fixture": "touch_green_decay",
+  "doctrine": "Decay after early green should force fast extraction response.",
+  "path_points_r": [
+    0.0,
+    0.2,
+    0.12,
+    0.05,
+    0.0
+  ],
+  "results": [
+    {
+      "mode": "HARVESTER",
+      "path_points_r": [
+        0.0,
+        0.2,
+        0.12,
+        0.05,
+        0.0
+      ],
+      "action_trace": [
+        {
+          "step": 1,
+          "r": 0.2,
+          "state": {
+            "mode": "HARVESTER",
+            "step": 1,
+            "current_r": 0.2,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 1,
+            "bars_since_progress": 0,
+            "giveback_from_peak_r": 0.0,
+            "velocity_r": 0.2,
+            "energy": 0.8,
+            "went_meaningfully_green": true,
+            "partial_taken": false,
+            "tightened": false,
+            "state": "GREEN",
+            "closed": false
+          },
+          "action": "HOLD"
+        },
+        {
+          "step": 2,
+          "r": 0.12,
+          "state": {
+            "mode": "HARVESTER",
+            "step": 2,
+            "current_r": 0.12,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 2,
+            "bars_since_progress": 1,
+            "giveback_from_peak_r": 0.08,
+            "velocity_r": -0.08,
+            "energy": 0.0,
+            "went_meaningfully_green": true,
+            "partial_taken": true,
+            "tightened": false,
+            "state": "GREEN",
+            "closed": false
+          },
+          "action": "PARTIAL"
+        },
+        {
+          "step": 3,
+          "r": 0.05,
+          "state": {
+            "mode": "HARVESTER",
+            "step": 3,
+            "current_r": 0.05,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 3,
+            "bars_since_progress": 2,
+            "giveback_from_peak_r": 0.15,
+            "velocity_r": -0.07,
+            "energy": 0.0,
+            "went_meaningfully_green": true,
+            "partial_taken": true,
+            "tightened": false,
+            "state": "STALLING",
+            "closed": true
+          },
+          "action": "CLOSE"
+        }
+      ],
+      "final_action": "CLOSE",
+      "expected_final_action": "CLOSE",
+      "pass": true
+    },
+    {
+      "mode": "RUNNER",
+      "path_points_r": [
+        0.0,
+        0.2,
+        0.12,
+        0.05,
+        0.0
+      ],
+      "action_trace": [
+        {
+          "step": 1,
+          "r": 0.2,
+          "state": {
+            "mode": "RUNNER",
+            "step": 1,
+            "current_r": 0.2,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 1,
+            "bars_since_progress": 0,
+            "giveback_from_peak_r": 0.0,
+            "velocity_r": 0.2,
+            "energy": 0.8,
+            "went_meaningfully_green": true,
+            "partial_taken": false,
+            "tightened": false,
+            "state": "OPEN",
+            "closed": false
+          },
+          "action": "HOLD"
+        },
+        {
+          "step": 2,
+          "r": 0.12,
+          "state": {
+            "mode": "RUNNER",
+            "step": 2,
+            "current_r": 0.12,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 2,
+            "bars_since_progress": 1,
+            "giveback_from_peak_r": 0.08,
+            "velocity_r": -0.08,
+            "energy": 0.0,
+            "went_meaningfully_green": true,
+            "partial_taken": false,
+            "tightened": false,
+            "state": "OPEN",
+            "closed": false
+          },
+          "action": "HOLD"
+        },
+        {
+          "step": 3,
+          "r": 0.05,
+          "state": {
+            "mode": "RUNNER",
+            "step": 3,
+            "current_r": 0.05,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 3,
+            "bars_since_progress": 2,
+            "giveback_from_peak_r": 0.15,
+            "velocity_r": -0.07,
+            "energy": 0.0,
+            "went_meaningfully_green": true,
+            "partial_taken": false,
+            "tightened": true,
+            "state": "OPEN",
+            "closed": false
+          },
+          "action": "TIGHTEN"
+        },
+        {
+          "step": 4,
+          "r": 0.0,
+          "state": {
+            "mode": "RUNNER",
+            "step": 4,
+            "current_r": 0.0,
+            "mfe_r": 0.2,
+            "mae_r": 0.0,
+            "bars_since_entry": 4,
+            "bars_since_progress": 3,
+            "giveback_from_peak_r": 0.2,
+            "velocity_r": -0.05,
+            "energy": 0.0,
+            "went_meaningfully_green": true,
+            "partial_taken": false,
+            "tightened": true,
+            "state": "OPEN",
+            "closed": true
+          },
+          "action": "CLOSE"
+        }
+      ],
+      "final_action": "CLOSE",
+      "expected_final_action": "CLOSE",
+      "pass": true
+    }
+  ]
+}

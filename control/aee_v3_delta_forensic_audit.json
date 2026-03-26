@@ -1,0 +1,856 @@
+{
+  "generated_at": "2026-03-25T18:54:30.589799Z",
+  "task": "AEE_V3_DELTA_FORENSIC_AUDIT",
+  "pair": "EUR_USD",
+  "family_rows": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "trade_count": 4791,
+      "entry_only_pph": 9.381404379082662,
+      "v2_realized_pph": 0.4270696253514206,
+      "v3_realized_pph": 0.43260370798505404,
+      "delta_realized_pph": 0.005534082633633419,
+      "v2_gap_pips": 10.874702567313713,
+      "v3_gap_pips": 10.867981632227092,
+      "delta_gap_pips": -0.006720935086621083,
+      "v2_avg_hold_sec": 282.75516593613025,
+      "v3_avg_hold_sec": 307.7395115842204,
+      "delta_hold_sec": 24.98434564809014,
+      "v2_exit_reason_distribution": {
+        "AEE_BAND_FAST_FAILURE_EXIT": 0.6238781047797954,
+        "AEE_GIVEBACK_EXIT": 0.3529534543936548,
+        "AEE_NEVER_GREEN_TIMEOUT": 0.01857649759966604,
+        "AEE_BAND_EXTENSION_HOLD": 0.001878522229179712,
+        "AEE_CONTINUATION_FAILED_EXIT": 0.0027134209977040286
+      },
+      "v3_exit_reason_distribution": {
+        "AEE_V3_FAMILY_FAST_FAILURE_EXIT": 0.2725944479231893,
+        "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 0.21790857858484658,
+        "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT": 0.24900855771237737,
+        "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT": 0.25902734293466917,
+        "AEE_V3_FAMILY_EXTENSION_HOLD": 0.0014610728449175538
+      },
+      "branch_damage_v2": [
+        {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 2989,
+          "share": 0.6238781047797954,
+          "avg_hold_sec": 139.83271997323519,
+          "branch_removal_delta_pph": 6.429222334510279
+        },
+        {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "count": 1691,
+          "share": 0.3529534543936548,
+          "avg_hold_sec": 510.01774098166766,
+          "branch_removal_delta_pph": 2.3070380701289945
+        },
+        {
+          "exit_branch": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 89,
+          "share": 0.01857649759966604,
+          "avg_hold_sec": 660.0,
+          "branch_removal_delta_pph": 0.18202478893501833
+        },
+        {
+          "exit_branch": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 13,
+          "share": 0.0027134209977040286,
+          "avg_hold_sec": 821.5384615384615,
+          "branch_removal_delta_pph": 0.022001194632142007
+        },
+        {
+          "exit_branch": "AEE_BAND_EXTENSION_HOLD",
+          "count": 9,
+          "share": 0.001878522229179712,
+          "avg_hold_sec": 540.0,
+          "branch_removal_delta_pph": 0.014048365524807815
+        }
+      ],
+      "branch_damage_v3": [
+        {
+          "exit_branch": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+          "count": 1306,
+          "share": 0.2725944479231893,
+          "avg_hold_sec": 157.62633996937214,
+          "branch_removal_delta_pph": 2.945357622311707
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+          "count": 1193,
+          "share": 0.24900855771237737,
+          "avg_hold_sec": 393.5456831517184,
+          "branch_removal_delta_pph": 2.168497888052289
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+          "count": 1044,
+          "share": 0.21790857858484658,
+          "avg_hold_sec": 240.0,
+          "branch_removal_delta_pph": 2.0666310630144507
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "count": 1241,
+          "share": 0.25902734293466917,
+          "avg_hold_sec": 439.4842868654311,
+          "branch_removal_delta_pph": 1.7583366730041852
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_EXTENSION_HOLD",
+          "count": 7,
+          "share": 0.0014610728449175538,
+          "avg_hold_sec": 437.14285714285717,
+          "branch_removal_delta_pph": 0.009977424714976146
+        }
+      ]
+    },
+    {
+      "family": "OTHER",
+      "trade_count": 3576,
+      "entry_only_pph": 7.2804746088626,
+      "v2_realized_pph": -1.4563712337269341,
+      "v3_realized_pph": -1.5187486574358664,
+      "delta_realized_pph": -0.06237742370893229,
+      "v2_gap_pips": 10.610570469798658,
+      "v3_gap_pips": 10.686325503355704,
+      "delta_gap_pips": 0.07575503355704605,
+      "v2_avg_hold_sec": 114.76510067114094,
+      "v3_avg_hold_sec": 96.24161073825503,
+      "delta_hold_sec": -18.52348993288591,
+      "v2_exit_reason_distribution": {
+        "AEE_BAND_FAST_FAILURE_EXIT": 0.9172259507829977,
+        "AEE_NEVER_GREEN_TIMEOUT": 0.024608501118568233,
+        "AEE_GIVEBACK_EXIT": 0.05704697986577181,
+        "AEE_CONTINUATION_FAILED_EXIT": 0.0011185682326621924
+      },
+      "v3_exit_reason_distribution": {
+        "AEE_V3_FAMILY_FAST_FAILURE_EXIT": 0.8755592841163311,
+        "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 0.058165548098434,
+        "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT": 0.009228187919463088,
+        "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT": 0.05704697986577181
+      },
+      "branch_damage_v2": [
+        {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 3280,
+          "share": 0.9172259507829977,
+          "avg_hold_sec": 74.83536585365853,
+          "branch_removal_delta_pph": 8.32885022488078
+        },
+        {
+          "exit_branch": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 88,
+          "share": 0.024608501118568233,
+          "avg_hold_sec": 660.0,
+          "branch_removal_delta_pph": 0.20794406280734834
+        },
+        {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "count": 204,
+          "share": 0.05704697986577181,
+          "avg_hold_sec": 504.4117647058824,
+          "branch_removal_delta_pph": 0.193312433053499
+        },
+        {
+          "exit_branch": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 4,
+          "share": 0.0011185682326621924,
+          "avg_hold_sec": 990.0,
+          "branch_removal_delta_pph": 0.006739121847906926
+        }
+      ],
+      "branch_damage_v3": [
+        {
+          "exit_branch": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+          "count": 3131,
+          "share": 0.8755592841163311,
+          "avg_hold_sec": 69.37080804854679,
+          "branch_removal_delta_pph": 8.024391868360517
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+          "count": 208,
+          "share": 0.058165548098434,
+          "avg_hold_sec": 180.0,
+          "branch_removal_delta_pph": 0.4375416797201317
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "count": 204,
+          "share": 0.05704697986577181,
+          "avg_hold_sec": 353.2352941176471,
+          "branch_removal_delta_pph": 0.27505471956760386
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+          "count": 33,
+          "share": 0.009228187919463088,
+          "avg_hold_sec": 529.0909090909091,
+          "branch_removal_delta_pph": 0.06223499865021509
+        }
+      ]
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "trade_count": 1049,
+      "entry_only_pph": 9.81866917602192,
+      "v2_realized_pph": -1.0654873439711685,
+      "v3_realized_pph": -0.9971184419084835,
+      "delta_realized_pph": 0.06836890206268498,
+      "v2_gap_pips": 13.218398474737844,
+      "v3_gap_pips": 13.13536701620591,
+      "delta_gap_pips": -0.08303145853193428,
+      "v2_avg_hold_sec": 105.1858913250715,
+      "v3_avg_hold_sec": 174.4518589132507,
+      "delta_hold_sec": 69.26596758817921,
+      "v2_exit_reason_distribution": {
+        "AEE_BAND_FAST_FAILURE_EXIT": 0.9323164918970448,
+        "AEE_NEVER_GREEN_TIMEOUT": 0.004766444232602479,
+        "AEE_GIVEBACK_EXIT": 0.06291706387035272
+      },
+      "v3_exit_reason_distribution": {
+        "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 0.21544327931363202,
+        "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT": 0.019065776930409915,
+        "AEE_V3_FAMILY_FAST_FAILURE_EXIT": 0.6491897044804575,
+        "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT": 0.11630123927550047
+      },
+      "branch_damage_v2": [
+        {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 978,
+          "share": 0.9323164918970448,
+          "avg_hold_sec": 63.12883435582822,
+          "branch_removal_delta_pph": 10.452409887987681
+        },
+        {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "count": 66,
+          "share": 0.06291706387035272,
+          "avg_hold_sec": 686.3636363636364,
+          "branch_removal_delta_pph": 0.3862024084768434
+        },
+        {
+          "exit_branch": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 5,
+          "share": 0.004766444232602479,
+          "avg_hold_sec": 660.0,
+          "branch_removal_delta_pph": 0.045544223528564576
+        }
+      ],
+      "branch_damage_v3": [
+        {
+          "exit_branch": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+          "count": 681,
+          "share": 0.6491897044804575,
+          "avg_hold_sec": 73.30396475770925,
+          "branch_removal_delta_pph": 7.495554526154816
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+          "count": 226,
+          "share": 0.21544327931363202,
+          "avg_hold_sec": 240.0,
+          "branch_removal_delta_pph": 2.158773866536353
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "count": 122,
+          "share": 0.11630123927550047,
+          "avg_hold_sec": 503.60655737704917,
+          "branch_removal_delta_pph": 0.9919199812192273
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+          "count": 20,
+          "share": 0.019065776930409915,
+          "avg_hold_sec": 870.0,
+          "branch_removal_delta_pph": 0.16953924402000764
+        }
+      ]
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "trade_count": 11931,
+      "entry_only_pph": 7.977756423664676,
+      "v2_realized_pph": -0.5976431415875245,
+      "v3_realized_pph": -0.6713573163891499,
+      "delta_realized_pph": -0.07371417480162534,
+      "v2_gap_pips": 10.414500041907635,
+      "v3_gap_pips": 10.504023133014835,
+      "delta_gap_pips": 0.0895230911071998,
+      "v2_avg_hold_sec": 191.96882071913504,
+      "v3_avg_hold_sec": 198.96907216494844,
+      "delta_hold_sec": 7.000251445813404,
+      "v2_exit_reason_distribution": {
+        "AEE_BAND_FAST_FAILURE_EXIT": 0.8096555192356047,
+        "AEE_NEVER_GREEN_TIMEOUT": 0.030844019780403988,
+        "AEE_GIVEBACK_EXIT": 0.15723744866314643,
+        "AEE_BAND_EXTENSION_HOLD": 0.0001676305422848043,
+        "AEE_CONTINUATION_FAILED_EXIT": 0.0020953817785600536
+      },
+      "v3_exit_reason_distribution": {
+        "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 0.19797167043835387,
+        "AEE_V3_FAMILY_FAST_FAILURE_EXIT": 0.5966809152627609,
+        "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT": 0.020450926158746125,
+        "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT": 0.18481267286899672,
+        "AEE_V3_FAMILY_EXTENSION_HOLD": 8.381527114240215e-05
+      },
+      "branch_damage_v2": [
+        {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 9660,
+          "share": 0.8096555192356047,
+          "avg_hold_sec": 93.85093167701864,
+          "branch_removal_delta_pph": 7.465863309745762
+        },
+        {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "count": 1876,
+          "share": 0.15723744866314643,
+          "avg_hold_sec": 599.456289978678,
+          "branch_removal_delta_pph": 0.819860421865375
+        },
+        {
+          "exit_branch": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 368,
+          "share": 0.030844019780403988,
+          "avg_hold_sec": 660.0,
+          "branch_removal_delta_pph": 0.27510039332745917
+        },
+        {
+          "exit_branch": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 25,
+          "share": 0.0020953817785600536,
+          "avg_hold_sec": 583.2,
+          "branch_removal_delta_pph": 0.013707421924275431
+        },
+        {
+          "exit_branch": "AEE_BAND_EXTENSION_HOLD",
+          "count": 2,
+          "share": 0.0001676305422848043,
+          "avg_hold_sec": 870.0,
+          "branch_removal_delta_pph": 0.0008680183893292615
+        }
+      ],
+      "branch_damage_v3": [
+        {
+          "exit_branch": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+          "count": 7119,
+          "share": 0.5966809152627609,
+          "avg_hold_sec": 96.41803624104509,
+          "branch_removal_delta_pph": 5.7249535227523385
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+          "count": 2362,
+          "share": 0.19797167043835387,
+          "avg_hold_sec": 240.0,
+          "branch_removal_delta_pph": 1.6358993794183199
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "count": 2205,
+          "share": 0.18481267286899672,
+          "avg_hold_sec": 432.13605442176873,
+          "branch_removal_delta_pph": 1.1407960618481745
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+          "count": 244,
+          "share": 0.020450926158746125,
+          "avg_hold_sec": 685.0819672131148,
+          "branch_removal_delta_pph": 0.14696865396950975
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_EXTENSION_HOLD",
+          "count": 1,
+          "share": 8.381527114240215e-05,
+          "avg_hold_sec": 600.0,
+          "branch_removal_delta_pph": 0.0004961220654833287
+        }
+      ]
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "trade_count": 43,
+      "entry_only_pph": 8.647715959712846,
+      "v2_realized_pph": -0.5572376758805222,
+      "v3_realized_pph": -0.23553345062991143,
+      "delta_realized_pph": 0.32170422525061076,
+      "v2_gap_pips": 11.17906976744186,
+      "v3_gap_pips": 10.788372093023256,
+      "delta_gap_pips": -0.3906976744186039,
+      "v2_avg_hold_sec": 224.65116279069767,
+      "v3_avg_hold_sec": 387.90697674418607,
+      "delta_hold_sec": 163.2558139534884,
+      "v2_exit_reason_distribution": {
+        "AEE_BAND_FAST_FAILURE_EXIT": 0.8604651162790697,
+        "AEE_GIVEBACK_EXIT": 0.13953488372093023
+      },
+      "v3_exit_reason_distribution": {
+        "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 0.18604651162790697,
+        "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT": 0.46511627906976744,
+        "AEE_V3_FAMILY_FAST_FAILURE_EXIT": 0.18604651162790697,
+        "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT": 0.16279069767441862
+      },
+      "branch_damage_v2": [
+        {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 37,
+          "share": 0.8604651162790697,
+          "avg_hold_sec": 137.83783783783784,
+          "branch_removal_delta_pph": 8.410000406779877
+        },
+        {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "count": 6,
+          "share": 0.13953488372093023,
+          "avg_hold_sec": 760.0,
+          "branch_removal_delta_pph": 0.7949532288134902
+        }
+      ],
+      "branch_damage_v3": [
+        {
+          "exit_branch": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "count": 20,
+          "share": 0.46511627906976744,
+          "avg_hold_sec": 444.0,
+          "branch_removal_delta_pph": 3.6372973429947577
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+          "count": 8,
+          "share": 0.18604651162790697,
+          "avg_hold_sec": 157.5,
+          "branch_removal_delta_pph": 2.0722846647026465
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+          "count": 8,
+          "share": 0.18604651162790697,
+          "avg_hold_sec": 300.0,
+          "branch_removal_delta_pph": 1.7199419418091206
+        },
+        {
+          "exit_branch": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+          "count": 7,
+          "share": 0.16279069767441862,
+          "avg_hold_sec": 591.4285714285714,
+          "branch_removal_delta_pph": 1.4537254608362313
+        }
+      ]
+    }
+  ],
+  "transition_fault_map": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_BAND_FAST_FAILURE_EXIT",
+      "v2_share": 0.6238781047797954,
+      "v3_share": 0.0,
+      "delta_share": -0.6238781047797954
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_GIVEBACK_EXIT",
+      "v2_share": 0.3529534543936548,
+      "v3_share": 0.0,
+      "delta_share": -0.3529534543936548
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.2725944479231893,
+      "delta_share": 0.2725944479231893
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.25902734293466917,
+      "delta_share": 0.25902734293466917
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.24900855771237737,
+      "delta_share": 0.24900855771237737
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.0,
+      "v3_share": 0.21790857858484658,
+      "delta_share": 0.21790857858484658
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.01857649759966604,
+      "v3_share": 0.0,
+      "delta_share": -0.01857649759966604
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_CONTINUATION_FAILED_EXIT",
+      "v2_share": 0.0027134209977040286,
+      "v3_share": 0.0,
+      "delta_share": -0.0027134209977040286
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "v2_share": 0.001878522229179712,
+      "v3_share": 0.0,
+      "delta_share": -0.001878522229179712
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "reason": "AEE_V3_FAMILY_EXTENSION_HOLD",
+      "v2_share": 0.0,
+      "v3_share": 0.0014610728449175538,
+      "delta_share": 0.0014610728449175538
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_BAND_FAST_FAILURE_EXIT",
+      "v2_share": 0.9172259507829977,
+      "v3_share": 0.0,
+      "delta_share": -0.9172259507829977
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.8755592841163311,
+      "delta_share": 0.8755592841163311
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.0,
+      "v3_share": 0.058165548098434,
+      "delta_share": 0.058165548098434
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_GIVEBACK_EXIT",
+      "v2_share": 0.05704697986577181,
+      "v3_share": 0.0,
+      "delta_share": -0.05704697986577181
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.05704697986577181,
+      "delta_share": 0.05704697986577181
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.024608501118568233,
+      "v3_share": 0.0,
+      "delta_share": -0.024608501118568233
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.009228187919463088,
+      "delta_share": 0.009228187919463088
+    },
+    {
+      "family": "OTHER",
+      "reason": "AEE_CONTINUATION_FAILED_EXIT",
+      "v2_share": 0.0011185682326621924,
+      "v3_share": 0.0,
+      "delta_share": -0.0011185682326621924
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_BAND_FAST_FAILURE_EXIT",
+      "v2_share": 0.9323164918970448,
+      "v3_share": 0.0,
+      "delta_share": -0.9323164918970448
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.6491897044804575,
+      "delta_share": 0.6491897044804575
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.0,
+      "v3_share": 0.21544327931363202,
+      "delta_share": 0.21544327931363202
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.11630123927550047,
+      "delta_share": 0.11630123927550047
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_GIVEBACK_EXIT",
+      "v2_share": 0.06291706387035272,
+      "v3_share": 0.0,
+      "delta_share": -0.06291706387035272
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.019065776930409915,
+      "delta_share": 0.019065776930409915
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.004766444232602479,
+      "v3_share": 0.0,
+      "delta_share": -0.004766444232602479
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_BAND_FAST_FAILURE_EXIT",
+      "v2_share": 0.8096555192356047,
+      "v3_share": 0.0,
+      "delta_share": -0.8096555192356047
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.5966809152627609,
+      "delta_share": 0.5966809152627609
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.0,
+      "v3_share": 0.19797167043835387,
+      "delta_share": 0.19797167043835387
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.18481267286899672,
+      "delta_share": 0.18481267286899672
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_GIVEBACK_EXIT",
+      "v2_share": 0.15723744866314643,
+      "v3_share": 0.0,
+      "delta_share": -0.15723744866314643
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.030844019780403988,
+      "v3_share": 0.0,
+      "delta_share": -0.030844019780403988
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.020450926158746125,
+      "delta_share": 0.020450926158746125
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_CONTINUATION_FAILED_EXIT",
+      "v2_share": 0.0020953817785600536,
+      "v3_share": 0.0,
+      "delta_share": -0.0020953817785600536
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "v2_share": 0.0001676305422848043,
+      "v3_share": 0.0,
+      "delta_share": -0.0001676305422848043
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "reason": "AEE_V3_FAMILY_EXTENSION_HOLD",
+      "v2_share": 0.0,
+      "v3_share": 8.381527114240215e-05,
+      "delta_share": 8.381527114240215e-05
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "reason": "AEE_BAND_FAST_FAILURE_EXIT",
+      "v2_share": 0.8604651162790697,
+      "v3_share": 0.0,
+      "delta_share": -0.8604651162790697
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.46511627906976744,
+      "delta_share": 0.46511627906976744
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.18604651162790697,
+      "delta_share": 0.18604651162790697
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.0,
+      "v3_share": 0.18604651162790697,
+      "delta_share": 0.18604651162790697
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.16279069767441862,
+      "delta_share": 0.16279069767441862
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "reason": "AEE_GIVEBACK_EXIT",
+      "v2_share": 0.13953488372093023,
+      "v3_share": 0.0,
+      "delta_share": -0.13953488372093023
+    }
+  ],
+  "breakout_transition_blame": [
+    {
+      "reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.2725944479231893,
+      "delta_share": 0.2725944479231893,
+      "v2_branch_damage_delta_pph": 0.0,
+      "v3_branch_damage_delta_pph": 2.945357622311707,
+      "delta_branch_damage_delta_pph": 2.945357622311707,
+      "v2_avg_hold_sec": 0.0,
+      "v3_avg_hold_sec": 157.62633996937214,
+      "delta_avg_hold_sec": 157.62633996937214
+    },
+    {
+      "reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.24900855771237737,
+      "delta_share": 0.24900855771237737,
+      "v2_branch_damage_delta_pph": 0.0,
+      "v3_branch_damage_delta_pph": 2.168497888052289,
+      "delta_branch_damage_delta_pph": 2.168497888052289,
+      "v2_avg_hold_sec": 0.0,
+      "v3_avg_hold_sec": 393.5456831517184,
+      "delta_avg_hold_sec": 393.5456831517184
+    },
+    {
+      "reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.0,
+      "v3_share": 0.21790857858484658,
+      "delta_share": 0.21790857858484658,
+      "v2_branch_damage_delta_pph": 0.0,
+      "v3_branch_damage_delta_pph": 2.0666310630144507,
+      "delta_branch_damage_delta_pph": 2.0666310630144507,
+      "v2_avg_hold_sec": 0.0,
+      "v3_avg_hold_sec": 240.0,
+      "delta_avg_hold_sec": 240.0
+    },
+    {
+      "reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "v2_share": 0.0,
+      "v3_share": 0.25902734293466917,
+      "delta_share": 0.25902734293466917,
+      "v2_branch_damage_delta_pph": 0.0,
+      "v3_branch_damage_delta_pph": 1.7583366730041852,
+      "delta_branch_damage_delta_pph": 1.7583366730041852,
+      "v2_avg_hold_sec": 0.0,
+      "v3_avg_hold_sec": 439.4842868654311,
+      "delta_avg_hold_sec": 439.4842868654311
+    },
+    {
+      "reason": "AEE_V3_FAMILY_EXTENSION_HOLD",
+      "v2_share": 0.0,
+      "v3_share": 0.0014610728449175538,
+      "delta_share": 0.0014610728449175538,
+      "v2_branch_damage_delta_pph": 0.0,
+      "v3_branch_damage_delta_pph": 0.009977424714976146,
+      "delta_branch_damage_delta_pph": 0.009977424714976146,
+      "v2_avg_hold_sec": 0.0,
+      "v3_avg_hold_sec": 437.14285714285717,
+      "delta_avg_hold_sec": 437.14285714285717
+    },
+    {
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "v2_share": 0.001878522229179712,
+      "v3_share": 0.0,
+      "delta_share": -0.001878522229179712,
+      "v2_branch_damage_delta_pph": 0.014048365524807815,
+      "v3_branch_damage_delta_pph": 0.0,
+      "delta_branch_damage_delta_pph": -0.014048365524807815,
+      "v2_avg_hold_sec": 540.0,
+      "v3_avg_hold_sec": 0.0,
+      "delta_avg_hold_sec": -540.0
+    },
+    {
+      "reason": "AEE_CONTINUATION_FAILED_EXIT",
+      "v2_share": 0.0027134209977040286,
+      "v3_share": 0.0,
+      "delta_share": -0.0027134209977040286,
+      "v2_branch_damage_delta_pph": 0.022001194632142007,
+      "v3_branch_damage_delta_pph": 0.0,
+      "delta_branch_damage_delta_pph": -0.022001194632142007,
+      "v2_avg_hold_sec": 821.5384615384615,
+      "v3_avg_hold_sec": 0.0,
+      "delta_avg_hold_sec": -821.5384615384615
+    },
+    {
+      "reason": "AEE_NEVER_GREEN_TIMEOUT",
+      "v2_share": 0.01857649759966604,
+      "v3_share": 0.0,
+      "delta_share": -0.01857649759966604,
+      "v2_branch_damage_delta_pph": 0.18202478893501833,
+      "v3_branch_damage_delta_pph": 0.0,
+      "delta_branch_damage_delta_pph": -0.18202478893501833,
+      "v2_avg_hold_sec": 660.0,
+      "v3_avg_hold_sec": 0.0,
+      "delta_avg_hold_sec": -660.0
+    },
+    {
+      "reason": "AEE_GIVEBACK_EXIT",
+      "v2_share": 0.3529534543936548,
+      "v3_share": 0.0,
+      "delta_share": -0.3529534543936548,
+      "v2_branch_damage_delta_pph": 2.3070380701289945,
+      "v3_branch_damage_delta_pph": 0.0,
+      "delta_branch_damage_delta_pph": -2.3070380701289945,
+      "v2_avg_hold_sec": 510.01774098166766,
+      "v3_avg_hold_sec": 0.0,
+      "delta_avg_hold_sec": -510.01774098166766
+    },
+    {
+      "reason": "AEE_BAND_FAST_FAILURE_EXIT",
+      "v2_share": 0.6238781047797954,
+      "v3_share": 0.0,
+      "delta_share": -0.6238781047797954,
+      "v2_branch_damage_delta_pph": 6.429222334510279,
+      "v3_branch_damage_delta_pph": 0.0,
+      "delta_branch_damage_delta_pph": -6.429222334510279,
+      "v2_avg_hold_sec": 139.83271997323519,
+      "v3_avg_hold_sec": 0.0,
+      "delta_avg_hold_sec": -139.83271997323519
+    }
+  ]
+}

@@ -1,0 +1,6536 @@
+{
+  "trade": {
+    "id": 1,
+    "ts": 1768892820.0,
+    "pair": "EUR_USD",
+    "setup": "SIM_RUN",
+    "dir": "LONG",
+    "mode": "SIM",
+    "units": 1000,
+    "entry": 1.1666,
+    "atr_entry": 0.001,
+    "ttl_sec": 3600,
+    "pg_t": 0,
+    "pg_atr": 0.0,
+    "tp": 1.2666000000000002
+  },
+  "live_parity_check": {
+    "shared_aee_function": "phone_bot._aee_eval_for_trade",
+    "shared_exit_function": "phone_bot.check_aee_exits",
+    "trade_shape_keys": [
+      "atr_entry",
+      "dir",
+      "entry",
+      "id",
+      "mode",
+      "pair",
+      "pg_atr",
+      "pg_t",
+      "setup",
+      "tp",
+      "ts",
+      "ttl_sec",
+      "units"
+    ],
+    "decision_to_action_trace_event": "AEE_DECISION_ORDER_ACTION"
+  },
+  "n_ticks": 59,
+  "bucket_sec": 0.1,
+  "tick_records": [
+    {
+      "idx": 1,
+      "pair_eval_idx": 1,
+      "ts": 1768892820.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16644,
+      "ask": 1.1666,
+      "mid": 1.16652,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6131714147008201,
+        "speed": 0.0,
+        "velocity": 0.0,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.0774397899602,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.16652,
+        "local_low": 1.16652,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.24526856588032808,
+        "continuation_strength": 0.0,
+        "data_quality": "DEGRADED",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "SURVIVAL",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 0.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 2,
+      "pair_eval_idx": 2,
+      "ts": 1768892825.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16645,
+      "ask": 1.16662,
+      "mid": 1.166535,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.49820177444377817,
+        "speed": 0.0229939280514084,
+        "velocity": 0.0229939280514084,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.9624701497031,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16652,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.24526856588032808,
+        "continuation_strength": 0.0229939280514084,
+        "data_quality": "DEGRADED",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "SURVIVAL",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 5.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 3,
+      "pair_eval_idx": 3,
+      "ts": 1768892830.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16639,
+      "ask": 1.16655,
+      "mid": 1.16647,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "C",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.9964035488892583,
+        "speed": 0.09964035488909602,
+        "velocity": 0.07664642683768762,
+        "pullback": 0.4982017744454801,
+        "pullback_rate": 0.4982017744454801,
+        "dist_to_tp": 767.4606719241486,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.166535,
+        "local_low": 1.16647,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.39856141955570334,
+        "continuation_strength": -0.3985614195563841,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 10.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 4,
+      "pair_eval_idx": 4,
+      "ts": 1768892835.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16639,
+      "ask": 1.16653,
+      "mid": 1.16646,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.0730499757255842,
+        "speed": 0.01532928536726522,
+        "velocity": -0.0843110695218308,
+        "pullback": 0.5748482012818061,
+        "pullback_rate": 0.07664642683632605,
+        "dist_to_tp": 767.537318350985,
+        "near_tp_band": 1.2876599708707013,
+        "local_high": 1.166535,
+        "local_low": 1.16646,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.4292199902902337,
+        "continuation_strength": -0.06131714146906084,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 15.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 5,
+      "pair_eval_idx": 5,
+      "ts": 1768892840.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16641,
+      "ask": 1.16656,
+      "mid": 1.166485,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "PULSE_STALL_CAPTURE",
+      "exit_blocked_min_hold": true,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8814339086322163,
+        "speed": 0.03832321341867362,
+        "velocity": 0.0229939280514084,
+        "pullback": 0.3832321341884381,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.3457022838916,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.166535,
+        "local_low": 1.16646,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.4292199902902337,
+        "continuation_strength": 0.03832321341867362,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "PULSE_STALL_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 20.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 6,
+      "pair_eval_idx": 6,
+      "ts": 1768892845.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16641,
+      "ask": 1.16657,
+      "mid": 1.16649,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8431106952132023,
+        "speed": 0.0076646426838028,
+        "velocity": -0.03065857073487082,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.3073790704726,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.166535,
+        "local_low": 1.16646,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.4292199902902337,
+        "continuation_strength": 0.0076646426838028,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 25.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 7,
+      "pair_eval_idx": 7,
+      "ts": 1768892850.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16641,
+      "ask": 1.16657,
+      "mid": 1.16649,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PROTECT",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8431106952132023,
+        "speed": 0.0,
+        "velocity": -0.0076646426838028,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.3073790704726,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.166535,
+        "local_low": 1.16646,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.4292199902902337,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 30.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 8,
+      "pair_eval_idx": 8,
+      "ts": 1768892855.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16636,
+      "ask": 1.16652,
+      "mid": 1.1664400000000001,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "C",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.2263428293999385,
+        "speed": 0.07664642683734724,
+        "velocity": 0.07664642683734724,
+        "pullback": 0.7281410549561602,
+        "pullback_rate": 0.38323213418673613,
+        "dist_to_tp": 767.6906112046593,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.166535,
+        "local_low": 1.1664400000000001,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.49053713175997543,
+        "continuation_strength": -0.3065857073493889,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 35.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 9,
+      "pair_eval_idx": 9,
+      "ts": 1768892860.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16635,
+      "ask": 1.16651,
+      "mid": 1.16643,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.3029892562379664,
+        "speed": 0.0153292853676056,
+        "velocity": -0.06131714146974164,
+        "pullback": 0.8047874817941882,
+        "pullback_rate": 0.07664642683802803,
+        "dist_to_tp": 767.7672576314973,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.06131714147042243,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 40.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 10,
+      "pair_eval_idx": 10,
+      "ts": 1768892865.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16635,
+      "ask": 1.16652,
+      "mid": 1.1664349999999999,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.2646660428206544,
+        "speed": 0.0076646426834624205,
+        "velocity": -0.00766464268414318,
+        "pullback": 0.7664642683768762,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.72893441808,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0076646426834624205,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 45.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 11,
+      "pair_eval_idx": 11,
+      "ts": 1768892870.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16639,
+      "ask": 1.16654,
+      "mid": 1.166465,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "C",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.0347267623065703,
+        "speed": 0.0459878561028168,
+        "velocity": 0.03832321341935438,
+        "pullback": 0.5365249878627921,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.4989951375659,
+        "near_tp_band": 1.3796356830742926,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0459878561028168,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 50.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 12,
+      "pair_eval_idx": 12,
+      "ts": 1768892875.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1664,
+      "ask": 1.16657,
+      "mid": 1.1664850000000002,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8814339086305144,
+        "speed": 0.0306585707352112,
+        "velocity": -0.015329285367605597,
+        "pullback": 0.3832321341867362,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.3457022838899,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0306585707352112,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 55.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 13,
+      "pair_eval_idx": 13,
+      "ts": 1768892880.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16642,
+      "ask": 1.16659,
+      "mid": 1.166505,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7281410549578622,
+        "speed": 0.03065857073453044,
+        "velocity": -6.807610031245304e-13,
+        "pullback": 0.229939280514084,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.1924094302173,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.03065857073453044,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 60.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 14,
+      "pair_eval_idx": 14,
+      "ts": 1768892885.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16637,
+      "ask": 1.16653,
+      "mid": 1.16645,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "C",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.1496964025636123,
+        "speed": 0.08431106952115004,
+        "velocity": 0.0536524987866196,
+        "pullback": 0.6514946281198342,
+        "pullback_rate": 0.4215553476057502,
+        "dist_to_tp": 767.613964777823,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.33724427808460017,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 65.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 15,
+      "pair_eval_idx": 15,
+      "ts": 1768892890.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16641,
+      "ask": 1.16658,
+      "mid": 1.1664949999999998,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8047874817958901,
+        "speed": 0.06898178415354443,
+        "velocity": -0.01532928536760561,
+        "pullback": 0.306585707352112,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.2690558570553,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.06898178415354443,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 70.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 16,
+      "pair_eval_idx": 16,
+      "ts": 1768892895.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16642,
+      "ask": 1.16657,
+      "mid": 1.166495,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8047874817941882,
+        "speed": 3.40378511321075e-13,
+        "velocity": -0.06898178415320405,
+        "pullback": 0.3065857073504101,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.2690558570536,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 3.40378511321075e-13,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 75.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 17,
+      "pair_eval_idx": 17,
+      "ts": 1768892900.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1664,
+      "ask": 1.16657,
+      "mid": 1.1664850000000002,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "PULSE_STALL_CAPTURE",
+      "exit_blocked_min_hold": true,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8814339086305144,
+        "speed": 0.01532928536726522,
+        "velocity": 0.015329285366924841,
+        "pullback": 0.3832321341867362,
+        "pullback_rate": 0.07664642683632611,
+        "dist_to_tp": 767.3457022838899,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.06131714146906089,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "PULSE_STALL_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 80.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 18,
+      "pair_eval_idx": 18,
+      "ts": 1768892905.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16641,
+      "ask": 1.16657,
+      "mid": 1.16649,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8431106952132023,
+        "speed": 0.0076646426834624205,
+        "velocity": -0.007664642683802799,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.3073790704726,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0076646426834624205,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 85.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 19,
+      "pair_eval_idx": 19,
+      "ts": 1768892910.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16643,
+      "ask": 1.1666,
+      "mid": 1.166515,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6514946281198342,
+        "speed": 0.03832321341867362,
+        "velocity": 0.030658570735211197,
+        "pullback": 0.153292853676056,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 767.1157630033792,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.03832321341867362,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 90.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 20,
+      "pair_eval_idx": 20,
+      "ts": 1768892915.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16641,
+      "ask": 1.16657,
+      "mid": 1.16649,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "PULSE_STALL_CAPTURE",
+      "exit_blocked_min_hold": true,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8431106952132023,
+        "speed": 0.03832321341867362,
+        "velocity": 0.0,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.1916160670933681,
+        "dist_to_tp": 767.3073790704726,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.166535,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.15329285367469447,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "PULSE_STALL_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 95.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 21,
+      "pair_eval_idx": 21,
+      "ts": 1768892920.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16648,
+      "ask": 1.16663,
+      "mid": 1.166555,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.3449089207694241,
+        "speed": 0.09964035488875564,
+        "velocity": 0.06131714147008202,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.8091772960288,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.166555,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.09964035488875564,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 100.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 22,
+      "pair_eval_idx": 22,
+      "ts": 1768892925.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16649,
+      "ask": 1.16664,
+      "mid": 1.1665649999999999,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.268262493933098,
+        "speed": 0.01532928536726522,
+        "velocity": -0.08431106952149042,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.7325308691925,
+        "near_tp_band": 1.3796356830742926,
+        "local_high": 1.1665649999999999,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.01532928536726522,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 105.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 23,
+      "pair_eval_idx": 23,
+      "ts": 1768892930.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16656,
+      "ask": 1.16672,
+      "mid": 1.1666400000000001,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.3065857073504101,
+        "speed": 0.11496964025670162,
+        "velocity": 0.0996403548894364,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.157682667909,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1666400000000001,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.11496964025670162,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 110.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 24,
+      "pair_eval_idx": 24,
+      "ts": 1768892935.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16652,
+      "ask": 1.16666,
+      "mid": 1.16659,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "A",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.076646426838028,
+        "speed": 0.07664642683768762,
+        "velocity": -0.038323213419014,
+        "pullback": 0.3832321341884381,
+        "pullback_rate": 0.3832321341884381,
+        "dist_to_tp": 766.5409148020974,
+        "near_tp_band": 1.2876599708707013,
+        "local_high": 1.1666400000000001,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.30658570735075047,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 115.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 25,
+      "pair_eval_idx": 25,
+      "ts": 1768892940.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16654,
+      "ask": 1.16668,
+      "mid": 1.16661,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "A",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.0766464268363261,
+        "speed": 0.03065857073487082,
+        "velocity": -0.0459878561028168,
+        "pullback": 0.229939280514084,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.3876219484231,
+        "near_tp_band": 1.2876599708707013,
+        "local_high": 1.1666400000000001,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.03065857073487082,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 120.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 26,
+      "pair_eval_idx": 26,
+      "ts": 1768892945.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16657,
+      "ask": 1.16671,
+      "mid": 1.1666400000000001,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.3065857073504101,
+        "speed": 0.0459878561028168,
+        "velocity": 0.015329285367945977,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.157682667909,
+        "near_tp_band": 1.2876599708686591,
+        "local_high": 1.1666400000000001,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0459878561028168,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 125.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 27,
+      "pair_eval_idx": 27,
+      "ts": 1768892950.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16658,
+      "ask": 1.16672,
+      "mid": 1.16665,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.3832321341867362,
+        "speed": 0.01532928536726522,
+        "velocity": -0.030658570735551578,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.0810362410726,
+        "near_tp_band": 1.2876599708707013,
+        "local_high": 1.16665,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.01532928536726522,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": true,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 130.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 28,
+      "pair_eval_idx": 28,
+      "ts": 1768892955.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16658,
+      "ask": 1.16673,
+      "mid": 1.166655,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.4215553476057502,
+        "speed": 0.0076646426838028,
+        "velocity": -0.00766464268346242,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.0427130276536,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.166655,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0076646426838028,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 135.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 29,
+      "pair_eval_idx": 29,
+      "ts": 1768892960.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16659,
+      "ask": 1.16674,
+      "mid": 1.166665,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.49820177444377817,
+        "speed": 0.0153292853676056,
+        "velocity": 0.0076646426838028,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.9660666008156,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.166665,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0153292853676056,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 140.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 30,
+      "pair_eval_idx": 30,
+      "ts": 1768892965.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16662,
+      "ask": 1.16678,
+      "mid": 1.1667,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7664642683751742,
+        "speed": 0.053652498786279215,
+        "velocity": 0.03832321341867362,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.6978041068842,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.053652498786279215,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 145.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 31,
+      "pair_eval_idx": 31,
+      "ts": 1768892970.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16657,
+      "ask": 1.16672,
+      "mid": 1.166645,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.34490892076772217,
+        "speed": 0.08431106952149041,
+        "velocity": 0.030658570735211194,
+        "pullback": 0.42155534760745206,
+        "pullback_rate": 0.42155534760745206,
+        "dist_to_tp": 766.1193594544916,
+        "near_tp_band": 1.3796356830742926,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.33724427808596164,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 150.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 32,
+      "pair_eval_idx": 32,
+      "ts": 1768892975.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16658,
+      "ask": 1.16673,
+      "mid": 1.166655,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.4215553476057502,
+        "speed": 0.0153292853676056,
+        "velocity": -0.06898178415388481,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.0427130276536,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0153292853676056,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 155.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 33,
+      "pair_eval_idx": 33,
+      "ts": 1768892980.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16658,
+      "ask": 1.16673,
+      "mid": 1.166655,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.4215553476057502,
+        "speed": 0.0,
+        "velocity": -0.0153292853676056,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 766.0427130276536,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 160.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 34,
+      "pair_eval_idx": 34,
+      "ts": 1768892985.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16659,
+      "ask": 1.16674,
+      "mid": 1.166665,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.49820177444377817,
+        "speed": 0.0153292853676056,
+        "velocity": 0.0153292853676056,
+        "pullback": 0.26826249393139606,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.9660666008156,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0153292853676056,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 165.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 35,
+      "pair_eval_idx": 35,
+      "ts": 1768892990.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16658,
+      "ask": 1.16673,
+      "mid": 1.166655,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.4215553476057502,
+        "speed": 0.0153292853676056,
+        "velocity": 0.0,
+        "pullback": 0.3449089207694241,
+        "pullback_rate": 0.07664642683802803,
+        "dist_to_tp": 766.0427130276536,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.06131714147042243,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 170.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 36,
+      "pair_eval_idx": 36,
+      "ts": 1768892995.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16662,
+      "ask": 1.16678,
+      "mid": 1.1667,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7664642683751742,
+        "speed": 0.06898178415388481,
+        "velocity": 0.053652498786279215,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.6978041068842,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.06898178415388481,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 175.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 37,
+      "pair_eval_idx": 37,
+      "ts": 1768893000.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16662,
+      "ask": 1.16677,
+      "mid": 1.166695,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7281410549561602,
+        "speed": 0.0076646426838028,
+        "velocity": -0.061317141470082014,
+        "pullback": 0.038323213419014,
+        "pullback_rate": 0.038323213419014,
+        "dist_to_tp": 765.7361273203032,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.0306585707352112,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 180.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 38,
+      "pair_eval_idx": 38,
+      "ts": 1768893005.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16677,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0076646426838028,
+        "velocity": 0.0,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.038323213419014,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.0306585707352112,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 185.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 39,
+      "pair_eval_idx": 39,
+      "ts": 1768893010.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16662,
+      "ask": 1.16676,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0,
+        "velocity": -0.0076646426838028,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.2876599708707013,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 190.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 40,
+      "pair_eval_idx": 40,
+      "ts": 1768893015.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16676,
+      "mid": 1.166685,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6514946281181323,
+        "speed": 0.0076646426838028,
+        "velocity": 0.0076646426838028,
+        "pullback": 0.114969640257042,
+        "pullback_rate": 0.038323213419014,
+        "dist_to_tp": 765.8127737471413,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.0306585707352112,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 195.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 41,
+      "pair_eval_idx": 41,
+      "ts": 1768893020.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16676,
+      "mid": 1.166685,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6514946281181323,
+        "speed": 0.0,
+        "velocity": -0.0076646426838028,
+        "pullback": 0.114969640257042,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.8127737471413,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 200.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 42,
+      "pair_eval_idx": 42,
+      "ts": 1768893025.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16662,
+      "ask": 1.16678,
+      "mid": 1.1667,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7664642683751742,
+        "speed": 0.0229939280514084,
+        "velocity": 0.0229939280514084,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.6978041068842,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0229939280514084,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 205.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 43,
+      "pair_eval_idx": 43,
+      "ts": 1768893030.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16677,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0153292853676056,
+        "velocity": -0.007664642683802798,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.076646426838028,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.0613171414704224,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 210.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 44,
+      "pair_eval_idx": 44,
+      "ts": 1768893035.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1666,
+      "ask": 1.16676,
+      "mid": 1.16668,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6131714146991183,
+        "speed": 0.0153292853676056,
+        "velocity": 0.0,
+        "pullback": 0.153292853676056,
+        "pullback_rate": 0.076646426838028,
+        "dist_to_tp": 765.8510969605602,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.0613171414704224,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 215.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 45,
+      "pair_eval_idx": 45,
+      "ts": 1768893040.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1666,
+      "ask": 1.16676,
+      "mid": 1.16668,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6131714146991183,
+        "speed": 0.0,
+        "velocity": -0.0153292853676056,
+        "pullback": 0.153292853676056,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.8510969605602,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 220.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 46,
+      "pair_eval_idx": 46,
+      "ts": 1768893045.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16676,
+      "mid": 1.166685,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6514946281181323,
+        "speed": 0.0076646426838028,
+        "velocity": 0.0076646426838028,
+        "pullback": 0.114969640257042,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.8127737471413,
+        "near_tp_band": 1.379635683076335,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0076646426838028,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 225.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 47,
+      "pair_eval_idx": 47,
+      "ts": 1768893050.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1666,
+      "ask": 1.16677,
+      "mid": 1.1666850000000002,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6514946281198342,
+        "speed": 3.40378511321075e-13,
+        "velocity": -0.007664642683462421,
+        "pullback": 0.1149696402553401,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.8127737471395,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 3.40378511321075e-13,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 230.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 48,
+      "pair_eval_idx": 48,
+      "ts": 1768893055.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1666,
+      "ask": 1.16678,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0076646426834624205,
+        "velocity": 0.007664642683122042,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.6555628196891512,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0076646426834624205,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 235.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 49,
+      "pair_eval_idx": 49,
+      "ts": 1768893060.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16677,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0,
+        "velocity": -0.0076646426834624205,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 240.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 50,
+      "pair_eval_idx": 50,
+      "ts": 1768893065.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16677,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0,
+        "velocity": 0.0,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 245.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 51,
+      "pair_eval_idx": 51,
+      "ts": 1768893070.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16662,
+      "ask": 1.16678,
+      "mid": 1.1667,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7664642683751742,
+        "speed": 0.0153292853676056,
+        "velocity": 0.0153292853676056,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.6978041068842,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0153292853676056,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 250.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 52,
+      "pair_eval_idx": 52,
+      "ts": 1768893075.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16663,
+      "ask": 1.16677,
+      "mid": 1.1667,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.7664642683751742,
+        "speed": 0.0,
+        "velocity": -0.0153292853676056,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.6978041068842,
+        "near_tp_band": 1.2876599708707013,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 255.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 53,
+      "pair_eval_idx": 53,
+      "ts": 1768893080.0,
+      "instrument": "EUR_USD",
+      "bid": 1.1666,
+      "ask": 1.16676,
+      "mid": 1.16668,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6131714146991183,
+        "speed": 0.0306585707352112,
+        "velocity": 0.0306585707352112,
+        "pullback": 0.153292853676056,
+        "pullback_rate": 0.153292853676056,
+        "dist_to_tp": 765.8510969605602,
+        "near_tp_band": 1.4716113952799263,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.1226342829408448,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 260.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 54,
+      "pair_eval_idx": 54,
+      "ts": 1768893085.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16659,
+      "ask": 1.16676,
+      "mid": 1.1666750000000001,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.5748482012818061,
+        "speed": 0.0076646426834624205,
+        "velocity": -0.02299392805174878,
+        "pullback": 0.1916160670933681,
+        "pullback_rate": 0.038323213417312096,
+        "dist_to_tp": 765.8894201739776,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": -0.030658570733849675,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 265.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 55,
+      "pair_eval_idx": 55,
+      "ts": 1768893090.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16677,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.022993928051068018,
+        "velocity": 0.015329285367605597,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.022993928051068018,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 270.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 56,
+      "pair_eval_idx": 56,
+      "ts": 1768893095.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16661,
+      "ask": 1.16677,
+      "mid": 1.16669,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.6898178415371463,
+        "speed": 0.0,
+        "velocity": -0.022993928051068018,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.7744505337222,
+        "near_tp_band": 1.4716113952819685,
+        "local_high": 1.1667,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.0,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 275.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 57,
+      "pair_eval_idx": 57,
+      "ts": 1768893100.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16663,
+      "ask": 1.1668,
+      "mid": 1.166715,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": true,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 0.8814339086305144,
+        "speed": 0.03832321341867362,
+        "velocity": 0.03832321341867362,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 765.5828344666288,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166715,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.5211957024951865,
+        "continuation_strength": 0.03832321341867362,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.0,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 280.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 58,
+      "pair_eval_idx": 58,
+      "ts": 1768893105.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16677,
+      "ask": 1.16694,
+      "mid": 1.166855,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": false,
+      "tick_due": true,
+      "tick_reason": "",
+      "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.9544838843560988,
+        "speed": 0.21460999514511686,
+        "velocity": 0.17628678172644324,
+        "pullback": 0.0,
+        "pullback_rate": 0.0,
+        "dist_to_tp": 764.5097844909033,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166855,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.6,
+        "continuation_strength": 0.21460999514511686,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": true,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.7544838843558132,
+      "eval_mode": "BUCKET",
+      "aee_true_rules": [],
+      "aee_chosen_rule": "TIME_DECAY_PROFIT_CAPTURE",
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 285.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    },
+    {
+      "idx": 59,
+      "pair_eval_idx": 59,
+      "ts": 1768893110.0,
+      "instrument": "EUR_USD",
+      "bid": 1.16676,
+      "ask": 1.16693,
+      "mid": 1.166845,
+      "evaluated": true,
+      "bucket_due": true,
+      "tick_mode_active_before": false,
+      "phase": "AEEPhase.PANIC",
+      "tick_armed": true,
+      "tick_due": false,
+      "tick_reason": "B",
+      "exit_reason": null,
+      "exit_blocked_min_hold": false,
+      "runner_exit_blocked_min_hold": false,
+      "metrics": {
+        "progress": 1.8778374575180707,
+        "speed": 0.0153292853676056,
+        "velocity": -0.19928070977751125,
+        "pullback": 0.076646426838028,
+        "pullback_rate": 0.076646426838028,
+        "dist_to_tp": 764.5864309177413,
+        "near_tp_band": 1.5635871074855598,
+        "local_high": 1.166855,
+        "local_low": 1.16643,
+        "atr_exec": 0.00013046922619364728,
+        "leg_mult": 1.0,
+        "is_runner": true,
+        "allowed_giveback_atr": 0.6,
+        "continuation_strength": -0.0613171414704224,
+        "data_quality": "OK",
+        "runner_ctx": {
+          "trend_bias": 0,
+          "regime": "mixed",
+          "vol_state": "normal"
+        }
+      },
+      "core_open": false,
+      "runner_open": false,
+      "runner_promoted": false,
+      "overshoot_peak_atr": 0.7544838843558132,
+      "eval_mode": "TICK",
+      "aee_true_rules": [],
+      "aee_chosen_rule": null,
+      "panic_confirmation_hits": 0,
+      "trade_age_sec": 290.0,
+      "rule_hit_count": {
+        "pulse": 0,
+        "decay": 0,
+        "panic": 0
+      },
+      "rule_persistence": {
+        "pulse": 0.0,
+        "decay": 0.0,
+        "panic": 0.0
+      },
+      "exit_allowed": {
+        "pulse": false,
+        "decay": false,
+        "panic": false
+      },
+      "panic_subreasons": [],
+      "panic_exit_metrics": {}
+    }
+  ],
+  "exit": {
+    "pair_eval_idx": 59,
+    "idx": 59,
+    "ts": 1768893110.0,
+    "price": 1.16676,
+    "reason": "KINEMATIC_EXIT",
+    "metrics": {
+      "progress": 1.8778374575180707,
+      "speed": 0.0153292853676056,
+      "velocity": -0.19928070977751125,
+      "pullback": 0.076646426838028,
+      "pullback_rate": 0.076646426838028,
+      "dist_to_tp": 764.5864309177413,
+      "near_tp_band": 1.5635871074855598,
+      "local_high": 1.166855,
+      "local_low": 1.16643,
+      "atr_exec": 0.00013046922619364728,
+      "leg_mult": 1.0,
+      "is_runner": true,
+      "allowed_giveback_atr": 0.6,
+      "continuation_strength": -0.0613171414704224,
+      "data_quality": "OK",
+      "runner_ctx": {
+        "trend_bias": 0,
+        "regime": "mixed",
+        "vol_state": "normal"
+      }
+    },
+    "overshoot_peak_atr": 0.7544838843558132,
+    "exit_reason": "KINEMATIC_EXIT",
+    "core_pips": -0.20000000000131024,
+    "runner_pips": 1.5999999999993797,
+    "total_weighted_pips": 0.24999999999886224
+  },
+  "legs": {
+    "core": {
+      "weight": 0.8,
+      "entry_ts": 1768892820.0,
+      "entry_price": 1.1666,
+      "exit": {
+        "pair_eval_idx": 28,
+        "idx": 28,
+        "ts": 1768892955.0,
+        "price": 1.16658,
+        "reason": "SPLIT_STRIKE_1",
+        "metrics": {
+          "progress": 0.4215553476057502,
+          "speed": 0.0076646426838028,
+          "velocity": -0.00766464268346242,
+          "pullback": 0.0,
+          "pullback_rate": 0.0,
+          "dist_to_tp": 766.0427130276536,
+          "near_tp_band": 1.379635683076335,
+          "local_high": 1.166655,
+          "local_low": 1.16643,
+          "atr_exec": 0.00013046922619364728,
+          "leg_mult": 1.0,
+          "is_runner": true,
+          "allowed_giveback_atr": 0.5211957024951865,
+          "continuation_strength": 0.0076646426838028,
+          "data_quality": "OK",
+          "runner_ctx": {
+            "trend_bias": 0,
+            "regime": "mixed",
+            "vol_state": "normal"
+          }
+        }
+      },
+      "exit_ts": 1768892955.0,
+      "pips": -0.20000000000131024,
+      "hold_sec": 135.0,
+      "mfe_pips": 0.5499999999991623,
+      "mae_pips": -1.7000000000000348,
+      "capture": -0.36363636363929974,
+      "left_on_table_pips": 0.7500000000004725,
+      "panic_recovery_pips": {
+        "plus_30": null,
+        "plus_60": null,
+        "plus_120": null
+      }
+    },
+    "runner": {
+      "weight": 0.2,
+      "entry_ts": 1768892820.0,
+      "entry_price": 1.1666,
+      "exit": {
+        "pair_eval_idx": 59,
+        "idx": 59,
+        "ts": 1768893110.0,
+        "price": 1.16676,
+        "reason": "KINEMATIC_EXIT",
+        "metrics": {
+          "progress": 1.8778374575180707,
+          "speed": 0.0153292853676056,
+          "velocity": -0.19928070977751125,
+          "pullback": 0.076646426838028,
+          "pullback_rate": 0.076646426838028,
+          "dist_to_tp": 764.5864309177413,
+          "near_tp_band": 1.5635871074855598,
+          "local_high": 1.166855,
+          "local_low": 1.16643,
+          "atr_exec": 0.00013046922619364728,
+          "leg_mult": 1.0,
+          "is_runner": true,
+          "allowed_giveback_atr": 0.6,
+          "continuation_strength": -0.0613171414704224,
+          "data_quality": "OK",
+          "runner_ctx": {
+            "trend_bias": 0,
+            "regime": "mixed",
+            "vol_state": "normal"
+          }
+        },
+        "overshoot_peak_atr": 0.7544838843558132
+      },
+      "exit_ts": 1768893110.0,
+      "pips": 1.5999999999993797,
+      "hold_sec": 290.0,
+      "mfe_pips": 2.549999999998942,
+      "mae_pips": -1.7000000000000348,
+      "capture": 0.627450980392174,
+      "left_on_table_pips": 0.9499999999995623,
+      "panic_recovery_pips": {
+        "plus_30": null,
+        "plus_60": null,
+        "plus_120": null
+      },
+      "promoted": false,
+      "overshoot_peak_atr": 0.7544838843558132,
+      "runner_capture_rate": 0.627450980392174,
+      "runner_average_overshoot": 0.7544838843558132,
+      "runner_tail_contributions": 1.5999999999993797
+    }
+  },
+  "weighted_pips": 0.24999999999886224,
+  "pips_per_hour": {
+    "weighted": 3.1034482758479447,
+    "core": -2.48275862070592,
+    "runner": 19.86206896550954
+  },
+  "replay_wall_time_sec": 290.0,
+  "log_summary": {
+    "total_events": 237,
+    "event_counts": {
+      "AEE_ENTER": 118,
+      "AEE_SURVIVAL_MODE": 1,
+      "AEE_DECISION": 118
+    },
+    "first_event": {
+      "idx": 0,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892820.0"
+        ]
+      }
+    },
+    "last_event": {
+      "idx": 236,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    }
+  },
+  "logs": [
+    {
+      "idx": 0,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892820.0"
+        ]
+      }
+    },
+    {
+      "idx": 1,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892820.0"
+        ]
+      }
+    },
+    {
+      "idx": 2,
+      "event": "AEE_SURVIVAL_MODE",
+      "level": "warning",
+      "payload": {
+        "pair": "EUR_USD",
+        "trade_id": 1,
+        "ring": 1,
+        "atr_exec": 0.00013046922619364728
+      }
+    },
+    {
+      "idx": 3,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 4,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 5,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892825.0"
+        ]
+      }
+    },
+    {
+      "idx": 6,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892825.0"
+        ]
+      }
+    },
+    {
+      "idx": 7,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 8,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 9,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892830.0"
+        ]
+      }
+    },
+    {
+      "idx": 10,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892830.0"
+        ]
+      }
+    },
+    {
+      "idx": 11,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 12,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 13,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892835.0"
+        ]
+      }
+    },
+    {
+      "idx": 14,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892835.0"
+        ]
+      }
+    },
+    {
+      "idx": 15,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 16,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 17,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892840.0"
+        ]
+      }
+    },
+    {
+      "idx": 18,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892840.0"
+        ]
+      }
+    },
+    {
+      "idx": 19,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=PULSE_STALL_CAPTURE phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 20,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=PULSE_STALL_CAPTURE phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 21,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892845.0"
+        ]
+      }
+    },
+    {
+      "idx": 22,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892845.0"
+        ]
+      }
+    },
+    {
+      "idx": 23,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 24,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 25,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892850.0"
+        ]
+      }
+    },
+    {
+      "idx": 26,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892850.0"
+        ]
+      }
+    },
+    {
+      "idx": 27,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 28,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PROTECT trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 29,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892855.0"
+        ]
+      }
+    },
+    {
+      "idx": 30,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892855.0"
+        ]
+      }
+    },
+    {
+      "idx": 31,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 32,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 33,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892860.0"
+        ]
+      }
+    },
+    {
+      "idx": 34,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892860.0"
+        ]
+      }
+    },
+    {
+      "idx": 35,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 36,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 37,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892865.0"
+        ]
+      }
+    },
+    {
+      "idx": 38,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892865.0"
+        ]
+      }
+    },
+    {
+      "idx": 39,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 40,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 41,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892870.0"
+        ]
+      }
+    },
+    {
+      "idx": 42,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892870.0"
+        ]
+      }
+    },
+    {
+      "idx": 43,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 44,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 45,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892875.0"
+        ]
+      }
+    },
+    {
+      "idx": 46,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892875.0"
+        ]
+      }
+    },
+    {
+      "idx": 47,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 48,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 49,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892880.0"
+        ]
+      }
+    },
+    {
+      "idx": 50,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892880.0"
+        ]
+      }
+    },
+    {
+      "idx": 51,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 52,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 53,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892885.0"
+        ]
+      }
+    },
+    {
+      "idx": 54,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892885.0"
+        ]
+      }
+    },
+    {
+      "idx": 55,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 56,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 57,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892890.0"
+        ]
+      }
+    },
+    {
+      "idx": 58,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892890.0"
+        ]
+      }
+    },
+    {
+      "idx": 59,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 60,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 61,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892895.0"
+        ]
+      }
+    },
+    {
+      "idx": 62,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892895.0"
+        ]
+      }
+    },
+    {
+      "idx": 63,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 64,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 65,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892900.0"
+        ]
+      }
+    },
+    {
+      "idx": 66,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892900.0"
+        ]
+      }
+    },
+    {
+      "idx": 67,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=PULSE_STALL_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 68,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=PULSE_STALL_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 69,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892905.0"
+        ]
+      }
+    },
+    {
+      "idx": 70,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892905.0"
+        ]
+      }
+    },
+    {
+      "idx": 71,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 72,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 73,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892910.0"
+        ]
+      }
+    },
+    {
+      "idx": 74,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892910.0"
+        ]
+      }
+    },
+    {
+      "idx": 75,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 76,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 77,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892915.0"
+        ]
+      }
+    },
+    {
+      "idx": 78,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892915.0"
+        ]
+      }
+    },
+    {
+      "idx": 79,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=PULSE_STALL_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 80,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=PULSE_STALL_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 81,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892920.0"
+        ]
+      }
+    },
+    {
+      "idx": 82,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892920.0"
+        ]
+      }
+    },
+    {
+      "idx": 83,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 84,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 85,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892925.0"
+        ]
+      }
+    },
+    {
+      "idx": 86,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892925.0"
+        ]
+      }
+    },
+    {
+      "idx": 87,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 88,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 89,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892930.0"
+        ]
+      }
+    },
+    {
+      "idx": 90,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892930.0"
+        ]
+      }
+    },
+    {
+      "idx": 91,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 92,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 93,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892935.0"
+        ]
+      }
+    },
+    {
+      "idx": 94,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892935.0"
+        ]
+      }
+    },
+    {
+      "idx": 95,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 96,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 97,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892940.0"
+        ]
+      }
+    },
+    {
+      "idx": 98,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892940.0"
+        ]
+      }
+    },
+    {
+      "idx": 99,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 100,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 101,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892945.0"
+        ]
+      }
+    },
+    {
+      "idx": 102,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892945.0"
+        ]
+      }
+    },
+    {
+      "idx": 103,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 104,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 105,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892950.0"
+        ]
+      }
+    },
+    {
+      "idx": 106,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892950.0"
+        ]
+      }
+    },
+    {
+      "idx": 107,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 108,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 109,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892955.0"
+        ]
+      }
+    },
+    {
+      "idx": 110,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892955.0"
+        ]
+      }
+    },
+    {
+      "idx": 111,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 112,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 113,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892960.0"
+        ]
+      }
+    },
+    {
+      "idx": 114,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892960.0"
+        ]
+      }
+    },
+    {
+      "idx": 115,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 116,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 117,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892965.0"
+        ]
+      }
+    },
+    {
+      "idx": 118,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892965.0"
+        ]
+      }
+    },
+    {
+      "idx": 119,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 120,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 121,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892970.0"
+        ]
+      }
+    },
+    {
+      "idx": 122,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892970.0"
+        ]
+      }
+    },
+    {
+      "idx": 123,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 124,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 125,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892975.0"
+        ]
+      }
+    },
+    {
+      "idx": 126,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892975.0"
+        ]
+      }
+    },
+    {
+      "idx": 127,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 128,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 129,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892980.0"
+        ]
+      }
+    },
+    {
+      "idx": 130,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892980.0"
+        ]
+      }
+    },
+    {
+      "idx": 131,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 132,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 133,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892985.0"
+        ]
+      }
+    },
+    {
+      "idx": 134,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892985.0"
+        ]
+      }
+    },
+    {
+      "idx": 135,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 136,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 137,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892990.0"
+        ]
+      }
+    },
+    {
+      "idx": 138,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892990.0"
+        ]
+      }
+    },
+    {
+      "idx": 139,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 140,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 141,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892995.0"
+        ]
+      }
+    },
+    {
+      "idx": 142,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768892995.0"
+        ]
+      }
+    },
+    {
+      "idx": 143,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 144,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 145,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893000.0"
+        ]
+      }
+    },
+    {
+      "idx": 146,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893000.0"
+        ]
+      }
+    },
+    {
+      "idx": 147,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 148,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 149,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893005.0"
+        ]
+      }
+    },
+    {
+      "idx": 150,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893005.0"
+        ]
+      }
+    },
+    {
+      "idx": 151,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 152,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 153,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893010.0"
+        ]
+      }
+    },
+    {
+      "idx": 154,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893010.0"
+        ]
+      }
+    },
+    {
+      "idx": 155,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 156,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 157,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893015.0"
+        ]
+      }
+    },
+    {
+      "idx": 158,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893015.0"
+        ]
+      }
+    },
+    {
+      "idx": 159,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 160,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 161,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893020.0"
+        ]
+      }
+    },
+    {
+      "idx": 162,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893020.0"
+        ]
+      }
+    },
+    {
+      "idx": 163,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 164,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 165,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893025.0"
+        ]
+      }
+    },
+    {
+      "idx": 166,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893025.0"
+        ]
+      }
+    },
+    {
+      "idx": 167,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 168,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 169,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893030.0"
+        ]
+      }
+    },
+    {
+      "idx": 170,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893030.0"
+        ]
+      }
+    },
+    {
+      "idx": 171,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 172,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 173,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893035.0"
+        ]
+      }
+    },
+    {
+      "idx": 174,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893035.0"
+        ]
+      }
+    },
+    {
+      "idx": 175,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 176,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 177,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893040.0"
+        ]
+      }
+    },
+    {
+      "idx": 178,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893040.0"
+        ]
+      }
+    },
+    {
+      "idx": 179,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 180,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 181,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893045.0"
+        ]
+      }
+    },
+    {
+      "idx": 182,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893045.0"
+        ]
+      }
+    },
+    {
+      "idx": 183,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 184,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 185,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893050.0"
+        ]
+      }
+    },
+    {
+      "idx": 186,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893050.0"
+        ]
+      }
+    },
+    {
+      "idx": 187,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 188,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 189,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893055.0"
+        ]
+      }
+    },
+    {
+      "idx": 190,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893055.0"
+        ]
+      }
+    },
+    {
+      "idx": 191,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 192,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 193,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893060.0"
+        ]
+      }
+    },
+    {
+      "idx": 194,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893060.0"
+        ]
+      }
+    },
+    {
+      "idx": 195,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 196,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 197,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893065.0"
+        ]
+      }
+    },
+    {
+      "idx": 198,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893065.0"
+        ]
+      }
+    },
+    {
+      "idx": 199,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 200,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 201,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893070.0"
+        ]
+      }
+    },
+    {
+      "idx": 202,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893070.0"
+        ]
+      }
+    },
+    {
+      "idx": 203,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 204,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 205,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893075.0"
+        ]
+      }
+    },
+    {
+      "idx": 206,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893075.0"
+        ]
+      }
+    },
+    {
+      "idx": 207,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 208,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 209,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893080.0"
+        ]
+      }
+    },
+    {
+      "idx": 210,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893080.0"
+        ]
+      }
+    },
+    {
+      "idx": 211,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 212,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 213,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893085.0"
+        ]
+      }
+    },
+    {
+      "idx": 214,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893085.0"
+        ]
+      }
+    },
+    {
+      "idx": 215,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 216,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 217,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893090.0"
+        ]
+      }
+    },
+    {
+      "idx": 218,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893090.0"
+        ]
+      }
+    },
+    {
+      "idx": 219,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 220,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 221,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893095.0"
+        ]
+      }
+    },
+    {
+      "idx": 222,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893095.0"
+        ]
+      }
+    },
+    {
+      "idx": 223,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 224,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 225,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893100.0"
+        ]
+      }
+    },
+    {
+      "idx": 226,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893100.0"
+        ]
+      }
+    },
+    {
+      "idx": 227,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 228,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 229,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893105.0"
+        ]
+      }
+    },
+    {
+      "idx": 230,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893105.0"
+        ]
+      }
+    },
+    {
+      "idx": 231,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 232,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=True reason=TIME_DECAY_PROFIT_CAPTURE phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 233,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893110.0"
+        ]
+      }
+    },
+    {
+      "idx": 234,
+      "event": "AEE_ENTER",
+      "level": "info",
+      "payload": {
+        "args": [
+          "pair=EUR_USD trade_id=1 direction=LONG entry=1.1666 now=1768893110.0"
+        ]
+      }
+    },
+    {
+      "idx": 235,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    },
+    {
+      "idx": 236,
+      "event": "AEE_DECISION",
+      "level": "info",
+      "payload": {
+        "args": [
+          "exit=False reason=None phase=AEEPhase.PANIC trade_id=1 pair=EUR_USD"
+        ]
+      }
+    }
+  ]
+}

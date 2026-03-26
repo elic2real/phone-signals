@@ -1,0 +1,54 @@
+{
+  "source": "logs/trades.jsonl",
+  "last_n": 200000,
+  "params": {
+    "target_pips": 2.5,
+    "slippage_pips": 0.2
+  },
+  "stage_counts": {
+    "ENTRY_ARMED": 1270,
+    "ENTRY_PATH_SKIP_REASON": 3385,
+    "STATE_PROMOTE_FROM_SIGNAL": 1269,
+    "STATE_PROMOTE_BLOCKED": 599,
+    "CAL_HANDSHAKE_TRIGGER": 44,
+    "SESSION_HANDSHAKE": 261,
+    "SEED_LOADED": 43,
+    "PATCH_LOAD_OK": 42,
+    "MANUAL_OVERRIDE_LOADED": 42,
+    "STATE_TRANSITION": 4,
+    "ENTRY_GATE_EVAL": 6,
+    "ENTRY_ATTEMPT": 5,
+    "ORDER_SUBMITTED": 5
+  },
+  "watch_not_promoted_subreasons": [
+    [
+      "primitive_disagreement",
+      592
+    ],
+    [
+      "no_directional_primitive",
+      7
+    ]
+  ],
+  "state_promote_blocked_reasons": [
+    [
+      "primitive_disagreement",
+      592
+    ],
+    [
+      "no_directional_primitive",
+      7
+    ]
+  ],
+  "promotion_summary": {
+    "primitive_disagreement": 592,
+    "no_directional_primitive": 7,
+    "other": 0
+  },
+  "theoretical_fill": {
+    "sample_n": 6,
+    "viable_n": 6,
+    "viability_rate": 1.0,
+    "avg_reward_to_friction": 12.5
+  }
+}

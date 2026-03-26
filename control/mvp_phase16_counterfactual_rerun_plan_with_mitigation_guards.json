@@ -1,0 +1,214 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T08:46:29.705681+00:00",
+  "task_id": "MVP_PHASE16_COUNTERFACTUAL_RERUN_PLAN_WITH_MITIGATION_GUARDS",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "COUNTERFACTUAL_RERUN_PLANNING_ONLY"
+  },
+  "dependency": {
+    "phase15_status": "PASS",
+    "phase15_path": "control/mvp_phase15_false_cut_mitigation_trial_redesign_paper_only.json",
+    "phase14_status": "PASS",
+    "phase14_path": "control/mvp_phase14_counterfactual_simulation_execution_no_tuning.json"
+  },
+  "failure_context": {
+    "phase14_gate_overall_pass": false,
+    "max_false_cut_rate_allowed": 0.15,
+    "pair_false_cut_rates": {
+      "EUR_USD": 0.37662337662337664,
+      "GBP_USD": 0.46153846153846156
+    }
+  },
+  "mitigation_guard_rerun_plan": {
+    "EUR_USD": {
+      "pair": "EUR_USD",
+      "current_snapshot": {
+        "trigger_rate": 0.475,
+        "false_cut_rate_on_winners": 0.37662337662337664,
+        "estimated_saved_loss_total_pips": 594.3,
+        "passes_pair_gate": false
+      },
+      "variants": [
+        {
+          "variant_id": "P16-EUR_USD-V0",
+          "name": "control_replay",
+          "description": "Re-run prior stack as locked baseline comparator.",
+          "active_guards": [],
+          "expected": {
+            "false_cut_rate": 0.37662337662337664,
+            "trigger_rate": 0.475
+          }
+        },
+        {
+          "variant_id": "P16-EUR_USD-V1",
+          "name": "m1_winner_confirmation_only",
+          "description": "Apply winner-protection confirmation gate only.",
+          "active_guards": [
+            "P15-EUR_USD-M1"
+          ],
+          "expected": {
+            "false_cut_rate": "down_material",
+            "saved_loss": "down_moderate"
+          }
+        },
+        {
+          "variant_id": "P16-EUR_USD-V2",
+          "name": "m1_plus_m2",
+          "description": "Apply confirmation gate and trigger throttling.",
+          "active_guards": [
+            "P15-EUR_USD-M1",
+            "P15-EUR_USD-M2"
+          ],
+          "expected": {
+            "false_cut_rate": "down",
+            "trigger_rate": "down",
+            "saved_loss": "balanced"
+          }
+        },
+        {
+          "variant_id": "P16-EUR_USD-V3",
+          "name": "m3_anchor_mode",
+          "description": "Use selective deactivation anchor mode (P12-T2-first).",
+          "active_guards": [
+            "P15-EUR_USD-M3"
+          ],
+          "expected": {
+            "false_cut_rate": "down_to_compliant",
+            "saved_loss": "down",
+            "gate_pass_probability": "up"
+          }
+        }
+      ],
+      "guard_gate": {
+        "target_false_cut_rate_max": 0.15,
+        "primary_positive_metrics_required": 2,
+        "must_not_regress_scope": true
+      },
+      "promotion_rule": "Promote only variants with false_cut_rate_on_winners <= target and primary_positive_metrics >= 2."
+    },
+    "GBP_USD": {
+      "pair": "GBP_USD",
+      "current_snapshot": {
+        "trigger_rate": 0.485,
+        "false_cut_rate_on_winners": 0.46153846153846156,
+        "estimated_saved_loss_total_pips": 857.5,
+        "passes_pair_gate": false
+      },
+      "variants": [
+        {
+          "variant_id": "P16-GBP_USD-V0",
+          "name": "control_replay",
+          "description": "Re-run prior stack as locked baseline comparator.",
+          "active_guards": [],
+          "expected": {
+            "false_cut_rate": 0.46153846153846156,
+            "trigger_rate": 0.485
+          }
+        },
+        {
+          "variant_id": "P16-GBP_USD-V1",
+          "name": "m1_winner_confirmation_only",
+          "description": "Apply winner-protection confirmation gate only.",
+          "active_guards": [
+            "P15-GBP_USD-M1"
+          ],
+          "expected": {
+            "false_cut_rate": "down_material",
+            "saved_loss": "down_moderate"
+          }
+        },
+        {
+          "variant_id": "P16-GBP_USD-V2",
+          "name": "m1_plus_m2",
+          "description": "Apply confirmation gate and trigger throttling.",
+          "active_guards": [
+            "P15-GBP_USD-M1",
+            "P15-GBP_USD-M2"
+          ],
+          "expected": {
+            "false_cut_rate": "down",
+            "trigger_rate": "down",
+            "saved_loss": "balanced"
+          }
+        },
+        {
+          "variant_id": "P16-GBP_USD-V3",
+          "name": "m3_anchor_mode",
+          "description": "Use selective deactivation anchor mode (P12-T2-first).",
+          "active_guards": [
+            "P15-GBP_USD-M3"
+          ],
+          "expected": {
+            "false_cut_rate": "down_to_compliant",
+            "saved_loss": "down",
+            "gate_pass_probability": "up"
+          }
+        }
+      ],
+      "guard_gate": {
+        "target_false_cut_rate_max": 0.15,
+        "primary_positive_metrics_required": 2,
+        "must_not_regress_scope": true
+      },
+      "promotion_rule": "Promote only variants with false_cut_rate_on_winners <= target and primary_positive_metrics >= 2."
+    }
+  },
+  "staged_protocol": [
+    {
+      "stage": 1,
+      "name": "control_replay",
+      "objective": "Verify reproducibility versus Phase 14 gate-fail baseline."
+    },
+    {
+      "stage": 2,
+      "name": "single_guard_trials",
+      "objective": "Measure isolated effect of each mitigation guard."
+    },
+    {
+      "stage": 3,
+      "name": "guard_combination_trials",
+      "objective": "Evaluate additive mitigation bundles for compliance."
+    },
+    {
+      "stage": 4,
+      "name": "adjudication_pack",
+      "objective": "Prepare promote/hold decision package with pair-level evidence."
+    }
+  ],
+  "execution_lock_requirements": {
+    "forbidden": [
+      "live production behavior changes",
+      "parameter tuning",
+      "scope expansion"
+    ],
+    "required_before_phase17_execution": [
+      "variant matrix approval",
+      "pair gate thresholds confirmed",
+      "rollback criteria frozen"
+    ]
+  },
+  "phase17_entry_gate": {
+    "requires": [
+      "approved rerun variants per pair",
+      "acceptance and rollback metrics locked",
+      "no doctrine violations"
+    ],
+    "status": "PENDING"
+  },
+  "pass_conditions": {
+    "phase15_dependency_passed": true,
+    "phase14_dependency_passed": true,
+    "pair_rerun_variants_present": true,
+    "guard_gate_present": true,
+    "planning_only_mode_confirmed": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

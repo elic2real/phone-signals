@@ -1,0 +1,99 @@
+{
+  "direction": "SHORT",
+  "tp_pips": 2.5,
+  "sl_pips": 2.5,
+  "speed_threshold": 0.227273,
+  "cluster_population": 8,
+  "good_clusters": 0,
+  "bad_clusters": 4,
+  "noise_clusters": 4,
+  "trades_taken": 7,
+  "traded_good_clusters": 0,
+  "traded_bad_clusters": 3,
+  "traded_noise_clusters": 4,
+  "capture_rate": 0.0,
+  "bad_trigger": 0.75,
+  "noise_trigger": 1.0,
+  "score": -1.125,
+  "constraint_satisfied": false,
+  "verdict": "FAIL",
+  "trade_count": 7,
+  "sl_tp_assumptions": {
+    "stop_loss_pips": 2.5,
+    "take_profit_pips": 2.5,
+    "stop_loss_r": 1.0,
+    "take_profit_r": 1.0
+  },
+  "trade_population_rows": [
+    {
+      "cluster_id": "EUR_USD_SHORT_0001",
+      "timestamp": "2024-01-15T08:11:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 0.5,
+      "future_mfe": 3.300000000001635,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_SHORT_0002",
+      "timestamp": "2024-01-15T10:30:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 0.5,
+      "future_mfe": 2.9999999999996696,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_SHORT_0003",
+      "timestamp": "2024-01-15T11:32:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 1.25,
+      "future_mfe": 2.6999999999999247,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "GOOD"
+    },
+    {
+      "cluster_id": "EUR_USD_SHORT_0004",
+      "timestamp": "2024-01-15T12:14:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 0.25,
+      "future_mfe": 2.80000000000058,
+      "future_mae": 1.80000000000069,
+      "valid_entry": 1,
+      "entry_label": "BAD"
+    },
+    {
+      "cluster_id": "EUR_USD_SHORT_0005",
+      "timestamp": "2024-01-15T14:17:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 0.625,
+      "future_mfe": 2.5999999999992696,
+      "future_mae": 0.0,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_SHORT_0006",
+      "timestamp": "2024-01-15T15:25:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 0.5,
+      "future_mfe": 2.9999999999996696,
+      "future_mae": 0.5999999999994898,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    },
+    {
+      "cluster_id": "EUR_USD_SHORT_0008",
+      "timestamp": "2024-01-15T16:27:00.000000000Z",
+      "direction": "SHORT",
+      "speed": 0.5,
+      "future_mfe": 2.60000000000149,
+      "future_mae": 0.700000000000145,
+      "valid_entry": 1,
+      "entry_label": "NOISE"
+    }
+  ]
+}

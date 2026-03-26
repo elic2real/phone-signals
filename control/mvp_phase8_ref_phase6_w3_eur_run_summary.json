@@ -1,0 +1,128 @@
+{
+  "run_id": "AEE_RUN_20260326T065156Z",
+  "generated_at": "2026-03-26T06:51:56.355750Z",
+  "champion_reference": "strategy_performance_report_raw.json",
+  "intervention_class": "AEE_RUN",
+  "strategy_form": "entry_v36_firehose_all_families",
+  "aee_version": "v2",
+  "simulation_mode": "RAW_STREAM_REPLAY",
+  "data_coverage": {
+    "pair_coverage": [
+      "EUR_USD"
+    ],
+    "streams": 14,
+    "hours": 22604.8833,
+    "unique_days": 5,
+    "sessions_represented": {
+      "asia": 5,
+      "new_york": 4,
+      "sydney": 4,
+      "london": 1
+    },
+    "session_quarter_distribution": {
+      "UNKNOWN": 14
+    },
+    "contexts_represented": {
+      "EUR_USD__friday__asia": 1687.3667,
+      "EUR_USD__friday__new_york": 1687.35,
+      "EUR_USD__friday__sydney": 840.4667,
+      "EUR_USD__monday__asia": 1689.3833,
+      "EUR_USD__monday__london": 1689.4333,
+      "EUR_USD__monday__new_york": 1688.4,
+      "EUR_USD__monday__sydney": 1686.2167,
+      "EUR_USD__thursday__asia": 1686.7167,
+      "EUR_USD__thursday__new_york": 2025.45,
+      "EUR_USD__thursday__sydney": 1686.8333,
+      "EUR_USD__tuesday__asia": 1178.25,
+      "EUR_USD__tuesday__new_york": 1684.95,
+      "EUR_USD__tuesday__sydney": 1686.6333,
+      "EUR_USD__wednesday__asia": 1687.4333
+    },
+    "regime_distribution": {
+      "PULLBACK_CONTINUATION": 981,
+      "RANGE_ESCAPE": 11177,
+      "OTHER": 3445,
+      "EXPANSION_BREAKOUT": 4440,
+      "RECLAIM_CONTINUATION": 42
+    },
+    "dominance_concentration": {
+      "top_family": "EXPANSION_BREAKOUT",
+      "top_family_trade_share": 0.529675
+    }
+  },
+  "results": {
+    "trade_count": 893,
+    "trades_per_hour": 0.039505,
+    "avg_pips_per_trade": 1.274916,
+    "entry_only_pph": 0.449456,
+    "realized_pph": 0.050365,
+    "gap": 0.399091,
+    "extraction_efficiency": 0.112058
+  },
+  "top_logic_paths": {
+    "entry": [
+      {
+        "name": "EXPANSION_BREAKOUT",
+        "count": 473
+      },
+      {
+        "name": "RANGE_ESCAPE",
+        "count": 379
+      },
+      {
+        "name": "OTHER",
+        "count": 41
+      }
+    ],
+    "exit": [
+      {
+        "name": "AEE_GIVEBACK_EXIT",
+        "count": 511
+      },
+      {
+        "name": "AEE_BAND_FAST_FAILURE_EXIT",
+        "count": 368
+      },
+      {
+        "name": "AEE_CONTINUATION_FAILED_EXIT",
+        "count": 12
+      },
+      {
+        "name": "AEE_NEVER_GREEN_TIMEOUT",
+        "count": 2
+      }
+    ]
+  },
+  "top_damage": {
+    "primary_destructive_branch": {
+      "name": "AEE_GIVEBACK_EXIT",
+      "count": 511
+    },
+    "secondary_destructive_branch": {
+      "name": "AEE_BAND_FAST_FAILURE_EXIT",
+      "count": 368
+    }
+  },
+  "signature_check": {
+    "expected": {
+      "realized_pph": "improve_or_hold",
+      "entry_only_vs_realized_gap": "shrink_or_hold",
+      "extraction_efficiency": "improve_or_hold"
+    },
+    "actual": {
+      "trade_count": 893,
+      "trades_per_hour": 0.039505,
+      "avg_pips_per_trade": 1.274916,
+      "entry_only_pph": 0.449456,
+      "realized_pph": 0.050365,
+      "gap": 0.399091,
+      "extraction_efficiency": 0.112058
+    },
+    "delta_vs_champion": {
+      "breakout_net_pph": -0.0621,
+      "combined_keep_tune_net_pph": -0.0442
+    },
+    "matches_expected_model": true
+  },
+  "verdict": "PROMOTE"
+}

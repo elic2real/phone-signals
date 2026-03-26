@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-03-25T17:09:39.806345Z",
+  "task_id": "TASK-011",
+  "section": "C_SAMPLE_DIVERSITY",
+  "scope": "audit_only_no_changes",
+  "metrics": {
+    "unique_streams": 16,
+    "unique_days": 70,
+    "unique_sessions": 4,
+    "unique_quarters": 4,
+    "total_hours": 25977.4,
+    "regime_distribution": {
+      "compressed": 0.6609,
+      "neutral": 0.2708,
+      "strong_bullish": 0.0621,
+      "strong_bearish": 0.0062
+    },
+    "regime_concentration_ratio_top": 0.6609,
+    "regime_balance_score": 0.4521,
+    "quarter_distribution": {
+      "Q4": 0.6406,
+      "Q1": 0.1898,
+      "Q3": 0.1194,
+      "Q2": 0.0502
+    },
+    "session_imbalance_ratio": 0.6406,
+    "diversity_score": 0.4657
+  },
+  "interpretation": {
+    "regime_balance_score": "1.0 = perfectly even across regimes; <0.5 = heavily concentrated",
+    "diversity_score": "composite of regime and quarter balance"
+  },
+  "finding": "SAMPLE_REGIME_CONCENTRATED"
+}

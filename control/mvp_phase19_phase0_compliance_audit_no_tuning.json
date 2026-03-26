@@ -1,0 +1,119 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T09:05:19.210355+00:00",
+  "task_id": "MVP_PHASE19_PHASE0_COMPLIANCE_AUDIT_NO_TUNING",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "AUDIT_ONLY"
+  },
+  "dependency": {
+    "phase0_template_path": "control/rcp_phase0_high_speed_foundation_template.json",
+    "phase17_status": "PASS",
+    "phase17_path": "control/mvp_phase17_counterfactual_rerun_execution_with_mitigation_guards.json",
+    "telemetry_paths": [
+      "control/mvp_phase9_runtime_eur_usd_telemetry.json",
+      "control/mvp_phase9_runtime_gbp_usd_telemetry.json"
+    ]
+  },
+  "audit_summary": {
+    "phase0_universal_analysis_outputs_defined": 12,
+    "phase17_coverage_proxy": {
+      "cross_pair_gate_evaluated": true,
+      "rank_vs_outcome_proxy": true,
+      "timing_distribution_proxy": true
+    }
+  },
+  "gaps": {
+    "global": [
+      "single universal analyzer artifact not yet established as one-run full diagnosis output",
+      "predefined failure archetype assignment not yet emitted per trade in canonical artifact",
+      "benchmark_dataset registry file not yet standardized in control layer"
+    ],
+    "EUR_USD": {
+      "candidate_level_missing": [
+        "candidate_id",
+        "entry_zone_high",
+        "entry_zone_low",
+        "pair",
+        "session"
+      ],
+      "trade_lifecycle_missing": [],
+      "profit_path_missing": [
+        "current_pnl_path",
+        "max_drawdown"
+      ],
+      "timing_missing": [
+        "time_from_entry_to_peak"
+      ],
+      "candidate_level_present_count": 5,
+      "trade_lifecycle_present_count": 4,
+      "profit_path_present_count": 3,
+      "timing_present_count": 2
+    },
+    "GBP_USD": {
+      "candidate_level_missing": [
+        "candidate_id",
+        "entry_zone_high",
+        "entry_zone_low",
+        "pair",
+        "session"
+      ],
+      "trade_lifecycle_missing": [],
+      "profit_path_missing": [
+        "current_pnl_path",
+        "max_drawdown"
+      ],
+      "timing_missing": [
+        "time_from_entry_to_peak"
+      ],
+      "candidate_level_present_count": 5,
+      "trade_lifecycle_present_count": 4,
+      "profit_path_present_count": 3,
+      "timing_present_count": 2
+    }
+  },
+  "adoption_backlog": [
+    {
+      "id": "P19-A1",
+      "title": "Unify one-pass analyzer",
+      "description": "Create universal analyzer script and single canonical output schema.",
+      "priority": 1
+    },
+    {
+      "id": "P19-A2",
+      "title": "Emit failure archetype labels",
+      "description": "Classify every trade into predefined archetypes in one artifact.",
+      "priority": 2
+    },
+    {
+      "id": "P19-A3",
+      "title": "Standardize benchmark dataset",
+      "description": "Publish fixed benchmark slices and wire micro-slice gate before full runs.",
+      "priority": 3
+    },
+    {
+      "id": "P19-A4",
+      "title": "Lock kill rules in control",
+      "description": "Encode hard kill conditions in control gating and auto-fail paths.",
+      "priority": 4
+    }
+  ],
+  "phase20_recommended_scope": {
+    "task": "MVP_PHASE20_UNIVERSAL_ANALYZER_AND_ARCHETYPE_EMISSION_IMPLEMENTATION",
+    "objective": "Implement one-pass analyzer, archetype emission, and benchmark micro-slice gate."
+  },
+  "pass_conditions": {
+    "template_loaded": true,
+    "telemetry_audited": true,
+    "phase17_evidence_linked": true,
+    "gap_backlog_generated": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

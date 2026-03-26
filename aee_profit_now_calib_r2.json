@@ -1,0 +1,28 @@
+{
+  "name": "aee_profit_now_calib_r2",
+  "doctrine": "profit_now_continuation",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "extraction": {
+    "min_lock_profit_pips": 1.6,
+    "min_improvement_pips": 0.25,
+    "continuation_timeout_sec": 3.0,
+    "never_green_timeout_sec": 10,
+    "soft_drop_threshold_pips": 1.0
+  },
+  "fast_adverse": {
+    "adverse_r": 0.45,
+    "window_sec": 1.5
+  },
+  "defensive": {
+    "pre_sl_exit_enabled": true,
+    "panic_exit_enabled": true
+  },
+  "branch_set": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_PRE_SL_EXIT",
+    "AEE_PANIC_EXIT",
+    "AEE_NEVER_GREEN_TIMEOUT",
+    "AEE_CONTINUATION_FAILED_EXIT"
+  ],
+  "optional_branch": "AEE_BAND_EXTENSION_HOLD"
+}

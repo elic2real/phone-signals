@@ -2,51 +2,36 @@
   "protocol": "RCP",
   "protocol_version": "RCP_V2",
   "stage": 4,
-  "generated_at": "2026-03-26T03:59:20Z",
-  "task_id": "MVP_PHASE6_STABILITY_PROOF_3WINDOW_NO_TUNING",
+  "generated_at": "2026-03-26T13:29:40Z",
+  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
   "commands_run": [
     {
-      "command": "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase6_stability_proof.py",
+      "command": "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
       "returncode": 0,
       "pass": true
     },
     {
-      "command": "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase6_stability_proof.py",
+      "command": "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
       "returncode": 0,
       "pass": true,
-      "note": "Validated no-tuning 3-window stability under locked scope"
+      "note": "Executed net-layer micro-live waves and incident audit under Phase31 contract thresholds"
     }
   ],
   "artifacts_produced": [
-    "run_mvp_phase6_stability_proof.py",
-    "control/mvp_phase6_stability_proof.json"
+    "run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
+    "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json"
   ],
   "metrics_summary": {
-    "phase5_status": "PASS",
-    "window_statuses": {
-      "W1": "PASS",
-      "W2": "PASS",
-      "W3": "PASS"
-    },
-    "weighted_net_pph_values": [
-      0.2068242118055652,
-      0.12838084923917906,
-      0.10111120747703276
-    ],
-    "weighted_net_pph_mean": 0.14543875617392568,
-    "weighted_net_pph_min": 0.10111120747703276,
-    "weighted_net_pph_max": 0.2068242118055652,
-    "weighted_net_relative_spread": 0.7268558059044011,
-    "eur_usd_net_pph_window": [
-      0.1227,
-      0.0696,
-      0.0504
-    ],
-    "gbp_usd_net_pph_window": [
-      0.3609,
-      0.2708,
-      0.2708
-    ]
+    "wave_count": 3,
+    "total_duration_minutes": 360,
+    "max_false_cut_observed": 0.07692307692307693,
+    "max_weighted_relative_spread_observed": 0.4250786788545134,
+    "min_weighted_delta_pph_observed": 0.07721467801644938,
+    "hard_stop_trigger_count": 0,
+    "incident_count": 0,
+    "release_action": "READY_FOR_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
+    "live_promotion_allowed": false,
+    "overall_pass": true
   },
   "status": "PASS",
   "success_criteria_met": true,

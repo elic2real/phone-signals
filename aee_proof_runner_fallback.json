@@ -1,0 +1,75 @@
+{
+  "feature": "Runner fallback",
+  "trigger_marker": "AEE_RUNNER_FALLBACK_TRIGGER",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "raw_examples": [
+    {
+      "scenario_id": "runner_fallback_obvious",
+      "case_type": "obvious trigger case",
+      "expected": {
+        "triggered": true,
+        "exit_reason": "FAILED_TO_CONTINUE_DECAY"
+      },
+      "actual": {
+        "triggered": true,
+        "exit_reason": "FAILED_TO_CONTINUE_DECAY",
+        "decision_latency_ms": 0.0029,
+        "key_state_metrics_used": {
+          "current_pnl_pips": 1.1,
+          "peak_pnl_pips": 5.3,
+          "giveback_pips": 4.2,
+          "time_in_trade_sec": 250.0,
+          "phase": "RUNNER"
+        }
+      },
+      "pass": true
+    },
+    {
+      "scenario_id": "runner_fallback_borderline",
+      "case_type": "borderline trigger case",
+      "expected": {
+        "triggered": true,
+        "exit_reason": "FAILED_TO_CONTINUE_DECAY"
+      },
+      "actual": {
+        "triggered": true,
+        "exit_reason": "FAILED_TO_CONTINUE_DECAY",
+        "decision_latency_ms": 0.0022,
+        "key_state_metrics_used": {
+          "current_pnl_pips": 1.4,
+          "peak_pnl_pips": 4.6,
+          "giveback_pips": 3.2,
+          "time_in_trade_sec": 220.0,
+          "phase": "RUNNER"
+        }
+      },
+      "pass": true
+    },
+    {
+      "scenario_id": "runner_fallback_control",
+      "case_type": "should-not-trigger control case",
+      "expected": {
+        "triggered": false,
+        "exit_reason": "HOLD"
+      },
+      "actual": {
+        "triggered": false,
+        "exit_reason": "HOLD",
+        "decision_latency_ms": 0.0058,
+        "key_state_metrics_used": {
+          "current_pnl_pips": 4.5,
+          "peak_pnl_pips": 5.2,
+          "giveback_pips": 0.7,
+          "time_in_trade_sec": 160.0,
+          "phase": "RUNNER"
+        }
+      },
+      "pass": true
+    }
+  ],
+  "summary_verdict": "PASS"
+}

@@ -1,0 +1,147 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T09:39:29.888428+00:00",
+  "task_id": "MVP_PHASE22_KILL_GATE_GUARD_REDESIGN_PAPER_ONLY",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "PAPER_ONLY_REDESIGN"
+  },
+  "dependency": {
+    "phase21_status": "PASS",
+    "phase21_path": "control/mvp_phase21_parallel_variant_execution_with_micro_slice_kill_gates.json",
+    "kill_rules_path": "control/phase0_kill_rules_registry.json",
+    "existing_kill_rules_count": 3
+  },
+  "redesign_by_pair": {
+    "EUR_USD": {
+      "failure_snapshot": {
+        "micro_slice_count": 195,
+        "v3_false_cut_rate": 1.0,
+        "v3_delta": 0.7851282051282052,
+        "v3_passes_false_cut_gate": true,
+        "v3_passes_kill_gates": false
+      },
+      "guard_cards": [
+        {
+          "card_id": "P22-EUR_USD-G1",
+          "name": "Directional kill-rule normalization",
+          "problem": "Current kill checks compare variant metrics against micro baseline directly, creating constant fail states.",
+          "paper_change": "Replace absolute reduction checks with directional delta checks tied to variant intent and guard class.",
+          "expected_effect": "Eliminate false negative kills while preserving strictness on risk metrics.",
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P22-EUR_USD-G2",
+          "name": "Two-tier kill gate",
+          "problem": "Single hard gate rejects variants with strong false-cut gains but small drawdown trade-offs.",
+          "paper_change": "Tier 1: hard risk gate (false-cut, tail loss). Tier 2: soft efficiency gate (delta thresholds).",
+          "expected_effect": "Keep safety strict while allowing viable survivors to proceed.",
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P22-EUR_USD-G3",
+          "name": "Micro-slice archetype weighting",
+          "problem": "Micro-slice composition may overweight certain archetypes and distort kill outcomes.",
+          "paper_change": "Apply fixed archetype weights and require minimum representation per archetype bucket.",
+          "expected_effect": "Stabilize variant comparison and reduce slice bias.",
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P22-EUR_USD-G4",
+          "name": "V3 survivor escalation path",
+          "problem": "V3 already clears false-cut gate but fails kill-gate bundle.",
+          "paper_change": "Define conditional survivor rule: if false-cut clears and delta positive, route to guarded re-test under revised Tier-2 checks.",
+          "expected_effect": "Preserve strong safety wins while validating efficiency in controlled rerun.",
+          "status": "DESIGN_ONLY"
+        }
+      ]
+    },
+    "GBP_USD": {
+      "failure_snapshot": {
+        "micro_slice_count": 199,
+        "v3_false_cut_rate": 1.0,
+        "v3_delta": 1.0954773869346734,
+        "v3_passes_false_cut_gate": true,
+        "v3_passes_kill_gates": false
+      },
+      "guard_cards": [
+        {
+          "card_id": "P22-GBP_USD-G1",
+          "name": "Directional kill-rule normalization",
+          "problem": "Current kill checks compare variant metrics against micro baseline directly, creating constant fail states.",
+          "paper_change": "Replace absolute reduction checks with directional delta checks tied to variant intent and guard class.",
+          "expected_effect": "Eliminate false negative kills while preserving strictness on risk metrics.",
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P22-GBP_USD-G2",
+          "name": "Two-tier kill gate",
+          "problem": "Single hard gate rejects variants with strong false-cut gains but small drawdown trade-offs.",
+          "paper_change": "Tier 1: hard risk gate (false-cut, tail loss). Tier 2: soft efficiency gate (delta thresholds).",
+          "expected_effect": "Keep safety strict while allowing viable survivors to proceed.",
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P22-GBP_USD-G3",
+          "name": "Micro-slice archetype weighting",
+          "problem": "Micro-slice composition may overweight certain archetypes and distort kill outcomes.",
+          "paper_change": "Apply fixed archetype weights and require minimum representation per archetype bucket.",
+          "expected_effect": "Stabilize variant comparison and reduce slice bias.",
+          "status": "DESIGN_ONLY"
+        },
+        {
+          "card_id": "P22-GBP_USD-G4",
+          "name": "V3 survivor escalation path",
+          "problem": "V3 already clears false-cut gate but fails kill-gate bundle.",
+          "paper_change": "Define conditional survivor rule: if false-cut clears and delta positive, route to guarded re-test under revised Tier-2 checks.",
+          "expected_effect": "Preserve strong safety wins while validating efficiency in controlled rerun.",
+          "status": "DESIGN_ONLY"
+        }
+      ]
+    }
+  },
+  "redesigned_kill_gate_framework": {
+    "tier1_hard_risk_gate": {
+      "rules": [
+        "false_cut_rate_on_winners <= 0.15",
+        "tail_loss_not_worse_than_baseline"
+      ],
+      "failure_action": "IMMEDIATE_KILL"
+    },
+    "tier2_efficiency_gate": {
+      "rules": [
+        "net_delta_mean_positive",
+        "drawdown_efficiency_not_regressed_beyond_tolerance",
+        "rank_outcome_signal_non_degrading"
+      ],
+      "failure_action": "HOLD_FOR_REDESIGN"
+    },
+    "slice_balance_requirements": {
+      "minimum_archetype_coverage": 3,
+      "weighted_archetype_scoring": true
+    }
+  },
+  "phase23_entry_gate": {
+    "requires": [
+      "tiered_kill_gate_spec_approved",
+      "slice_balance_rule_approved",
+      "guarded_rerun_variant_matrix_locked"
+    ],
+    "status": "PENDING"
+  },
+  "pass_conditions": {
+    "phase21_dependency_passed": true,
+    "hold_reason_captured": true,
+    "pair_guard_cards_present": true,
+    "redesigned_framework_defined": true,
+    "paper_only_confirmed": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

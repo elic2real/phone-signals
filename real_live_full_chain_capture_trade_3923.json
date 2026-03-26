@@ -1,0 +1,179 @@
+{
+  "artifact": "real_live_full_chain_capture",
+  "source_file": "logs/trades.jsonl.5",
+  "captured_trade": {
+    "pair": "GBP_USD",
+    "direction": "LONG",
+    "trade_id": 3923,
+    "broker_trade_id": "80187",
+    "entry_group_id": "1773406472350"
+  },
+  "scope": "direct real-log chain capture (no synthetic forcing)",
+  "nodes": [
+    {
+      "node": "entry_trigger",
+      "ts": "2026-03-13T12:54:31.551575+00:00",
+      "event": "SIGNAL_GENERATED",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 1,
+        "fields": {
+          "reason_code": "VOL_REIGNITE",
+          "priority_score": -0.0437,
+          "state": "GET_READY"
+        }
+      }
+    },
+    {
+      "node": "candidate_creation",
+      "ts": "2026-03-13T12:54:31.599518+00:00",
+      "event": "STATE_PROMOTE_FROM_SIGNAL",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 3,
+        "fields": {
+          "from_state": "WATCH",
+          "to_state": "GET_READY",
+          "promotion_target": "GET_READY",
+          "setup_id": 6
+        }
+      }
+    },
+    {
+      "node": "priority_decision",
+      "ts": "2026-03-13T12:54:31.998561+00:00",
+      "event": "ENTRY_GATE_EVAL",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 17,
+        "fields": {
+          "decision": "ALLOW",
+          "status": "EXECUTE",
+          "from_state": "ARM_TICK_ENTRY",
+          "to_state_candidate": "ENTER",
+          "source_key": "GBP_USD|LONDON|Q3"
+        }
+      }
+    },
+    {
+      "node": "open_attempt",
+      "ts": "2026-03-13T12:54:31.998976+00:00",
+      "event": "TRADE_ATTEMPT",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 18,
+        "fields": {
+          "decision": "PLACE",
+          "state": "ENTER",
+          "entry_trigger": "break_soft_pretrigger"
+        }
+      }
+    },
+    {
+      "node": "open_fill",
+      "ts": "2026-03-13T12:54:32.589141+00:00",
+      "event": "ENTRY_RESULT",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 22,
+        "fields": {
+          "result": "FILLED",
+          "trade_id": 3923,
+          "broker_trade_id": "80187",
+          "leg_type": "MAIN"
+        }
+      }
+    },
+    {
+      "node": "managing_transition",
+      "ts": "2026-03-13T12:54:32.589757+00:00",
+      "event": "STATE_TRANSITION",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 23,
+        "fields": {
+          "from": "ENTER",
+          "to": "MANAGING",
+          "reason": "trade_filled",
+          "metadata.trade_id": 3923
+        }
+      }
+    },
+    {
+      "node": "aee_action",
+      "ts": "2026-03-13T12:56:07.165860+00:00",
+      "event": "AEE_DECAY_EXIT",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 309,
+        "fields": {
+          "trade_id": 3923,
+          "aee_reason": "TIME_DECAY_PROFIT_CAPTURE",
+          "phase": "PROTECT"
+        }
+      }
+    },
+    {
+      "node": "close_execution",
+      "ts": "2026-03-13T12:56:07.559801+00:00",
+      "event": "EXIT_RESULT",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 311,
+        "fields": {
+          "trade_id": 3923,
+          "aee_reason": "TIME_DECAY_PROFIT_CAPTURE",
+          "exit_reason": "TIME_DECAY_PROFIT_CAPTURE",
+          "pnl_pips": 2.4000000000001798
+        }
+      }
+    },
+    {
+      "node": "close_side_effect",
+      "ts": "2026-03-13T12:56:07.493755+00:00",
+      "event": "STATE_TRANSITION",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 310,
+        "fields": {
+          "from": "MANAGING",
+          "to": "WATCH",
+          "reason": "pair_close_complete"
+        }
+      }
+    },
+    {
+      "node": "close_side_effect_aux",
+      "ts": "2026-03-13T12:56:07.560076+00:00",
+      "event": "HARVESTER_BANKED",
+      "status": "observed",
+      "evidence": {
+        "path": "logs/trades.jsonl.5",
+        "line": 313,
+        "fields": {
+          "trade_id": 3923,
+          "aee_reason": "TIME_DECAY_PROFIT_CAPTURE"
+        }
+      }
+    }
+  ],
+  "chain_pass": true,
+  "required_nodes": [
+    "entry_trigger",
+    "candidate_creation",
+    "priority_decision",
+    "open_fill",
+    "aee_action",
+    "close_side_effect"
+  ],
+  "caveat": "This is direct real-log evidence from one live trade path. It proves observed end-to-end chain linkage for this case, but does not by itself prove every production path/edge condition."
+}

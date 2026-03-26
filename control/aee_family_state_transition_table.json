@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-03-25T18:22:09.884165Z",
+  "task_id": "TASK-010",
+  "rows": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "from_state": "INIT",
+      "to_state": "PROBING",
+      "trigger": "entry accepted and initial path observed"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "from_state": "PROBING",
+      "to_state": "CONFIRMING",
+      "trigger": "family-specific confirmation behavior present"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "from_state": "CONFIRMING",
+      "to_state": "EXPANDING",
+      "trigger": "continuation confirmed with acceptable giveback"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "from_state": "EXPANDING",
+      "to_state": "EXHAUSTING",
+      "trigger": "momentum decay or stall beyond family profile"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "from_state": "EXHAUSTING",
+      "to_state": "FAILING",
+      "trigger": "recovery attempts do not restore family-valid behavior"
+    },
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "from_state": "FAILING",
+      "to_state": "EXIT",
+      "trigger": "family invalidation confirmed"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "from_state": "INIT",
+      "to_state": "PROBING",
+      "trigger": "entry accepted and initial path observed"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "from_state": "PROBING",
+      "to_state": "CONFIRMING",
+      "trigger": "family-specific confirmation behavior present"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "from_state": "CONFIRMING",
+      "to_state": "EXPANDING",
+      "trigger": "continuation confirmed with acceptable giveback"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "from_state": "EXPANDING",
+      "to_state": "EXHAUSTING",
+      "trigger": "momentum decay or stall beyond family profile"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "from_state": "EXHAUSTING",
+      "to_state": "FAILING",
+      "trigger": "recovery attempts do not restore family-valid behavior"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "from_state": "FAILING",
+      "to_state": "EXIT",
+      "trigger": "family invalidation confirmed"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "from_state": "INIT",
+      "to_state": "PROBING",
+      "trigger": "entry accepted and initial path observed"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "from_state": "PROBING",
+      "to_state": "CONFIRMING",
+      "trigger": "family-specific confirmation behavior present"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "from_state": "CONFIRMING",
+      "to_state": "EXPANDING",
+      "trigger": "continuation confirmed with acceptable giveback"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "from_state": "EXPANDING",
+      "to_state": "EXHAUSTING",
+      "trigger": "momentum decay or stall beyond family profile"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "from_state": "EXHAUSTING",
+      "to_state": "FAILING",
+      "trigger": "recovery attempts do not restore family-valid behavior"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "from_state": "FAILING",
+      "to_state": "EXIT",
+      "trigger": "family invalidation confirmed"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "from_state": "INIT",
+      "to_state": "PROBING",
+      "trigger": "entry accepted and initial path observed"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "from_state": "PROBING",
+      "to_state": "CONFIRMING",
+      "trigger": "family-specific confirmation behavior present"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "from_state": "CONFIRMING",
+      "to_state": "EXPANDING",
+      "trigger": "continuation confirmed with acceptable giveback"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "from_state": "EXPANDING",
+      "to_state": "EXHAUSTING",
+      "trigger": "momentum decay or stall beyond family profile"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "from_state": "EXHAUSTING",
+      "to_state": "FAILING",
+      "trigger": "recovery attempts do not restore family-valid behavior"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "from_state": "FAILING",
+      "to_state": "EXIT",
+      "trigger": "family invalidation confirmed"
+    },
+    {
+      "family": "OTHER",
+      "from_state": "INIT",
+      "to_state": "PROBING",
+      "trigger": "entry accepted and initial path observed"
+    },
+    {
+      "family": "OTHER",
+      "from_state": "PROBING",
+      "to_state": "CONFIRMING",
+      "trigger": "family-specific confirmation behavior present"
+    },
+    {
+      "family": "OTHER",
+      "from_state": "CONFIRMING",
+      "to_state": "EXPANDING",
+      "trigger": "continuation confirmed with acceptable giveback"
+    },
+    {
+      "family": "OTHER",
+      "from_state": "EXPANDING",
+      "to_state": "EXHAUSTING",
+      "trigger": "momentum decay or stall beyond family profile"
+    },
+    {
+      "family": "OTHER",
+      "from_state": "EXHAUSTING",
+      "to_state": "FAILING",
+      "trigger": "recovery attempts do not restore family-valid behavior"
+    },
+    {
+      "family": "OTHER",
+      "from_state": "FAILING",
+      "to_state": "EXIT",
+      "trigger": "family invalidation confirmed"
+    }
+  ]
+}

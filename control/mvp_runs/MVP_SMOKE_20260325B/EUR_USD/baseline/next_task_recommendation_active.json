@@ -1,0 +1,36 @@
+{
+  "run_id": "AEE_MVP_EUR_USD_MVP_SMOKE_20260325B",
+  "task_id": "AUTO_NEXT_AEE_MVP_EUR_USD_MVP_SMOKE_20260325B",
+  "intervention_class": "AEE_INTERACTION",
+  "title": "Protect bankable green and prune dead time",
+  "scope": "BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning",
+  "starting_population": "bankable-green losers first, then negative-unproven time waste",
+  "module_order": [
+    "protect_bankable_green_fast",
+    "kill_dead_trades_early",
+    "extend_only_proven_trades",
+    "apply_universal_time_pruning"
+  ],
+  "bounded_constraints": [
+    "no global retune",
+    "no entry changes",
+    "no simulation changes",
+    "rerun same evidence-pack after correction"
+  ],
+  "primary_bottleneck": "AEE_V3_FAMILY_PROTECTION_EXIT",
+  "secondary_bottleneck": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+  "target_branches": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_GIVEBACK_EXIT"
+  ],
+  "expected_signature": {
+    "realized_pph": "+20% to +80%",
+    "gap": "-15% to -40%",
+    "extraction_efficiency": "+0.05 to +0.25 absolute",
+    "bankable_green_loss_red_rate": "near_zero",
+    "trades_per_hour": "up",
+    "avg_loser_hold_sec": "down",
+    "avg_weak_winner_hold_sec": "down",
+    "baseline_amplifier_gate_pass": true
+  }
+}

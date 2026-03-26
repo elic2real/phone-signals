@@ -1,0 +1,295 @@
+{
+  "sweep_version": 1,
+  "root": "/home/elic/Documents/phone signals",
+  "entrypoints": [
+    "phase1_multi_session_compile.py",
+    "phase2_11_sessions_cluster_compile.py",
+    "phase3_11_sessions_entry_windows.py",
+    "phase4_11_sessions_oae.py",
+    "phase5_11_sessions_separability.py",
+    "stage6_11_sessions_odm.py"
+  ],
+  "stages": {
+    "phase1_multi_session_compile.py": {
+      "direct_imports": {
+        "stdlib": [
+          "__future__.annotations",
+          "json",
+          "collections.defaultdict",
+          "datetime.datetime",
+          "datetime.timezone",
+          "pathlib.Path",
+          "typing.Any",
+          "typing.Dict",
+          "typing.List",
+          "argparse"
+        ],
+        "third_party": [],
+        "local_repo": [
+          "phase1_ode_proven.OpportunityDiscoveryEngine",
+          "phase1_ode_proven.load_oanda_data"
+        ]
+      },
+      "local_repo_transitive_imports": {
+        "phase1_ode_proven": {
+          "direct_imports": {
+            "stdlib": [
+              "__future__.annotations",
+              "json",
+              "csv",
+              "datetime.datetime",
+              "datetime.timezone",
+              "pathlib.Path",
+              "typing.List",
+              "typing.Dict",
+              "typing.Any",
+              "typing.Optional",
+              "collections.defaultdict",
+              "argparse"
+            ],
+            "third_party": [
+              "pandas"
+            ],
+            "local_repo": []
+          },
+          "opened_files_and_patterns": {
+            "reads": [
+              "<data_root>/pair={pair}/year=*/month=*/part-*.parquet (glob)"
+            ],
+            "writes": [
+              "<output_dir>/opportunity_map_raw.csv",
+              "<output_dir>/opportunity_map_summary.json",
+              "<output_dir>/opportunity_map_audit.json"
+            ]
+          },
+          "hardcoded_paths_or_globs": [
+            "pair={pair}/year=*/month=*/part-*.parquet"
+          ]
+        }
+      },
+      "opened_files_and_patterns": {
+        "reads": [
+          "<data_root> (directory root for parquet glob; passed to load_oanda_data)"
+        ],
+        "writes": [
+          "<output_dir>/opportunity_map_raw.csv",
+          "<output_dir>/opportunity_map_summary.json",
+          "<output_dir>/opportunity_map_audit.json"
+        ]
+      },
+      "config_files_opened": [],
+      "dataset_lock_files_referenced": [],
+      "hardcoded_paths_or_globs": []
+    },
+
+    "phase2_11_sessions_cluster_compile.py": {
+      "direct_imports": {
+        "stdlib": [
+          "__future__.annotations",
+          "argparse",
+          "csv",
+          "json",
+          "collections.Counter",
+          "collections.defaultdict",
+          "dataclasses.dataclass",
+          "datetime.datetime",
+          "datetime.timedelta",
+          "datetime.timezone",
+          "pathlib.Path",
+          "statistics.mean",
+          "typing.Any"
+        ],
+        "third_party": [],
+        "local_repo": []
+      },
+      "local_repo_transitive_imports": {},
+      "opened_files_and_patterns": {
+        "reads": [
+          "<input_csv> (default: phase1_11_sessions_outputs/opportunity_map_raw.csv)"
+        ],
+        "writes": [
+          "<output_dir>/opportunity_clusters.csv (default dir: phase2_11_sessions_outputs)",
+          "<output_dir>/cluster_summary.json",
+          "<output_dir>/cluster_audit.json"
+        ]
+      },
+      "config_files_opened": [],
+      "dataset_lock_files_referenced": [],
+      "hardcoded_paths_or_globs": []
+    },
+
+    "phase3_11_sessions_entry_windows.py": {
+      "direct_imports": {
+        "stdlib": [
+          "__future__.annotations",
+          "argparse",
+          "csv",
+          "json",
+          "collections.Counter",
+          "collections.defaultdict",
+          "datetime.datetime",
+          "datetime.timezone",
+          "pathlib.Path",
+          "statistics.mean",
+          "typing.Any"
+        ],
+        "third_party": [],
+        "local_repo": []
+      },
+      "local_repo_transitive_imports": {},
+      "opened_files_and_patterns": {
+        "reads": [
+          "<phase1_csv> (default: phase1_11_sessions_outputs/opportunity_map_raw.csv)",
+          "<clusters_csv> (default: phase2_11_sessions_outputs/opportunity_clusters.csv)"
+        ],
+        "writes": [
+          "<output_dir>/entry_window_states.csv (default dir: phase3_11_sessions_outputs)",
+          "<output_dir>/entry_window_summary.json",
+          "<output_dir>/entry_window_audit.json"
+        ]
+      },
+      "config_files_opened": [],
+      "dataset_lock_files_referenced": [],
+      "hardcoded_paths_or_globs": []
+    },
+
+    "phase4_11_sessions_oae.py": {
+      "direct_imports": {
+        "stdlib": [
+          "__future__.annotations",
+          "argparse",
+          "csv",
+          "json",
+          "collections.Counter",
+          "collections.defaultdict",
+          "datetime.datetime",
+          "datetime.timezone",
+          "pathlib.Path",
+          "statistics.mean",
+          "typing.Any"
+        ],
+        "third_party": [],
+        "local_repo": []
+      },
+      "local_repo_transitive_imports": {},
+      "opened_files_and_patterns": {
+        "reads": [
+          "<phase1_csv> (default: phase1_11_sessions_outputs/opportunity_map_raw.csv)"
+        ],
+        "writes": [
+          "<output_dir>/opportunity_zones_labeled.csv (default dir: phase4_11_sessions_outputs)",
+          "<output_dir>/zone_label_summary.json",
+          "<output_dir>/zone_label_audit.json"
+        ]
+      },
+      "config_files_opened": [],
+      "dataset_lock_files_referenced": [],
+      "hardcoded_paths_or_globs": []
+    },
+
+    "phase5_11_sessions_separability.py": {
+      "direct_imports": {
+        "stdlib": [
+          "__future__.annotations",
+          "argparse",
+          "csv",
+          "json",
+          "pathlib.Path",
+          "statistics.mean",
+          "statistics.median",
+          "typing.Any"
+        ],
+        "third_party": [],
+        "local_repo": []
+      },
+      "local_repo_transitive_imports": {},
+      "opened_files_and_patterns": {
+        "reads": [
+          "<labeled_csv> (default: phase4_11_sessions_outputs/opportunity_zones_labeled.csv)"
+        ],
+        "writes": [
+          "<output_dir>/zone_label_separability.json (default dir: phase5_11_sessions_outputs)"
+        ]
+      },
+      "config_files_opened": [],
+      "dataset_lock_files_referenced": [],
+      "hardcoded_paths_or_globs": []
+    },
+
+    "stage6_11_sessions_odm.py": {
+      "direct_imports": {
+        "stdlib": [
+          "__future__.annotations",
+          "argparse",
+          "csv",
+          "json",
+          "collections.Counter",
+          "collections.defaultdict",
+          "pathlib.Path",
+          "statistics.mean",
+          "typing.Any"
+        ],
+        "third_party": [],
+        "local_repo": []
+      },
+      "local_repo_transitive_imports": {},
+      "opened_files_and_patterns": {
+        "reads": [
+          "<clusters_csv> (default: compiled_stage1_5_11_sessions/phase2/opportunity_clusters.csv)",
+          "<entry_windows_csv> (default: compiled_stage1_5_11_sessions/phase3/entry_window_states.csv)",
+          "<labeled_csv> (default: compiled_stage1_5_11_sessions/phase4/opportunity_zones_labeled.csv)",
+          "<dataset_lock> (default: dataset_lock_11_sessions.json)"
+        ],
+        "writes": [
+          "<output_dir>/odm_ceiling_report.json (default dir: compiled_stage1_5_11_sessions/phase6)",
+          "<output_dir>/odm_audit.json",
+          "<output_dir>/cluster_resolved_labels.csv"
+        ]
+      },
+      "config_files_opened": [],
+      "dataset_lock_files_referenced": [
+        "dataset_lock_11_sessions.json (default arg)"
+      ],
+      "hardcoded_paths_or_globs": []
+    }
+  },
+  "global_findings": {
+    "stage7_plus_suspects_requested_by_user": {
+      "run_target_entry_stage_compiler.py": {
+        "status": "NOT_IMPORTED_BY_STAGE1_6",
+        "reason": "No direct or transitive imports from the six stage scripts (based on current code read)."
+      },
+      "optimize_target_entry_classes_contextual_v2.py": {
+        "status": "NOT_IMPORTED_BY_STAGE1_6",
+        "reason": "No direct or transitive imports from the six stage scripts (based on current code read)."
+      },
+      "optimize_target_entry_classes_no_timeouts.py": {
+        "status": "NOT_IMPORTED_BY_STAGE1_6",
+        "reason": "No direct or transitive imports from the six stage scripts (based on current code read)."
+      },
+      "build_session_state_stream.py": {
+        "status": "NOT_IMPORTED_BY_STAGE1_6",
+        "reason": "No direct or transitive imports from the six stage scripts (based on current code read)."
+      },
+      "build_energy_context_engine.py": {
+        "status": "NOT_IMPORTED_BY_STAGE1_6",
+        "reason": "No direct or transitive imports from the six stage scripts (based on current code read)."
+      },
+      "build_point_energy_trajectory.py": {
+        "status": "NOT_IMPORTED_BY_STAGE1_6",
+        "reason": "No direct or transitive imports from the six stage scripts (based on current code read)."
+      }
+    },
+    "third_party_dependencies": {
+      "pandas": {
+        "required_by": [
+          "phase1_ode_proven.py"
+        ],
+        "usage": "read_parquet"
+      }
+    },
+    "hardcoded_or_assumed_data_layout": [
+      "Phase1 requires parquet layout under data_root: pair={pair}/year=*/month=*/part-*.parquet"
+    ]
+  }
+}

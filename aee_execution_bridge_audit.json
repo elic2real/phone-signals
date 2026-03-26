@@ -1,0 +1,125 @@
+{
+  "rows": [
+    {
+      "trade_id": 4925,
+      "broker_trade_id": "87844,87838",
+      "AEE eval time": "2026-03-16T03:31:14.180855+00:00",
+      "AEE decision": "HOLD",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4924,
+      "broker_trade_id": "87844,87838",
+      "AEE eval time": "2026-03-16T03:31:07.200170+00:00",
+      "AEE decision": "TIME_DECAY_PROFIT_CAPTURE",
+      "translated command": "close_position(side=long,units=ALL)",
+      "command send time": "2026-03-15 20:31:07,200",
+      "broker endpoint used": "/v3/accounts/{account_id}/positions/EUR_USD/close",
+      "broker response time": "2026-03-15 20:31:07,705",
+      "broker response status": "404",
+      "local state transition after response": "DB state=CLOSED note=TIME_DECAY_PROFIT_CAPTURE"
+    },
+    {
+      "trade_id": 4923,
+      "broker_trade_id": "87844,87838",
+      "AEE eval time": "2026-03-16T03:31:00.537980+00:00",
+      "AEE decision": "TIME_DECAY_PROFIT_CAPTURE",
+      "translated command": "close_position(side=long,units=ALL)",
+      "command send time": "2026-03-15 20:31:00,538",
+      "broker endpoint used": "/v3/accounts/{account_id}/positions/EUR_USD/close",
+      "broker response time": "2026-03-15 20:31:00,964",
+      "broker response status": "404",
+      "local state transition after response": "DB state=CLOSED note=TIME_DECAY_PROFIT_CAPTURE"
+    },
+    {
+      "trade_id": 4922,
+      "broker_trade_id": "87886",
+      "AEE eval time": "",
+      "AEE decision": "",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4921,
+      "broker_trade_id": "87878",
+      "AEE eval time": "",
+      "AEE decision": "",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4920,
+      "broker_trade_id": "87872",
+      "AEE eval time": "2026-03-16T03:26:09.307467+00:00",
+      "AEE decision": "HOLD",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4919,
+      "broker_trade_id": "87866",
+      "AEE eval time": "2026-03-16T03:26:08.999065+00:00",
+      "AEE decision": "HOLD",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4918,
+      "broker_trade_id": "87858",
+      "AEE eval time": "",
+      "AEE decision": "",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4917,
+      "broker_trade_id": "87850",
+      "AEE eval time": "",
+      "AEE decision": "",
+      "translated command": "NOOP",
+      "command send time": "",
+      "broker endpoint used": "",
+      "broker response time": "",
+      "broker response status": "",
+      "local state transition after response": "DB state=CLOSED note=MANUAL_CLOSE_DETECTED"
+    },
+    {
+      "trade_id": 4916,
+      "broker_trade_id": "87844",
+      "AEE eval time": "2026-03-16T03:30:12.919759+00:00",
+      "AEE decision": "GREEN_STALL_CAPTURE",
+      "translated command": "close_position(side=long,units=ALL)",
+      "command send time": "2026-03-15 20:30:12,919",
+      "broker endpoint used": "/v3/accounts/{account_id}/positions/EUR_USD/close",
+      "broker response time": "2026-03-15 20:30:13,533",
+      "broker response status": "404",
+      "local state transition after response": "DB state=CLOSED note=GREEN_STALL_CAPTURE"
+    }
+  ],
+  "limit": 10
+}

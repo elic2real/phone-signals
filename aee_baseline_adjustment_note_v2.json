@@ -1,0 +1,39 @@
+{
+  "from_config": "aee_band_baseline_floor_v1.json",
+  "to_config": "aee_band_baseline_floor_v2.json",
+  "objective": "Improve realized extraction per hour while preserving high close frequency and defensive integrity",
+  "evidence": {
+    "v1_reason_overfire": {
+      "AEE_BAND_NEVER_GREEN_TIMEOUT_share": 0.4692170219378901,
+      "AEE_BAND_FALLBACK_EXIT_share": 0.2945168225025253,
+      "AEE_BAND_FAST_FAILURE_EXIT_share": 0.14377476754124685
+    },
+    "v1_delta_realized_pips_per_hour": -1.0483286814612098
+  },
+  "exact_three_changes": [
+    {
+      "path": "near_entry.timeout_sec",
+      "old": 12,
+      "new": 20,
+      "intent": "Reduce premature never-green closures and allow more trades to escape near-entry churn."
+    },
+    {
+      "path": "fallback.drop_positive_bands",
+      "old": 1,
+      "new": 2,
+      "intent": "Reduce aggressive fallback overfire and preserve medium winners longer."
+    },
+    {
+      "path": "fast_adverse.adverse_r",
+      "old": 0.35,
+      "new": 0.45,
+      "intent": "Lower early defensive cut frequency to avoid clipping recoverable trades."
+    }
+  ],
+  "hard_constraints": {
+    "single_run": true,
+    "no_family_search": true,
+    "no_pair_local_loops": true,
+    "no_mixed_confirmation": true
+  }
+}

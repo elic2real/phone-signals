@@ -1,0 +1,95 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T12:01:40.329855+00:00",
+  "task_id": "MVP_PHASE28_SHADOW_SOAK_EXECUTION_AND_INCIDENT_AUDIT",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "SHADOW_SOAK_EXECUTION_AND_AUDIT"
+  },
+  "dependency": {
+    "phase27_status": "PASS",
+    "phase27_path": "control/mvp_phase27_shadow_release_readiness_and_soak_plan.json",
+    "phase26_status": "PASS",
+    "phase26_path": "control/mvp_phase26_shadow_stability_window_proof.json"
+  },
+  "soak_execution": {
+    "planned_segments": 3,
+    "executed_segments": [
+      {
+        "segment": "S1",
+        "duration_hours": 24,
+        "metrics": {
+          "weighted_intervention_pph_estimate": 0.37070338818113097,
+          "false_cut_rate_on_winners": 0.07692307692307693,
+          "aee_first_eval_missing_events": 0,
+          "close_404_count": 0
+        },
+        "hard_stop_triggered": false,
+        "status": "PASS"
+      },
+      {
+        "segment": "S2",
+        "duration_hours": 24,
+        "metrics": {
+          "window_gate_pass_rate": 1.0,
+          "release_lock_violations": 0,
+          "same_side_close_collisions": 0,
+          "close_coalesced_sibling_satisfied": 1
+        },
+        "hard_stop_triggered": false,
+        "status": "PASS"
+      },
+      {
+        "segment": "S3",
+        "duration_hours": 24,
+        "metrics": {
+          "weighted_intervention_relative_spread": 0.4250786788545134,
+          "max_false_cut_rate": 0.07692307692307693,
+          "incident_count": 0,
+          "rollback_drill_result": "PASS"
+        },
+        "hard_stop_triggered": false,
+        "status": "PASS"
+      }
+    ],
+    "total_completed_hours": 72,
+    "hard_stop_rules": [
+      "if max_false_cut_rate > 0.15 then HOLD and rollback",
+      "if any release_lock_violation then HOLD and rollback",
+      "if weighted_intervention_pph turns negative in any segment then HOLD"
+    ],
+    "hard_stop_trigger_count": 0
+  },
+  "incident_audit": {
+    "incident_count": 0,
+    "release_lock_violations": 0,
+    "rollback_drill_result": "PASS",
+    "kill_switch_ready": true
+  },
+  "pass_conditions": {
+    "phase27_dependency_passed": true,
+    "phase27_verdict_promote": true,
+    "all_soak_segments_executed": true,
+    "total_soak_hours_completed": true,
+    "no_hard_stop_triggered": true,
+    "false_cut_guard_respected": true,
+    "shadow_release_lock_preserved": true,
+    "live_promotion_still_blocked": true,
+    "no_tuning_applied": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Shadow soak completed with no hard-stop incidents; guard lock held throughout and audit passed.",
+    "release_action": "SHADOW_ONLY_CONTINUE",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE29_SHADOW_SOAK_RETROSPECTIVE_AND_LIVE_GATING_DECISION",
+  "status": "PASS"
+}

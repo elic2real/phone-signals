@@ -1,0 +1,32 @@
+{
+  "rule_name": "panic_raise",
+  "params": {
+    "panic_time_open_mult": 1.8,
+    "panic_time_since_peak_mult": 1.8,
+    "short_panic_opp_mult": 1.8,
+    "bad_trade_opp_mult": 1.6,
+    "panic_giveback_mult": 1.5,
+    "decay_time_open_mult": 1.1,
+    "decay_time_since_peak_mult": 1.1,
+    "harvest_time_mult": 0.28,
+    "harvest_under_profit_mult": 0.28,
+    "harvest_giveback_mult": 0.18
+  },
+  "report": {
+    "label": "SHORT_Q4",
+    "total_trades": 86,
+    "HOLD_count": 24,
+    "HARVEST_count": 19,
+    "PANIC_count": 37,
+    "DECAY_EXIT_count": 6,
+    "DO_NOT_ENTER_count": 176,
+    "avg_static_pips": 0.573255813953444,
+    "avg_aee_pips": -0.39069767441867265,
+    "avg_static_R": 0.2462873754152768,
+    "avg_aee_R": 0.16802464008857734,
+    "static_pips_per_hour": 24.649999999998094,
+    "aee_pips_per_hour": -16.800000000002925,
+    "delta_pips_per_hour": -41.45000000000102,
+    "delta_avg_R": -0.07826273532669945
+  }
+}

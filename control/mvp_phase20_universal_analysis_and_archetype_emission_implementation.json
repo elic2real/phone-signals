@@ -1,0 +1,578 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T09:11:21.591334+00:00",
+  "task_id": "MVP_PHASE20_UNIVERSAL_ANALYZER_AND_ARCHETYPE_EMISSION_IMPLEMENTATION",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "MEASUREMENT_AND_ANALYSIS_ONLY"
+  },
+  "dependency": {
+    "phase0_template_path": "control/rcp_phase0_high_speed_foundation_template.json",
+    "telemetry_paths": [
+      "control/mvp_phase9_runtime_eur_usd_telemetry.json",
+      "control/mvp_phase9_runtime_gbp_usd_telemetry.json"
+    ],
+    "benchmark_registry_path": "control/phase0_benchmark_dataset_registry.json",
+    "kill_rules_registry_path": "control/phase0_kill_rules_registry.json"
+  },
+  "universal_analysis_outputs_expected": [
+    "candidates_per_cycle",
+    "grade_distribution",
+    "rank_vs_outcome",
+    "selected_vs_rejected",
+    "trade_life_distribution",
+    "time_to_first_profit_distribution",
+    "drawdown_distribution",
+    "peak_to_close_delay_distribution",
+    "aee_decision_mix",
+    "decision_timing_vs_outcome",
+    "blocker_frequency",
+    "missed_opportunity_estimate"
+  ],
+  "universal_analysis_by_pair": {
+    "EUR_USD": {
+      "candidate_metrics": {
+        "cycles": 300,
+        "candidates_per_cycle": {
+          "count": 300,
+          "mean": 1.8733333333333333,
+          "p50": 2.0,
+          "p75": 2.0,
+          "p90": 2.0,
+          "max": 7.0
+        },
+        "grade_distribution_selected": {
+          "C": 2,
+          "B": 4,
+          "A": 6
+        }
+      },
+      "rank_vs_outcome": {
+        "1": {
+          "count": 12,
+          "win_rate": 0.5,
+          "avg_pnl": 0.475
+        }
+      },
+      "selected_vs_rejected": {
+        "selected_avg_score": 0.6675225,
+        "rejected_avg_score": 0.6169734067164179,
+        "selected_count": 24,
+        "rejected_count": 536
+      },
+      "trade_life_distribution": {
+        "count": 12,
+        "mean": 5940.0,
+        "p50": 5940.0,
+        "p75": 5940.0,
+        "p90": 5940.0,
+        "max": 5940.0
+      },
+      "timing_metrics": {
+        "time_to_first_profit_distribution": {
+          "count": 12,
+          "mean": 0.0,
+          "p50": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "time_in_drawdown_distribution": {
+          "count": 12,
+          "mean": 710.0,
+          "p50": 60.0,
+          "p75": 1140.0,
+          "p90": 1620.0,
+          "max": 3540.0
+        },
+        "peak_to_close_delay_distribution": {
+          "count": 12,
+          "mean": 2055.0,
+          "p50": 1440.0,
+          "p75": 3900.0,
+          "p90": 4140.0,
+          "max": 4680.0
+        }
+      },
+      "aee_behavior": {
+        "decision_mix": {
+          "AEE_GIVEBACK_EXIT": 7,
+          "AEE_BAND_FAST_FAILURE_EXIT": 5
+        },
+        "decision_timing_vs_outcome": {
+          "AEE_BAND_FAST_FAILURE_EXIT": {
+            "count": 5,
+            "mean": 5940.0,
+            "p50": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "AEE_GIVEBACK_EXIT": {
+            "count": 7,
+            "mean": 5940.0,
+            "p50": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          }
+        }
+      },
+      "blocker_analysis": {
+        "status": "MISSING_IN_TELEMETRY",
+        "blocker_frequency": {},
+        "missed_opportunity_estimate": null
+      },
+      "failure_archetype_counts": {
+        "success": 5,
+        "late_entry": 3,
+        "prolonged_drawdown": 1,
+        "peak_delay": 3
+      },
+      "failure_archetype_assignments": [
+        {
+          "timestamp": "2025-12-15T10:22:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "C",
+          "net_pips": 1.0,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T10:23:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": 0.3999999999999999,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T11:14:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 0.7999999999999998,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T11:18:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": 0.0,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T11:19:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -0.7000000000000001,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T12:19:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -0.30000000000000004,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T12:28:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "C",
+          "net_pips": -0.30000000000000004,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T12:48:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.40000000000000013,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T14:32:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": 2.9,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T14:36:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 1.1,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T14:41:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 1.5,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T14:45:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -0.30000000000000004,
+          "archetype": "peak_delay"
+        }
+      ]
+    },
+    "GBP_USD": {
+      "candidate_metrics": {
+        "cycles": 300,
+        "candidates_per_cycle": {
+          "count": 300,
+          "mean": 1.8333333333333333,
+          "p50": 2.0,
+          "p75": 2.0,
+          "p90": 2.0,
+          "max": 9.0
+        },
+        "grade_distribution_selected": {
+          "B": 8,
+          "A": 9,
+          "C": 4,
+          "D": 1
+        }
+      },
+      "rank_vs_outcome": {
+        "1": {
+          "count": 22,
+          "win_rate": 0.3181818181818182,
+          "avg_pnl": 0.4363636363636363
+        }
+      },
+      "selected_vs_rejected": {
+        "selected_avg_score": 0.6718538787878787,
+        "rejected_avg_score": 0.6124681146245059,
+        "selected_count": 33,
+        "rejected_count": 506
+      },
+      "trade_life_distribution": {
+        "count": 22,
+        "mean": 5940.0,
+        "p50": 5940.0,
+        "p75": 5940.0,
+        "p90": 5940.0,
+        "max": 5940.0
+      },
+      "timing_metrics": {
+        "time_to_first_profit_distribution": {
+          "count": 22,
+          "mean": 0.0,
+          "p50": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "time_in_drawdown_distribution": {
+          "count": 22,
+          "mean": 1843.6363636363637,
+          "p50": 1320.0,
+          "p75": 2760.0,
+          "p90": 4020.0,
+          "max": 4500.0
+        },
+        "peak_to_close_delay_distribution": {
+          "count": 22,
+          "mean": 1592.7272727272727,
+          "p50": 840.0,
+          "p75": 2520.0,
+          "p90": 3120.0,
+          "max": 4740.0
+        }
+      },
+      "aee_behavior": {
+        "decision_mix": {
+          "AEE_GIVEBACK_EXIT": 8,
+          "AEE_BAND_FAST_FAILURE_EXIT": 13,
+          "AEE_CONTINUATION_FAILED_EXIT": 1
+        },
+        "decision_timing_vs_outcome": {
+          "AEE_BAND_FAST_FAILURE_EXIT": {
+            "count": 13,
+            "mean": 5940.0,
+            "p50": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "AEE_CONTINUATION_FAILED_EXIT": {
+            "count": 1,
+            "mean": 5940.0,
+            "p50": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "AEE_GIVEBACK_EXIT": {
+            "count": 8,
+            "mean": 5940.0,
+            "p50": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          }
+        }
+      },
+      "blocker_analysis": {
+        "status": "MISSING_IN_TELEMETRY",
+        "blocker_frequency": {},
+        "missed_opportunity_estimate": null
+      },
+      "failure_archetype_counts": {
+        "success": 2,
+        "late_entry": 8,
+        "peak_delay": 6,
+        "prolonged_drawdown": 6
+      },
+      "failure_archetype_assignments": [
+        {
+          "timestamp": "2025-12-15T08:16:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": 2.1,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T08:21:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -3.3000000000000003,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T08:32:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -0.20000000000000007,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T09:04:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": 5.9,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T09:25:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 3.3000000000000003,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T09:28:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 1.7999999999999998,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T09:43:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "C",
+          "net_pips": -0.40000000000000013,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T09:44:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "C",
+          "net_pips": -0.5000000000000001,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T09:45:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "C",
+          "net_pips": 0.09999999999999987,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T09:47:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.5000000000000001,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T09:56:00+00:00",
+          "direction": "LONG",
+          "family": "OTHER",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -0.30000000000000004,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T11:06:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.40000000000000013,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T11:08:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 3.1,
+          "archetype": "success"
+        },
+        {
+          "timestamp": "2025-12-15T11:18:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.10000000000000009,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T11:39:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "C",
+          "net_pips": -0.20000000000000007,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T12:04:00+00:00",
+          "direction": "LONG",
+          "family": "RANGE_ESCAPE",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -0.20000000000000007,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T12:05:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.20000000000000007,
+          "archetype": "peak_delay"
+        },
+        {
+          "timestamp": "2025-12-15T12:29:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.5000000000000001,
+          "archetype": "late_entry"
+        },
+        {
+          "timestamp": "2025-12-15T12:40:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "B",
+          "net_pips": -0.40000000000000013,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T12:50:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "D",
+          "net_pips": -0.10000000000000009,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T13:47:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": -1.1,
+          "archetype": "prolonged_drawdown"
+        },
+        {
+          "timestamp": "2025-12-15T14:30:00+00:00",
+          "direction": "LONG",
+          "family": "EXPANSION_BREAKOUT",
+          "rank": 1,
+          "grade": "A",
+          "net_pips": 1.6999999999999997,
+          "archetype": "peak_delay"
+        }
+      ]
+    }
+  },
+  "implementation_closure": {
+    "single_canonical_artifact": "control/mvp_phase20_universal_analysis_and_archetype_emission_implementation.json",
+    "benchmark_dataset_registry": "control/phase0_benchmark_dataset_registry.json",
+    "kill_rules_registry": "control/phase0_kill_rules_registry.json"
+  },
+  "phase21_recommended_scope": {
+    "task": "MVP_PHASE21_PARALLEL_VARIANT_EXECUTION_WITH_MICRO_SLICE_KILL_GATES",
+    "objective": "Execute baseline/A/B variants in parallel using benchmark slices and hard kill gates."
+  },
+  "pass_conditions": {
+    "template_loaded": true,
+    "universal_analyzer_output_present": true,
+    "archetype_emission_present": true,
+    "benchmark_registry_created": true,
+    "kill_rules_registry_created": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,295 @@
+{
+  "mode": "winrate_first_non_eurusd_london",
+  "attempted": [
+    {
+      "node": "AUD_CAD__monday__london",
+      "status": "FAIL",
+      "returncode": 1,
+      "stderr": "Traceback (most recent call last):\n  File \"/home/elic/Documents/phone signals/rebuild_entry_and_downstream_fast.py\", line 352, in <module>\n    main()\n  File \"/home/elic/Documents/phone signals/rebuild_entry_and_downstream_fast.py\", line 262, in main\n    writer = csv.DictWriter(f, fieldnames=selected_rows[0].keys())\n                                          ~~~~~~~~~~~~~^^^\nIndexError: list index out of range\n"
+    },
+    {
+      "node": "AUD_CAD__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_JPY__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_JPY__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "AUD_JPY__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_JPY__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_JPY__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_USD__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_USD__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "AUD_USD__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_USD__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "AUD_USD__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "CHF_JPY__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "CHF_JPY__monday__london",
+      "status": "FAIL",
+      "returncode": 1,
+      "stderr": "Traceback (most recent call last):\n  File \"/home/elic/Documents/phone signals/rebuild_entry_and_downstream_fast.py\", line 352, in <module>\n    main()\n  File \"/home/elic/Documents/phone signals/rebuild_entry_and_downstream_fast.py\", line 262, in main\n    writer = csv.DictWriter(f, fieldnames=selected_rows[0].keys())\n                                          ~~~~~~~~~~~~~^^^\nIndexError: list index out of range\n"
+    },
+    {
+      "node": "CHF_JPY__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "CHF_JPY__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "CHF_JPY__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_CHF__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "EUR_CHF__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_GBP__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_GBP__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "EUR_GBP__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_GBP__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_GBP__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_JPY__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_JPY__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "EUR_JPY__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_JPY__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "EUR_JPY__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_CHF__monday__london",
+      "status": "SKIP_MISSING_LOCK"
+    },
+    {
+      "node": "GBP_JPY__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_JPY__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "GBP_JPY__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_JPY__tuesday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "GBP_JPY__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_USD__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_USD__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "GBP_USD__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_USD__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "GBP_USD__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_JPY__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_JPY__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "NZD_JPY__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_JPY__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_JPY__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_USD__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_USD__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "NZD_USD__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_USD__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "NZD_USD__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CAD__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CAD__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "USD_CAD__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CAD__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CAD__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CHF__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CHF__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "USD_CHF__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CHF__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_CHF__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_JPY__friday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_JPY__monday__london",
+      "status": "PASS",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "node": "USD_JPY__thursday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_JPY__tuesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    },
+    {
+      "node": "USD_JPY__wednesday__london",
+      "status": "SKIP_MISSING_TARGET_STAGE"
+    }
+  ]
+}

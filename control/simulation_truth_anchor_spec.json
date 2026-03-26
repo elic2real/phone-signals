@@ -1,0 +1,54 @@
+{
+  "task_id": "TASK-013",
+  "template": "simulation_truth_anchor",
+  "purpose": "Define what should be achievable before any managed-exit logic distorts the trade.",
+  "anchor_levels": [
+    {
+      "anchor": "total_available_pips",
+      "definition": "Maximum favorable movement reachable by the trade path under the chosen truth model.",
+      "aggregation": [
+        "per_trade",
+        "per_family",
+        "per_form",
+        "per_regime"
+      ]
+    },
+    {
+      "anchor": "entry_only_capture",
+      "definition": "Favorable movement captured by the detector without AEE management beyond basic trade existence and friction.",
+      "formula": "entry_only_capture = max(0, mfe_minus_friction)"
+    },
+    {
+      "anchor": "realized_capture",
+      "definition": "Actual movement captured after AEE and pricing logic.",
+      "formula": "realized_capture = realized_net_pips"
+    },
+    {
+      "anchor": "extraction_efficiency",
+      "definition": "How much available movement is converted into realized capture.",
+      "formula": "extraction_efficiency = realized_capture / total_available_pips",
+      "bands": {
+        "broken": "<0.10",
+        "weak": "0.10-0.30",
+        "viable": "0.30-0.60",
+        "strong": ">=0.60"
+      }
+    }
+  ],
+  "mandatory_reporting": [
+    "total_available_pips",
+    "entry_only_capture",
+    "realized_capture",
+    "entry_only_pph",
+    "realized_pph",
+    "aee_damage",
+    "extraction_efficiency"
+  ],
+  "decision_logic": [
+    "If total_available_pips is low, investigate market or sample weakness before detector failure.",
+    "If entry_only_capture is high and realized_capture is low, classify primary loss as AEE_INTERACTION or SIMULATION.",
+    "If both entry_only_capture and realized_capture are low, classify loss upstream at concept form or implementation.",
+    "If filtered capture is materially weaker than firehose capture, classify loss at FILTERING."
+  ],
+  "required_artifact_link": "control/degradation_waterfall_template.json"
+}

@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-03-23T00:00:00Z",
+  "families": [
+    {
+      "family_id": "legacy_eur_gbp_seed_family",
+      "status": "rejected",
+      "tag": "non_promotable_under_current_seed_population",
+      "reason": "Failed timing-only, early-harvest, and structural/path-band batches under strict robustness gates.",
+      "evidence": [
+        "aee_hold_efficiency_batch2_two_families.json",
+        "aee_structural_batch1.json",
+        "aee_structural_batch2_behavioral_bands.json"
+      ]
+    },
+    {
+      "family_id": "replacement_family_v1_lock_promoted",
+      "status": "rejected",
+      "tag": "non_promotable_after_pair_scoped_validation",
+      "reason": "Produced promoted configs on lock-window gates but failed diversified cross-node and pair-scoped confirmations under the same strict gates.",
+      "evidence": [
+        "aee_structural_fresh_family_batch1.json",
+        "aee_crossnode_confirm_eur_usd_fri_ny.json",
+        "aee_crossnode_confirm_eur_chf_mon_ny.json",
+        "aee_pairscope_eur_usd_fri_ny.json",
+        "aee_pairscope_eur_chf_mon_ny.json"
+      ],
+      "candidates": [
+        "eur_usd_fri_ny::band_forced_monetization",
+        "eur_chf_mon_ny::band_forced_monetization"
+      ],
+      "pair_scoped_results": {
+        "eur_usd_fri_ny": {
+          "status": "killed",
+          "stream_wins": "2/14",
+          "delta_pph": -0.096078,
+          "hold_ratio": 0.758,
+          "avg_r": 0.685268
+        },
+        "eur_chf_mon_ny": {
+          "status": "killed",
+          "stream_wins": "0/5",
+          "delta_pph": -0.216368,
+          "hold_ratio": 0.807,
+          "avg_r": 0.475962
+        }
+      },
+      "mixed_confirmation": {
+        "status": "skipped",
+        "reason": "No candidate passed pair-local gates"
+      }
+    },
+    {
+      "family_id": "profit_stall_harvester_family_v1",
+      "status": "rejected",
+      "tag": "non_promotable_after_crossnode_and_pairscope",
+      "reason": "Materially different profit-stall extraction behavior still failed extraction-per-hour gates in cross-node and pair-local validation.",
+      "evidence": [
+        "aee_new_family_profit_stall_crossnode.json",
+        "aee_new_family_profit_stall_pairscope_eur_usd.json"
+      ],
+      "best_crossnode": {
+        "seed": "eur_usd_mon_ny::profit_stall_harvester",
+        "stream_wins": "2/20",
+        "delta_pph": -0.147451,
+        "hold_ratio": 0.73,
+        "avg_r": 0.681063
+      },
+      "best_pairscope": {
+        "seed": "eur_usd_mon_ny::profit_stall_harvester",
+        "stream_wins": "1/14",
+        "delta_pph": -0.142827,
+        "hold_ratio": 0.761,
+        "avg_r": 0.665134
+      }
+    }
+  ]
+}

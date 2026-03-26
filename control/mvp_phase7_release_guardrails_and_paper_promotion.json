@@ -1,0 +1,91 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T06:32:27.701179+00:00",
+  "task_id": "MVP_PHASE7_RELEASE_GUARDRAILS_AND_PAPER_PROMOTION",
+  "dependency": {
+    "phase6_status": "PASS",
+    "phase6_path": "control/mvp_phase6_stability_proof.json"
+  },
+  "guardrails": {
+    "scope_lock": {
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "session": "LONDON",
+      "tuning": "NONE"
+    },
+    "hard_floors": {
+      "eur_usd_net_pph_min": 0.04,
+      "gbp_usd_net_pph_min": 0.22,
+      "weighted_net_pph_min": 0.09
+    },
+    "drift_limits": {
+      "runtime_weighted_vs_phase6_min_ratio": 0.9,
+      "runtime_weighted_vs_phase6_mean_ratio": 0.65,
+      "phase6_weighted_relative_spread_max": 0.8
+    },
+    "integrity_checks": {
+      "session_lock_skip_required": true,
+      "london_context_only_required": true,
+      "accepted_trades_required": true
+    }
+  },
+  "runtime_proof": {
+    "EUR_USD": {
+      "net_pph_keep_tune": 0.0438,
+      "hours": 25977.35,
+      "accepted_trades": 893,
+      "entry_session_not_included": 17313,
+      "contexts": [
+        "EUR_USD__monday__london"
+      ]
+    },
+    "GBP_USD": {
+      "net_pph_keep_tune": 0.2708,
+      "hours": 6755.43,
+      "accepted_trades": 1042,
+      "entry_session_not_included": 3624,
+      "contexts": [
+        "GBP_USD__monday__london"
+      ]
+    },
+    "weighted_net_pph_keep_tune": 0.09064852951689407,
+    "total_accepted_trades": 1935,
+    "total_hours": 32732.78
+  },
+  "decay_read": {
+    "phase6_weighted_path": [
+      0.2068242118055652,
+      0.12838084923917906,
+      0.10111120747703276
+    ],
+    "phase6_weighted_mean": 0.14543875617392568,
+    "phase6_weighted_min": 0.10111120747703276,
+    "runtime_weighted": 0.09064852951689407,
+    "runtime_weighted_vs_phase6_min_ratio": 0.8965230638501152,
+    "runtime_weighted_vs_phase6_mean_ratio": 0.623276297883697,
+    "eur_runtime_delta_vs_w3": -0.006600000000000002,
+    "gbp_runtime_delta_vs_w3": 0.0,
+    "decay_hypothesis": "EUR contribution is thinning with wider hours while GBP remains strong; investigate EUR session-regime composition next."
+  },
+  "paper_promotion": {
+    "mode": "PAPER_ONLY",
+    "release_action": "ENABLE_GUARDRAIL_MONITORED_PAPER_PROMOTION",
+    "reason": "No-tuning runtime canary remains above frozen floors with lock integrity intact."
+  },
+  "pass_conditions": {
+    "phase6_dependency_passed": true,
+    "eur_runtime_above_floor": true,
+    "gbp_runtime_above_floor": true,
+    "weighted_runtime_above_floor": true,
+    "runtime_weighted_vs_phase6_min_ok": false,
+    "runtime_weighted_vs_phase6_mean_ok": false,
+    "phase6_spread_bound_ok": true,
+    "session_lock_skip_present": true,
+    "london_context_only": true,
+    "accepted_trades_present": true
+  },
+  "status": "FAIL"
+}

@@ -1,0 +1,472 @@
+{
+  "version": "1.0",
+  "description": "Formal stage contract system - each stage must prove its job is done before handing off to the next",
+  "global_stop_rules": [
+    "Missing intermediate layers",
+    "Same trade changes outcome across files",
+    "Stage outputs not lineage-consistent",
+    "Physically impossible counts",
+    "Fake perfect performance from tiny sample",
+    "Stale artifact reuse",
+    "Report semantics imply more than the stage actually knows"
+  ],
+  "verdict_labels": {
+    "PASS": "Safe to hand off to next stage",
+    "WARN": "Usable for diagnosis, not for optimization authority",
+    "FAIL": "Stop pipeline, fix stage"
+  },
+  "required_stage_outputs": [
+    "*_implementation_report.json",
+    "*_test_report.json",
+    "*_debug_report.json",
+    "*_proof_report.json"
+  ],
+  "stages": {
+    "stage_0_data_ingest": {
+      "name": "Data Ingest / Dataset Lock",
+      "purpose": "Lock the exact historical data slice being used",
+      "required_outputs": {
+        "dataset_lock.json": {
+          "date_range": "Start and end dates",
+          "pair": "Currency pair",
+          "weekday": "Day of week filter",
+          "session": "Trading session",
+          "data_source": "Path to data root",
+          "row_count": "Total rows in dataset",
+          "hash": "Dataset content hash"
+        }
+      },
+      "sanity_checks": [
+        "Timestamps strictly increasing",
+        "No duplicate timestamps (or < 0.1% tolerance)",
+        "No impossible OHLC (high >= low, close between high/low)",
+        "No missing required columns (timestamp, close, pair, session, weekday)",
+        "Data root resolves correctly",
+        "Session dates actually fall inside requested window"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "Required columns missing",
+          "Row count < 100 (unexpectedly tiny)",
+          "Timestamps out of order",
+          "Duplicate timestamps > 1%"
+        ],
+        "WARN": [
+          "Row count differs from comparable nodes by > 10x"
+        ]
+      },
+      "performance_guidelines": {
+        "row_count_range": "Should match expected order of magnitude for session/date range",
+        "comparable_node_variance": "If one node has 10x fewer rows than comparable nodes, stop"
+      },
+      "handoff_condition": "Stage 0 is valid only if dataset lock hash is recorded and reproducible",
+      "pass_criteria": [
+        "dataset_lock.json exists",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Hash is reproducible"
+      ]
+    },
+    "stage_1_raw_opportunity_map": {
+      "name": "Raw Opportunity Map",
+      "purpose": "Detect raw movement observations",
+      "required_outputs": {
+        "raw_observation_count": "Total raw observations",
+        "raw_observations.csv": "Raw observation data",
+        "summary_by_direction": "LONG/SHORT breakdown"
+      },
+      "sanity_checks": [
+        "Raw observations > 0 for active pairs/sessions",
+        "LONG/SHORT counts not impossibly skewed (ratio between 0.3 and 3.0)",
+        "Output count reproducible from same lock"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "Raw count = 0 for clearly active market node",
+          "Same context changes by > 100x without regime explanation"
+        ],
+        "WARN": [
+          "Raw count extreme relative to comparable nodes (> 10x variance)",
+          "LONG/SHORT ratio > 5:1 or < 1:5"
+        ]
+      },
+      "performance_guidelines": {
+        "raw_observations_nature": "May be noisy - not optimization truth",
+        "usage": "Only use for structural presence verification"
+      },
+      "handoff_condition": "Stage 1 only hands off if raw observations exist and are reproducible",
+      "pass_criteria": [
+        "Raw observation count > 0",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Reproducible from same dataset lock"
+      ]
+    },
+    "stage_2_clustered_impulses": {
+      "name": "Clustered Impulses",
+      "purpose": "Collapse overlapping raw observations into distinct impulses",
+      "required_outputs": {
+        "cluster_count": "Number of distinct impulse clusters",
+        "avg_cluster_size": "Average observations per cluster",
+        "max_cluster_size": "Maximum observations in any cluster",
+        "cluster_ids": "Cluster IDs linked to observations in CSV"
+      },
+      "sanity_checks": [
+        "Every raw observation maps to a cluster or is explicitly excluded",
+        "cluster_count < raw_observation_count",
+        "avg_cluster_size > 1.0",
+        "Cluster IDs unique and consistent",
+        "No orphan cluster IDs"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "cluster_count = 0 while raw observations > 0 (ZERO_CLUSTERS)",
+          "Collapse ratio > 0.95 (clustering basically 1:1 - WEAK_CLUSTERING)",
+          "Collapse ratio < 0.002 OR avg_cluster_size > 400 (EXTREME_CLUSTER_COLLAPSE)",
+          "Cluster count > 640 per session (IMPOSSIBLE_IMPULSE_COUNT)",
+          "Same cluster_id has inconsistent origin timestamps (DUPLICATE_CLUSTER_ORIGINS)"
+        ],
+        "WARN": [
+          "avg_cluster_size < 1.5 (INSUFFICIENT_CONSOLIDATION)",
+          "Avg clusters per session < 5 (might be quiet period)",
+          "Avg clusters per session > 320 (might be volatile period)"
+        ]
+      },
+      "performance_guidelines": {
+        "healthy_profile": {
+          "raw_observations": "High (thousands)",
+          "clusters": "Much lower (hundreds)",
+          "avg_cluster_size": "15-60",
+          "collapse_ratio": "0.01-0.05 (1-5%)"
+        },
+        "plausibility": "Should be in plausible order of magnitude across comparable nodes"
+      },
+      "handoff_condition": "Stage 2 is valid only if cluster IDs are written and cluster metrics pass guardrails",
+      "pass_criteria": [
+        "Cluster IDs present in output CSV",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Collapse ratio in reasonable range"
+      ]
+    },
+    "stage_3_entry_windows": {
+      "name": "Entry Windows",
+      "purpose": "Convert clusters into tradeable entry-state windows",
+      "required_outputs": {
+        "entry_window_count": "Number of valid entry windows",
+        "entry_window_ids": "Window IDs in CSV",
+        "window_open_close_timestamps": "Open/close times for each window",
+        "cluster_to_window_mapping": "Mapping from cluster → entry window"
+      },
+      "sanity_checks": [
+        "Entry windows linked to real clusters",
+        "No orphan windows (all windows have valid cluster_id)",
+        "No duplicate window IDs",
+        "Window times inside session bounds",
+        "Window open < window close"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "entry_window_count > cluster_count * 1.1 (ENTRY_WINDOW_INFLATION)",
+          "Windows missing entirely for otherwise healthy clusters",
+          "One cluster produces > 10 windows (absurd multiplication)"
+        ],
+        "WARN": [
+          "entry_window_count < cluster_count * 0.5 (excessive window collapse)"
+        ]
+      },
+      "performance_guidelines": {
+        "healthy_profile": {
+          "entry_windows": "Should be <= cluster_count or only modestly different",
+          "ratio": "entry_window_count / cluster_count should be 0.8-1.1"
+        },
+        "critical_metric": "If entry windows explode, stage is inventing tradable opportunities"
+      },
+      "handoff_condition": "Stage 3 is valid only if windows are linked and counts are plausible",
+      "pass_criteria": [
+        "Entry window IDs present in CSV",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "entry_window_count / cluster_count ratio sane"
+      ]
+    },
+    "stage_4_labels": {
+      "name": "Labels / Truth Table",
+      "purpose": "Assign GOOD / BAD / NOISE to pre-entry states",
+      "required_outputs": {
+        "truth_table.csv": "Labeled truth table",
+        "label_counts": "Counts for GOOD/BAD/NOISE",
+        "row_level_labels": "Every row has action_truth or outcome_label"
+      },
+      "sanity_checks": [
+        "Every labeled row maps back to valid upstream state",
+        "Label counts reconcile with CSV row count",
+        "No missing labels for included rows",
+        "Labels use consistent vocabulary (GOOD/BAD/NOISE or ENTER/HOLD/HARVEST/PANIC/DO_NOT_ENTER)"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "Label file row count mismatches summary",
+          "Labels rely on stale or alternate branch logic",
+          "Future leakage detected (labels use data not available at decision time)"
+        ],
+        "WARN": [
+          "One class nearly absent (< 1% of total) without reason",
+          "GOOD + BAD < 10% of total (insufficient signal)"
+        ]
+      },
+      "performance_guidelines": {
+        "class_balance": "Can vary, but not absurdly collapse",
+        "minimum_viable": "Enough GOOD and BAD must exist for separability to mean anything"
+      },
+      "handoff_condition": "Stage 4 is valid only if truth table is canonical and row-reconciled",
+      "pass_criteria": [
+        "Truth table exists with labels",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Label distribution not degenerate"
+      ]
+    },
+    "stage_5_separability": {
+      "name": "Separability Analysis",
+      "purpose": "Check whether current descriptors can separate labeled states",
+      "required_outputs": {
+        "feature_separability_table": "Feature importance/separability scores",
+        "interaction_separability_table": "Feature interaction analysis",
+        "signal_ranking": "Ranked list of predictive features"
+      },
+      "sanity_checks": [
+        "Metrics computed from same Stage 4 truth table",
+        "No future leakage in features",
+        "All reported features actually exist in truth table",
+        "Separability scores reproducible"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "Separability computed from mismatched dataset",
+          "Top features missing from source data",
+          "Separability uses stale truth table"
+        ],
+        "WARN": [
+          "Strong signal count = 0 (no predictive features found)",
+          "Top feature has AUC < 0.55 (barely better than random)"
+        ]
+      },
+      "performance_guidelines": {
+        "interpretation": "If strong features/interactions are zero, do not pretend surface is solved",
+        "decision_point": "This stage determines whether descriptors are worth fitting"
+      },
+      "handoff_condition": "Stage 5 passes only if separability is lineage-consistent. May conclude 'descriptor family insufficient'",
+      "pass_criteria": [
+        "Separability analysis complete",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Lineage to Stage 4 truth table verified"
+      ]
+    },
+    "stage_6_opportunity_supply": {
+      "name": "Opportunity Supply / Structural Supply",
+      "purpose": "Summarize opportunity supply from validated intermediate layers",
+      "required_outputs": {
+        "raw_observation_count": "Total raw observations (Stage 1)",
+        "cluster_count": "Impulse clusters (Stage 2)",
+        "entry_window_count": "Valid entry windows (Stage 3)",
+        "supply_summary": "Layered supply breakdown",
+        "stage_6_integrity": "Physical guardrails validation report"
+      },
+      "sanity_checks": [
+        "Stage 6 uses Stage 2 and Stage 3 outputs",
+        "No headline 'opportunity count' silently means raw observations",
+        "Counts are layered and explicit",
+        "Collapse ratios computed correctly"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "cluster_count missing",
+          "entry_window_count missing",
+          "Raw observations presented as tradable opportunities",
+          "Comparable contexts differ by > 100x at cluster/window layer",
+          "Physical impossibility checks trigger (see Stage 2 guardrails)"
+        ],
+        "WARN": [
+          "Collapse ratio outside healthy 1-5% range",
+          "Avg cluster size outside 15-60 range"
+        ]
+      },
+      "performance_guidelines": {
+        "nature": "Stage 6 is structural truth, not optimization truth",
+        "stability": "Cluster/window counts should be reasonably stable in comparable contexts",
+        "stop_condition": "If not stable, Stage 6 is broken and optimization stops"
+      },
+      "handoff_condition": "Stage 6 only passes if layered supply counts exist and guardrails pass",
+      "pass_criteria": [
+        "All three counts present (raw, cluster, entry_window)",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Validation report shows valid=true"
+      ]
+    },
+    "stage_7_entry_selection": {
+      "name": "Entry Selection / Entry Surface",
+      "purpose": "Turn pre-entry states into actual selected trade population",
+      "required_outputs": {
+        "selected_trades": "Final trade population",
+        "trade_count": "Number of selected trades",
+        "win_rate": "TP hit rate",
+        "avg_win_loss": "Average win/loss in pips",
+        "expectancy": "Expected value per trade",
+        "pips_per_hour": "Performance metric",
+        "good_capture": "% of GOOD opportunities captured",
+        "bad_trigger": "% of BAD opportunities triggered",
+        "noise_trigger": "% of NOISE triggered",
+        "model_rules_used": "Entry selection logic identifier"
+      },
+      "sanity_checks": [
+        "Same selected trades replay consistently",
+        "No future leakage",
+        "Selected trades come from Stage 3/4 truth path",
+        "Static replay possible",
+        "Trade count <= entry_window_count"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "Trade count < 10 with perfect metrics (fake-looking)",
+          "Selected trade count huge but expectancy near zero",
+          "Output depends on stale branch logic",
+          "Selected trade identity changes without code/data change",
+          "Trade count > entry_window_count (impossible)"
+        ],
+        "WARN": [
+          "Trade count < 50 (might be too small for optimization)",
+          "Win rate > 95% or < 20% (extreme, verify not bug)",
+          "Good capture < 5% (missing most opportunities)"
+        ]
+      },
+      "performance_guidelines": {
+        "usable_entry_surface": {
+          "trade_count": "Meaningful (> 50 for optimization)",
+          "expectancy": "Positive",
+          "capture": "Reasonable without insane noise",
+          "stability": "Stable across session subsets"
+        }
+      },
+      "handoff_condition": "Stage 7 passes only if selected trades are real, replayable, and stable enough to justify AEE work",
+      "pass_criteria": [
+        "Selected trades exist and are reproducible",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Expectancy positive or failure explained"
+      ]
+    },
+    "stage_8_aee": {
+      "name": "AEE (Adaptive Exit Engine)",
+      "purpose": "Improve extraction on the same selected trade population",
+      "required_outputs": {
+        "aee_replay": "AEE execution results",
+        "static_replay_comparison": "Baseline vs AEE comparison",
+        "delta_pips_per_hour": "PPH improvement",
+        "delta_avg_R": "R-multiple improvement",
+        "action_counts": "EXIT/HOLD/HARVEST action breakdown",
+        "failure_audit": "Analysis if AEE degrades performance"
+      },
+      "sanity_checks": [
+        "Same population as Stage 7",
+        "No hidden trade reselection",
+        "Same trade = same baseline",
+        "Action logs explain exits",
+        "AEE uses only data available at decision time"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "AEE compared against different population",
+          "No action-level audit exists",
+          "Decision state lacks required context variables",
+          "AEE uses future information"
+        ],
+        "WARN": [
+          "AEE degrades everything without failure analysis",
+          "Delta PPH < 0.1 (improvement too small to matter)",
+          "AEE changes trade count (should be same population)"
+        ]
+      },
+      "performance_guidelines": {
+        "requirement": "AEE must materially improve or be honestly rejected",
+        "threshold": "Tiny positive noise is not enough",
+        "failure_interpretation": "Catastrophic degradation means logic failure, not 'just one bad run'"
+      },
+      "handoff_condition": "Stage 8 passes only if AEE comparison is population-consistent and diagnosable",
+      "pass_criteria": [
+        "AEE results exist",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Comparison is population-consistent"
+      ]
+    },
+    "stage_9_combined_validation": {
+      "name": "Combined Validation",
+      "purpose": "Validate final entry + AEE stack on the node",
+      "required_outputs": {
+        "combined_metrics": "Final performance metrics",
+        "final_verdict": "PASS/WARN/FAIL",
+        "lineage": "Full artifact lineage trace",
+        "baseline_comparison": "Comparison to prior accepted baseline"
+      },
+      "sanity_checks": [
+        "All upstream artifacts lineage-consistent",
+        "Node identity clear (pair/weekday/session)",
+        "Metrics derived from canonical sources only",
+        "No mixed branch outputs"
+      ],
+      "guardrails": {
+        "FAIL": [
+          "Combined layer uses mixed branch outputs",
+          "Prior-stage invariants not met",
+          "Final verdict PASS with meaningless improvement",
+          "Lineage trace incomplete or inconsistent"
+        ],
+        "WARN": [
+          "Improvement marginal (< 10% delta PPH)",
+          "Trade count too small for confidence"
+        ]
+      },
+      "performance_guidelines": {
+        "final_node_requirements": {
+          "behavior": "Stable, explainable",
+          "fallbacks": "No silent fallbacks",
+          "verdict": "No PASS without concrete metrics"
+        }
+      },
+      "handoff_condition": "Only promoted nodes move forward to production",
+      "pass_criteria": [
+        "All upstream stages passed",
+        "All sanity checks pass",
+        "No FAIL guardrails triggered",
+        "Lineage fully traced and consistent"
+      ]
+    }
+  },
+  "enforcement": {
+    "stage_report_requirements": {
+      "implementation_report": "What was built and how",
+      "test_report": "What tests were run and results",
+      "debug_report": "Diagnostic information for failures",
+      "proof_report": "Evidence that stage contract was satisfied"
+    },
+    "stage_summary_questions": [
+      "What came in?",
+      "What was produced?",
+      "What was checked?",
+      "What failed?",
+      "What was fixed?",
+      "Is the stage allowed to hand off?"
+    ],
+    "pipeline_halt_conditions": [
+      "Any stage FAIL verdict",
+      "Missing required outputs",
+      "Sanity check failure",
+      "FAIL guardrail triggered",
+      "Handoff condition not met"
+    ]
+  },
+  "one_line_summary": "No stage is complete unless it passes integrity checks, sanity checks, guardrails, performance reasonableness checks, and handoff contract - this stops wasting time on garbage and reserves brain for actual optimization"
+}

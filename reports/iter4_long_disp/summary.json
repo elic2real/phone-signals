@@ -1,0 +1,55 @@
+{
+  "objective": "significant performance improvement via directional entry quality gating",
+  "ranking": [
+    {
+      "config": "baseline",
+      "both_pips_mean": 0.9784000000002457,
+      "both_pph_mean": -3.2324616187079247,
+      "both_trade_count": 50,
+      "long_pips_mean": 1.2754285714289206,
+      "long_sl_hit_rate": 0.11428571428571428,
+      "long_trade_count": 35,
+      "short_pips_mean": 0.28533333333333744,
+      "short_sl_hit_rate": 0.13333333333333333,
+      "short_trade_count": 15
+    },
+    {
+      "config": "extreme",
+      "both_pips_mean": 0.9286956521741081,
+      "both_pph_mean": -5.948327846422741,
+      "both_trade_count": 46,
+      "long_pips_mean": 1.2400000000002873,
+      "long_sl_hit_rate": 0.12903225806451613,
+      "long_trade_count": 31,
+      "short_pips_mean": 0.28533333333333744,
+      "short_sl_hit_rate": 0.13333333333333333,
+      "short_trade_count": 15
+    },
+    {
+      "config": "strict",
+      "both_pips_mean": 0.9150000000002212,
+      "both_pph_mean": -5.450480852821451,
+      "both_trade_count": 48,
+      "long_pips_mean": 1.2012121212124411,
+      "long_sl_hit_rate": 0.12121212121212122,
+      "long_trade_count": 33,
+      "short_pips_mean": 0.28533333333333744,
+      "short_sl_hit_rate": 0.13333333333333333,
+      "short_trade_count": 15
+    },
+    {
+      "config": "hair",
+      "both_pips_mean": 0.8053846153848359,
+      "both_pph_mean": -3.9272699792037407,
+      "both_trade_count": 52,
+      "long_pips_mean": 1.0162162162165245,
+      "long_sl_hit_rate": 0.16216216216216217,
+      "long_trade_count": 37,
+      "short_pips_mean": 0.28533333333333744,
+      "short_sl_hit_rate": 0.13333333333333333,
+      "short_trade_count": 15
+    }
+  ],
+  "best_config": "baseline",
+  "interpretation": "better promotion filtering on LONG entries; SHORT unchanged in this sweep"
+}

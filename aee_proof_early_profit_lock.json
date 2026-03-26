@@ -1,0 +1,144 @@
+{
+  "branch": "AEE_BAND_EARLY_PROFIT_LOCK",
+  "generated_at": "2026-03-23T18:36:40.715688Z",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "threshold_snapshot": {
+    "min_net_r": 0.02,
+    "min_best_r": 0.05,
+    "min_giveback_r": 0.01
+  },
+  "representative_outputs": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_BAND_EARLY_PROFIT_LOCK",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.02,
+          "min_best_r": 0.05,
+          "min_giveback_r": 0.01,
+          "max_vel_r_per_sec": 0.004
+        },
+        "debug": {
+          "net_r": 0.06,
+          "best_r": 0.14,
+          "giveback_r": 0.05,
+          "vel_r": 0.001
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_BAND_EARLY_PROFIT_LOCK",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.02,
+          "min_best_r": 0.05,
+          "min_giveback_r": 0.01,
+          "max_vel_r_per_sec": 0.004
+        },
+        "debug": {
+          "net_r": 0.031,
+          "best_r": 0.081,
+          "giveback_r": 0.021,
+          "vel_r": 0.0038
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_EARLY_PROFIT_LOCK",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.02,
+          "min_best_r": 0.05,
+          "min_giveback_r": 0.01,
+          "max_vel_r_per_sec": 0.004
+        },
+        "debug": {
+          "net_r": 0.02,
+          "best_r": 0.09,
+          "giveback_r": 0.01,
+          "vel_r": 0.006
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_BAND_EARLY_PROFIT_LOCK",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.02,
+          "min_best_r": 0.05,
+          "min_giveback_r": 0.01,
+          "max_vel_r_per_sec": 0.004
+        },
+        "debug": {
+          "net_r": 0.06,
+          "best_r": 0.14,
+          "giveback_r": 0.05,
+          "vel_r": 0.001
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_BAND_EARLY_PROFIT_LOCK",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.02,
+          "min_best_r": 0.05,
+          "min_giveback_r": 0.01,
+          "max_vel_r_per_sec": 0.004
+        },
+        "debug": {
+          "net_r": 0.031,
+          "best_r": 0.081,
+          "giveback_r": 0.021,
+          "vel_r": 0.0038
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_EARLY_PROFIT_LOCK",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.02,
+          "min_best_r": 0.05,
+          "min_giveback_r": 0.01,
+          "max_vel_r_per_sec": 0.004
+        },
+        "debug": {
+          "net_r": 0.02,
+          "best_r": 0.09,
+          "giveback_r": 0.01,
+          "vel_r": 0.006
+        }
+      }
+    }
+  ]
+}

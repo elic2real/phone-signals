@@ -1,0 +1,63 @@
+{
+  "task_id": "TASK-005",
+  "component": "aee_structure",
+  "module": "aee_state_machine_v2.py",
+  "name": "aee_trade_state_machine_v2",
+  "objective": "Represent AEE management as explicit phases with minimal deterministic transitions.",
+  "states": [
+    {
+      "id": "PROTECT",
+      "purpose": "Early risk control before durable edge is established.",
+      "owned_transitions": [
+        "PROTECT -> BUILD when progress and quality are sufficient",
+        "PROTECT -> PANIC when risk breach is severe"
+      ]
+    },
+    {
+      "id": "BUILD",
+      "purpose": "Accumulate green trade while controlling drawdown and decay.",
+      "owned_transitions": [
+        "BUILD -> HARVEST when profit lock criteria are met",
+        "BUILD -> PANIC when adverse move exceeds safety backstop"
+      ]
+    },
+    {
+      "id": "HARVEST",
+      "purpose": "Preserve realized gains while allowing continuation attempts.",
+      "owned_transitions": [
+        "HARVEST -> RUNNER when continuation quality is strong",
+        "HARVEST -> PANIC when giveback breach occurs"
+      ]
+    },
+    {
+      "id": "RUNNER",
+      "purpose": "Let strong trends continue with protective floor.",
+      "owned_transitions": [
+        "RUNNER -> HARVEST when momentum stalls",
+        "RUNNER -> PANIC when hard safety trigger hits"
+      ]
+    },
+    {
+      "id": "PANIC",
+      "purpose": "Emergency liquidation path.",
+      "owned_transitions": [
+        "PANIC -> CLOSED immediately"
+      ]
+    },
+    {
+      "id": "CLOSED",
+      "purpose": "Terminal state after exit.",
+      "owned_transitions": []
+    }
+  ],
+  "transition_principles": [
+    "One state owns a narrow transition set",
+    "Transitions are explicit and auditable",
+    "Threshold values are treated as context metrics, not hidden gate stacks"
+  ],
+  "required_outputs": [
+    "next_state",
+    "action",
+    "reason"
+  ]
+}

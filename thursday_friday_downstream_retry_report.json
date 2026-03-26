@@ -1,0 +1,97 @@
+{
+  "total": 18,
+  "ok": 0,
+  "fail": 18,
+  "failures": [
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__thursday__london__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__london/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__london/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__eur_usd__thursday__london__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"EUR_USD\",\n    \"weekday\": \"thursday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/EUR_USD__thursday__london/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"EUR_USD\",\n    \"weekday\": \"thursday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/EUR_USD__thursday__london/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__thursday__london__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"thursday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__thursday__london/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"thursday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__thursday__london/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__eur_usd__friday__london__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"EUR_USD\",\n    \"weekday\": \"friday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/EUR_USD__friday__london/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"EUR_USD\",\n    \"weekday\": \"friday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/EUR_USD__friday__london/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__friday__london__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__london/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__london/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__friday__london__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__london/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"london\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__london/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__thursday__new_york__11.json",
+      "returncode": 1,
+      "tail": "Traceback (most recent call last):\n  File \"/home/elic/Documents/phone signals/run_market_node_compiler.py\", line 1338, in <module>\n    main()\n  File \"/home/elic/Documents/phone signals/run_market_node_compiler.py\", line 853, in main\n    template_report = session_template.ensure_template(\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/session_template.py\", line 371, in ensure_template\n    return build_template(output_root, pair, session, template_root)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/elic/Documents/phone signals/session_template.py\", line 164, in build_template\n    shutil.copytree(src, dst)\n  File \"/usr/lib/python3.12/shutil.py\", line 600, in copytree\n    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/shutil.py\", line 554, in _copytree\n    raise Error(errors)\nshutil.Error: [('compiled_market_nodes/CHF_JPY__friday__new_york/target_entry_stage/stream_seed/session_state_build_report.json', 'compiled_session_templates/chf_jpy__new_york/seed_cache/stream_seed/session_state_build_report.json', '[Errno 2] No such file or directory'), ('compiled_market_nodes/CHF_JPY__friday__new_york/target_entry_stage/stream_seed/state_transition_report.json', 'compiled_session_templates/chf_jpy__new_york/seed_cache/stream_seed/state_transition_report.json', \"[Errno 2] No such file or directory: 'compiled_session_templates/chf_jpy__new_york/seed_cache/stream_seed/state_transition_report.json'\"), (PosixPath('compiled_market_nodes/CHF_JPY__friday__new_york/target_entry_stage/stream_seed'), PosixPath('compiled_session_templates/chf_jpy__new_york/seed_cache/stream_seed'), '[Errno 2] No such file or directory')]"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__friday__new_york__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"new_york\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__new_york/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"new_york\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__new_york/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__thursday__new_york__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"new_york\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__new_york/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"new_york\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__new_york/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__friday__new_york__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"new_york\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__new_york/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"new_york\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__new_york/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__thursday__asia__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__asia/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__asia/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__thursday__asia__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"thursday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__thursday__asia/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"thursday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__thursday__asia/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__friday__asia__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__asia/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__asia/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__friday__asia__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__asia/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"asia\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__asia/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__thursday__sydney__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"thursday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__thursday__sydney/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"thursday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__thursday__sydney/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__thursday__sydney__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__sydney/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"thursday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__thursday__sydney/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__gbp_chf__friday__sydney__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__sydney/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"GBP_CHF\",\n    \"weekday\": \"friday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/GBP_CHF__friday__sydney/session_potential\"\n}"
+    },
+    {
+      "lock": "/home/elic/Documents/phone signals/dataset_lock__chf_jpy__friday__sydney__11.json",
+      "returncode": 1,
+      "tail": "  }\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__sydney/session_potential\"\n}\n{\n  \"status\": \"PASS\",\n  \"node\": {\n    \"pair\": \"CHF_JPY\",\n    \"weekday\": \"friday\",\n    \"session\": \"sydney\"\n  },\n  \"output_dir\": \"compiled_market_nodes/CHF_JPY__friday__sydney/session_potential\"\n}"
+    }
+  ]
+}

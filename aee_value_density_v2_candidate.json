@@ -1,0 +1,35 @@
+{
+  "name": "aee_value_density_v2_candidate",
+  "doctrine": "economic_value_gate_first",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "band_size_r": 0.10,
+  "near_entry": {
+    "never_green_timeout_sec": 18,
+    "never_green_min_r": 0.08,
+    "required_positive_escape_z": 4
+  },
+  "profit_activation_r": 0.50,
+  "stall_timeout_sec": 5.0,
+  "fallback_activation_r": 0.60,
+  "fallback_giveback_r": 0.15,
+  "extension_activation_r": 0.70,
+  "extension_min_velocity": 0.02,
+  "fast_adverse": {
+    "adverse_r": 0.45,
+    "window_sec": 1.5
+  },
+  "defensive": {
+    "pre_sl_exit_enabled": true,
+    "panic_exit_enabled": true
+  },
+  "branch_set": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_BAND_POSITIVE_ESCAPE_TIMEOUT",
+    "AEE_BAND_POST_ESCAPE_PROFIT_STALL_EXIT",
+    "AEE_BAND_POST_ESCAPE_FALLBACK_EXIT",
+    "AEE_PRE_SL_EXIT",
+    "AEE_PANIC_EXIT",
+    "AEE_BAND_EXTENSION_DECAY_EXIT"
+  ],
+  "optional_branch": "AEE_BAND_EXTENSION_HOLD"
+}

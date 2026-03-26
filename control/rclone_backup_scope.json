@@ -1,0 +1,27 @@
+{
+  "backup_root": "gdrive:/TradingBackup",
+  "strategy": "safe_resumable_sync_no_zip",
+  "include": [
+    "control/",
+    "proof_artifacts/ (deferred due quota)",
+    "compiled_market_nodes/ (deferred due quota)",
+    "latest phase outputs under control/"
+  ],
+  "exclude_file": "control/rclone_backup_exclude.txt",
+  "hard_excludes": [
+    ".venv",
+    "__pycache__",
+    "logs",
+    "runs",
+    "artifacts",
+    "*.db",
+    "*.sqlite*",
+    "*.log",
+    "*.parquet",
+    "*.zip",
+    "*.jsonl",
+    ".env",
+    ".env.*",
+    "credential files"
+  ]
+}

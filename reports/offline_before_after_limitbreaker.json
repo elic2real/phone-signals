@@ -1,0 +1,28 @@
+{
+  "datasets": "scenarios/golden/v1.0",
+  "runs_per_config": 32,
+  "before": {
+    "n": 32,
+    "pips_mean": 27.472500000000313,
+    "pph_mean": 82.90080666050413,
+    "capture_mean": 0.6679643573464791,
+    "giveback_mean": 4.278124999999689,
+    "tail_rate": 0.0625
+  },
+  "after": {
+    "n": 32,
+    "pips_mean": -0.8046875000001369,
+    "pph_mean": -81.51741676202853,
+    "capture_mean": -1.5281359211309713,
+    "giveback_mean": 1.8662500000001803,
+    "tail_rate": 0.4375
+  },
+  "delta_after_minus_before": {
+    "pips_mean": -28.27718750000045,
+    "pph_mean": -164.41822342253266,
+    "capture_mean": -2.1961002784774504,
+    "giveback_mean": -2.411874999999509,
+    "tail_rate": 0.375
+  },
+  "notes": "Offline only; same 32-run schedule per config; 24 unique (12 files x long/short) + first 8 repeats."
+}

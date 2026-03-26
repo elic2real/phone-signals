@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-03-26T02:46:56.021046Z",
+  "run_tag": "AEE_SPEED_SMOKE_MATRIX",
+  "pair": "EUR_USD",
+  "aee_version": "v3",
+  "slice": {
+    "slice_file": "",
+    "include_contexts": "",
+    "include_trade_ids": "",
+    "max_trades": 20
+  },
+  "rows": [
+    {
+      "name": "baseline",
+      "run_id": "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_baseline",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/AEE_SPEED_SMOKE_MATRIX/baseline",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__fake_breakout      0.0003      -1.1000  0.0%  -0.00030   +16.2000  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              20\n  trades_per_hour:          0.00593\n  avg_net_pips_per_trade:   +2.52000\n  entry_only_pph:           +0.16834\n  realized_pph (combined):  +0.01493\n  gap (entry - realized):   +0.15341\n  extraction_efficiency:    +0.08872\n  loss_compression_rate:    +0.84669\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.09065\n  giveback_ratio:           +0.90935\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.014935,
+        "gap": 0.153405,
+        "extraction_efficiency": 0.088717,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.05,
+        "fake_runner_count": 9,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": true
+      }
+    },
+    {
+      "name": "variant_a_reclaim_stall_only",
+      "run_id": "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_a_reclaim_stall_only",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/AEE_SPEED_SMOKE_MATRIX/variant_a_reclaim_stall_only",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__fake_breakout      0.0003      -1.1000  0.0%  -0.00030   +16.2000  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              20\n  trades_per_hour:          0.00593\n  avg_net_pips_per_trade:   +2.52000\n  entry_only_pph:           +0.16834\n  realized_pph (combined):  +0.01493\n  gap (entry - realized):   +0.15341\n  extraction_efficiency:    +0.08872\n  loss_compression_rate:    +0.84669\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.09065\n  giveback_ratio:           +0.90935\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.014935,
+        "gap": 0.153405,
+        "extraction_efficiency": 0.088717,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.05,
+        "fake_runner_count": 9,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": true
+      }
+    },
+    {
+      "name": "variant_b_fake_runner_demotion",
+      "run_id": "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_b_fake_runner_demotion",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/AEE_SPEED_SMOKE_MATRIX/variant_b_fake_runner_demotion",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__fake_breakout      0.0003      -1.1000  0.0%  -0.00030   +16.2000  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              20\n  trades_per_hour:          0.00593\n  avg_net_pips_per_trade:   +2.52000\n  entry_only_pph:           +0.16834\n  realized_pph (combined):  +0.01493\n  gap (entry - realized):   +0.15341\n  extraction_efficiency:    +0.08872\n  loss_compression_rate:    +0.84669\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.09065\n  giveback_ratio:           +0.90935\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.014935,
+        "gap": 0.153405,
+        "extraction_efficiency": 0.088717,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.05,
+        "fake_runner_count": 9,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": true
+      }
+    },
+    {
+      "name": "variant_c_failed_progress_harvest",
+      "run_id": "AEE_MATRIX_AEE_SPEED_SMOKE_MATRIX_variant_c_failed_progress_harvest",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/AEE_SPEED_SMOKE_MATRIX/variant_c_failed_progress_harvest",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__fake_breakout      0.0003      -1.1000  0.0%  -0.00030   +16.2000  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              20\n  trades_per_hour:          0.00593\n  avg_net_pips_per_trade:   +2.52000\n  entry_only_pph:           +0.16834\n  realized_pph (combined):  +0.01493\n  gap (entry - realized):   +0.15341\n  extraction_efficiency:    +0.08872\n  loss_compression_rate:    +0.84669\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.09065\n  giveback_ratio:           +0.90935\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.014935,
+        "gap": 0.153405,
+        "extraction_efficiency": 0.088717,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.05,
+        "fake_runner_count": 9,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": true
+      }
+    }
+  ]
+}

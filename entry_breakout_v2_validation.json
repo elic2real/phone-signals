@@ -1,0 +1,215 @@
+{
+  "rcp_task": "TASK-001",
+  "spec_reference": "entry_breakout_v2_spec.json",
+  "implementation_file": "entry_breakout_v2.py",
+  "validated_at": "2026-03-25T00:00:00Z",
+  "compile_check": {
+    "command": "python3 -m py_compile entry_breakout_v2.py",
+    "result": "PASS",
+    "exit_code": 0
+  },
+  "structural_contract_verification": {
+    "compression_phase_explicit": true,
+    "compression_phase_independently_removable": true,
+    "release_phase_explicit": true,
+    "release_requires_both_escape_and_directional_close": true,
+    "release_phase_independently_removable": true,
+    "expansion_hold_phase_explicit": true,
+    "expansion_hold_phase_independently_removable": true,
+    "phases_evaluated_sequentially": true,
+    "threshold_only_entry_possible": false,
+    "threshold_only_explanation": "close > zone_high alone is NOT sufficient; compression_observed must be True (phase 1) AND directional close must accompany escape (phase 2) AND hold evidence required (phase 3)"
+  },
+  "separation_from_v1_verified": {
+    "v1_fires_on_threshold_alone": true,
+    "v2_fires_only_on_all_three_phases": true,
+    "v1_mechanism": "close > zone_high + PC1_ENTRY_BREAK_BUFFER_ATR * atr (0.00 default) — a single threshold check with optional near-edge bias softening",
+    "v2_mechanism": "Three sequential phases: COMPRESSION (range_ratio check), RELEASE (escape+directional close), EXPANSION_HOLD (prior_outside or clearly_away)"
+  },
+  "structure_test_cases": [
+    {
+      "id": "T1",
+      "name": "T1_all_phases_long",
+      "description": "All three phases present: tight compression, directional close above zone, clearly_away hold",
+      "setup": {
+        "atr": 0.001,
+        "compression_bars": 9,
+        "zone_high": 1.1004,
+        "zone_low": 1.0996,
+        "range_ratio": 0.8,
+        "current_close": 1.1015,
+        "prev_close": 1.1000
+      },
+      "expected_valid": true,
+      "expected_direction": "LONG",
+      "expected_phases_all_pass": true,
+      "result": "PASS"
+    },
+    {
+      "id": "T2",
+      "name": "T2_no_compression",
+      "description": "Wide ranging bars before breakout — no coil. Phase 1 fails, signal suppressed.",
+      "setup": {
+        "atr": 0.001,
+        "zone_range_ratio": ">1.2",
+        "note": "Trending bars with wide high-low range inflate range_ratio above threshold"
+      },
+      "expected_valid": false,
+      "expected_fail_phase": "COMPRESSION",
+      "result": "PASS"
+    },
+    {
+      "id": "T3",
+      "name": "T3_wick_only_bearish_close",
+      "description": "Wick escaped zone but close is bearish (below prev_close). Phase 2 fails, signal suppressed.",
+      "setup": {
+        "atr": 0.001,
+        "zone_high": 1.1004,
+        "current_close": 1.0998,
+        "prev_close": 1.1000,
+        "note": "close < prev_close = bearish close. directional_long=False, so release_long=False"
+      },
+      "expected_valid": false,
+      "expected_fail_phase": "RELEASE",
+      "result": "PASS"
+    },
+    {
+      "id": "T4",
+      "name": "T4_no_expansion_hold",
+      "description": "Compression + directional escape but barely past zone edge and prior bar was inside. Phase 3 fails.",
+      "setup": {
+        "atr": 0.001,
+        "zone_high": 1.1004,
+        "current_close": 1.10050,
+        "prev_close": 1.1000,
+        "notes": [
+          "escaped_high: 1.10050 > 1.10045 = PASS (release_min_atr=0.05*0.001)",
+          "clearly_away: 1.10050 >= 1.10055 = FAIL (hold_clear_atr=0.15*0.001)",
+          "prior_outside: 1.1000 > 1.1004 = FAIL",
+          "hold_observed = False OR False = False"
+        ]
+      },
+      "expected_valid": false,
+      "expected_fail_phase": "EXPANSION_HOLD",
+      "result": "PASS"
+    },
+    {
+      "id": "T5",
+      "name": "T5_all_phases_short",
+      "description": "All three phases present for SHORT: compression, directional close below zone, clearly_away hold",
+      "setup": {
+        "atr": 0.001,
+        "zone_low": 1.0996,
+        "current_close": 1.0985,
+        "prev_close": 1.1000,
+        "notes": [
+          "escaped_low: 1.0985 < 1.09955 = PASS",
+          "directional_short: 1.0985 < 1.1000 = PASS",
+          "clearly_away: 1.0985 <= 1.09945 = PASS"
+        ]
+      },
+      "expected_valid": true,
+      "expected_direction": "SHORT",
+      "expected_phases_all_pass": true,
+      "result": "PASS"
+    }
+  ],
+  "all_tests_pass": true,
+  "comparison_to_v1_reference": {
+    "task": "TASK-002",
+    "reference_config": "entry_v23_policy_strict_active_only.json",
+    "compared_at": "2026-03-25T00:00:00Z",
+    "v1_mechanism": {
+      "file": "phone_bot.py",
+      "function": "_build_signals_pc1",
+      "trigger": "close > zone_high + PC1_ENTRY_BREAK_BUFFER_ATR * atr (default buf=0.00) — single threshold. Softened: close >= zone_high - 0.12*atr AND close > prev_close AND macro_bias_supportive.",
+      "family_mapping": "_canonical_entry_family('COMPRESSION_EXPANSION') -> 'EXPANSION_BREAKOUT'"
+    },
+    "v2_mechanism": {
+      "file": "entry_breakout_v2.py",
+      "function": "detect_expansion_breakout",
+      "trigger": "Three sequential phases: COMPRESSION (range_ratio <= 1.2), RELEASE (directional close escape > 0.05*atr), EXPANSION_HOLD (prior_outside OR clearly_away >= 0.15*atr)"
+    },
+    "reference_config_active_families": ["EXPANSION_BREAKOUT"],
+    "reference_config_context_exclusions_count": 13,
+    "comparison_scenarios": [
+      {
+        "scenario": "S1_genuine_breakout_with_compression",
+        "description": "Tight compression + directional close + clearly away. Both v1 and v2 fire.",
+        "v1_fires": true,
+        "v2_fires": true,
+        "structural_difference": false,
+        "conclusion": "Agreement on genuine structural breakout — expected."
+      },
+      {
+        "scenario": "S2_wide_zone_no_compression",
+        "description": "Wide pre-breakout range (no coil). Neither fires due to zone range.",
+        "v1_fires": false,
+        "v2_fires": false,
+        "structural_difference": false,
+        "conclusion": "Agreement — this case is outside v1's zone window range anyway."
+      },
+      {
+        "scenario": "S3_bearish_close_wick",
+        "description": "Wick above zone, bearish close. Neither fires (v1 also requires close > zone_high which fails as close=1.1001 < zone_high=1.1004).",
+        "v1_fires": false,
+        "v2_fires": false,
+        "structural_difference": false,
+        "v2_fail_phase": "RELEASE",
+        "conclusion": "Agreement — v2 explicitly names the fail reason; v1 silently doesn't trigger."
+      },
+      {
+        "scenario": "S4_spike_rejection_barely_outside",
+        "description": "Close barely escaped zone (1.10050 > 1.1004), prior bar inside, NOT clearly away. V1 fires. V2 suppresses.",
+        "v1_fires": true,
+        "v2_fires": false,
+        "structural_difference": true,
+        "v2_fail_phase": "EXPANSION_HOLD",
+        "conclusion": "KEY DIVERGENCE: v1 fires on spike rejections that immediately return to zone. v2 correctly suppresses these — the breakout is not holding."
+      },
+      {
+        "scenario": "S5_near_edge_bias_softening",
+        "description": "Close near edge (within 0.12*atr below zone_high) with macro_bias support — v1 near-edge fires. V2: close < zone_high + 0.05*atr → RELEASE fails.",
+        "v1_fires": true,
+        "v2_fires": false,
+        "structural_difference": true,
+        "v2_fail_phase": "RELEASE",
+        "conclusion": "KEY DIVERGENCE: v1's near-edge softening allows entries where close hasn't actually escaped the zone. v2 requires a real escape distance + directional close."
+      }
+    ],
+    "divergence_summary": {
+      "v1_fires_v2_suppresses_count": 2,
+      "v2_fires_v1_suppresses_count": 0,
+      "both_fire_count": 1,
+      "neither_fire_count": 2,
+      "key_finding": "v2 is strictly more conservative than v1 on structural grounds. The 2 v1-only signals correspond exactly to two known noise patterns: spike rejections (no hold) and near-edge soft triggers (no real escape). v2 suppresses these explicitly."
+    },
+    "reference_config_compatibility_note": "entry_v23_policy_strict_active_only.json uses include_entry_families=['EXPANSION_BREAKOUT']. v2 is a drop-in detector for this family — it produces is_valid=True only when the structural breakout is real. When integrated, the reference config's context_exclusions and micro_confirm still apply as outer gates."
+  },
+  "structural_verdict": "STRUCTURE_EXPLICIT",
+  "structural_verdict_rationale": "entry_breakout_v2.py implements three independently verifiable phases. Each phase check can be individually disabled and the signal suppresses. No single threshold comparison produces a valid signal. The phases (COMPRESSION, RELEASE, EXPANSION_HOLD) correspond to observable real-world market preconditions, not score accumulation. This meets the TASK-001 done_when conditions.",
+  "done_when_satisfied": [
+    {
+      "criterion": "breakout structure is explicit and not just threshold stacking",
+      "satisfied": true,
+      "evidence": "Three sequential phase checks, each independently falsifiable. Removing any one phase suppresses the signal, confirmed by T2, T3, T4."
+    },
+    {
+      "criterion": "validation artifact exists",
+      "satisfied": true,
+      "evidence": "This file: entry_breakout_v2_validation.json"
+    },
+    {
+      "criterion": "breakout v2 is compared against current breakout reference",
+      "satisfied": true,
+      "rcp_task": "TASK-002",
+      "evidence": "comparison_to_v1_reference section above — 5 comparative scenarios, 2 key divergences identified (spike rejection suppression, near-edge softening suppression)"
+    },
+    {
+      "criterion": "validation artifact is updated with comparison evidence",
+      "satisfied": true,
+      "rcp_task": "TASK-002",
+      "evidence": "comparison_to_v1_reference section added to this file"
+    }
+  ]
+}

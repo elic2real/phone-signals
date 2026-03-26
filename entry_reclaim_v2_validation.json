@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-03-25T15:35:01.516262Z",
+  "task_id": "TASK-004",
+  "component": "entry_structure",
+  "module": "entry_reclaim_v2.py",
+  "spec": "entry_reclaim_v2_spec.json",
+  "structural_checks": [
+    "level_breach -> reclaim_print -> acceptance_hold required",
+    "fail_state emitted at first failing state",
+    "spread gate enforced before structural pass"
+  ],
+  "test_cases": [
+    {
+      "id": "R1_valid_long",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "no_close_back_across_level",
+      "fail_state": "RECLAIM_PRINT"
+    },
+    {
+      "id": "R2_insufficient",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "insufficient_history",
+      "fail_state": "LEVEL_BREACH"
+    },
+    {
+      "id": "R3_no_reclaim",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "no_close_back_across_level",
+      "fail_state": "RECLAIM_PRINT"
+    },
+    {
+      "id": "R4_reject_back",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "no_close_back_across_level",
+      "fail_state": "RECLAIM_PRINT"
+    },
+    {
+      "id": "R5_spread_block",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "spread_too_wide",
+      "fail_state": "RECLAIM_PRINT"
+    }
+  ],
+  "pass": false,
+  "conclusion": "REVIEW_REQUIRED"
+}

@@ -1,0 +1,144 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "task_id": "PHASE_0_FULL_INSTRUMENTED_BASELINE",
+  "objective": [
+    "full telemetry",
+    "universal analysis capability",
+    "parallel test readiness",
+    "zero blind spots"
+  ],
+  "core_principle": {
+    "avoid": "build then analyze",
+    "enforce": "build with full observability so one run supports full diagnosis"
+  },
+  "telemetry_requirements": {
+    "candidate_level": [
+      "pair",
+      "timestamp",
+      "direction",
+      "session",
+      "candidate_id",
+      "priority_score",
+      "rank",
+      "selected",
+      "entry_zone_low",
+      "entry_zone_high"
+    ],
+    "selection_level": [
+      "full_ranked_list_top_n",
+      "selected_candidates",
+      "rejected_candidates_top_n"
+    ],
+    "trade_lifecycle": [
+      "trade_id",
+      "entry_timestamp",
+      "close_timestamp",
+      "trade_life_seconds"
+    ],
+    "profit_path": [
+      "time_to_first_profit_seconds",
+      "time_in_drawdown_seconds",
+      "max_drawdown",
+      "max_favorable_excursion",
+      "current_pnl_path"
+    ],
+    "timing": [
+      "time_from_entry_to_peak",
+      "time_from_peak_to_close",
+      "time_from_entry_to_close"
+    ],
+    "aee_decisions": [
+      "decision_type",
+      "reason",
+      "timestamp",
+      "pnl_at_decision"
+    ],
+    "blockers": [
+      "blocker_reason",
+      "blocker_count",
+      "suppression_counts"
+    ],
+    "pass_criteria": "all fields present in first run",
+    "fail_condition": "any missing telemetry"
+  },
+  "universal_analysis_engine": {
+    "single_script_required": true,
+    "outputs": [
+      "candidates_per_cycle",
+      "grade_distribution",
+      "rank_vs_outcome",
+      "selected_vs_rejected",
+      "trade_life_distribution",
+      "time_to_first_profit_distribution",
+      "drawdown_distribution",
+      "peak_to_close_delay_distribution",
+      "aee_decision_mix",
+      "decision_timing_vs_outcome",
+      "blocker_frequency",
+      "missed_opportunity_estimate"
+    ],
+    "pass_criteria": "all outputs from one run",
+    "fail_condition": "multiple scripts needed for diagnosis"
+  },
+  "failure_archetypes": [
+    "rank_inversion",
+    "slow_recycler",
+    "prolonged_drawdown",
+    "peak_delay",
+    "dead_on_arrival",
+    "late_entry"
+  ],
+  "parallel_variant_system": {
+    "minimum_variants": [
+      "BASELINE",
+      "VARIANT_A",
+      "VARIANT_B"
+    ],
+    "rules": [
+      "same_data",
+      "same_telemetry_schema",
+      "direct_comparability"
+    ]
+  },
+  "micro_slice_testing": [
+    "high_volatility_slice",
+    "known_failure_slice",
+    "known_success_slice"
+  ],
+  "kill_rules": [
+    "if peak_delay not reduced then discard",
+    "if drawdown_time not reduced then discard",
+    "if rank_vs_outcome not improved then discard"
+  ],
+  "benchmark_dataset": [
+    "top_winners",
+    "top_losers",
+    "whipsaw_events",
+    "drawdown_events"
+  ],
+  "loop_structure": {
+    "sequence": [
+      "RUN",
+      "ANALYZE",
+      "DECIDE",
+      "MODIFY",
+      "RE-RUN"
+    ],
+    "max_analysis_passes_before_intervention": 3
+  },
+  "promotion_rule": [
+    "net_positive",
+    "stable_across_windows",
+    "failure_archetype_reduced",
+    "no_major_regression"
+  ],
+  "hard_rules": [
+    "no_blind_spots",
+    "no_silent_failures",
+    "no_sequential_discovery",
+    "no_guessing",
+    "no_tuning_without_attribution"
+  ],
+  "phase0_complete_when": "one run fully explains system behavior without additional diagnostic phases"
+}

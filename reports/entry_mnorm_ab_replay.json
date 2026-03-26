@@ -1,0 +1,145 @@
+{
+  "glob": "scenarios/golden/v1.0/*.csv",
+  "bucket_sec": 300,
+  "before_abs_mnorm": {
+    "files": 12,
+    "armed_total": 57,
+    "armed_long": 57,
+    "armed_short": 0,
+    "blocked_total": 11,
+    "blocked_primitive_disagreement": 11,
+    "blocked_no_directional_primitive": 0,
+    "armed_per_file_mean": 4.75,
+    "short_share": 0.0
+  },
+  "after_signed_mnorm": {
+    "files": 12,
+    "armed_total": 61,
+    "armed_long": 39,
+    "armed_short": 22,
+    "blocked_total": 7,
+    "blocked_primitive_disagreement": 7,
+    "blocked_no_directional_primitive": 0,
+    "armed_per_file_mean": 5.083333333333333,
+    "short_share": 0.36065573770491804
+  },
+  "delta_after_minus_before": {
+    "armed_total": 4,
+    "armed_long": -18,
+    "armed_short": 22,
+    "blocked_total": -4,
+    "blocked_primitive_disagreement": -4,
+    "short_share": 0.36065573770491804
+  },
+  "by_file_delta": {
+    "energy_depletion.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 27,
+      "before_armed_short": 0,
+      "after_armed_long": 21,
+      "after_armed_short": 6,
+      "delta_armed_short": 6,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "energy_transition.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "high_energy_trend.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 8,
+      "before_armed_short": 0,
+      "after_armed_long": 8,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "low_energy_range.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "multi_whipsaw_sweep.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "panic_reversal.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 8,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 8,
+      "delta_armed_short": 8,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "random_walk.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "slow_grind_break.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "spread_widening.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "trend_continuation.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 14,
+      "before_armed_short": 0,
+      "after_armed_long": 10,
+      "after_armed_short": 8,
+      "delta_armed_short": 8,
+      "delta_blocked_primitive_disagreement": -4
+    },
+    "universal_energy_morph.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    },
+    "whipsaw_spike_fade.csv": {
+      "pair": "EUR_USD",
+      "before_armed_long": 0,
+      "before_armed_short": 0,
+      "after_armed_long": 0,
+      "after_armed_short": 0,
+      "delta_armed_short": 0,
+      "delta_blocked_primitive_disagreement": 0
+    }
+  },
+  "note": "Deterministic promotion-gate replay only (WATCH primitive contract), not full order placement simulation."
+}

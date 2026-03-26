@@ -1,0 +1,168 @@
+{
+  "branch": "AEE_BAND_EXTENSION_HOLD",
+  "generated_at": "2026-03-23T18:36:40.716839Z",
+  "scenarios_tested": 3,
+  "pass_count": 1,
+  "fail_count": 2,
+  "false_positives": 0,
+  "false_negatives": 2,
+  "threshold_snapshot": {
+    "min_net_r": 0.06,
+    "min_vel_r_per_sec": 0.003,
+    "max_giveback_frac": 0.3
+  },
+  "representative_outputs": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.06,
+          "min_vel_r_per_sec": 0.003,
+          "max_giveback_frac": 0.3,
+          "profit_min_band": 1,
+          "max_dwell_sec": 2.5
+        },
+        "debug": {
+          "best_r": 0.18,
+          "net_r": 0.1,
+          "vel_r": 0.005,
+          "giveback_frac": 0.16666666666666666,
+          "current_band_idx": 0,
+          "highest_band_reached": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.06,
+          "min_vel_r_per_sec": 0.003,
+          "max_giveback_frac": 0.3,
+          "profit_min_band": 1,
+          "max_dwell_sec": 2.5
+        },
+        "debug": {
+          "best_r": 0.11,
+          "net_r": 0.061,
+          "vel_r": 0.0031,
+          "giveback_frac": 0.18181818181818182,
+          "current_band_idx": 0,
+          "highest_band_reached": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.06,
+          "min_vel_r_per_sec": 0.003,
+          "max_giveback_frac": 0.3,
+          "profit_min_band": 1,
+          "max_dwell_sec": 2.5
+        },
+        "debug": {
+          "best_r": 0.1,
+          "net_r": 0.04,
+          "vel_r": 0.0005,
+          "giveback_frac": 0.5,
+          "current_band_idx": 0,
+          "highest_band_reached": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.06,
+          "min_vel_r_per_sec": 0.003,
+          "max_giveback_frac": 0.3,
+          "profit_min_band": 1,
+          "max_dwell_sec": 2.5
+        },
+        "debug": {
+          "best_r": 0.18,
+          "net_r": 0.1,
+          "vel_r": 0.005,
+          "giveback_frac": 0.16666666666666666,
+          "current_band_idx": 0,
+          "highest_band_reached": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "borderline_trigger",
+      "expected": true,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "ok": false,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.06,
+          "min_vel_r_per_sec": 0.003,
+          "max_giveback_frac": 0.3,
+          "profit_min_band": 1,
+          "max_dwell_sec": 2.5
+        },
+        "debug": {
+          "best_r": 0.11,
+          "net_r": 0.061,
+          "vel_r": 0.0031,
+          "giveback_frac": 0.18181818181818182,
+          "current_band_idx": 0,
+          "highest_band_reached": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_BAND_EXTENSION_HOLD",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "min_net_r": 0.06,
+          "min_vel_r_per_sec": 0.003,
+          "max_giveback_frac": 0.3,
+          "profit_min_band": 1,
+          "max_dwell_sec": 2.5
+        },
+        "debug": {
+          "best_r": 0.1,
+          "net_r": 0.04,
+          "vel_r": 0.0005,
+          "giveback_frac": 0.5,
+          "current_band_idx": 0,
+          "highest_band_reached": 0,
+          "time_in_band_sec": 0.0
+        }
+      }
+    }
+  ]
+}

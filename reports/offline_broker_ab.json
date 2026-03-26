@@ -1,0 +1,48 @@
+{
+  "before_pattern": "reports/significant_perf_sweep/minatr_0p40_force_900/run_*.json",
+  "after_pattern": "reports/offline_broker_after/run_*.json",
+  "before": {
+    "n": 32,
+    "pph_mean": -2.391259235562799,
+    "pips_mean": -2.266249999999595,
+    "core_hold_mean_sec": 2608.0625,
+    "runner_hold_mean_sec": 743.375,
+    "core_left_on_table_mean": 14.368749999999832,
+    "runner_left_on_table_mean": 28.604687499999905,
+    "core_exit_reason_counts": {
+      "TIME_DECAY_PROFIT_CAPTURE": 25,
+      "SIM_EOD_CLOSE": 7
+    },
+    "runner_exit_reason_counts": {
+      "RUNNER_TTL_EXPIRED": 20,
+      "SIM_EOD_CLOSE": 12
+    }
+  },
+  "after": {
+    "n": 32,
+    "pph_mean": -200.70799133301622,
+    "pips_mean": 3.5100000000004425,
+    "core_hold_mean_sec": 466.375,
+    "runner_hold_mean_sec": 538.09375,
+    "core_left_on_table_mean": 8.596874999999699,
+    "runner_left_on_table_mean": 12.067187499999743,
+    "core_exit_reason_counts": {
+      "TIME_DECAY_PROFIT_CAPTURE": 18,
+      "SL_HIT": 14
+    },
+    "runner_exit_reason_counts": {
+      "RUNNER_TTL_EXPIRED": 14,
+      "SL_HIT": 13,
+      "SIM_EOD_CLOSE": 5
+    }
+  },
+  "delta_after_minus_before": {
+    "pph_mean": -198.31673209745344,
+    "pips_mean": 5.776250000000037,
+    "core_hold_mean_sec": -2141.6875,
+    "runner_hold_mean_sec": -205.28125,
+    "core_left_on_table_mean": -5.771875000000133,
+    "runner_left_on_table_mean": -16.53750000000016
+  },
+  "note": "Leg-level exits are authoritative: core_exit_reason_counts and runner_exit_reason_counts."
+}

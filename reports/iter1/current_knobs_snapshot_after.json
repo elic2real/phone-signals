@@ -1,0 +1,57 @@
+{
+  "speed_class_params": {
+    "FAST": {
+      "tp1_atr": 0.32,
+      "tp2_atr": 1.28,
+      "sl_atr": 0.85,
+      "ttl_main": 240
+    },
+    "MED": {
+      "tp1_atr": 0.44,
+      "tp2_atr": 1.68,
+      "sl_atr": 1.1,
+      "ttl_main": 500
+    },
+    "SLOW": {
+      "tp1_atr": 0.22,
+      "tp2_atr": 0.77,
+      "sl_atr": 1.25,
+      "ttl_main": 1200
+    }
+  },
+  "aee": {
+    "AEE_PROFIT_CAPTURE_MIN_ATR": 0.4,
+    "AEE_PROFIT_CAPTURE_MIN_HOLD_SEC": 90.0,
+    "AEE_PROFIT_CAPTURE_FORCE_SEC": 900.0,
+    "AEE_PROFIT_CAPTURE_DECAY_SPEED": 0.65,
+    "AEE_PROFIT_CAPTURE_DECAY_VELOCITY": -0.05,
+    "AEE_TIME_DECAY_START_SEC": 180.0,
+    "AEE_TIME_DECAY_FULL_SEC": 900.0,
+    "AEE_TIME_DECAY_NEAR_TP_BOOST_MAX": 0.2,
+    "AEE_TIME_DECAY_GIVEBACK_TIGHTEN_MAX": 0.35,
+    "PANIC_PULLBACKRATE": 0.06,
+    "PANIC_PULLBACK": 0.6,
+    "PANIC_VELOCITY": -0.8
+  },
+  "entry": {
+    "MOMENTUM_OVERRIDE_THRESHOLD": 0.65,
+    "ENTRY_CONFIRM_DISP_ATR": 0.2,
+    "ENTRY_PULLBACK_ATR": 0.3,
+    "ENABLE_SHORT_ENTRIES": true
+  },
+  "friction_spread": {
+    "COST_MULT": 1.1,
+    "FRICTION_SEVERITY_MULT": 0.6,
+    "ENTRY_BUFFER_PIPS": 0.15,
+    "EXIT_BUFFER_PIPS": 0.15
+  },
+  "runtime_overrides_applied": {
+    "ENABLE_SHORT_ENTRIES": "1",
+    "MOMENTUM_OVERRIDE_THRESHOLD": "0.65"
+  },
+  "notes": {
+    "sl_semantics": "LONG SL uses bid<=sl; SHORT SL uses ask>=sl",
+    "entry_source": "WATCH->PROMOTE via _watch_primitive_contract_direction on replayed candles",
+    "geometry_source": "phone_bot.SPEED_CLASS_PARAMS + phone_bot AEE"
+  }
+}

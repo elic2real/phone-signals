@@ -1,0 +1,119 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T13:14:49.751040+00:00",
+  "task_id": "MVP_PHASE31_NET_LAYER_MICRO_LIVE_EXECUTION_PLAN",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "NET_LAYER_MICRO_LIVE_PLAN_ONLY"
+  },
+  "dependency": {
+    "phase30_status": "PASS",
+    "phase30_path": "control/mvp_phase30_net_layer_activation_handoff.json",
+    "entry_policy_path": "entry_v23_policy_guarded_active.json"
+  },
+  "micro_live_execution_plan": {
+    "plan_id": "NET_LAYER_MICRO_LIVE_PLAN_V1",
+    "mode": "NET_LAYER_MICRO_LIVE_EXECUTION",
+    "scope_lock": {
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "session": "LONDON",
+      "tuning": "NONE"
+    },
+    "traffic_staging": [
+      {
+        "wave": "WAVE_1",
+        "duration_minutes": 120,
+        "risk_cap_fraction": 0.1,
+        "requires_all_previous_wave_pass": true
+      },
+      {
+        "wave": "WAVE_2",
+        "duration_minutes": 120,
+        "risk_cap_fraction": 0.2,
+        "requires_all_previous_wave_pass": true
+      },
+      {
+        "wave": "WAVE_3",
+        "duration_minutes": 120,
+        "risk_cap_fraction": 0.3,
+        "requires_all_previous_wave_pass": true
+      }
+    ],
+    "entry_contract": {
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "sessions": [
+        "LONDON"
+      ],
+      "max_false_cut_rate": 0.1,
+      "max_weighted_relative_spread": 0.5,
+      "min_weighted_delta_pph": 0.0
+    },
+    "abort_rules": [
+      "If false_cut_rate_on_winners exceeds 0.10, trigger hard stop and rollback.",
+      "If weighted_intervention_relative_spread exceeds 0.50, stop wave progression.",
+      "If any critical incident occurs (close_404_count > 0 or ownership drift), rollback immediately.",
+      "If scope lock is violated (pair/session/tuning), stop and invalidate run."
+    ],
+    "rollback_protocol": {
+      "kill_switch": "ARMED",
+      "rollback_target": "PHASE30_NET_LAYER_PREP_ONLY_LOCK",
+      "max_rollback_time_seconds": 30,
+      "required_checks_after_rollback": [
+        "position_flatten_confirmed",
+        "guardrail_rearmed",
+        "scope_lock_restored"
+      ]
+    },
+    "observability_contract": {
+      "required_counters": [
+        "false_cut_rate_on_winners",
+        "weighted_intervention_relative_spread",
+        "weighted_delta_pph",
+        "hard_stop_trigger_count",
+        "incident_count"
+      ],
+      "audit_interval_seconds": 60,
+      "final_soak_retrospective_required": true
+    },
+    "promotion_policy": {
+      "allow_micro_live_execution": true,
+      "allow_full_live_promotion": false,
+      "full_live_requires": [
+        "phase31_execution_proof_pass",
+        "phase31_incident_audit_pass",
+        "explicit_signoff_task_complete"
+      ]
+    }
+  },
+  "pass_conditions": {
+    "phase30_dependency_passed": true,
+    "phase30_verdict_promote": true,
+    "scope_lock_matches_entry_policy": true,
+    "observed_false_cut_within_contract": true,
+    "observed_spread_within_contract": true,
+    "observed_delta_within_contract": true,
+    "no_tuning_applied": true,
+    "full_live_still_blocked": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Net-layer micro-live execution plan is complete with hard guardrails and rollback controls.",
+    "release_action": "ALLOW_NET_LAYER_MICRO_LIVE_EXECUTION_UNDER_KILL_SWITCH",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
+  "status": "PASS"
+}

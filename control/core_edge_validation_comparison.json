@@ -1,0 +1,168 @@
+{
+  "task_id": "TASK-006",
+  "pair": "EUR_USD",
+  "raw_mode": true,
+  "layers_disabled": {
+    "context_filters": true,
+    "session_filters": true,
+    "pair_filters": true,
+    "calibration_overlays": true,
+    "adaptive_mapping": true,
+    "quality_scoring_overlays": true
+  },
+  "comparison_vs_previous": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "current_trade_count": 4791,
+      "current_net_pph": 0.0957,
+      "current_avg_net_ppt": 0.5187,
+      "previous_trade_count": 4791,
+      "previous_net_pph": 0.0957,
+      "delta_net_pph": 0.0
+    },
+    {
+      "family": "OTHER",
+      "current_trade_count": 3576,
+      "current_net_pph": -0.2435,
+      "current_avg_net_ppt": -1.7687,
+      "previous_trade_count": 0,
+      "previous_net_pph": 0.0,
+      "delta_net_pph": -0.2435
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "current_trade_count": 1049,
+      "current_net_pph": -0.0523,
+      "current_avg_net_ppt": -1.294,
+      "previous_trade_count": 1049,
+      "previous_net_pph": -0.0523,
+      "delta_net_pph": 0.0
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "current_trade_count": 11931,
+      "current_net_pph": -0.3334,
+      "current_avg_net_ppt": -0.7258,
+      "previous_trade_count": 11931,
+      "previous_net_pph": -0.3334,
+      "delta_net_pph": 0.0
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "current_trade_count": 43,
+      "current_net_pph": -0.0011,
+      "current_avg_net_ppt": -0.6767,
+      "previous_trade_count": 43,
+      "previous_net_pph": -0.0011,
+      "delta_net_pph": 0.0
+    }
+  ],
+  "window_consistency": {
+    "method": "3 disjoint stream partitions under same raw-core settings",
+    "windows": [
+      {
+        "window": "window_1",
+        "streams": 6,
+        "hours": 10121.583333333334,
+        "families": {
+          "RANGE_ESCAPE": {
+            "trade_count": 2278,
+            "net_pips_per_hour": -0.06336953210548416,
+            "avg_net_pips_per_trade": -0.2815627743634767
+          },
+          "PULLBACK_CONTINUATION": {
+            "trade_count": 231,
+            "net_pips_per_hour": -0.025974197054149956,
+            "avg_net_pips_per_trade": -1.138095238095238
+          },
+          "RECLAIM_CONTINUATION": {
+            "trade_count": 4,
+            "net_pips_per_hour": 7.903901728155187e-05,
+            "avg_net_pips_per_trade": 0.20000000000000018
+          },
+          "EXPANSION_BREAKOUT": {
+            "trade_count": 997,
+            "net_pips_per_hour": 0.08185478227220692,
+            "avg_net_pips_per_trade": 0.8309929789368089
+          },
+          "OTHER": {
+            "trade_count": 641,
+            "net_pips_per_hour": -0.10209865057344444,
+            "avg_net_pips_per_trade": -1.6121684867394683
+          }
+        }
+      },
+      {
+        "window": "window_2",
+        "streams": 5,
+        "hours": 7929.183333333333,
+        "families": {
+          "RANGE_ESCAPE": {
+            "trade_count": 3692,
+            "net_pips_per_hour": -0.31571977778291405,
+            "avg_net_pips_per_trade": -0.6780606717226396
+          },
+          "PULLBACK_CONTINUATION": {
+            "trade_count": 314,
+            "net_pips_per_hour": -0.047747666321247884,
+            "avg_net_pips_per_trade": -1.2057324840764332
+          },
+          "RECLAIM_CONTINUATION": {
+            "trade_count": 9,
+            "net_pips_per_hour": -0.000681028521222236,
+            "avg_net_pips_per_trade": -0.6000000000000001
+          },
+          "EXPANSION_BREAKOUT": {
+            "trade_count": 1556,
+            "net_pips_per_hour": 0.1135425884548848,
+            "avg_net_pips_per_trade": 0.578598971722364
+          },
+          "OTHER": {
+            "trade_count": 1007,
+            "net_pips_per_hour": -0.1940426819912092,
+            "avg_net_pips_per_trade": -1.5279046673286951
+          }
+        }
+      },
+      {
+        "window": "window_3",
+        "streams": 5,
+        "hours": 7926.583333333333,
+        "families": {
+          "RANGE_ESCAPE": {
+            "trade_count": 5961,
+            "net_pips_per_hour": -0.6957474321639184,
+            "avg_net_pips_per_trade": -0.9251635631605402
+          },
+          "PULLBACK_CONTINUATION": {
+            "trade_count": 504,
+            "net_pips_per_hour": -0.09031634058390037,
+            "avg_net_pips_per_trade": -1.420436507936511
+          },
+          "RECLAIM_CONTINUATION": {
+            "trade_count": 30,
+            "net_pips_per_hour": -0.003090865126841115,
+            "avg_net_pips_per_trade": -0.8166666666666667
+          },
+          "EXPANSION_BREAKOUT": {
+            "trade_count": 2238,
+            "net_pips_per_hour": 0.09538788254712519,
+            "avg_net_pips_per_trade": 0.33784629133154603
+          },
+          "OTHER": {
+            "trade_count": 1928,
+            "net_pips_per_hour": -0.47345745855191773,
+            "avg_net_pips_per_trade": -1.9465248962655541
+          }
+        }
+      }
+    ],
+    "expansion_breakout_positive_all_windows": true
+  },
+  "success_checks": {
+    "at_least_one_family_positive_net_pph": true,
+    "non_trivial_trade_count_positive_family": true,
+    "avg_pips_not_collapsing_positive_family": true,
+    "consistency_across_windows": true
+  }
+}

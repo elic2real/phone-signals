@@ -1,0 +1,57 @@
+{
+  "task_id": "TASK-004",
+  "component": "entry_structure",
+  "module": "entry_reclaim_v2.py",
+  "name": "reclaim_continuation_v2",
+  "objective": "Replace threshold-only reclaim logic with an explicit structural state machine.",
+  "states": [
+    {
+      "id": "LEVEL_BREACH",
+      "description": "Price first dislocates away from a locally inferred level (support/resistance).",
+      "required": true,
+      "fail_on": [
+        "insufficient_history",
+        "micro_range_only"
+      ]
+    },
+    {
+      "id": "RECLAIM_PRINT",
+      "description": "A decisive reclaim close returns across the inferred level in the trade direction.",
+      "required": true,
+      "fail_on": [
+        "no_close_back_across_level",
+        "spread_too_wide"
+      ]
+    },
+    {
+      "id": "ACCEPTANCE_HOLD",
+      "description": "Post-reclaim bars hold the reclaimed side and avoid immediate failure.",
+      "required": true,
+      "fail_on": [
+        "immediate_reject_back_through_level",
+        "acceptance_window_not_met"
+      ]
+    }
+  ],
+  "inputs": {
+    "closes": "recent close series",
+    "highs": "recent high series",
+    "lows": "recent low series",
+    "atr": "volatility normalization",
+    "spread_pips": "execution friction gate"
+  },
+  "outputs": {
+    "is_valid": "boolean",
+    "direction": "LONG|SHORT|NONE",
+    "reclaim_level": "float|null",
+    "reclaim_index": "int|null",
+    "acceptance_bars": "int",
+    "reason": "human readable verdict",
+    "fail_state": "first failed state or null"
+  },
+  "constraints": [
+    "Detector must emit fail_state at first structural failure",
+    "Detector must reject when spread gate fails",
+    "Detector must not rely on position+bias only"
+  ]
+}

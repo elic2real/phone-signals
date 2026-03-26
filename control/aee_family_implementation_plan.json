@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-03-25T18:22:09.884172Z",
+  "task_id": "TASK-010",
+  "dependencies": [
+    "TASK-009",
+    "TASK-014"
+  ],
+  "rows": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "current_code_reference": "aee_state_machine_v2.py::_eval_trade_baseline",
+      "required_changes": [
+        "replace generic fast-failure trigger with family-specific INIT/PROBING expectations",
+        "apply family-specific stall and giveback policies",
+        "route invalidation through family behavior contracts rather than universal early-failure rules"
+      ]
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "current_code_reference": "aee_state_machine_v2.py::_eval_trade_baseline",
+      "required_changes": [
+        "replace generic fast-failure trigger with family-specific INIT/PROBING expectations",
+        "apply family-specific stall and giveback policies",
+        "route invalidation through family behavior contracts rather than universal early-failure rules"
+      ]
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "current_code_reference": "aee_state_machine_v2.py::_eval_trade_baseline",
+      "required_changes": [
+        "replace generic fast-failure trigger with family-specific INIT/PROBING expectations",
+        "apply family-specific stall and giveback policies",
+        "route invalidation through family behavior contracts rather than universal early-failure rules"
+      ]
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "current_code_reference": "aee_state_machine_v2.py::_eval_trade_baseline",
+      "required_changes": [
+        "replace generic fast-failure trigger with family-specific INIT/PROBING expectations",
+        "apply family-specific stall and giveback policies",
+        "route invalidation through family behavior contracts rather than universal early-failure rules"
+      ]
+    },
+    {
+      "family": "OTHER",
+      "current_code_reference": "aee_state_machine_v2.py::_eval_trade_baseline",
+      "required_changes": [
+        "replace generic fast-failure trigger with family-specific INIT/PROBING expectations",
+        "apply family-specific stall and giveback policies",
+        "route invalidation through family behavior contracts rather than universal early-failure rules"
+      ]
+    }
+  ],
+  "global_steps": [
+    "Introduce family router before early-failure ladder in aee_state_machine_v2.py",
+    "Implement state progression INIT->PROBING->CONFIRMING->EXPANDING->EXHAUSTING->FAILING->EXIT per family",
+    "Demote non-surviving generic branches to diagnostics-only logging",
+    "Add per-family validation outputs against TASK-009 branch-damage recommendations"
+  ]
+}

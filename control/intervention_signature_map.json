@@ -1,0 +1,152 @@
+{
+  "generated_at": "2026-03-25T19:05:00Z",
+  "purpose": "Expected metric signatures per intervention class for controlled discovery",
+  "signatures": [
+    {
+      "intervention_class": "ENTRY_FORM_LOOSENING",
+      "layer": "CONCEPT_FORM",
+      "expected_metric_movement": {
+        "trade_count": "up",
+        "trades_per_hour": "up",
+        "avg_pips_per_trade": "down slightly",
+        "entry_only_pph": "up if bottleneck real",
+        "realized_pph": "mixed"
+      },
+      "failure_signature": [
+        "trade_count up but entry_only_pph down",
+        "family composition drifts to low-quality families"
+      ],
+      "pass_signature": [
+        "entry_only_pph up with manageable avg pips/trade decay"
+      ]
+    },
+    {
+      "intervention_class": "ENTRY_FORM_TIGHTENING",
+      "layer": "CONCEPT_FORM",
+      "expected_metric_movement": {
+        "trade_count": "down",
+        "avg_pips_per_trade": "up",
+        "entry_only_pph": "stable or down",
+        "realized_pph": "up only if noise cull is effective"
+      },
+      "failure_signature": [
+        "trade_count collapse without meaningful quality gain"
+      ],
+      "pass_signature": [
+        "realized_pph increases while entry-only gap does not widen"
+      ]
+    },
+    {
+      "intervention_class": "AEE_RELAXATION_BREAKOUT_ONLY",
+      "layer": "AEE_INTERACTION",
+      "expected_metric_movement": {
+        "breakout_realized_pph": "up",
+        "breakout_gap": "down",
+        "breakout_fast_failure_share": "down",
+        "breakout_hold_time": "up moderately"
+      },
+      "failure_signature": [
+        "breakout_realized_pph down",
+        "breakout_gap up",
+        "replacement_exit_branch rises with similar damage"
+      ],
+      "pass_signature": [
+        "breakout net pph recovers and gap shrinks without severe non-breakout collapse"
+      ]
+    },
+    {
+      "intervention_class": "AEE_GLOBAL_RELAXATION",
+      "layer": "AEE_INTERACTION",
+      "expected_metric_movement": {
+        "realized_pph": "up on constrained families",
+        "avg_hold_time": "up",
+        "drawdown_tail_risk": "up"
+      },
+      "failure_signature": [
+        "loss tails increase faster than gap improvements"
+      ],
+      "pass_signature": [
+        "gap down across families with net pph up"
+      ]
+    },
+    {
+      "intervention_class": "AEE_STRICTNESS_INCREASE",
+      "layer": "AEE_INTERACTION",
+      "expected_metric_movement": {
+        "avg_hold_time": "down",
+        "fast_exit_share": "up",
+        "gap": "usually up",
+        "realized_pph": "usually down"
+      },
+      "failure_signature": [
+        "breakout erosion with no compensating non-breakout recovery"
+      ],
+      "pass_signature": [
+        "rare; only valid if specific loss branch is removed without harming winners"
+      ]
+    },
+    {
+      "intervention_class": "SIMULATION_SEQUENCE_FIX",
+      "layer": "SIMULATION",
+      "expected_metric_movement": {
+        "reclaim_representable_rate": "up",
+        "multi_stage_family_realized_pph": "up relative to breakout",
+        "breakout_bias_score": "down toward neutral"
+      },
+      "failure_signature": [
+        "reclaim representation unchanged near zero",
+        "ranking remains breakout-dominant"
+      ],
+      "pass_signature": [
+        "family ranking becomes less structurally biased and multi-stage degradation narrows"
+      ]
+    },
+    {
+      "intervention_class": "SIMULATION_PRICING_FIX",
+      "layer": "SIMULATION",
+      "expected_metric_movement": {
+        "suspicious_fill_rate": "down",
+        "pricing_consistency_score": "up",
+        "gap_estimate_stability": "up"
+      },
+      "failure_signature": [
+        "bar1 anomalies persist",
+        "pricing consistency unchanged"
+      ],
+      "pass_signature": [
+        "fill realism warnings reduce and attribution becomes cleaner"
+      ]
+    },
+    {
+      "intervention_class": "BENCHMARK_BALANCING",
+      "layer": "SIMULATION",
+      "expected_metric_movement": {
+        "regime_concentration_ratio": "down",
+        "family_rank_stability": "up",
+        "overfitting_to_local_winner": "down"
+      },
+      "failure_signature": [
+        "single regime still dominates rankings"
+      ],
+      "pass_signature": [
+        "conclusions hold across balanced windows"
+      ]
+    },
+    {
+      "intervention_class": "MEASUREMENT_ANCHOR_ENFORCEMENT",
+      "layer": "EXPANSION",
+      "expected_metric_movement": {
+        "extraction_efficiency_visibility": "up",
+        "failure_layer_clarity": "up",
+        "decision_latency": "down"
+      },
+      "failure_signature": [
+        "profitability-only decisions continue",
+        "bottleneck attribution remains ambiguous"
+      ],
+      "pass_signature": [
+        "every run can explain where edge died using available vs captured movement"
+      ]
+    }
+  ]
+}

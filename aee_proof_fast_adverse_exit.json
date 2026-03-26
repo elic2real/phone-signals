@@ -1,0 +1,138 @@
+{
+  "branch": "AEE_FAST_ADVERSE_EXIT",
+  "generated_at": "2026-03-23T16:22:05.850124Z",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "threshold_snapshot": {
+    "window_sec": 3.0,
+    "min_move_r": 0.1,
+    "min_vel_r_per_sec": 0.035
+  },
+  "representative_samples": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_FAST_ADVERSE_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "window_sec": 3.0,
+          "min_move_r": 0.1,
+          "min_vel_r_per_sec": 0.035,
+          "min_hold_sec": 0.5
+        },
+        "debug": {
+          "window_sec": 1.5,
+          "adverse_r": 0.18,
+          "adverse_vel": -0.09
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_FAST_ADVERSE_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "window_sec": 3.0,
+          "min_move_r": 0.1,
+          "min_vel_r_per_sec": 0.035,
+          "min_hold_sec": 0.5
+        },
+        "debug": {
+          "window_sec": 2.8,
+          "adverse_r": 0.105,
+          "adverse_vel": -0.036
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_FAST_ADVERSE_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "window_sec": 3.0,
+          "min_move_r": 0.1,
+          "min_vel_r_per_sec": 0.035,
+          "min_hold_sec": 0.5
+        },
+        "debug": {
+          "window_sec": 4.2,
+          "adverse_r": 0.2,
+          "adverse_vel": -0.08
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_FAST_ADVERSE_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "window_sec": 3.0,
+          "min_move_r": 0.1,
+          "min_vel_r_per_sec": 0.035,
+          "min_hold_sec": 0.5
+        },
+        "debug": {
+          "window_sec": 1.5,
+          "adverse_r": 0.18,
+          "adverse_vel": -0.09
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_FAST_ADVERSE_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "window_sec": 3.0,
+          "min_move_r": 0.1,
+          "min_vel_r_per_sec": 0.035,
+          "min_hold_sec": 0.5
+        },
+        "debug": {
+          "window_sec": 2.8,
+          "adverse_r": 0.105,
+          "adverse_vel": -0.036
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_FAST_ADVERSE_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "window_sec": 3.0,
+          "min_move_r": 0.1,
+          "min_vel_r_per_sec": 0.035,
+          "min_hold_sec": 0.5
+        },
+        "debug": {
+          "window_sec": 4.2,
+          "adverse_r": 0.2,
+          "adverse_vel": -0.08
+        }
+      }
+    }
+  ]
+}

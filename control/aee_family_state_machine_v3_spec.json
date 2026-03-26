@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-03-25T18:22:09.884081Z",
+  "task_id": "TASK-010",
+  "name": "AEE_FAMILY_STATE_MACHINE_V3",
+  "states": [
+    "INIT",
+    "PROBING",
+    "CONFIRMING",
+    "EXPANDING",
+    "EXHAUSTING",
+    "FAILING",
+    "EXIT"
+  ],
+  "family_specs": {
+    "EXPANSION_BREAKOUT": {
+      "expected_early_drawdown": "low",
+      "expected_time_to_green": "fast",
+      "expected_confirmation_time": "short",
+      "expected_stall_profile": "low stall tolerance",
+      "expected_giveback_profile": "tight giveback tolerance",
+      "promotion_criteria": {
+        "INIT_to_PROBING": "entry intent remains valid under family-expected adverse behavior",
+        "PROBING_to_CONFIRMING": "directional follow-through matches family confirmation profile",
+        "CONFIRMING_to_EXPANDING": "progress and energy confirm continuation",
+        "EXPANDING_to_EXHAUSTING": "deceleration or giveback exceeds family expansion expectations",
+        "EXHAUSTING_to_FAILING": "recovery attempts fail against family-specific invalidation rules",
+        "FAILING_to_EXIT": "family invalidation confirmed"
+      },
+      "invalidation_conditions": {
+        "generic": "pattern no longer behaves like family definition",
+        "primary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "exit_branch_count": 2989,
+          "exit_branch_pct": 0.6238781047797954,
+          "exit_branch_net_contribution_pph": -0.5763695503153143,
+          "realized_without_branch_pph": 6.8562919598617,
+          "branch_removal_delta_pph": 6.429222334510279
+        },
+        "secondary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "exit_branch_count": 1691,
+          "exit_branch_pct": 0.3529534543936548,
+          "exit_branch_net_contribution_pph": 1.0041610125319913,
+          "realized_without_branch_pph": 2.7341076954804153,
+          "branch_removal_delta_pph": 2.3070380701289945
+        }
+      }
+    },
+    "RECLAIM_CONTINUATION": {
+      "expected_early_drawdown": "moderate_to_high",
+      "expected_time_to_green": "delayed",
+      "expected_confirmation_time": "longer",
+      "expected_stall_profile": "higher stall tolerance during reclaim",
+      "expected_giveback_profile": "structured giveback tolerance",
+      "promotion_criteria": {
+        "INIT_to_PROBING": "entry intent remains valid under family-expected adverse behavior",
+        "PROBING_to_CONFIRMING": "directional follow-through matches family confirmation profile",
+        "CONFIRMING_to_EXPANDING": "progress and energy confirm continuation",
+        "EXPANDING_to_EXHAUSTING": "deceleration or giveback exceeds family expansion expectations",
+        "EXHAUSTING_to_FAILING": "recovery attempts fail against family-specific invalidation rules",
+        "FAILING_to_EXIT": "family invalidation confirmed"
+      },
+      "invalidation_conditions": {
+        "generic": "pattern no longer behaves like family definition",
+        "primary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "exit_branch_count": 37,
+          "exit_branch_pct": 0.8604651162790697,
+          "exit_branch_net_contribution_pph": -0.9689424879571966,
+          "realized_without_branch_pph": 7.8527627308993555,
+          "branch_removal_delta_pph": 8.410000406779877
+        },
+        "secondary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "exit_branch_count": 6,
+          "exit_branch_pct": 0.13953488372093023,
+          "exit_branch_net_contribution_pph": 0.4117048120766745,
+          "realized_without_branch_pph": 0.23771555293296792,
+          "branch_removal_delta_pph": 0.7949532288134902
+        }
+      }
+    },
+    "PULLBACK_CONTINUATION": {
+      "expected_early_drawdown": "moderate",
+      "expected_time_to_green": "medium",
+      "expected_confirmation_time": "medium",
+      "expected_stall_profile": "moderate stall tolerance",
+      "expected_giveback_profile": "moderate giveback tolerance",
+      "promotion_criteria": {
+        "INIT_to_PROBING": "entry intent remains valid under family-expected adverse behavior",
+        "PROBING_to_CONFIRMING": "directional follow-through matches family confirmation profile",
+        "CONFIRMING_to_EXPANDING": "progress and energy confirm continuation",
+        "EXPANDING_to_EXHAUSTING": "deceleration or giveback exceeds family expansion expectations",
+        "EXHAUSTING_to_FAILING": "recovery attempts fail against family-specific invalidation rules",
+        "FAILING_to_EXIT": "family invalidation confirmed"
+      },
+      "invalidation_conditions": {
+        "generic": "pattern no longer behaves like family definition",
+        "primary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "exit_branch_count": 978,
+          "exit_branch_pct": 0.9323164918970448,
+          "exit_branch_net_contribution_pph": -1.2983026867012766,
+          "realized_without_branch_pph": 9.386922544016512,
+          "branch_removal_delta_pph": 10.452409887987681
+        },
+        "secondary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "exit_branch_count": 66,
+          "exit_branch_pct": 0.06291706387035272,
+          "exit_branch_net_contribution_pph": 0.23155942719279116,
+          "realized_without_branch_pph": -0.6792849354943251,
+          "branch_removal_delta_pph": 0.3862024084768434
+        }
+      }
+    },
+    "RANGE_ESCAPE": {
+      "expected_early_drawdown": "moderate",
+      "expected_time_to_green": "medium",
+      "expected_confirmation_time": "medium",
+      "expected_stall_profile": "contextual stall tolerance",
+      "expected_giveback_profile": "moderate giveback tolerance",
+      "promotion_criteria": {
+        "INIT_to_PROBING": "entry intent remains valid under family-expected adverse behavior",
+        "PROBING_to_CONFIRMING": "directional follow-through matches family confirmation profile",
+        "CONFIRMING_to_EXPANDING": "progress and energy confirm continuation",
+        "EXPANDING_to_EXHAUSTING": "deceleration or giveback exceeds family expansion expectations",
+        "EXHAUSTING_to_FAILING": "recovery attempts fail against family-specific invalidation rules",
+        "FAILING_to_EXIT": "family invalidation confirmed"
+      },
+      "invalidation_conditions": {
+        "generic": "pattern no longer behaves like family definition",
+        "primary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "exit_branch_count": 9660,
+          "exit_branch_pct": 0.8096555192356047,
+          "exit_branch_net_contribution_pph": -1.0066287902083577,
+          "realized_without_branch_pph": 6.8682201681582375,
+          "branch_removal_delta_pph": 7.465863309745762
+        },
+        "secondary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_GIVEBACK_EXIT",
+          "exit_branch_count": 1876,
+          "exit_branch_pct": 0.15723744866314643,
+          "exit_branch_net_contribution_pph": 0.43454164424768627,
+          "realized_without_branch_pph": 0.22221728027785048,
+          "branch_removal_delta_pph": 0.819860421865375
+        }
+      }
+    },
+    "OTHER": {
+      "expected_early_drawdown": "unknown_mixed",
+      "expected_time_to_green": "mixed",
+      "expected_confirmation_time": "mixed",
+      "expected_stall_profile": "mixed",
+      "expected_giveback_profile": "mixed",
+      "promotion_criteria": {
+        "INIT_to_PROBING": "entry intent remains valid under family-expected adverse behavior",
+        "PROBING_to_CONFIRMING": "directional follow-through matches family confirmation profile",
+        "CONFIRMING_to_EXPANDING": "progress and energy confirm continuation",
+        "EXPANDING_to_EXHAUSTING": "deceleration or giveback exceeds family expansion expectations",
+        "EXHAUSTING_to_FAILING": "recovery attempts fail against family-specific invalidation rules",
+        "FAILING_to_EXIT": "family invalidation confirmed"
+      },
+      "invalidation_conditions": {
+        "generic": "pattern no longer behaves like family definition",
+        "primary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_BAND_FAST_FAILURE_EXIT",
+          "exit_branch_count": 3280,
+          "exit_branch_pct": 0.9172259507829977,
+          "exit_branch_net_contribution_pph": -1.651009979615308,
+          "realized_without_branch_pph": 6.872478991153846,
+          "branch_removal_delta_pph": 8.32885022488078
+        },
+        "secondary_destructive_branch_from_task009": {
+          "exit_branch": "AEE_NEVER_GREEN_TIMEOUT",
+          "exit_branch_count": 88,
+          "exit_branch_pct": 0.024608501118568233,
+          "exit_branch_net_contribution_pph": -0.02878249525144536,
+          "realized_without_branch_pph": -1.2484271709195858,
+          "branch_removal_delta_pph": 0.20794406280734834
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "from_config": "aee_band_baseline_floor_v2.json",
+  "to_config": "aee_band_baseline_floor_v3.json",
+  "objective": "Reduce never-green overfire without increasing fallback churn, while preserving extraction throughput",
+  "evidence": {
+    "v2_never_green_count": 19463,
+    "v2_fallback_count": 10714,
+    "v2_delta_realized_pips_per_hour": -1.03387376086662
+  },
+  "exact_three_changes": [
+    {
+      "path": "band_width_r",
+      "old": 0.10,
+      "new": 0.08,
+      "intent": "Lower progress threshold so more trades escape near-entry churn and avoid never-green classification."
+    },
+    {
+      "path": "near_entry.timeout_sec",
+      "old": 20,
+      "new": 14,
+      "intent": "Reduce dead-trade dwell while still allowing minimal near-entry proving time."
+    },
+    {
+      "path": "fallback.drop_positive_bands",
+      "old": 2,
+      "new": 3,
+      "intent": "Prevent fallback over-churn after initial positive movement."
+    }
+  ],
+  "hard_constraints": {
+    "single_run": true,
+    "no_family_search": true,
+    "no_pair_local_loops": true,
+    "no_mixed_confirmation": true
+  }
+}

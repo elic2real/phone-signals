@@ -1,0 +1,304 @@
+{
+  "generated_at": "2026-03-25T00:50:17.518943Z",
+  "runtime_trace_glob": "runs/**/trades.jsonl",
+  "files_scanned": 17,
+  "lines_scanned": 51635,
+  "events_parsed": 51634,
+  "json_parse_errors": 1,
+  "attempts_total": 18828,
+  "filled_transitions_total": 17,
+  "family_evidence": [
+    {
+      "entry_type": "EXPANSION_BREAKOUT",
+      "attempt_count": 16346,
+      "attempt_share": 0.8681750584236244,
+      "decision_arm_count": 15771,
+      "decision_reject_count": 555,
+      "decision_other_count": 20,
+      "filled_transition_count": 10,
+      "filled_transition_share": 0.5882352941176471
+    },
+    {
+      "entry_type": "RECLAIM_CONTINUATION",
+      "attempt_count": 1466,
+      "attempt_share": 0.07786275759507116,
+      "decision_arm_count": 1461,
+      "decision_reject_count": 0,
+      "decision_other_count": 5,
+      "filled_transition_count": 5,
+      "filled_transition_share": 0.29411764705882354
+    },
+    {
+      "entry_type": "OTHER",
+      "attempt_count": 12,
+      "attempt_share": 0.0006373486297004461,
+      "decision_arm_count": 0,
+      "decision_reject_count": 12,
+      "decision_other_count": 0,
+      "filled_transition_count": 2,
+      "filled_transition_share": 0.11764705882352941
+    },
+    {
+      "entry_type": "PULLBACK_CONTINUATION",
+      "attempt_count": 1004,
+      "attempt_share": 0.053324835351604,
+      "decision_arm_count": 1000,
+      "decision_reject_count": 0,
+      "decision_other_count": 4,
+      "filled_transition_count": 0,
+      "filled_transition_share": 0.0
+    },
+    {
+      "entry_type": "RANGE_ESCAPE",
+      "attempt_count": 0,
+      "attempt_share": 0.0,
+      "decision_arm_count": 0,
+      "decision_reject_count": 0,
+      "decision_other_count": 0,
+      "filled_transition_count": 0,
+      "filled_transition_share": 0.0
+    }
+  ],
+  "trigger_modes_top": [
+    {
+      "name": "BREAK",
+      "count": 15770,
+      "share": 0.8375823241980029
+    },
+    {
+      "name": "RECLAIM",
+      "count": 1461,
+      "share": 0.07759719566602932
+    },
+    {
+      "name": "RESUME",
+      "count": 1000,
+      "share": 0.053112385808370514
+    },
+    {
+      "name": "UNKNOWN",
+      "count": 596,
+      "share": 0.031654981941788826
+    },
+    {
+      "name": "",
+      "count": 1,
+      "share": 5.311238580837051e-05
+    }
+  ],
+  "entry_triggers_top": [
+    {
+      "name": "dist_too_far",
+      "count": 10527,
+      "share": 0.5591140854047164
+    },
+    {
+      "name": "break_not_crossed",
+      "count": 5884,
+      "share": 0.3125132780964521
+    },
+    {
+      "name": "reclaim_wait_reclaim",
+      "count": 1110,
+      "share": 0.058954748247291265
+    },
+    {
+      "name": "resume_wait_pullback",
+      "count": 564,
+      "share": 0.02995538559592097
+    },
+    {
+      "name": "pre_arm_gate",
+      "count": 359,
+      "share": 0.019067346505205012
+    },
+    {
+      "name": "UNKNOWN",
+      "count": 208,
+      "share": 0.011047376248141066
+    },
+    {
+      "name": "resume_wait_confirm",
+      "count": 101,
+      "share": 0.005364350966645422
+    },
+    {
+      "name": "break_confirm_disp_fail",
+      "count": 45,
+      "share": 0.002390057361376673
+    },
+    {
+      "name": "break",
+      "count": 20,
+      "share": 0.0010622477161674102
+    },
+    {
+      "name": "reclaim_zone",
+      "count": 5,
+      "share": 0.00026556192904185255
+    },
+    {
+      "name": "resume",
+      "count": 4,
+      "share": 0.00021244954323348204
+    },
+    {
+      "name": "arm_expired",
+      "count": 1,
+      "share": 5.311238580837051e-05
+    }
+  ],
+  "tick_block_reasons_top": [
+    {
+      "name": "NO_TRIGGER_YET",
+      "count": 18232,
+      "share": 0.9683450180582112
+    },
+    {
+      "name": "UNKNOWN",
+      "count": 596,
+      "share": 0.031654981941788826
+    }
+  ],
+  "pair_family_top": [
+    {
+      "name": "EUR_CHF::EXPANSION_BREAKOUT",
+      "count": 2367,
+      "share": 0.125717017208413
+    },
+    {
+      "name": "EUR_USD::EXPANSION_BREAKOUT",
+      "count": 1951,
+      "share": 0.10362226471213087
+    },
+    {
+      "name": "USD_CHF::EXPANSION_BREAKOUT",
+      "count": 1603,
+      "share": 0.08513915445081793
+    },
+    {
+      "name": "GBP_AUD::EXPANSION_BREAKOUT",
+      "count": 1468,
+      "share": 0.07796898236668791
+    },
+    {
+      "name": "NZD_USD::EXPANSION_BREAKOUT",
+      "count": 1258,
+      "share": 0.0668153813469301
+    },
+    {
+      "name": "USD_JPY::EXPANSION_BREAKOUT",
+      "count": 1217,
+      "share": 0.06463777352878691
+    },
+    {
+      "name": "CAD_JPY::EXPANSION_BREAKOUT",
+      "count": 1152,
+      "share": 0.06118546845124283
+    },
+    {
+      "name": "EUR_AUD::EXPANSION_BREAKOUT",
+      "count": 1092,
+      "share": 0.0579987253027406
+    },
+    {
+      "name": "EUR_GBP::EXPANSION_BREAKOUT",
+      "count": 781,
+      "share": 0.04148077331633737
+    },
+    {
+      "name": "AUD_JPY::EXPANSION_BREAKOUT",
+      "count": 760,
+      "share": 0.04036541321436159
+    },
+    {
+      "name": "GBP_USD::EXPANSION_BREAKOUT",
+      "count": 646,
+      "share": 0.034310601232207354
+    },
+    {
+      "name": "USD_CAD::EXPANSION_BREAKOUT",
+      "count": 619,
+      "share": 0.03287656681538135
+    },
+    {
+      "name": "EUR_JPY::EXPANSION_BREAKOUT",
+      "count": 536,
+      "share": 0.028468238793286596
+    },
+    {
+      "name": "AUD_USD::EXPANSION_BREAKOUT",
+      "count": 507,
+      "share": 0.02692797960484385
+    },
+    {
+      "name": "GBP_JPY::EXPANSION_BREAKOUT",
+      "count": 389,
+      "share": 0.02066071807945613
+    }
+  ],
+  "setup_family_top": [
+    {
+      "name": "VOL_REIGNITE::EXPANSION_BREAKOUT",
+      "count": 16346,
+      "share": 0.8681750584236244
+    },
+    {
+      "name": "FAILED_BREAKOUT_FADE::RECLAIM_CONTINUATION",
+      "count": 1466,
+      "share": 0.07786275759507116
+    },
+    {
+      "name": "EXHAUSTION_SNAPBACK::PULLBACK_CONTINUATION",
+      "count": 609,
+      "share": 0.03234544295729764
+    },
+    {
+      "name": "CONTINUATION_PUSH::PULLBACK_CONTINUATION",
+      "count": 375,
+      "share": 0.019917144678138942
+    },
+    {
+      "name": "INTENTIONAL_RUNNER::PULLBACK_CONTINUATION",
+      "count": 20,
+      "share": 0.0010622477161674102
+    },
+    {
+      "name": "CONTINUATION_PUSH::OTHER",
+      "count": 9,
+      "share": 0.0004780114722753346
+    },
+    {
+      "name": "EXHAUSTION_SNAPBACK::OTHER",
+      "count": 3,
+      "share": 0.00015933715742511153
+    }
+  ],
+  "signal_strategy_family_top": [
+    {
+      "name": "EXPANSION_BREAKOUT",
+      "count": 19550,
+      "share": 0.7086928151961139
+    },
+    {
+      "name": "PULLBACK_CONTINUATION",
+      "count": 3971,
+      "share": 0.1439498296237222
+    },
+    {
+      "name": "OTHER",
+      "count": 2544,
+      "share": 0.09222069165518741
+    },
+    {
+      "name": "RECLAIM_CONTINUATION",
+      "count": 1521,
+      "share": 0.05513666352497644
+    }
+  ],
+  "notes": {
+    "domain_alignment": "runtime_trace_domain_not_trade_id_aligned_with_replay_stream_domain",
+    "intended_use": "aggregate_family_incidence_and_transition_evidence",
+    "not_for": "per_trade_join_or_direct_outcome_substitution"
+  }
+}

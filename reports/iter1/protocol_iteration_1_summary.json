@@ -1,0 +1,220 @@
+{
+  "protocol": "iter1_geometry_short_slow_tp_cut",
+  "before_entry_driven": {
+    "LONG": {
+      "trade_count": 68,
+      "pips_mean": -0.6561764705880213,
+      "pph_mean": 33.70156106735844,
+      "win_rate": 0.5441176470588235,
+      "sl_hit_rate": 0.39705882352941174
+    },
+    "SHORT": {
+      "trade_count": 38,
+      "pips_mean": -2.7473684210525624,
+      "pph_mean": -164.40567152378446,
+      "win_rate": 0.34210526315789475,
+      "sl_hit_rate": 0.6052631578947368
+    },
+    "BOTH": {
+      "trade_count": 106,
+      "pips_mean": -1.4058490566036117,
+      "pph_mean": -37.31801288040977,
+      "win_rate": 0.4716981132075472,
+      "sl_hit_rate": 0.4716981132075472
+    }
+  },
+  "after_entry_driven": {
+    "LONG": {
+      "trade_count": 68,
+      "pips_mean": -0.6597058823527111,
+      "pph_mean": 33.6742545658106,
+      "win_rate": 0.5441176470588235,
+      "sl_hit_rate": 0.39705882352941174
+    },
+    "SHORT": {
+      "trade_count": 38,
+      "pips_mean": -2.7473684210525624,
+      "pph_mean": -164.40567152378446,
+      "win_rate": 0.34210526315789475,
+      "sl_hit_rate": 0.6052631578947368
+    },
+    "BOTH": {
+      "trade_count": 106,
+      "pips_mean": -1.4081132075469975,
+      "pph_mean": -37.33553025876121,
+      "win_rate": 0.4716981132075472,
+      "sl_hit_rate": 0.4716981132075472
+    }
+  },
+  "guardrails": {
+    "delta_pips_mean_global": -0.0022641509433858342,
+    "delta_sl_hit_rate_global": 0.0,
+    "delta_long_pips_mean": -0.003529411764689794,
+    "delta_trade_count_global_pct": 0.0
+  },
+  "guardrail_pass": {
+    "pips_improve_ge_0_20": false,
+    "sl_hit_worse_le_2pp": true,
+    "long_not_degrade_gt_0_15": true,
+    "trade_count_drop_le_15pct": true
+  },
+  "lane_delta": {
+    "LONG_FAST": {
+      "before": {
+        "trade_count": 56,
+        "pips_proxy": -0.6348214285711862,
+        "tp1_reach": 0.5892857142857143,
+        "sl_hit_before_meaningful": 0.23214285714285715,
+        "mfe_tp1_ratio": 1.0639860272381376,
+        "failure_mode": "neither"
+      },
+      "after": {
+        "trade_count": 56,
+        "pips_proxy": -0.6348214285711862,
+        "tp1_reach": 0.5892857142857143,
+        "sl_hit_before_meaningful": 0.23214285714285715,
+        "mfe_tp1_ratio": 1.0639860272381376,
+        "failure_mode": "neither"
+      }
+    },
+    "LONG_MED": {
+      "before": {
+        "trade_count": 6,
+        "pips_proxy": -0.42500000000093374,
+        "tp1_reach": 0.6666666666666666,
+        "sl_hit_before_meaningful": 0.3333333333333333,
+        "mfe_tp1_ratio": 0.8717310087176041,
+        "failure_mode": "neither"
+      },
+      "after": {
+        "trade_count": 6,
+        "pips_proxy": -0.42500000000093374,
+        "tp1_reach": 0.6666666666666666,
+        "sl_hit_before_meaningful": 0.3333333333333333,
+        "mfe_tp1_ratio": 0.8717310087176041,
+        "failure_mode": "neither"
+      }
+    },
+    "SHORT_FAST": {
+      "before": {
+        "trade_count": 18,
+        "pips_proxy": -2.094444444444596,
+        "tp1_reach": 0.4444444444444444,
+        "sl_hit_before_meaningful": 0.3333333333333333,
+        "mfe_tp1_ratio": 0.7379998697409639,
+        "failure_mode": "neither"
+      },
+      "after": {
+        "trade_count": 18,
+        "pips_proxy": -2.094444444444596,
+        "tp1_reach": 0.4444444444444444,
+        "sl_hit_before_meaningful": 0.3333333333333333,
+        "mfe_tp1_ratio": 0.7379998697409639,
+        "failure_mode": "neither"
+      }
+    },
+    "SHORT_MED": {
+      "before": {
+        "trade_count": 10,
+        "pips_proxy": -0.9849999999995696,
+        "tp1_reach": 0.5,
+        "sl_hit_before_meaningful": 0.2,
+        "mfe_tp1_ratio": 1.0771780303034373,
+        "failure_mode": "neither"
+      },
+      "after": {
+        "trade_count": 10,
+        "pips_proxy": -0.9849999999995696,
+        "tp1_reach": 0.5,
+        "sl_hit_before_meaningful": 0.2,
+        "mfe_tp1_ratio": 1.0771780303034373,
+        "failure_mode": "neither"
+      }
+    },
+    "SHORT_SLOW": {
+      "before": {
+        "trade_count": 10,
+        "pips_proxy": -4.369999999999097,
+        "tp1_reach": 0.2,
+        "sl_hit_before_meaningful": 0.6,
+        "mfe_tp1_ratio": 0.4516471838478993,
+        "failure_mode": "TP too far"
+      },
+      "after": {
+        "trade_count": 10,
+        "pips_proxy": -4.369999999999097,
+        "tp1_reach": 0.2,
+        "sl_hit_before_meaningful": 0.6,
+        "mfe_tp1_ratio": 0.5748236885337252,
+        "failure_mode": "TP too far"
+      }
+    }
+  },
+  "short_slow_acceptance": {
+    "tp1_reach_up": true,
+    "mfe_tp1_ratio_up": true,
+    "sl_hit_not_worse_2pp": true,
+    "pips_proxy_up": true
+  },
+  "profiles_after": {
+    "LONG_ONLY": {
+      "trade_count": 68,
+      "pips_mean": -0.7147058823527906,
+      "pph_mean": 0.0,
+      "win_rate": 0.45588235294117646,
+      "sl_hit_rate": 0.39705882352941174
+    },
+    "LONG_PLUS_SHORT_FAST_MED": {
+      "trade_count": 96,
+      "pips_mean": -1.001562499999877,
+      "pph_mean": 0.0,
+      "win_rate": 0.4375,
+      "sl_hit_rate": 0.4375
+    },
+    "FULL": {
+      "trade_count": 106,
+      "pips_mean": -1.3193396226413128,
+      "pph_mean": 0.0,
+      "win_rate": 0.4056603773584906,
+      "sl_hit_rate": 0.4716981132075472
+    }
+  },
+  "profiles_ranked": [
+    {
+      "profile": "LONG_ONLY",
+      "metrics": {
+        "trade_count": 68,
+        "pips_mean": -0.7147058823527906,
+        "pph_mean": 0.0,
+        "win_rate": 0.45588235294117646,
+        "sl_hit_rate": 0.39705882352941174
+      }
+    },
+    {
+      "profile": "LONG_PLUS_SHORT_FAST_MED",
+      "metrics": {
+        "trade_count": 96,
+        "pips_mean": -1.001562499999877,
+        "pph_mean": 0.0,
+        "win_rate": 0.4375,
+        "sl_hit_rate": 0.4375
+      }
+    },
+    {
+      "profile": "FULL",
+      "metrics": {
+        "trade_count": 106,
+        "pips_mean": -1.3193396226413128,
+        "pph_mean": 0.0,
+        "win_rate": 0.4056603773584906,
+        "sl_hit_rate": 0.4716981132075472
+      }
+    }
+  ],
+  "winner_profile": "LONG_ONLY",
+  "failure_mode_labels": {
+    "LONG_FAST_MED": "MIXED",
+    "SHORT_FAST_MED": "MIXED",
+    "SHORT_SLOW": "TP_TOO_FAR"
+  }
+}

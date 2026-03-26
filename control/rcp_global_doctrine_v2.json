@@ -1,0 +1,133 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2_HARD",
+  "name": "RCP_GLOBAL_DOCTRINE_V2",
+  "generated_at": "2026-03-25T00:00:00Z",
+  "purpose": "Upgrade Repo Control Protocol from execution control to controlled discovery and reverse engineering.",
+  "core_shift": {
+    "v1": "execution_control",
+    "v2": "research_control",
+    "principle": "Code is instrumentation inside a research engine; every task must explain where edge was created, preserved, or destroyed."
+  },
+  "research_loop": [
+    "choose_concept",
+    "generate_parallel_forms",
+    "run_benchmark_matrix",
+    "produce_degradation_waterfall_and_confusion",
+    "classify_failure_by_layer",
+    "keep_best_forms",
+    "refine_only_winners",
+    "expand_only_after_multi_form_proof"
+  ],
+  "mandatory_task_fields": [
+    "protocol_version",
+    "enforcement_mode",
+    "intervention_class",
+    "research_layer",
+    "variable_contract",
+    "falsifiable_signature",
+    "evaluation_metrics",
+    "parallel_isolation",
+    "min_effect_size",
+    "dead_path_policy",
+    "protected_metric",
+    "regression_dominance_rule",
+    "concept_lock",
+    "post_run_classification",
+    "champion_reference",
+    "expected_signature",
+    "reverse_engineering_outputs",
+    "ablatable_components",
+    "fail_conditions",
+    "output_requirements"
+  ],
+  "mandatory_global_artifacts": [
+    "control/concept_registry.json",
+    "control/strategy_form_registry.json",
+    "control/champion_registry.json",
+    "control/gold_cases.json",
+    "control/benchmark_suite.json",
+    "control/degradation_waterfall_template.json",
+    "control/family_confusion_report_template.json",
+    "control/ablation_matrix_template.json",
+    "control/expected_vs_actual_signature_template.json",
+    "control/failure_layer_classification_template.json"
+  ],
+  "measurement_requirements": {
+    "required_metrics": [
+      "total_available_pips",
+      "entry_only_capture",
+      "realized_capture",
+      "extraction_efficiency",
+      "entry_only_pph",
+      "realized_pph",
+      "aee_damage"
+    ],
+    "efficiency_bands": {
+      "broken": "<0.10",
+      "weak": "0.10-0.30",
+      "viable": "0.30-0.60",
+      "strong": ">=0.60"
+    },
+    "interpretation": "Profitability is insufficient. Every serious run must report how much available movement was actually extracted."
+  },
+  "layer_accountability": {
+    "allowed_layers": [
+      "CONCEPT_FORM",
+      "IMPLEMENTATION",
+      "SIMULATION",
+      "AEE_INTERACTION",
+      "FILTERING",
+      "EXPANSION"
+    ],
+    "rule": "No run is complete unless it labels where the edge died.",
+    "failure_question": "Was the loss caused by entry logic, implementation, simulator, AEE interaction, or filtering?"
+  },
+  "benchmark_discipline": {
+    "rule": "Parallel forms, serial refinement.",
+    "requirements": [
+      "test 3-5 structurally different forms per concept",
+      "test 2-3 coarse presets per form before local tuning",
+      "compare against champion and baseline on every run",
+      "promote only after comparative ranking and ablation"
+    ]
+  },
+  "forensic_chain": [
+    "raw_opportunity_count",
+    "detector_hit_count",
+    "accepted_entry_count",
+    "entry_only_positive_potential",
+    "aee_survival_count",
+    "realized_wins",
+    "realized_losses",
+    "final_realized_net"
+  ],
+  "hard_rules": [
+    "If all forms of a concept fail, block threshold tuning and escalate to implementation, simulation, or AEE audit.",
+    "If breakout survives while pullback or reclaim consistently fail, assume simulation bias until disproven.",
+    "If entry-only performance materially exceeds realized performance, assume AEE mismatch until disproven.",
+    "If filtered performance is weaker than raw firehose performance, assume filters are destructive until disproven.",
+    "Do not segment by regime before aggregate extraction and attribution are understood.",
+    "Reject hard-mode tasks that are not falsifiable with explicit fail conditions and effect-size floors.",
+    "Reject hard-mode tasks when evaluation metrics violate layer-metric lock.",
+    "Reject parallel hard-mode tests unless causality isolation is explicit.",
+    "Auto-fail when primary edge protection threshold is breached.",
+    "Auto-fail when primary-edge regression is masked by secondary improvements."
+  ],
+  "promotion_requirements": [
+    "champion_delta_reported",
+    "expected_vs_actual_signature_reported",
+    "degradation_waterfall_reported",
+    "reverse_engineering_outputs_present",
+    "gold_case_check_present_for_form_tasks",
+    "ablation_completed_for_winners"
+  ],
+  "adjudication_logic": {
+    "PROMOTE": "Evidence supports the task hypothesis and required artifacts exist.",
+    "REJECT": "Evidence disproves the task hypothesis or scope was violated.",
+    "NO_OP": "Task ran but produced no materially new information.",
+    "INCOMPLETE": "Artifacts or evidence are missing; repeat in same scope.",
+    "BLOCKED": "An upstream layer prevents valid interpretation."
+  },
+  "next_upgrade_target": "TASK-013 simulation reconstruction spec"
+}

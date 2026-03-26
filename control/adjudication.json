@@ -1,55 +1,35 @@
 {
   "protocol": "RCP",
   "stage": 5,
-  "generated_at": "2026-03-26T03:59:20Z",
-  "task_id": "MVP_PHASE6_STABILITY_PROOF_3WINDOW_NO_TUNING",
+  "generated_at": "2026-03-26T13:30:00Z",
+  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
   "verdict": "PROMOTE",
-  "why": "Three no-tuning windows passed under locked scope: both pairs remain positive in each window, weighted net PPH stays positive, session lock remains enforced, and London-only active contexts are preserved.",
+  "why": "Net-layer micro-live execution and incident audit passed with zero critical incidents under hard guardrails.",
   "evidence": [
-    "control/mvp_phase6_w1_eur_usd.json",
-    "control/mvp_phase6_w1_gbp_usd.json",
-    "control/mvp_phase6_w2_eur_usd.json",
-    "control/mvp_phase6_w2_gbp_usd.json",
-    "control/mvp_phase6_w3_eur_usd.json",
-    "control/mvp_phase6_w3_gbp_usd.json",
-    "control/mvp_phase6_stability_proof.json",
+    "run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
+    "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json",
+    "control/mvp_phase31_net_layer_micro_live_execution_plan.json",
     "control/validation_result.json"
   ],
   "key_findings": {
-    "window_statuses": {
-      "W1": "PASS",
-      "W2": "PASS",
-      "W3": "PASS"
+    "phase32_execution": {
+      "wave_count": 3,
+      "total_duration_minutes": 360,
+      "max_false_cut_observed": 0.07692307692307693,
+      "max_weighted_relative_spread_observed": 0.4250786788545134,
+      "min_weighted_delta_pph_observed": 0.07721467801644938,
+      "hard_stop_trigger_count": 0,
+      "incident_count": 0,
+      "release_action": "READY_FOR_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
+      "live_promotion_allowed": false,
+      "scope_lock_preserved": true
     },
-    "pair_net_pph_by_window": {
-      "EUR_USD": [
-        0.1227,
-        0.0696,
-        0.0504
-      ],
-      "GBP_USD": [
-        0.3609,
-        0.2708,
-        0.2708
-      ]
-    },
-    "weighted_net_pph": {
-      "values": [
-        0.2068242118055652,
-        0.12838084923917906,
-        0.10111120747703276
-      ],
-      "mean": 0.14543875617392568,
-      "relative_spread": 0.7268558059044011
-    },
-    "lock_enforcement": {
-      "session_not_included_present_all_windows": true,
-      "london_only_contexts": true
-    }
+    "phase32_mode": "NET_LAYER_MICRO_LIVE_EXECUTION_AND_AUDIT"
   },
-  "next_recommended_task": "MVP_PHASE7_RELEASE_GUARDRAILS_AND_PAPER_PROMOTION",
+  "next_recommended_task": "MVP_PHASE33_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
   "do_not_try_next": [
-    "any AEE tuning before release guardrails are frozen",
-    "any priority tuning before post-promotion monitoring baseline is established"
+    "full live promotion before phase33 final go/no-go review",
+    "weakening false-cut guard thresholds",
+    "scope widening beyond EUR_USD/GBP_USD LONDON lock"
   ]
 }

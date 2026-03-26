@@ -1,0 +1,222 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T09:35:27.726913+00:00",
+  "task_id": "MVP_PHASE21_PARALLEL_VARIANT_EXECUTION_WITH_MICRO_SLICE_KILL_GATES",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "PARALLEL_MICRO_SLICE_EXECUTION"
+  },
+  "dependency": {
+    "phase17_status": "PASS",
+    "phase17_path": "control/mvp_phase17_counterfactual_rerun_execution_with_mitigation_guards.json",
+    "phase20_status": "PASS",
+    "phase20_path": "control/mvp_phase20_universal_analysis_and_archetype_emission_implementation.json",
+    "kill_rules_path": "control/phase0_kill_rules_registry.json",
+    "kill_rules_count": 3
+  },
+  "results_by_pair": {
+    "EUR_USD": {
+      "micro_slice_count": 195,
+      "variants": {
+        "V0": {
+          "sample_count": 195,
+          "triggered_count": 77,
+          "trigger_rate": 0.39487179487179486,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 2.786153846153846,
+          "estimated_net_delta_mean_pips": 2.156923076923077,
+          "false_cut_rate_on_winners": 0.33783783783783783,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": false
+        },
+        "V1": {
+          "sample_count": 195,
+          "triggered_count": 72,
+          "trigger_rate": 0.36923076923076925,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 2.5738461538461537,
+          "estimated_net_delta_mean_pips": 1.9446153846153846,
+          "false_cut_rate_on_winners": 0.2702702702702703,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": false
+        },
+        "V2": {
+          "sample_count": 195,
+          "triggered_count": 70,
+          "trigger_rate": 0.358974358974359,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 2.497948717948718,
+          "estimated_net_delta_mean_pips": 1.8687179487179488,
+          "false_cut_rate_on_winners": 0.25675675675675674,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": false
+        },
+        "V3": {
+          "sample_count": 195,
+          "triggered_count": 37,
+          "trigger_rate": 0.18974358974358974,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 1.4143589743589744,
+          "estimated_net_delta_mean_pips": 0.7851282051282052,
+          "false_cut_rate_on_winners": 0.0,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": true
+        }
+      },
+      "selected_variant": {
+        "variant": null,
+        "reason": "no_variant_survived_kill_gates",
+        "survivor_count": 0
+      }
+    },
+    "GBP_USD": {
+      "micro_slice_count": 199,
+      "variants": {
+        "V0": {
+          "sample_count": 199,
+          "triggered_count": 89,
+          "trigger_rate": 0.4472361809045226,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 5.182914572864322,
+          "estimated_net_delta_mean_pips": 3.8035175879396985,
+          "false_cut_rate_on_winners": 0.4077669902912621,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": false
+        },
+        "V1": {
+          "sample_count": 199,
+          "triggered_count": 78,
+          "trigger_rate": 0.39195979899497485,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 4.434673366834171,
+          "estimated_net_delta_mean_pips": 3.055276381909548,
+          "false_cut_rate_on_winners": 0.30097087378640774,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": false
+        },
+        "V2": {
+          "sample_count": 199,
+          "triggered_count": 72,
+          "trigger_rate": 0.36180904522613067,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 4.163819095477387,
+          "estimated_net_delta_mean_pips": 2.784422110552764,
+          "false_cut_rate_on_winners": 0.2815533980582524,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": false
+        },
+        "V3": {
+          "sample_count": 199,
+          "triggered_count": 30,
+          "trigger_rate": 0.1507537688442211,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 2.4748743718592965,
+          "estimated_net_delta_mean_pips": 1.0954773869346734,
+          "false_cut_rate_on_winners": 0.0,
+          "max_false_cut_rate_allowed": 0.15,
+          "kill_rule_checks": {
+            "peak_delay_reduced": false,
+            "drawdown_reduced": false,
+            "rank_outcome_improved": false
+          },
+          "passes_kill_gates": false,
+          "passes_false_cut_gate": true
+        }
+      },
+      "selected_variant": {
+        "variant": null,
+        "reason": "no_variant_survived_kill_gates",
+        "survivor_count": 0
+      }
+    }
+  },
+  "cross_pair_parallel_variant_gate": {
+    "V0": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_delta": 5.960440664862776
+    },
+    "V1": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_delta": 4.999891766524932
+    },
+    "V2": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_delta": 4.653140059270713
+    },
+    "V3": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_delta": 1.8806055920628788
+    }
+  },
+  "decision": {
+    "verdict": "HOLD",
+    "overall_pass": false,
+    "reason": "No parallel variant survived micro-slice kill gates across both pairs.",
+    "promoted_variant": null,
+    "promoted_variant_summary": null
+  },
+  "pass_conditions": {
+    "phase17_dependency_passed": true,
+    "phase20_dependency_passed": true,
+    "parallel_variants_executed": true,
+    "micro_slice_kill_gates_evaluated": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

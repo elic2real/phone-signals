@@ -1,0 +1,109 @@
+{
+  "quarter_bias_map": {
+    "Q1": {
+      "dominant_direction": "SHORT",
+      "long_static_pph": -21.95,
+      "short_static_pph": 536.1
+    },
+    "Q2": {
+      "dominant_direction": "LONG",
+      "long_static_pph": 544.2000000000003,
+      "short_static_pph": 20.5
+    },
+    "Q3": {
+      "dominant_direction": "SHORT",
+      "long_static_pph": -6.925,
+      "short_static_pph": 377.34999999999945
+    },
+    "Q4": {
+      "dominant_direction": "LONG",
+      "long_static_pph": 432.5000000000027,
+      "short_static_pph": -25.10000000000613
+    }
+  },
+  "non_dominant_side_early_profit_harvest": {
+    "enabled": true,
+    "logic": {
+      "current_profit_min": "max(0.6, min(1.5, distance * 0.35))",
+      "giveback_min": "max(0.35, distance * 0.12)",
+      "velocity_max": 0.0,
+      "time_open_min": 5,
+      "time_since_peak_min": 1
+    },
+    "purpose": "Bank profit before TP on the non-dominant quarter side when local bias is against continuation."
+  },
+  "dominant_side_behavior": {
+    "hold_extend_bias": true,
+    "purpose": "Allow more continuation tolerance on the dominant quarter side before harvest/panic/decay."
+  },
+  "weak_node_proof": {
+    "LONG_Q1": {
+      "static_pph": 7.75,
+      "baseline_aee_pph": -14.249999999998684,
+      "bias_best_preset": "q4_salvage",
+      "bias_best_aee_pph": 26.400000000006514,
+      "delta_vs_static_pph": 18.650000000006514,
+      "avg_static_R": 0.15254237288135594,
+      "avg_aee_R": 0.38962873284914684,
+      "trade_count": 59,
+      "action_counts": {
+        "HOLD": 0,
+        "HARVEST": 46,
+        "PANIC": 13,
+        "DECAY_EXIT": 0,
+        "DO_NOT_ENTER": 36
+      }
+    },
+    "LONG_Q3": {
+      "static_pph": 92.75000000000298,
+      "baseline_aee_pph": -30.749999999993637,
+      "bias_best_preset": "harvest_heavy",
+      "bias_best_aee_pph": 220.09999999997254,
+      "delta_vs_static_pph": 127.34999999996955,
+      "avg_static_R": 0.30021205357143355,
+      "avg_aee_R": 0.8204531249999243,
+      "trade_count": 160,
+      "action_counts": {
+        "HOLD": 0,
+        "HARVEST": 154,
+        "PANIC": 6,
+        "DECAY_EXIT": 0,
+        "DO_NOT_ENTER": 1
+      }
+    },
+    "SHORT_Q2": {
+      "static_pph": 84.69999999999965,
+      "baseline_aee_pph": -16.89999999998483,
+      "bias_best_preset": "harvest_heavy",
+      "bias_best_aee_pph": 154.45000000002926,
+      "delta_vs_static_pph": 69.75000000002962,
+      "avg_static_R": 0.42916666666666603,
+      "avg_aee_R": 0.6115658068784108,
+      "trade_count": 144,
+      "action_counts": {
+        "HOLD": 0,
+        "HARVEST": 137,
+        "PANIC": 7,
+        "DECAY_EXIT": 0,
+        "DO_NOT_ENTER": 0
+      }
+    },
+    "SHORT_Q4": {
+      "static_pph": 24.649999999998094,
+      "baseline_aee_pph": 6.100000000002062,
+      "bias_best_preset": "panic_light",
+      "bias_best_aee_pph": 46.449999999989316,
+      "delta_vs_static_pph": 53.599999999991,
+      "avg_static_R": -0.013321995464858832,
+      "avg_aee_R": 0.3708616780044537,
+      "trade_count": 63,
+      "action_counts": {
+        "HOLD": 6,
+        "HARVEST": 54,
+        "PANIC": 3,
+        "DECAY_EXIT": 0,
+        "DO_NOT_ENTER": 10
+      }
+    }
+  }
+}

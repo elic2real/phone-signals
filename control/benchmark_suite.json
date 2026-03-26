@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "policy": "Benchmark stack compares canonical concept forms, baselines, champions, gold cases, and ablations before promotion.",
+  "required_layers": [
+    "concept",
+    "strategy_form",
+    "implementation",
+    "simulation",
+    "aee_interaction",
+    "filtering"
+  ],
+  "required_reports": [
+    "degradation_waterfall",
+    "family_confusion_report",
+    "ablation_matrix",
+    "expected_vs_actual_signature",
+    "champion_delta"
+  ]
+}

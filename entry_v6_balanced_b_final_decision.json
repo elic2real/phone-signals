@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-03-24T01:40:40.564053Z",
+  "decision": "REJECT",
+  "candidate": "entry_v6_balanced_b",
+  "dataset_id": "D",
+  "metrics": {
+    "net_delta_realized_pips_per_hour": -0.15033480407441627,
+    "gross_delta_realized_pips_per_hour": -0.1503348040744163,
+    "deep_loss_frequency": 0.000691085003455425,
+    "avg_pips_per_trade": 0.7805805114029025,
+    "required_min_pips_per_trade": 1.2100000000000002,
+    "friction_per_trade_pips": 1.1
+  },
+  "gate_checks": {
+    "extraction_ok": false,
+    "distribution_ok": true,
+    "throughput_ok": true,
+    "defensive_ok": true,
+    "profit_branch_fire_ok": true,
+    "economic_viability_ok": false,
+    "ci_ok": false
+  },
+  "reproducibility": {
+    "code_hash": "e95d66c18cab6f3bf0dc61694f728470e1c94d7fa308630d52af6fee6a0a9e16",
+    "evaluation_script_hash": "e95d66c18cab6f3bf0dc61694f728470e1c94d7fa308630d52af6fee6a0a9e16",
+    "config_hash": "9cdb2f980477b1735c78d6d037c53820e0482a812e7609e8fb5382ceddc5f0bf",
+    "stream_set_hash": "2722ecb8c2ac2bb782101bcfd23f754d773b31f0dac90a0efff0ebb41dfe5432",
+    "run_timestamp": "2026-03-24T01:40:40.563041Z",
+    "friction_model_hash": "9a385c615823447e2bf09e7ddbac84207c36a106f476d18cc51ff1b24f49a40c",
+    "dataset_id": "D",
+    "stream_manifest": [
+      "compiled_market_nodes/EUR_CHF__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_CHF__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_CHF__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_CHF__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_CHF__wednesday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__thursday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__friday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__friday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv"
+    ]
+  }
+}

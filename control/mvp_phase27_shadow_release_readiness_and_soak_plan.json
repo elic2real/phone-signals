@@ -1,0 +1,100 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T11:55:29.621330+00:00",
+  "task_id": "MVP_PHASE27_SHADOW_RELEASE_READINESS_AND_SOAK_PLAN",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "SHADOW_RELEASE_READINESS_PLANNING"
+  },
+  "dependency": {
+    "phase26_status": "PASS",
+    "phase26_path": "control/mvp_phase26_shadow_stability_window_proof.json"
+  },
+  "release_readiness": {
+    "shadow_mode_only": true,
+    "live_promotion_allowed": false,
+    "rollback_ready": true,
+    "kill_switch_ready": true,
+    "pair_scope_lock": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session_scope_lock": [
+      "LONDON"
+    ]
+  },
+  "soak_plan": {
+    "total_duration_hours": 72,
+    "segments": [
+      {
+        "segment": "S1",
+        "duration_hours": 24,
+        "goal": "confirm baseline shadow health and signal continuity",
+        "must_report": [
+          "weighted_intervention_pph_estimate",
+          "false_cut_rate_on_winners",
+          "aee_first_eval_missing_events",
+          "close_404_count"
+        ]
+      },
+      {
+        "segment": "S2",
+        "duration_hours": 24,
+        "goal": "confirm stability under normal regime drift",
+        "must_report": [
+          "window_gate_pass_rate",
+          "release_lock_violations",
+          "same_side_close_collisions",
+          "close_coalesced_sibling_satisfied"
+        ]
+      },
+      {
+        "segment": "S3",
+        "duration_hours": 24,
+        "goal": "confirm sustained guard compliance and rollback readiness",
+        "must_report": [
+          "weighted_intervention_relative_spread",
+          "max_false_cut_rate",
+          "incident_count",
+          "rollback_drill_result"
+        ]
+      }
+    ],
+    "hard_stop_rules": [
+      "if max_false_cut_rate > 0.15 then HOLD and rollback",
+      "if any release_lock_violation then HOLD and rollback",
+      "if weighted_intervention_pph turns negative in any segment then HOLD"
+    ],
+    "exit_criteria": {
+      "all_segments_completed": true,
+      "all_hard_stop_rules_not_triggered": true,
+      "shadow_lock_preserved": true
+    }
+  },
+  "pass_conditions": {
+    "phase26_dependency_passed": true,
+    "phase26_verdict_promote": true,
+    "phase26_overall_pass": true,
+    "phase26_window_gate_all_pass": true,
+    "weighted_delta_still_positive": true,
+    "false_cut_guard_respected": true,
+    "shadow_release_lock_enforced": true,
+    "no_tuning_applied": true,
+    "rollback_and_kill_switch_ready": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Shadow release readiness confirmed and 72h soak plan is approved under strict guard lock.",
+    "release_action": "APPROVE_SHADOW_SOAK_EXECUTION_ONLY",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE28_SHADOW_SOAK_EXECUTION_AND_INCIDENT_AUDIT",
+  "status": "PASS"
+}

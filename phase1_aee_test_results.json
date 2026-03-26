@@ -1,0 +1,890 @@
+{
+  "test_results": [
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 40,
+      "avg_r_static": 0.046862918169782844,
+      "avg_r_aee": 0.1682441129253766,
+      "delta_r": 0.12138119475559377,
+      "sl_hit_rate_static": 0.125,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.225,
+      "tp_hit_rate_aee": 0.2,
+      "premature_clip_rate": 0.025,
+      "loss_reduction_rate": 0.125,
+      "mfe_capture_rate": -2.359430980490411,
+      "avg_giveback": 0.17634898217425843,
+      "exit_counts": {
+        "HIT_TP": 9,
+        "POST_TP": 8,
+        "TIMEOUT": 29,
+        "PANIC": 27,
+        "GIVEBACK": 1,
+        "HIT_SL": 5,
+        "DECAY": 1
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 4,
+          "POST_TP": 4
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 7,
+          "PANIC": 4,
+          "GIVEBACK": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 11,
+          "PANIC": 12,
+          "HIT_SL": 2,
+          "HIT_TP": 1,
+          "POST_TP": 1,
+          "DECAY": 1
+        },
+        "immediate_reversal": {
+          "HIT_SL": 2,
+          "PANIC": 3,
+          "TIMEOUT": 1
+        },
+        "slow_bleed": {
+          "TIMEOUT": 5,
+          "PANIC": 3
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 4,
+          "PANIC": 4,
+          "HIT_TP": 2,
+          "POST_TP": 1,
+          "HIT_SL": 1
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 2,
+          "POST_TP": 2
+        },
+        "whipsaw": {
+          "TIMEOUT": 1,
+          "PANIC": 1
+        }
+      }
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.11796966922077196,
+      "avg_r_aee": 0.23009754846429176,
+      "delta_r": 0.1121278792435198,
+      "sl_hit_rate_static": 0.15,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.28,
+      "tp_hit_rate_aee": 0.23333333333333334,
+      "premature_clip_rate": 0.016666666666666666,
+      "loss_reduction_rate": 0.15,
+      "mfe_capture_rate": -1.9759079214705084,
+      "avg_giveback": 0.13191965007692688,
+      "exit_counts": {
+        "HIT_TP": 84,
+        "POST_TP": 70,
+        "PANIC": 203,
+        "TIMEOUT": 193,
+        "GIVEBACK": 4,
+        "HIT_SL": 45,
+        "DECAY": 1
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 33,
+          "PANIC": 3
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 58,
+          "PANIC": 25,
+          "GIVEBACK": 3,
+          "HIT_TP": 2,
+          "POST_TP": 2
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 67,
+          "PANIC": 75,
+          "HIT_SL": 8,
+          "HIT_TP": 17,
+          "POST_TP": 12,
+          "GIVEBACK": 1
+        },
+        "immediate_reversal": {
+          "HIT_SL": 20,
+          "PANIC": 24,
+          "TIMEOUT": 4
+        },
+        "slow_bleed": {
+          "TIMEOUT": 24,
+          "PANIC": 28,
+          "HIT_SL": 8
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 32,
+          "PANIC": 36,
+          "HIT_TP": 9,
+          "POST_TP": 5,
+          "HIT_SL": 7,
+          "DECAY": 1
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 16,
+          "PANIC": 2
+        },
+        "whipsaw": {
+          "TIMEOUT": 8,
+          "PANIC": 10,
+          "HIT_TP": 2,
+          "POST_TP": 2,
+          "HIT_SL": 2
+        }
+      }
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.25,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.08533923894544859,
+      "avg_r_aee": 0.21832418254627156,
+      "delta_r": 0.13298494360082297,
+      "sl_hit_rate_static": 0.17666666666666667,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.27666666666666667,
+      "tp_hit_rate_aee": 0.20333333333333334,
+      "premature_clip_rate": 0.05333333333333334,
+      "loss_reduction_rate": 0.17666666666666667,
+      "mfe_capture_rate": -2.3677884839859873,
+      "avg_giveback": 0.13064810951607375,
+      "exit_counts": {
+        "HIT_TP": 83,
+        "POST_TP": 61,
+        "PANIC": 220,
+        "TIMEOUT": 174,
+        "DECAY": 4,
+        "GIVEBACK": 5,
+        "HIT_SL": 53
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 30,
+          "PANIC": 6
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 48,
+          "DECAY": 2,
+          "PANIC": 35,
+          "GIVEBACK": 3,
+          "HIT_TP": 1,
+          "POST_TP": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 63,
+          "PANIC": 77,
+          "HIT_TP": 16,
+          "POST_TP": 9,
+          "GIVEBACK": 1,
+          "HIT_SL": 13,
+          "DECAY": 1
+        },
+        "immediate_reversal": {
+          "TIMEOUT": 6,
+          "PANIC": 24,
+          "HIT_SL": 18
+        },
+        "slow_bleed": {
+          "TIMEOUT": 23,
+          "PANIC": 28,
+          "HIT_SL": 9
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 27,
+          "PANIC": 37,
+          "HIT_TP": 9,
+          "HIT_SL": 11,
+          "GIVEBACK": 1,
+          "DECAY": 1,
+          "POST_TP": 4
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 16,
+          "PANIC": 2
+        },
+        "whipsaw": {
+          "TIMEOUT": 7,
+          "PANIC": 11,
+          "HIT_SL": 2,
+          "HIT_TP": 3,
+          "POST_TP": 1
+        }
+      },
+      "sweep_param": "profit_capture_min_atr",
+      "sweep_value": 0.25
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.35,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.057374542705793924,
+      "avg_r_aee": 0.21570211215498472,
+      "delta_r": 0.1583275694491908,
+      "sl_hit_rate_static": 0.17333333333333334,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.25,
+      "tp_hit_rate_aee": 0.21,
+      "premature_clip_rate": 0.03333333333333333,
+      "loss_reduction_rate": 0.17333333333333334,
+      "mfe_capture_rate": -6.809273483389511,
+      "avg_giveback": 0.14032788657033954,
+      "exit_counts": {
+        "HIT_TP": 75,
+        "POST_TP": 63,
+        "PANIC": 211,
+        "TIMEOUT": 189,
+        "DECAY": 4,
+        "GIVEBACK": 6,
+        "HIT_SL": 52
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 31,
+          "PANIC": 5
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 52,
+          "PANIC": 31,
+          "DECAY": 3,
+          "GIVEBACK": 2,
+          "HIT_TP": 1,
+          "POST_TP": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 68,
+          "PANIC": 77,
+          "HIT_TP": 13,
+          "POST_TP": 8,
+          "HIT_SL": 12,
+          "GIVEBACK": 2
+        },
+        "immediate_reversal": {
+          "HIT_SL": 18,
+          "PANIC": 24,
+          "TIMEOUT": 6
+        },
+        "slow_bleed": {
+          "TIMEOUT": 24,
+          "PANIC": 26,
+          "HIT_SL": 10
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 30,
+          "PANIC": 37,
+          "HIT_SL": 9,
+          "HIT_TP": 7,
+          "GIVEBACK": 1,
+          "POST_TP": 5,
+          "DECAY": 1
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 18
+        },
+        "whipsaw": {
+          "TIMEOUT": 9,
+          "PANIC": 11,
+          "HIT_SL": 3,
+          "GIVEBACK": 1
+        }
+      },
+      "sweep_param": "profit_capture_min_atr",
+      "sweep_value": 0.35
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.09081645540456958,
+      "avg_r_aee": 0.2317273721402727,
+      "delta_r": 0.1409109167357031,
+      "sl_hit_rate_static": 0.15,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.29,
+      "tp_hit_rate_aee": 0.25333333333333335,
+      "premature_clip_rate": 0.02,
+      "loss_reduction_rate": 0.15,
+      "mfe_capture_rate": -12.673339759227911,
+      "avg_giveback": 0.12518515743334976,
+      "exit_counts": {
+        "HIT_TP": 87,
+        "POST_TP": 76,
+        "PANIC": 206,
+        "TIMEOUT": 183,
+        "DECAY": 2,
+        "GIVEBACK": 1,
+        "HIT_SL": 45
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 34,
+          "PANIC": 2
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 45,
+          "PANIC": 35,
+          "HIT_TP": 4,
+          "POST_TP": 3,
+          "DECAY": 2,
+          "GIVEBACK": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 59,
+          "PANIC": 73,
+          "HIT_SL": 14,
+          "HIT_TP": 18,
+          "POST_TP": 16
+        },
+        "immediate_reversal": {
+          "HIT_SL": 12,
+          "PANIC": 24,
+          "TIMEOUT": 11,
+          "HIT_TP": 1
+        },
+        "slow_bleed": {
+          "TIMEOUT": 29,
+          "PANIC": 23,
+          "HIT_SL": 8
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 31,
+          "PANIC": 35,
+          "HIT_SL": 8,
+          "HIT_TP": 9,
+          "POST_TP": 7
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 16,
+          "PANIC": 2
+        },
+        "whipsaw": {
+          "TIMEOUT": 8,
+          "PANIC": 12,
+          "HIT_SL": 3,
+          "HIT_TP": 1
+        }
+      },
+      "sweep_param": "profit_capture_min_atr",
+      "sweep_value": 0.45
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.55,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.13988931779100752,
+      "avg_r_aee": 0.249582421683219,
+      "delta_r": 0.10969310389221149,
+      "sl_hit_rate_static": 0.14333333333333334,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.29333333333333333,
+      "tp_hit_rate_aee": 0.23,
+      "premature_clip_rate": 0.04666666666666667,
+      "loss_reduction_rate": 0.14333333333333334,
+      "mfe_capture_rate": -2.118249615781993,
+      "avg_giveback": 0.12233789648713302,
+      "exit_counts": {
+        "HIT_TP": 88,
+        "POST_TP": 69,
+        "PANIC": 209,
+        "TIMEOUT": 185,
+        "GIVEBACK": 2,
+        "DECAY": 4,
+        "HIT_SL": 43
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 32,
+          "PANIC": 4
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 54,
+          "PANIC": 32,
+          "GIVEBACK": 1,
+          "DECAY": 2,
+          "HIT_TP": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 69,
+          "PANIC": 71,
+          "HIT_TP": 19,
+          "POST_TP": 14,
+          "HIT_SL": 5,
+          "DECAY": 1,
+          "GIVEBACK": 1
+        },
+        "immediate_reversal": {
+          "HIT_SL": 18,
+          "PANIC": 24,
+          "TIMEOUT": 6
+        },
+        "slow_bleed": {
+          "TIMEOUT": 23,
+          "HIT_SL": 10,
+          "PANIC": 27
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 25,
+          "PANIC": 38,
+          "HIT_TP": 11,
+          "POST_TP": 6,
+          "HIT_SL": 9,
+          "DECAY": 1
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 16,
+          "PANIC": 2
+        },
+        "whipsaw": {
+          "TIMEOUT": 8,
+          "PANIC": 11,
+          "HIT_SL": 1,
+          "HIT_TP": 3,
+          "POST_TP": 1
+        }
+      },
+      "sweep_param": "profit_capture_min_atr",
+      "sweep_value": 0.55
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.11326235631835996,
+      "avg_r_aee": 0.2272271504100043,
+      "delta_r": 0.11396479409164434,
+      "sl_hit_rate_static": 0.15333333333333332,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.2733333333333333,
+      "tp_hit_rate_aee": 0.23666666666666666,
+      "premature_clip_rate": 0.013333333333333334,
+      "loss_reduction_rate": 0.15333333333333332,
+      "mfe_capture_rate": -3.891225394959402,
+      "avg_giveback": 0.13006305190627712,
+      "exit_counts": {
+        "HIT_TP": 82,
+        "POST_TP": 71,
+        "PANIC": 206,
+        "TIMEOUT": 192,
+        "GIVEBACK": 3,
+        "HIT_SL": 46
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 34,
+          "PANIC": 2
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 51,
+          "PANIC": 35,
+          "GIVEBACK": 2,
+          "HIT_TP": 1,
+          "POST_TP": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 67,
+          "PANIC": 77,
+          "HIT_TP": 14,
+          "HIT_SL": 13,
+          "POST_TP": 9
+        },
+        "immediate_reversal": {
+          "TIMEOUT": 8,
+          "PANIC": 24,
+          "HIT_SL": 16
+        },
+        "slow_bleed": {
+          "TIMEOUT": 24,
+          "PANIC": 27,
+          "HIT_SL": 9
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 35,
+          "PANIC": 29,
+          "HIT_SL": 6,
+          "HIT_TP": 10,
+          "POST_TP": 9,
+          "GIVEBACK": 1
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 17,
+          "PANIC": 1
+        },
+        "whipsaw": {
+          "TIMEOUT": 7,
+          "PANIC": 11,
+          "HIT_TP": 3,
+          "POST_TP": 1,
+          "HIT_SL": 2
+        }
+      },
+      "sweep_param": "allowed_giveback_atr_mult",
+      "sweep_value": 0.25
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.35,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.07825245554233254,
+      "avg_r_aee": 0.2056003473323967,
+      "delta_r": 0.12734789179006417,
+      "sl_hit_rate_static": 0.17666666666666667,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.2633333333333333,
+      "tp_hit_rate_aee": 0.21333333333333335,
+      "premature_clip_rate": 0.023333333333333334,
+      "loss_reduction_rate": 0.17666666666666667,
+      "mfe_capture_rate": -4.70067471067434,
+      "avg_giveback": 0.12267764050890609,
+      "exit_counts": {
+        "HIT_TP": 79,
+        "POST_TP": 64,
+        "PANIC": 216,
+        "TIMEOUT": 184,
+        "GIVEBACK": 1,
+        "DECAY": 3,
+        "HIT_SL": 53
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 32,
+          "PANIC": 4
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 50,
+          "PANIC": 37,
+          "GIVEBACK": 1,
+          "DECAY": 2
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 65,
+          "PANIC": 77,
+          "HIT_SL": 16,
+          "HIT_TP": 13,
+          "POST_TP": 9
+        },
+        "immediate_reversal": {
+          "HIT_SL": 15,
+          "PANIC": 24,
+          "TIMEOUT": 9
+        },
+        "slow_bleed": {
+          "TIMEOUT": 24,
+          "PANIC": 26,
+          "HIT_SL": 10
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 28,
+          "PANIC": 33,
+          "HIT_TP": 9,
+          "POST_TP": 8,
+          "DECAY": 1,
+          "HIT_SL": 11
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 15,
+          "PANIC": 3
+        },
+        "whipsaw": {
+          "TIMEOUT": 8,
+          "PANIC": 12,
+          "HIT_TP": 3,
+          "HIT_SL": 1
+        }
+      },
+      "sweep_param": "allowed_giveback_atr_mult",
+      "sweep_value": 0.35
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.45,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 300,
+      "avg_r_static": 0.11939740440833191,
+      "avg_r_aee": 0.19015172705560426,
+      "delta_r": 0.07075432264727236,
+      "sl_hit_rate_static": 0.15333333333333332,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.26,
+      "tp_hit_rate_aee": 0.20666666666666667,
+      "premature_clip_rate": 0.043333333333333335,
+      "loss_reduction_rate": 0.15333333333333332,
+      "mfe_capture_rate": -18.252688334785358,
+      "avg_giveback": 0.14071600239268464,
+      "exit_counts": {
+        "HIT_TP": 78,
+        "POST_TP": 62,
+        "PANIC": 210,
+        "TIMEOUT": 198,
+        "DECAY": 5,
+        "HIT_SL": 46,
+        "GIVEBACK": 1
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 36,
+          "POST_TP": 30,
+          "PANIC": 6
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 53,
+          "PANIC": 33,
+          "DECAY": 2,
+          "HIT_TP": 1,
+          "POST_TP": 1
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 71,
+          "PANIC": 75,
+          "HIT_TP": 15,
+          "POST_TP": 9,
+          "DECAY": 3,
+          "HIT_SL": 7
+        },
+        "immediate_reversal": {
+          "TIMEOUT": 7,
+          "PANIC": 24,
+          "HIT_SL": 17
+        },
+        "slow_bleed": {
+          "TIMEOUT": 25,
+          "HIT_SL": 12,
+          "PANIC": 23
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 33,
+          "PANIC": 35,
+          "HIT_TP": 7,
+          "POST_TP": 6,
+          "HIT_SL": 8,
+          "GIVEBACK": 1
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 18,
+          "POST_TP": 16,
+          "PANIC": 2
+        },
+        "whipsaw": {
+          "TIMEOUT": 9,
+          "PANIC": 12,
+          "HIT_SL": 2,
+          "HIT_TP": 1
+        }
+      },
+      "sweep_param": "allowed_giveback_atr_mult",
+      "sweep_value": 0.45
+    },
+    {
+      "knobs": {
+        "profit_capture_min_atr": 0.45,
+        "allowed_giveback_atr_mult": 0.25,
+        "stall_min_profit_atr": 0.25,
+        "stall_no_extension_time": 15.0,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "decay_progress": 0.6,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "panic_pullback_rate": 0.06,
+        "max_hold_sec": 6000.0
+      },
+      "path_count": 2000,
+      "avg_r_static": 0.13905869784732422,
+      "avg_r_aee": 0.24494599651018012,
+      "delta_r": 0.1058872986628559,
+      "sl_hit_rate_static": 0.1505,
+      "sl_hit_rate_aee": 0.0,
+      "tp_hit_rate_static": 0.2895,
+      "tp_hit_rate_aee": 0.237,
+      "premature_clip_rate": 0.035,
+      "loss_reduction_rate": 0.1505,
+      "mfe_capture_rate": -7.997730800387333,
+      "avg_giveback": 0.12445882976031396,
+      "exit_counts": {
+        "HIT_TP": 579,
+        "POST_TP": 474,
+        "PANIC": 1348,
+        "TIMEOUT": 1266,
+        "GIVEBACK": 11,
+        "DECAY": 21,
+        "HIT_SL": 301
+      },
+      "class_exit_counts": {
+        "clean_continuation": {
+          "HIT_TP": 240,
+          "POST_TP": 222,
+          "PANIC": 18
+        },
+        "stall_then_continue": {
+          "TIMEOUT": 356,
+          "PANIC": 202,
+          "GIVEBACK": 5,
+          "HIT_TP": 14,
+          "POST_TP": 11,
+          "DECAY": 12
+        },
+        "stall_then_fail": {
+          "TIMEOUT": 433,
+          "PANIC": 493,
+          "HIT_SL": 63,
+          "HIT_TP": 121,
+          "POST_TP": 83,
+          "GIVEBACK": 3,
+          "DECAY": 4
+        },
+        "immediate_reversal": {
+          "HIT_SL": 116,
+          "PANIC": 160,
+          "TIMEOUT": 42,
+          "HIT_TP": 2
+        },
+        "slow_bleed": {
+          "TIMEOUT": 176,
+          "PANIC": 166,
+          "HIT_SL": 58
+        },
+        "small_profit_then_fade": {
+          "TIMEOUT": 212,
+          "PANIC": 224,
+          "HIT_TP": 62,
+          "POST_TP": 43,
+          "HIT_SL": 51,
+          "DECAY": 5,
+          "GIVEBACK": 3
+        },
+        "tp_touch_then_extension": {
+          "HIT_TP": 120,
+          "POST_TP": 107,
+          "PANIC": 13
+        },
+        "whipsaw": {
+          "TIMEOUT": 47,
+          "PANIC": 72,
+          "HIT_TP": 20,
+          "POST_TP": 8,
+          "HIT_SL": 13
+        }
+      }
+    }
+  ]
+}

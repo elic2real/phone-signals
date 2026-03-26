@@ -1,0 +1,452 @@
+{
+  "description": "Forced scenario suite for AEE feature branch verification.",
+  "features": {
+    "pre_sl_protection": [
+      {
+        "scenario_id": "pre_sl_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "toward_sl": true,
+          "recovery_score": 0.05,
+          "distance_to_sl_pips": 1.5,
+          "current_pnl_pips": -6.2,
+          "peak_pnl_pips": 0.2,
+          "giveback_pips": 6.4,
+          "time_in_trade_sec": 88
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "PRE_SL_PROTECTION"
+        }
+      },
+      {
+        "scenario_id": "pre_sl_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "toward_sl": true,
+          "recovery_score": 0.2,
+          "distance_to_sl_pips": 3.0,
+          "current_pnl_pips": -4.4,
+          "peak_pnl_pips": 0.4,
+          "giveback_pips": 4.8,
+          "time_in_trade_sec": 90
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "PRE_SL_PROTECTION"
+        }
+      },
+      {
+        "scenario_id": "pre_sl_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "toward_sl": false,
+          "recovery_score": 0.65,
+          "distance_to_sl_pips": 8.5,
+          "current_pnl_pips": -1.2,
+          "peak_pnl_pips": 2.1,
+          "giveback_pips": 3.3,
+          "time_in_trade_sec": 65
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "early_profit_lock": [
+      {
+        "scenario_id": "profit_lock_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "went_green": true,
+          "near_tp": true,
+          "progress_stall": true,
+          "current_pnl_pips": 4.6,
+          "peak_pnl_pips": 6.1,
+          "giveback_pips": 1.5,
+          "time_in_trade_sec": 140
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "MISSED_PROFIT_EXTRACTION_EXIT"
+        }
+      },
+      {
+        "scenario_id": "profit_lock_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "went_green": true,
+          "near_tp": true,
+          "progress_stall": true,
+          "current_pnl_pips": 2.4,
+          "peak_pnl_pips": 3.2,
+          "giveback_pips": 0.8,
+          "time_in_trade_sec": 110
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "MISSED_PROFIT_EXTRACTION_EXIT"
+        }
+      },
+      {
+        "scenario_id": "profit_lock_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "went_green": false,
+          "near_tp": false,
+          "progress_stall": false,
+          "current_pnl_pips": -2.0,
+          "peak_pnl_pips": 0.0,
+          "giveback_pips": 0.0,
+          "time_in_trade_sec": 44
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "weak_trade_kill": [
+      {
+        "scenario_id": "weak_kill_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "went_green": false,
+          "stagnant_bars": 6,
+          "current_pnl_pips": -4.1,
+          "peak_pnl_pips": 0.1,
+          "giveback_pips": 0.1,
+          "time_in_trade_sec": 170
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "NEVER_GREEN_FAST_EXIT"
+        }
+      },
+      {
+        "scenario_id": "weak_kill_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "went_green": false,
+          "stagnant_bars": 4,
+          "current_pnl_pips": -2.8,
+          "peak_pnl_pips": 0.1,
+          "giveback_pips": 0.2,
+          "time_in_trade_sec": 120
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "NEVER_GREEN_STALL_EXIT"
+        }
+      },
+      {
+        "scenario_id": "weak_kill_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "went_green": true,
+          "stagnant_bars": 1,
+          "current_pnl_pips": 1.8,
+          "peak_pnl_pips": 3.0,
+          "giveback_pips": 1.2,
+          "time_in_trade_sec": 80
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "stall_capture": [
+      {
+        "scenario_id": "stall_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "went_green": true,
+          "progress_stall": true,
+          "giveback_pips": 2.2,
+          "current_pnl_pips": 2.1,
+          "peak_pnl_pips": 4.3,
+          "time_in_trade_sec": 180
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "GREEN_STALL_CAPTURE"
+        }
+      },
+      {
+        "scenario_id": "stall_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "went_green": true,
+          "progress_stall": true,
+          "giveback_pips": 1.3,
+          "current_pnl_pips": 1.8,
+          "peak_pnl_pips": 3.1,
+          "time_in_trade_sec": 130
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "PULSE_STALL_CAPTURE"
+        }
+      },
+      {
+        "scenario_id": "stall_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "went_green": true,
+          "progress_stall": false,
+          "giveback_pips": 0.4,
+          "current_pnl_pips": 3.9,
+          "peak_pnl_pips": 4.3,
+          "time_in_trade_sec": 60
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "giveback_exit": [
+      {
+        "scenario_id": "giveback_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "went_green": true,
+          "giveback_pips": 4.8,
+          "current_pnl_pips": -1.5,
+          "peak_pnl_pips": 3.3,
+          "time_in_trade_sec": 155
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "EXTRACTION_LOSS_EXIT"
+        }
+      },
+      {
+        "scenario_id": "giveback_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "went_green": true,
+          "giveback_pips": 3.4,
+          "current_pnl_pips": -0.4,
+          "peak_pnl_pips": 3.0,
+          "time_in_trade_sec": 115
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "EXTRACTION_LOSS_EXIT"
+        }
+      },
+      {
+        "scenario_id": "giveback_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "went_green": true,
+          "giveback_pips": 0.9,
+          "current_pnl_pips": 2.3,
+          "peak_pnl_pips": 3.2,
+          "time_in_trade_sec": 70
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "runner_hold": [
+      {
+        "scenario_id": "runner_hold_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "phase": "RUNNER",
+          "extension_strength": 0.88,
+          "giveback_pips": 0.9,
+          "current_pnl_pips": 6.4,
+          "peak_pnl_pips": 7.3,
+          "time_in_trade_sec": 210
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "HOLD"
+        }
+      },
+      {
+        "scenario_id": "runner_hold_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "phase": "RUNNER",
+          "extension_strength": 0.61,
+          "giveback_pips": 1.3,
+          "current_pnl_pips": 4.0,
+          "peak_pnl_pips": 5.3,
+          "time_in_trade_sec": 180
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "HOLD"
+        }
+      },
+      {
+        "scenario_id": "runner_hold_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "phase": "HARVESTER",
+          "extension_strength": 0.3,
+          "giveback_pips": 2.8,
+          "current_pnl_pips": 1.0,
+          "peak_pnl_pips": 3.8,
+          "time_in_trade_sec": 120
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "runner_fallback": [
+      {
+        "scenario_id": "runner_fallback_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "phase": "RUNNER",
+          "extension_strength": 0.25,
+          "giveback_pips": 4.2,
+          "current_pnl_pips": 1.1,
+          "peak_pnl_pips": 5.3,
+          "time_in_trade_sec": 250
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "FAILED_TO_CONTINUE_DECAY"
+        }
+      },
+      {
+        "scenario_id": "runner_fallback_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "phase": "RUNNER",
+          "extension_strength": 0.35,
+          "giveback_pips": 3.2,
+          "current_pnl_pips": 1.4,
+          "peak_pnl_pips": 4.6,
+          "time_in_trade_sec": 220
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "FAILED_TO_CONTINUE_DECAY"
+        }
+      },
+      {
+        "scenario_id": "runner_fallback_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "phase": "RUNNER",
+          "extension_strength": 0.75,
+          "giveback_pips": 0.7,
+          "current_pnl_pips": 4.5,
+          "peak_pnl_pips": 5.2,
+          "time_in_trade_sec": 160
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "panic_exit": [
+      {
+        "scenario_id": "panic_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "adverse_velocity": 1.0,
+          "current_pnl_pips": -7.8,
+          "peak_pnl_pips": 0.3,
+          "giveback_pips": 8.1,
+          "time_in_trade_sec": 45
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "PANIC_EXIT"
+        }
+      },
+      {
+        "scenario_id": "panic_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "adverse_velocity": 0.7,
+          "current_pnl_pips": -5.2,
+          "peak_pnl_pips": 0.2,
+          "giveback_pips": 5.4,
+          "time_in_trade_sec": 52
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "PANIC_EXIT"
+        }
+      },
+      {
+        "scenario_id": "panic_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "adverse_velocity": 0.2,
+          "current_pnl_pips": -1.5,
+          "peak_pnl_pips": 1.0,
+          "giveback_pips": 2.5,
+          "time_in_trade_sec": 63
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ],
+    "time_pressure_exit": [
+      {
+        "scenario_id": "time_pressure_obvious",
+        "case_type": "obvious trigger case",
+        "inputs": {
+          "time_in_trade_sec": 420,
+          "no_progress_sec": 180,
+          "current_pnl_pips": 1.4,
+          "peak_pnl_pips": 3.2,
+          "giveback_pips": 1.8
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "TIME_DECAY_PROFIT_CAPTURE"
+        }
+      },
+      {
+        "scenario_id": "time_pressure_borderline",
+        "case_type": "borderline trigger case",
+        "inputs": {
+          "time_in_trade_sec": 360,
+          "no_progress_sec": 150,
+          "current_pnl_pips": 1.2,
+          "peak_pnl_pips": 2.7,
+          "giveback_pips": 1.5
+        },
+        "expected": {
+          "triggered": true,
+          "exit_reason": "TIME_DECAY_PROFIT_CAPTURE"
+        }
+      },
+      {
+        "scenario_id": "time_pressure_control",
+        "case_type": "should-not-trigger control case",
+        "inputs": {
+          "time_in_trade_sec": 90,
+          "no_progress_sec": 20,
+          "current_pnl_pips": 1.0,
+          "peak_pnl_pips": 1.4,
+          "giveback_pips": 0.4
+        },
+        "expected": {
+          "triggered": false,
+          "exit_reason": "HOLD"
+        }
+      }
+    ]
+  }
+}

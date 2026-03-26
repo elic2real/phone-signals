@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "concepts": [
+    {
+      "concept_id": "BREAKOUT",
+      "canonical_name": "breakout",
+      "family": "EXPANSION_BREAKOUT",
+      "expected_movement_signature": "fast directional expansion with limited early adverse movement",
+      "required_truth_anchor": "entry_only_capture"
+    },
+    {
+      "concept_id": "PULLBACK",
+      "canonical_name": "pullback",
+      "family": "PULLBACK_CONTINUATION",
+      "expected_movement_signature": "early adverse movement followed by continuation",
+      "required_truth_anchor": "entry_only_capture"
+    },
+    {
+      "concept_id": "RECLAIM",
+      "canonical_name": "reclaim",
+      "family": "RECLAIM_CONTINUATION",
+      "expected_movement_signature": "multi-stage recovery with non-monotonic progress",
+      "required_truth_anchor": "sequence_preservation"
+    },
+    {
+      "concept_id": "RANGE_ESCAPE",
+      "canonical_name": "range_escape",
+      "family": "RANGE_ESCAPE",
+      "expected_movement_signature": "escape from compression with possible false start",
+      "required_truth_anchor": "entry_only_capture"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "generated_at": "2026-03-26T07:34:40.854016Z",
+  "config": "/home/elic/Documents/phone signals/entry_v23_policy_guarded_active.json",
+  "pair": "EUR_USD",
+  "total_streams": 16,
+  "total_hours": 25977.35,
+  "total_accepted_trades": 893,
+  "friction_per_trade_pips": 1.1,
+  "family_distribution_in_data": {
+    "PULLBACK_CONTINUATION": 1049,
+    "RANGE_ESCAPE": 11931,
+    "OTHER": 3576,
+    "EXPANSION_BREAKOUT": 4791,
+    "RECLAIM_CONTINUATION": 43
+  },
+  "skipped_by_entry_filter": {
+    "ENTRY_SESSION_NOT_INCLUDED": 17313,
+    "ENTRY_MICRO_CONFIRM_FILTER": 2532,
+    "ENTRY_DISPLACEMENT_FILTER": 440,
+    "ENTRY_FAMILY_NOT_INCLUDED": 199,
+    "ENTRY_NOISE_FILTER": 13
+  },
+  "ranked_families": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "trade_count": 473,
+      "trades_per_hour": 0.0182,
+      "win_count": 282,
+      "win_rate": 0.5962,
+      "avg_gross_pips_per_trade": 2.7044,
+      "avg_net_pips_per_trade": 1.6044,
+      "avg_mfe_pips": 12.1896,
+      "gross_pips_per_hour": 0.0492,
+      "net_pips_per_hour": 0.0292,
+      "total_net_pips": 758.9,
+      "total_gross_pips": 1279.2,
+      "verdict": "KEEP"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "trade_count": 379,
+      "trades_per_hour": 0.0146,
+      "win_count": 196,
+      "win_rate": 0.5172,
+      "avg_gross_pips_per_trade": 2.0314,
+      "avg_net_pips_per_trade": 0.9314,
+      "avg_mfe_pips": 12.6441,
+      "gross_pips_per_hour": 0.0296,
+      "net_pips_per_hour": 0.0136,
+      "total_net_pips": 353.0,
+      "total_gross_pips": 769.9,
+      "verdict": "TUNE"
+    },
+    {
+      "family": "OTHER",
+      "trade_count": 41,
+      "trades_per_hour": 0.0016,
+      "win_count": 25,
+      "win_rate": 0.6098,
+      "avg_gross_pips_per_trade": 1.7488,
+      "avg_net_pips_per_trade": 0.6488,
+      "avg_mfe_pips": 14.2171,
+      "gross_pips_per_hour": 0.0028,
+      "net_pips_per_hour": 0.001,
+      "total_net_pips": 26.6,
+      "total_gross_pips": 71.7,
+      "verdict": "TUNE"
+    }
+  ],
+  "combined_keep_tune_net_pph": 0.0438,
+  "trade_lifecycle_summary": {
+    "avg_trade_life_seconds": 5817.5812,
+    "median_trade_life_seconds": 5940.0,
+    "avg_close_value_pips": 1.274916,
+    "avg_mfe_pips": 12.475588,
+    "avg_time_to_first_profit_seconds": 0.0,
+    "median_time_to_first_profit_seconds": 0.0,
+    "avg_time_in_drawdown_seconds": 1771.243,
+    "median_time_in_drawdown_seconds": 1140.0,
+    "avg_time_from_peak_to_close_seconds": 2628.0403,
+    "median_time_from_peak_to_close_seconds": 2400.0
+  },
+  "priority_telemetry_summary": {
+    "available": true,
+    "cycle_count_evaluated": 300,
+    "selected_count": 24,
+    "avg_selected_rank": 1.0,
+    "median_selected_rank": 1.0,
+    "reason": ""
+  }
+}

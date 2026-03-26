@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-03-25T17:09:39.783531Z",
+  "task_id": "TASK-011",
+  "section": "A_PATH_REALISM",
+  "scope": "audit_only_no_changes",
+  "metrics": {
+    "total_trades_analysed": 21390,
+    "total_hours": 25977.4,
+    "avg_bars_per_trade": 96.0,
+    "reversal_presence_rate": 0.7371,
+    "multi_stage_presence_rate": 0.741,
+    "avg_directional_changes_per_trade": 44.017,
+    "path_complexity_score": 1.0
+  },
+  "interpretation": {
+    "reversal_presence_rate": "fraction of trades where price moved against before reaching MFE",
+    "multi_stage_presence_rate": "fraction of trades where P&L crossed zero at least twice",
+    "path_complexity_score": "normalised 0-1 from avg directional changes (4+ = 1.0)"
+  },
+  "finding": "PATH_SUPPORTS_MULTI_STAGE"
+}

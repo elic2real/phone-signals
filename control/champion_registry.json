@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "selection_rule": "Champion must be reported on every comparative run.",
+  "champions": [
+    {
+      "scope": "global_baseline",
+      "artifact": "strategy_performance_report_raw.json",
+      "notes": "Current empirical champion reference until multi-form benchmark suite is populated."
+    },
+    {
+      "scope": "simulation_bias_reference",
+      "artifact": "control/simulation_global_bias_report.json",
+      "notes": "Current blocking reference for simulation-layer work."
+    }
+  ]
+}

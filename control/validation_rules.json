@@ -1,0 +1,431 @@
+{
+  "protocol_version": "RCP_V2_HARD",
+  "global_rules": [
+    "One active task only",
+    "One component per iteration",
+    "No tuning during structural rebuild tasks",
+    "No AEE edits during entry tasks unless task explicitly allows it",
+    "No baseline replacement without PROMOTE verdict",
+    "Every iteration must write control/preflight_report.json",
+    "Every iteration must write control/validation_result.json",
+    "Every iteration must write control/adjudication.json",
+    "Every RCP_V2 task must declare intervention class, research layer, champion reference, expected signature, and reverse-engineering outputs",
+    "Broad concept failure blocks tuning and escalates to upstream layer audit",
+    "Parallel form search precedes local refinement",
+    "Extraction efficiency and entry-only vs realized capture must be measurable where applicable",
+    "Hard-mode tasks must provide variable_contract, falsifiable_signature, min_effect_size, and post_run_classification",
+    "Hard-mode tasks must pass layer-metric-lock and parallel-isolation checks",
+    "Primary edge protection and regression dominance rules are mandatory in hard mode",
+    "Execution runs are invalid unless the full evidence pack artifacts are produced",
+    "AEE is an asymmetry engine that must be audited as distribution shaping, not generic exit management",
+    "AEE audits must measure the three required transformations: loss compression, failure-to-win conversion, continuation capture"
+  ],
+    "aee_transformation_contract": {
+      "purpose": "AEE reshapes post-entry outcome distribution to maximize retained extraction",
+      "required_transformations": {
+        "loss_compression": {
+          "frequency": "VERY_HIGH",
+          "role": "survival",
+          "mandatory": true,
+          "definition": "loser -> smaller loser"
+        },
+        "failure_to_win_conversion": {
+          "frequency": "HIGH",
+          "role": "edge_creation",
+          "mandatory": true,
+          "definition": "slow_or_borderline_loser -> small_or_medium_winner"
+        },
+        "continuation_capture": {
+          "frequency": "LOW",
+          "role": "edge_amplification",
+          "mandatory": true,
+          "definition": "normal_win -> extended_win"
+        }
+      },
+      "required_metrics": [
+        "loss_compression_rate",
+        "failure_to_win_conversion_rate",
+        "continuation_capture_rate",
+        "giveback_ratio"
+      ],
+      "hard_adjudication_gates": {
+        "promote_requires": [
+          "loss_compression_rate_pass",
+          "failure_to_win_conversion_rate_pass",
+          "continuation_capture_rate_pass",
+          "giveback_ratio_pass",
+          "blocking_overfire_absent_pass"
+        ],
+        "conditional_structural_block_rule": {
+          "when": "realized_pph_positive_and_continuation_capture_fail_and_giveback_fail",
+          "verdict": "CONDITIONALLY_POSITIVE_BUT_STRUCTURALLY_BLOCKED"
+        }
+      },
+      "overfire_severity_policy": {
+        "blocking_flags": [
+          "AEE_GIVEBACK_EXIT_OVERFIRE",
+          "HIGH_GIVEBACK_RATIO"
+        ],
+        "non_blocking_flags": [
+          "AEE_BAND_FAST_FAILURE_EARLY_FIRE"
+        ]
+      },
+      "profit_amplifier_contract": {
+        "statement": "AEE must increase realized extraction versus simpler alternatives",
+        "required_baselines": [
+          "static_tp_sl",
+          "minimal_protective_only",
+          "no_aee_loose",
+          "aee_candidate"
+        ],
+        "hard_reject_baselines": [
+          "minimal_protective_only",
+          "no_aee_loose"
+        ],
+        "hard_reject_no_override": true,
+        "hard_reject_condition": "If candidate fails to beat minimal_protective_only OR no_aee_loose on realized_pph OR avg_pips_per_trade, verdict must be REJECT",
+        "primary_judgment_metrics": [
+          "realized_pph_delta_vs_baseline_exit",
+          "realized_avg_pips_per_trade_delta_vs_baseline_exit",
+          "loss_compression_benefit",
+          "continuation_capture_benefit",
+          "net_expectancy_shift"
+        ],
+        "promote_requires_outperform_all_simpler_baselines": true
+      },
+      "bounded_performance_expectations": {
+        "global_expected_ranges": {
+          "realized_pph_change_pct": [0.20, 0.80],
+          "gap_change_pct": [-0.40, -0.15],
+          "efficiency_abs_change": [0.05, 0.25]
+        },
+        "giveback_fix_expected_ranges": {
+          "giveback_ratio_change_pct": [-0.30, -0.10],
+          "giveback_exit_share_change_pct": [-0.30, -0.10],
+          "continuation_capture_change_pct": [0.05, 0.20],
+          "breakout_pph_change_pct": [0.10, 0.40]
+        },
+        "bankable_green_loss_red_rate_target_max": 0.05,
+        "throughput_expected_directions": {
+          "trades_per_hour": "up",
+          "avg_loser_hold_sec": "down",
+          "avg_weak_winner_hold_sec": "down"
+        },
+        "loss_compression_floor": 0.85,
+        "core_rule_all_four_required": true,
+        "auto_reject_patterns": [
+          "COSMETIC_IMPROVEMENT",
+          "BANKABLE_GREEN_PROTECTION_FAILED",
+          "GAP_NOT_MATERIALLY_REDUCED",
+          "OVER_HOLD_BROKE_LOSS_COMPRESSION",
+          "MORE_CONTINUATION_WORSE_PPH",
+          "THROUGHPUT_STALLED",
+          "SHIFTED_DAMAGE_GIVEBACK_TO_FAST_FAILURE",
+          "BASELINE_STILL_BETTER"
+        ]
+      },
+      "reverse_engineering_prerun_basis": {
+        "required": true,
+        "artifact": "control/aee_intervention_basis.json",
+        "required_fields": [
+          "economic_objective",
+          "green_tier_definition",
+          "state_framework",
+          "module_order",
+          "source_runs_used",
+          "source_logs_used",
+          "dominant_damaging_branches",
+          "affected_families",
+          "affected_subclusters",
+          "evidence_samples",
+          "proposed_variable_or_transition",
+          "expected_signature",
+          "success_criteria"
+        ]
+      }
+    },
+  "forbidden_behaviors": [
+    "apply all fixes in one pass",
+    "silently broaden scope",
+    "mix rebuild and tuning in one iteration",
+    "run new candidate before reading prior adjudication",
+    "overwrite baseline without promote verdict",
+    "use chat memory as source of truth over control files",
+    "treat absence of evidence as permission",
+    "conclude concept failure before checking simulator and AEE interaction",
+    "optimize a local winner before multi-form ranking"
+  ],
+  "task_required_fields_v2": [
+    "protocol_version",
+    "intervention_class",
+    "research_layer",
+    "champion_reference",
+    "expected_signature",
+    "reverse_engineering_outputs",
+    "ablatable_components",
+    "fail_conditions",
+    "output_requirements"
+  ],
+  "strict_task_required_fields": [
+    "variable_contract",
+    "falsifiable_signature",
+    "evaluation_metrics",
+    "parallel_isolation",
+    "min_effect_size",
+    "dead_path_policy",
+    "protected_metric",
+    "regression_dominance_rule",
+    "concept_lock",
+    "post_run_classification"
+  ],
+  "intervention_classes": [
+    "FORM_SEARCH",
+    "PARAM_TUNE",
+    "ABLATION",
+    "SIMULATION_AUDIT",
+    "EXIT_AUDIT",
+    "CLASSIFIER_AUDIT",
+    "PRODUCTION_HARDENING",
+    "IMPLEMENTATION",
+    "SPEC_ONLY"
+  ],
+  "research_layers": [
+    "CONCEPT_FORM",
+    "IMPLEMENTATION",
+    "SIMULATION",
+    "AEE_INTERACTION",
+    "FILTERING",
+    "EXPANSION"
+  ],
+  "layer_metric_lock": {
+    "CONCEPT_FORM": [
+      "trade_count",
+      "entry_only_pph",
+      "avg_pips_per_trade"
+    ],
+    "AEE_INTERACTION": [
+      "realized_pph",
+      "entry_only_vs_realized_gap",
+      "exit_reason_distribution",
+      "avg_hold_time",
+      "loss_compression_rate",
+      "failure_to_win_conversion_rate",
+      "continuation_capture_rate",
+      "giveback_ratio"
+    ],
+    "SIMULATION": [
+      "family_rank_shift",
+      "sequence_fidelity_score",
+      "extraction_efficiency",
+      "breakout_bias_score",
+      "pricing_consistency_score"
+    ],
+    "FILTERING": [
+      "trade_count",
+      "family_distribution",
+      "realized_pph",
+      "raw_vs_filtered_delta"
+    ],
+    "IMPLEMENTATION": [
+      "test_pass_rate",
+      "validation_command_pass_rate",
+      "artifact_completeness"
+    ],
+    "EXPANSION": [
+      "total_available_pips",
+      "entry_only_capture",
+      "realized_capture",
+      "extraction_efficiency"
+    ]
+  },
+  "noise_floor": {
+    "pph_abs": 0.005,
+    "gap_abs": 0.005,
+    "share_abs": 0.02
+  },
+  "protected_edge_policy": {
+    "default_metric": "EXPANSION_BREAKOUT_pph",
+    "minimum_allowed_ratio": 0.9,
+    "rule": "Auto-fail if protected edge drops below threshold"
+  },
+  "regression_dominance_rule": {
+    "rule": "Fail if primary edge degrades while secondary gains are used as justification",
+    "required": true
+  },
+  "concept_lock": {
+    "concept_validity": "ASSUMED_TRUE",
+    "failure_interpretation": "IMPLEMENTATION_OR_SIMULATION_ERROR"
+  },
+  "required_result_pack_artifacts": [
+    "control/run_summary.json",
+    "control/config_snapshot.json",
+    "control/logic_trace_summary.json",
+    "control/trade_evidence_sample.json",
+    "control/data_coverage_report.json",
+    "control/expected_vs_actual_signature.json",
+    "control/failure_layer_classification.json",
+    "control/aee_transformation_audit.json",
+    "control/aee_baseline_ab_comparison.json",
+    "control/aee_performance_signature.json",
+    "control/aee_green_loss_audit.json",
+    "control/aee_intervention_basis.json",
+    "control/auto_adjudication.json",
+    "control/next_task_recommendation.json",
+    "control/champion_dual_status.json"
+  ],
+  "required_result_pack_sections": {
+    "control/run_summary.json": [
+      "run_id",
+      "champion_reference",
+      "intervention_class",
+      "strategy_form",
+      "aee_version",
+      "simulation_mode",
+      "data_coverage",
+      "results",
+      "aee_transformation_audit",
+      "top_logic_paths",
+      "top_damage",
+      "signature_check",
+      "verdict"
+    ],
+    "control/config_snapshot.json": [
+      "strategy_family",
+      "strategy_form_id",
+      "thresholds",
+      "enabled_gates",
+      "disabled_gates",
+      "aee_version",
+      "simulation_mode",
+      "dataset_window_id",
+      "pair_session_coverage",
+      "code_version",
+      "artifact_version"
+    ],
+    "control/logic_trace_summary.json": [
+      "detector_logic_path",
+      "gating_path",
+      "exit_logic_path",
+      "state_transitions_used"
+    ],
+    "control/trade_evidence_sample.json": [
+      "winners",
+      "losers",
+      "ambiguous"
+    ],
+    "control/data_coverage_report.json": [
+      "pair_coverage",
+      "streams",
+      "unique_days",
+      "sessions_represented",
+      "session_quarter_distribution",
+      "regime_distribution",
+      "hours",
+      "dominance_concentration"
+    ],
+    "control/expected_vs_actual_signature.json": [
+      "expected_signature",
+      "actual_signature",
+      "delta_vs_champion",
+      "matches_expected_model"
+    ],
+    "control/failure_layer_classification.json": [
+      "failure_layer",
+      "confidence",
+      "reason"
+    ],
+    "control/aee_transformation_audit.json": [
+      "loss_compression",
+      "failure_to_win_conversion",
+      "continuation_capture",
+      "giveback_ratio",
+      "branch_role_audit",
+      "branch_overfire_flags"
+    ],
+    "control/aee_baseline_ab_comparison.json": [
+      "baselines",
+      "candidate_vs_baselines"
+    ],
+    "control/aee_performance_signature.json": [
+      "immediate_signature",
+      "global_expectation",
+      "bankable_green_protection",
+      "throughput_signature",
+      "baseline_flip_signature",
+      "gap_reduction_signature",
+      "giveback_fix_signature",
+      "continuation_signature",
+      "loss_compression_stability",
+      "core_rule_all_four",
+      "auto_reject_patterns"
+    ],
+    "control/aee_green_loss_audit.json": [
+      "thresholds",
+      "summary",
+      "green_tier_distribution",
+      "dead_trade_subtype_distribution",
+      "economic_state_distribution",
+      "family_distribution",
+      "exit_reason_distribution",
+      "path_shape_distribution",
+      "throughput",
+      "green_then_loss_samples",
+      "bankable_green_loss_samples",
+      "dead_trade_samples",
+      "never_green_samples"
+    ],
+    "control/aee_intervention_basis.json": [
+      "economic_objective",
+      "green_tier_definition",
+      "state_framework",
+      "module_order",
+      "source_runs_used",
+      "source_logs_used",
+      "dominant_damaging_branches",
+      "affected_families",
+      "affected_subclusters",
+      "evidence_samples",
+      "proposed_variable_or_transition",
+      "expected_signature",
+      "success_criteria"
+    ],
+    "control/auto_adjudication.json": [
+      "verdict",
+      "reason",
+      "gates",
+      "blocking_overfire_flags",
+      "is_structurally_healthy"
+    ],
+    "control/next_task_recommendation.json": [
+      "intervention_class",
+      "scope",
+      "bounded_constraints",
+      "target_branches"
+    ],
+    "control/champion_dual_status.json": [
+      "performance_champion",
+      "structural_champion",
+      "comparison"
+    ]
+  },
+  "benchmark_stack_required": [
+    "control/concept_registry.json",
+    "control/strategy_form_registry.json",
+    "control/champion_registry.json",
+    "control/gold_cases.json",
+    "control/benchmark_suite.json",
+    "control/degradation_waterfall_template.json",
+    "control/family_confusion_report_template.json",
+    "control/ablation_matrix_template.json",
+    "control/expected_vs_actual_signature_template.json",
+    "control/failure_layer_classification_template.json"
+  ],
+  "efficiency_bands": {
+    "broken_lt": 0.1,
+    "weak_gte": 0.1,
+    "weak_lt": 0.3,
+    "viable_gte": 0.3,
+    "viable_lt": 0.6,
+    "strong_gte": 0.6
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-03-25T11:59:39.158641Z",
+  "objective": "stability_proof_no_tuning",
+  "lock": {
+    "config": "entry_v32_policy_strict_active_noise_tighten.json",
+    "aee_and_routing": "frozen",
+    "cost_model": {
+      "spread_pips": 0.8,
+      "slippage_pips_per_side": 0.15,
+      "commission_pips_roundtrip": 0.0,
+      "latency_penalty_pips": 0.0
+    },
+    "tuning_changes": "none"
+  },
+  "windows": [
+    {
+      "name": "window_1",
+      "stream_count": 24,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_1_run.json",
+      "verdict": "BASELINE_ACCEPTED",
+      "trade_count": 2337,
+      "avg_pips_per_trade": 3.534317501069748,
+      "gross_realized_pips_per_hour": 0.21373647440179866,
+      "net_realized_pips_per_hour": 0.14721440280782988,
+      "net_delta_realized_pips_per_hour": 0.04165424928805832
+    },
+    {
+      "name": "window_2",
+      "stream_count": 24,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_2_run.json",
+      "verdict": "BASELINE_ACCEPTED",
+      "trade_count": 2511,
+      "avg_pips_per_trade": 3.3765830346475507,
+      "gross_realized_pips_per_hour": 0.224293774599562,
+      "net_realized_pips_per_hour": 0.15122489119647065,
+      "net_delta_realized_pips_per_hour": 0.04615183157200432
+    },
+    {
+      "name": "window_3",
+      "stream_count": 24,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_3_run.json",
+      "verdict": "BASELINE_ACCEPTED",
+      "trade_count": 1864,
+      "avg_pips_per_trade": 3.6036480686695276,
+      "gross_realized_pips_per_hour": 0.17157971501296962,
+      "net_realized_pips_per_hour": 0.11920565325173087,
+      "net_delta_realized_pips_per_hour": 0.030312280087818
+    }
+  ],
+  "window_generation": {
+    "mode": "sampled",
+    "streams_per_window": 24,
+    "seed": 20260324,
+    "total_streams_available": 31
+  },
+  "pass_criteria": {
+    "all_three_positive_net_delta": true,
+    "all_three_baseline_accepted": true
+  },
+  "stability_verdict": "STABLE_POSITIVE"
+}

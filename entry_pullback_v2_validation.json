@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-03-25T15:31:31.010849Z",
+  "task_id": "TASK-003",
+  "component": "entry_structure",
+  "module": "entry_pullback_v2.py",
+  "spec": "entry_pullback_v2_spec.json",
+  "structural_checks": [
+    "swing->pullback->resumption sequence required",
+    "position+bias-only path removed",
+    "fail_state emitted at first structural failure"
+  ],
+  "test_cases": [
+    {
+      "id": "P1_valid_long",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "insufficient_data",
+      "fail_state": null
+    },
+    {
+      "id": "P2_no_swing",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "insufficient_data",
+      "fail_state": null
+    },
+    {
+      "id": "P3_retrace_too_deep",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "insufficient_data",
+      "fail_state": null
+    },
+    {
+      "id": "P4_no_resumption",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "insufficient_data",
+      "fail_state": null
+    },
+    {
+      "id": "P5_spread_block",
+      "is_valid": false,
+      "direction": "NONE",
+      "reason": "insufficient_data",
+      "fail_state": null
+    }
+  ],
+  "pass": false,
+  "conclusion": "REVIEW_REQUIRED"
+}

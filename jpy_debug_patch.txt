@@ -1,0 +1,29 @@
+
+# JPY SIZING DEBUG - Add after line 15589 (after units_raw = units_total)
+log(f"{EMOJI_DEBUG} UNITS_DEBUG {pair_tag(pair, sig.direction)}", {
+    "units_from_calc": units_total,
+    "units_raw": units_raw,
+    "units_reason": units_reason,
+    "margin_avail": margin_avail,
+    "util": util,
+    "price_for_units": price_for_units,
+    "DEBUG_CHECK": "DIVISION_BY_2400_HAPPENED_HERE_IF_UNITS=5"
+})
+
+# JPY SIZING DEBUG - Add after line 15727 (after spread adjustment)
+log(f"{EMOJI_DEBUG} SPREAD_DEBUG {pair_tag(pair, sig.direction)}", {
+    "units_before_spread": units_total,
+    "units_after_spread": units_final,
+    "spread_mult": mult,
+    "DEBUG_CHECK": "IF_UNITS_ARE_5_BEFORE_SPREAD_PROBLEM_IS_EARLIER"
+})
+
+# JPY SIZING DEBUG - Check instrument metadata
+meta = get_instrument_meta_cached(pair)
+log(f"{EMOJI_DEBUG} META_DEBUG {pair}", {
+    "meta_source": "cached" if meta else "none",
+    "minimumTradeSize": meta.get("minimumTradeSize") if meta else "NONE",
+    "tradeUnitsPrecision": meta.get("tradeUnitsPrecision") if meta else "NONE",
+    "marginRate": meta.get("marginRate") if meta else "NONE",
+    "pair": pair
+})

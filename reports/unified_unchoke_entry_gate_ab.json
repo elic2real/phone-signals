@@ -1,0 +1,26 @@
+{
+  "baseline_source": "reports/unified_unchoke_entry_gate_before.json",
+  "after_source": "reports/unified_unchoke_entry_gate_after.json",
+  "before": {
+    "armed_total": 61,
+    "armed_long": 39,
+    "armed_short": 22,
+    "blocked_primitive_disagreement": 7,
+    "short_share": 0.36065573770491804
+  },
+  "after": {
+    "armed_total": 62,
+    "armed_long": 39,
+    "armed_short": 23,
+    "blocked_primitive_disagreement": 6,
+    "short_share": 0.3709677419354839
+  },
+  "delta_after_minus_before": {
+    "armed_total": 1,
+    "armed_long": 0,
+    "armed_short": 1,
+    "blocked_primitive_disagreement": -1,
+    "short_share": 0.01031200423056583
+  },
+  "note": "Compared on signed m_norm promotion path (after_signed_mnorm block from deterministic gate replay)."
+}

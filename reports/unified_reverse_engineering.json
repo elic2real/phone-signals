@@ -1,0 +1,161 @@
+{
+  "config": {
+    "meta": {
+      "pair": "EURUSD",
+      "session": "London",
+      "weekday": "Monday",
+      "pipeline": "unified_entry_aee",
+      "timestamp": "2026-03-08T06:23:04.404235+00:00"
+    },
+    "entry": {
+      "long": {
+        "confirm_disp_atr": 0.1,
+        "confirm_m1_closes": 2,
+        "confirm_sec": 0.75,
+        "base_max_dist_atr": 0.45,
+        "dist_vel_k": 0.6
+      },
+      "short": {
+        "confirm_disp_atr": 0.1,
+        "confirm_m1_closes": 1,
+        "confirm_sec": 1.25,
+        "base_max_dist_atr": 0.45,
+        "dist_vel_k": 0.8
+      }
+    },
+    "aee": {
+      "long": {
+        "profit_capture_min_atr": 0.35,
+        "allowed_giveback_atr_mult": 0.45,
+        "stall_min_profit_atr": 0.25,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "max_hold_sec": 6000.0
+      },
+      "short": {
+        "profit_capture_min_atr": 0.35,
+        "allowed_giveback_atr_mult": 0.45,
+        "stall_min_profit_atr": 0.25,
+        "decay_exit_min_profit": 0.3,
+        "decay_min_hold_sec": 120.0,
+        "panic_velocity": -0.8,
+        "panic_pullback": 0.6,
+        "max_hold_sec": 6000.0
+      }
+    }
+  },
+  "scorecards": {
+    "long": {
+      "total_zones": 7,
+      "good_zones": 3,
+      "bad_zones": 4,
+      "noise_zones": 0,
+      "good_capture_rate": 0.0,
+      "bad_avoidance_rate": 0.5,
+      "noise_stability_rate": 0
+    },
+    "short": {
+      "total_zones": 10,
+      "good_zones": 4,
+      "bad_zones": 5,
+      "noise_zones": 1,
+      "good_capture_rate": 0.25,
+      "bad_avoidance_rate": 1.0,
+      "noise_stability_rate": 0.0
+    },
+    "overall": {
+      "total_zones": 17,
+      "zones_with_scores": 17,
+      "avg_aee_score": 0.11764705882352941,
+      "positive_score_rate": 0.5294117647058824,
+      "high_score_rate": 0.4117647058823529,
+      "low_score_rate": 0.35294117647058826
+    }
+  },
+  "meta": {
+    "total_zones": 17,
+    "long_zones": 7,
+    "short_zones": 10,
+    "timestamp": "2026-03-08T06:23:04.404537+00:00"
+  },
+  "zones_summary": {
+    "total": 17,
+    "by_direction": {
+      "LONG": 7,
+      "SHORT": 10
+    },
+    "by_bucket": {
+      "GOOD": 7,
+      "BAD": 9,
+      "NOISE": 1
+    }
+  },
+  "verification": {
+    "bucket_purity": {
+      "GOOD": {
+        "count": 7,
+        "avg_mfe": 30.748564294407362,
+        "avg_mae": 10.453779764630427,
+        "avg_tau": 100.0
+      },
+      "BAD": {
+        "count": 9,
+        "avg_mfe": 9.224261326768445,
+        "avg_mae": 18.372933329969285,
+        "avg_tau": 100.0
+      },
+      "NOISE": {
+        "count": 1,
+        "avg_mfe": 3.4408896309587265,
+        "avg_mae": 30.98985636489325,
+        "avg_tau": 100.0
+      }
+    },
+    "opportunity_replay": {
+      "LONG": {
+        "total_zones": 7,
+        "good_zones": 3,
+        "bad_zones": 4,
+        "noise_zones": 0,
+        "good_capture_rate": 1.0,
+        "bad_avoided_rate": 0.5,
+        "bad_aee_improved_rate": 0.0
+      },
+      "SHORT": {
+        "total_zones": 10,
+        "good_zones": 4,
+        "bad_zones": 5,
+        "noise_zones": 1,
+        "good_capture_rate": 0.75,
+        "bad_avoided_rate": 0.0,
+        "bad_aee_improved_rate": 0.0
+      }
+    },
+    "static_vs_aee": {
+      "LONG": {
+        "total_zones": 7,
+        "zones_with_aee": 7,
+        "static_avg_r": 5.083469744495268e-05,
+        "aee_avg_r": 0.0,
+        "static_win_rate": 0.7142857142857143,
+        "aee_win_rate": 0.0,
+        "aee_improved_rate": 0.2857142857142857,
+        "good_improved_rate": 0.0,
+        "bad_improved_rate": 0.5
+      },
+      "SHORT": {
+        "total_zones": 10,
+        "zones_with_aee": 10,
+        "static_avg_r": 4.476779803973885e-06,
+        "aee_avg_r": 0.0,
+        "static_win_rate": 0.3,
+        "aee_win_rate": 0.0,
+        "aee_improved_rate": 0.7,
+        "good_improved_rate": 0.25,
+        "bad_improved_rate": 1.0
+      }
+    }
+  }
+}

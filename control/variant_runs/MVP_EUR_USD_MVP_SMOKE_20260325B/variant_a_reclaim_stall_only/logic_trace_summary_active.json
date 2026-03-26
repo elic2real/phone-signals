@@ -1,0 +1,62 @@
+{
+  "run_id": "AEE_MATRIX_MVP_EUR_USD_MVP_SMOKE_20260325B_variant_a_reclaim_stall_only",
+  "detector_logic_path": [
+    {
+      "name": "BREAKOUT__clean_expansion",
+      "count": 11
+    }
+  ],
+  "gating_path": {
+    "top_block_reasons": [],
+    "filter_config": {
+      "include_families": [
+        "EXPANSION_BREAKOUT",
+        "OTHER",
+        "RANGE_ESCAPE"
+      ],
+      "exclude_families": [],
+      "exclude_contexts": [
+        "eur_chf__monday__asia",
+        "eur_chf__monday__london",
+        "eur_chf__monday__new_york",
+        "eur_chf__monday__sydney",
+        "eur_chf__wednesday__london",
+        "eur_gbp__monday__asia",
+        "eur_gbp__monday__london",
+        "eur_gbp__monday__new_york",
+        "eur_gbp__monday__sydney",
+        "eur_gbp__thursday__sydney",
+        "eur_usd__friday__asia",
+        "eur_usd__tuesday__new_york",
+        "usd_cad__monday__london"
+      ]
+    }
+  },
+  "exit_logic_path": [
+    {
+      "name": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "count": 6
+    },
+    {
+      "name": "AEE_V3_FAMILY_PROTECTION_EXIT",
+      "count": 5
+    }
+  ],
+  "state_transitions_used": [
+    {
+      "name": "RUNNER",
+      "count": 6
+    },
+    {
+      "name": "GREEN_UNPROTECTED",
+      "count": 5
+    }
+  ],
+  "overrides_triggered": [
+    {
+      "name": "raw_core_mode",
+      "enabled": false,
+      "effect": "disables non-core entry gates when true"
+    }
+  ]
+}

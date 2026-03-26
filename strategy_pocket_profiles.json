@@ -1,0 +1,91 @@
+{
+  "version": "2026-03-17-pocket-layer-v1",
+  "source": "mechanical backbone + optional energy overlay",
+  "pockets": {
+    "*|*|*|*": {
+      "mechanical": {
+        "enable": [
+          "SHORT|HARVESTER|T3_5",
+          "SHORT|HARVESTER|T5_0",
+          "LONG|HARVESTER|T5_0",
+          "LONG|HARVESTER|T6_0",
+          "SHORT|HARVESTER|T2_5",
+          "SHORT|HARVESTER|T8_0"
+        ],
+        "suppress": [
+          "BREAK|RUNNER|T8_0",
+          "LONG|HARVESTER|T1_5",
+          "SHORT|HARVESTER|T1_5",
+          "LONG|HARVESTER|T2_5"
+        ],
+        "needs_sample": [
+          "PULLBACK_RECLAIM|HARVESTER|T8_0"
+        ],
+        "quarantine": [],
+        "target_profile_bias": {
+          "preferred": ["T5_0", "T6_0", "T3_5", "T2_5"],
+          "avoid": ["T1_5"]
+        },
+        "entry_triggers": {
+          "resume_relaxed": true,
+          "continuation_quarantined": true
+        },
+        "spread_constraints": {
+          "break_max": 2.8,
+          "reclaim_max": 2.6,
+          "bounce_max": 2.4,
+          "continuation_max": 2.8
+        },
+        "aee_fallback": {
+          "mode": "mechanical_fail_safe",
+          "degraded_fail_closed": true
+        },
+        "fallback_rules": [
+          "mechanical_always_runnable",
+          "ignore_energy_when_invalid"
+        ],
+        "notes": "Global mechanical pocket baseline"
+      },
+      "energy": {
+        "valid": false,
+        "confidence": 0.0,
+        "notes": "Energy overlay disabled by default"
+      }
+    },
+    "london|monday|london_q1|eur_usd": {
+      "mechanical": {
+        "enable": [
+          "LONG|HARVESTER|T6_0",
+          "LONG|HARVESTER|T5_0",
+          "SHORT|HARVESTER|T3_5",
+          "SHORT|HARVESTER|T5_0"
+        ],
+        "suppress": [
+          "LONG|HARVESTER|T1_5",
+          "SHORT|HARVESTER|T1_5"
+        ],
+        "needs_sample": [],
+        "quarantine": [],
+        "notes": "Pair-in-pocket mechanical refinement sample"
+      },
+      "energy": {
+        "valid": false,
+        "confidence": 0.0,
+        "expected_progress": "unknown",
+        "stall_model": "disabled",
+        "giveback_model": "disabled",
+        "policy_modifiers": {
+          "enable_add": [],
+          "enable_remove": [],
+          "suppress_add": [],
+          "suppress_remove": [],
+          "needs_sample_add": [],
+          "needs_sample_remove": [],
+          "quarantine_add": [],
+          "quarantine_remove": []
+        },
+        "notes": "Set valid=true only after energy integrity checks pass"
+      }
+    }
+  }
+}

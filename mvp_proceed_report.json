@@ -1,0 +1,134 @@
+{
+  "window": {
+    "start_ts": 1774244782.695757,
+    "end_ts": 1774245083.4709222,
+    "elapsed_sec": 300.77516531944275
+  },
+  "entries_placed": 61,
+  "fills": 61,
+  "exit_results": 61,
+  "exit_by_trade_type": {
+    "HARVESTER": 61
+  },
+  "aee_periodic_by_trade_type": {
+    "HARVESTER": 67
+  },
+  "aee_periodic_nonempty_reasons": {
+    "NEVER_GREEN_FAST_EXIT": 16,
+    "PANIC_EXIT": 18,
+    "AEE_PANIC_EXIT": 6,
+    "AEE_PRE_SL_EXIT": 20
+  },
+  "aee_and_fast_exit_reason_counts": {
+    "NEVER_GREEN_FAST_EXIT": 159,
+    "BROKER_ALREADY_CLOSED_BEFORE_AEE": 4,
+    "PANIC_EXIT": 180,
+    "AEE_PANIC_EXIT": 60,
+    "AEE_PRE_SL_EXIT": 200
+  },
+  "trigger_counts": {
+    "AEE_PRE_SL_PROTECTION_TRIGGER": 80,
+    "AEE_PANIC_EXIT_TRIGGER": 24,
+    "AEE_WEAK_TRADE_KILL_TRIGGER": 16
+  },
+  "top_kinds": [
+    [
+      "SIZE_TRACE",
+      488
+    ],
+    [
+      "AEE_HANDOFF_TRACE",
+      308
+    ],
+    [
+      "NO_THROTTLE_MODE_BYPASS",
+      260
+    ],
+    [
+      "FALLBACK_USED",
+      138
+    ],
+    [
+      "ENTRY_TRACE",
+      138
+    ],
+    [
+      "ENTRY_EVAL",
+      138
+    ],
+    [
+      "ENTRY_GATE_EVAL",
+      138
+    ],
+    [
+      "AEE_PRE_SL_PROTECTION_TRIGGER",
+      80
+    ],
+    [
+      "ENTRY_EJECT",
+      77
+    ],
+    [
+      "STRATEGY_POLICY_DECISION",
+      70
+    ],
+    [
+      "AEE_STRATEGY_OVERRIDE_DECISION",
+      67
+    ],
+    [
+      "AEE_PERIODIC_DECISION",
+      67
+    ],
+    [
+      "SIZE_CALC",
+      61
+    ],
+    [
+      "ENTRY_ATTEMPT",
+      61
+    ],
+    [
+      "ORDER_SUBMITTED",
+      61
+    ],
+    [
+      "ORDER_FILLED",
+      61
+    ],
+    [
+      "ENTRY_RESULT",
+      61
+    ],
+    [
+      "DUAL_LEG_SKIPPED",
+      61
+    ],
+    [
+      "SINGLE_LEG_MODE",
+      61
+    ],
+    [
+      "EXIT_RESULT",
+      61
+    ]
+  ],
+  "top_events": [
+    [
+      "ENTRY_FAMILY_DECISION",
+      1008
+    ],
+    [
+      "STATE_TRANSITION",
+      459
+    ],
+    [
+      "TRADE_CANDIDATE",
+      77
+    ],
+    [
+      "TRADE_ATTEMPT",
+      61
+    ]
+  ]
+}

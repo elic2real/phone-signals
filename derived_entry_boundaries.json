@@ -1,0 +1,44 @@
+{
+  "pre_speed_min": 0.6499999999998174,
+  "pre_efficiency_min": 0.1666666666666281,
+  "pre_volatility_min": 0.6799999999997919,
+  "pre_range_min": 2.6999999999999247,
+  "cluster_progress_max": 0.5886412604363048,
+  "derivation": {
+    "pre_speed": {
+      "boundary_type": "winner_lower_quantile",
+      "ks_like": 0.1972629038731431,
+      "winner_p25": 0.6499999999998174,
+      "winner_p75": 1.1499999999997623,
+      "loser_p50": 0.9999999999998899
+    },
+    "pre_efficiency": {
+      "boundary_type": "winner_lower_quantile",
+      "ks_like": 0.1145940114678371,
+      "winner_p25": 0.1666666666666281,
+      "winner_p75": 0.4677419354837583,
+      "loser_p50": 0.3417721518987911
+    },
+    "pre_volatility": {
+      "boundary_type": "winner_lower_quantile",
+      "ks_like": 0.24117480143463002,
+      "winner_p25": 0.7099999999995443,
+      "winner_p75": 1.0499999999995513,
+      "loser_p50": 0.9900000000002684
+    },
+    "pre_range_pips": {
+      "boundary_type": "winner_lower_quantile",
+      "ks_like": 0.2168101211459657,
+      "winner_p25": 3.1000000000003247,
+      "winner_p75": 5.5000000000005045,
+      "loser_p50": 5.1000000000001044
+    },
+    "cluster_progress": {
+      "boundary_type": "winner_upper_quantile",
+      "ks_like": 0.1410088935812322,
+      "winner_p25": 0.1956521739130435,
+      "winner_p75": 0.5886412604363048,
+      "loser_p50": 0.3227534148094896
+    }
+  }
+}

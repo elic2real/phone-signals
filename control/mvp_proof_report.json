@@ -1,0 +1,138 @@
+{
+  "generated_at": "2026-03-26T03:15:54.640626Z",
+  "run_tag": "MVP_SMOKE_20260325B",
+  "profile": {
+    "name": "mvp_proof_ny_majors",
+    "baseline_config": "entry_v23_policy_guarded_active.json",
+    "variant_spec": "control/variant_spec_template.json",
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD",
+      "USD_JPY"
+    ],
+    "session": "new_york",
+    "aee_version": "v3",
+    "max_trades_per_pair": 120,
+    "matrix_workers": 2,
+    "run_matrix_on_slice": "fake_runner_slice",
+    "require_positive_net": true,
+    "require_positive_realized_pph": true,
+    "require_collision_clear": true,
+    "max_fake_runner_count": 25,
+    "max_overheld_winner_count": 2,
+    "require_complexity_adds_value": false
+  },
+  "pairs_tested": 3,
+  "pairs_passed": 0,
+  "overall_pass": false,
+  "rows": [
+    {
+      "pair": "EUR_USD",
+      "contexts": [
+        "eur_usd__friday__new_york",
+        "eur_usd__monday__new_york",
+        "eur_usd__thursday__new_york",
+        "eur_usd__tuesday__new_york",
+        "eur_usd__wednesday__new_york"
+      ],
+      "baseline_exit_code": 0,
+      "baseline_stdout_tail": "  gap (entry - realized):   +1.03387\n  extraction_efficiency:    +0.09093\n  loss_compression_rate:    +0.77060\n  failure_to_win_rate:      +0.84849\n  continuation_capture:     +0.11099\n  giveback_ratio:           +0.88901\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "baseline_stderr_tail": "",
+      "baseline_result_dir": "/home/elic/Documents/phone signals/control/mvp_runs/MVP_SMOKE_20260325B/EUR_USD/baseline",
+      "metrics": {
+        "realized_pph": 0.103417,
+        "gap": 1.03387,
+        "extraction_efficiency": 0.090933,
+        "objective_collision_detected": true,
+        "fake_runner_count": 37,
+        "overheld_winner_count": 2,
+        "bankable_green_loss_red_rate": 0.235294,
+        "complexity_adds_value": false
+      },
+      "slice_exit_code": 0,
+      "slice_index": "/home/elic/Documents/phone signals/control/failure_slices/MVP_SMOKE_20260325B/EUR_USD/index.json",
+      "matrix_exit_code": 0,
+      "matrix_run_tag": "MVP_EUR_USD_MVP_SMOKE_20260325B",
+      "matrix_summary": "/home/elic/Documents/phone signals/control/variant_runs/MVP_EUR_USD_MVP_SMOKE_20260325B/variant_matrix_summary.json",
+      "gate_results": {
+        "pass_net": true,
+        "pass_realized": true,
+        "pass_collision": false,
+        "pass_fake_runner": false,
+        "pass_overhold": true,
+        "pass_complexity": true
+      },
+      "mvp_pass": false
+    },
+    {
+      "pair": "GBP_USD",
+      "contexts": [
+        "gbp_usd__friday__new_york",
+        "gbp_usd__monday__new_york",
+        "gbp_usd__thursday__new_york"
+      ],
+      "baseline_exit_code": 0,
+      "baseline_stdout_tail": "  gap (entry - realized):   +1.27349\n  extraction_efficiency:    +0.14324\n  loss_compression_rate:    +0.80753\n  failure_to_win_rate:      +0.72222\n  continuation_capture:     +0.15475\n  giveback_ratio:           +0.84525\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "baseline_stderr_tail": "",
+      "baseline_result_dir": "/home/elic/Documents/phone signals/control/mvp_runs/MVP_SMOKE_20260325B/GBP_USD/baseline",
+      "metrics": {
+        "realized_pph": 0.21291,
+        "gap": 1.273491,
+        "extraction_efficiency": 0.143238,
+        "objective_collision_detected": true,
+        "fake_runner_count": 39,
+        "overheld_winner_count": 0,
+        "bankable_green_loss_red_rate": 0.169492,
+        "complexity_adds_value": false
+      },
+      "slice_exit_code": 0,
+      "slice_index": "/home/elic/Documents/phone signals/control/failure_slices/MVP_SMOKE_20260325B/GBP_USD/index.json",
+      "matrix_exit_code": 0,
+      "matrix_run_tag": "MVP_GBP_USD_MVP_SMOKE_20260325B",
+      "matrix_summary": "/home/elic/Documents/phone signals/control/variant_runs/MVP_GBP_USD_MVP_SMOKE_20260325B/variant_matrix_summary.json",
+      "gate_results": {
+        "pass_net": true,
+        "pass_realized": true,
+        "pass_collision": false,
+        "pass_fake_runner": false,
+        "pass_overhold": true,
+        "pass_complexity": true
+      },
+      "mvp_pass": false
+    },
+    {
+      "pair": "USD_JPY",
+      "contexts": [
+        "usd_jpy__monday__new_york"
+      ],
+      "baseline_exit_code": 0,
+      "baseline_stdout_tail": "  gap (entry - realized):   +0.87443\n  extraction_efficiency:    +0.16243\n  loss_compression_rate:    +0.91443\n  failure_to_win_rate:      +0.74419\n  continuation_capture:     +0.18092\n  giveback_ratio:           +0.81908\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "baseline_stderr_tail": "",
+      "baseline_result_dir": "/home/elic/Documents/phone signals/control/mvp_runs/MVP_SMOKE_20260325B/USD_JPY/baseline",
+      "metrics": {
+        "realized_pph": 0.169582,
+        "gap": 0.874427,
+        "extraction_efficiency": 0.162433,
+        "objective_collision_detected": true,
+        "fake_runner_count": 33,
+        "overheld_winner_count": 0,
+        "bankable_green_loss_red_rate": 0.217391,
+        "complexity_adds_value": false
+      },
+      "slice_exit_code": 0,
+      "slice_index": "/home/elic/Documents/phone signals/control/failure_slices/MVP_SMOKE_20260325B/USD_JPY/index.json",
+      "matrix_exit_code": 0,
+      "matrix_run_tag": "MVP_USD_JPY_MVP_SMOKE_20260325B",
+      "matrix_summary": "/home/elic/Documents/phone signals/control/variant_runs/MVP_USD_JPY_MVP_SMOKE_20260325B/variant_matrix_summary.json",
+      "gate_results": {
+        "pass_net": true,
+        "pass_realized": true,
+        "pass_collision": false,
+        "pass_fake_runner": false,
+        "pass_overhold": true,
+        "pass_complexity": true
+      },
+      "mvp_pass": false
+    }
+  ]
+}

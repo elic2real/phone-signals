@@ -1,0 +1,2495 @@
+{
+  "objective": "entry_only_historical_calibrated_synthetic_expanded",
+  "pair": "EUR_USD",
+  "session": "LONDON",
+  "source": "data_tape_oanda_m5_15_stitched/pair=EUR_USD/stitched.parquet",
+  "notes": [
+    "Uses historical EURUSD M5 stitched tape; max_hold 100 min modeled as 20 bars.",
+    "Synthetic expansion is bootstrapped forward paths + amplitude/time/noise perturbations.",
+    "Long/short optimized separately."
+  ],
+  "config": {
+    "baseline_knobs": {
+      "confirm_disp_atr": 0.12,
+      "confirm_sec": 0.75,
+      "base_max_dist_atr": 0.35
+    },
+    "ladders": [
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5
+    ],
+    "trades_per_dir": 5000,
+    "max_hold_min": 100
+  },
+  "bank": {
+    "path_count": 5997,
+    "horizon_bars": 20
+  },
+  "long": {
+    "baseline": {
+      "direction": "LONG",
+      "knobs": {
+        "confirm_disp_atr": 0.12,
+        "confirm_sec": 0.75,
+        "base_max_dist_atr": 0.35
+      },
+      "candidate_count": 228,
+      "trades_simulated": 5000,
+      "best_ladder": 3.0,
+      "best": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5026,
+        "sl_hit_rate": 0.4498,
+        "timeout_rate": 0.0476,
+        "pips_mean": 0.15153487494599718,
+        "pph_mean": -0.4223237987932963,
+        "avg_resolution_min": 30.408,
+        "mfe_mean": 8.283734005468935,
+        "mae_mean": 9.727649849205894
+      },
+      "ladders": {
+        "1.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.4966,
+          "sl_hit_rate": 0.5034,
+          "timeout_rate": 0.0,
+          "pips_mean": -0.017896403032289832,
+          "pph_mean": -0.19229154681815283,
+          "avg_resolution_min": 13.755,
+          "mfe_mean": 8.283734005468935,
+          "mae_mean": 9.727649849205894
+        },
+        "2.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5078,
+          "sl_hit_rate": 0.4892,
+          "timeout_rate": 0.003,
+          "pips_mean": 0.04590719958840993,
+          "pph_mean": -0.31357671131029985,
+          "avg_resolution_min": 18.826,
+          "mfe_mean": 8.283734005468935,
+          "mae_mean": 9.727649849205894
+        },
+        "2.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.514,
+          "sl_hit_rate": 0.4668,
+          "timeout_rate": 0.0192,
+          "pips_mean": 0.1346860044692153,
+          "pph_mean": -0.22322417789983634,
+          "avg_resolution_min": 24.278,
+          "mfe_mean": 8.283734005468935,
+          "mae_mean": 9.727649849205894
+        },
+        "3.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5026,
+          "sl_hit_rate": 0.4498,
+          "timeout_rate": 0.0476,
+          "pips_mean": 0.15153487494599718,
+          "pph_mean": -0.4223237987932963,
+          "avg_resolution_min": 30.408,
+          "mfe_mean": 8.283734005468935,
+          "mae_mean": 9.727649849205894
+        },
+        "3.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.469,
+          "sl_hit_rate": 0.4438,
+          "timeout_rate": 0.0872,
+          "pips_mean": 0.0304418539133097,
+          "pph_mean": -0.7645571128199349,
+          "avg_resolution_min": 36.522,
+          "mfe_mean": 8.283734005468935,
+          "mae_mean": 9.727649849205894
+        }
+      }
+    },
+    "sweeps": {
+      "confirm_disp_atr": [
+        {
+          "value": 0.1,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.1,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 235,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5024,
+              "sl_hit_rate": 0.4554,
+              "timeout_rate": 0.0422,
+              "pips_mean": 0.14023915968008438,
+              "pph_mean": -0.7548190237362085,
+              "avg_resolution_min": 30.304,
+              "mfe_mean": 8.306832801156922,
+              "mae_mean": 9.84715504986308
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4916,
+                "sl_hit_rate": 0.5084,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.0352770209576849,
+                "pph_mean": -0.351196646199547,
+                "avg_resolution_min": 14.226,
+                "mfe_mean": 8.306832801156922,
+                "mae_mean": 9.84715504986308
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.504,
+                "sl_hit_rate": 0.494,
+                "timeout_rate": 0.002,
+                "pips_mean": 0.028133899793141667,
+                "pph_mean": -0.49072590114994546,
+                "avg_resolution_min": 18.993,
+                "mfe_mean": 8.306832801156922,
+                "mae_mean": 9.84715504986308
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5158,
+                "sl_hit_rate": 0.47,
+                "timeout_rate": 0.0142,
+                "pips_mean": 0.13949370282184026,
+                "pph_mean": -0.4983931470562611,
+                "avg_resolution_min": 24.201,
+                "mfe_mean": 8.306832801156922,
+                "mae_mean": 9.84715504986308
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5024,
+                "sl_hit_rate": 0.4554,
+                "timeout_rate": 0.0422,
+                "pips_mean": 0.14023915968008438,
+                "pph_mean": -0.7548190237362085,
+                "avg_resolution_min": 30.304,
+                "mfe_mean": 8.306832801156922,
+                "mae_mean": 9.84715504986308
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4736,
+                "sl_hit_rate": 0.4478,
+                "timeout_rate": 0.0786,
+                "pips_mean": 0.04867446081276948,
+                "pph_mean": -0.9047285682336398,
+                "avg_resolution_min": 36.592,
+                "mfe_mean": 8.306832801156922,
+                "mae_mean": 9.84715504986308
+              }
+            }
+          }
+        },
+        {
+          "value": 0.12,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 228,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5002,
+              "sl_hit_rate": 0.453,
+              "timeout_rate": 0.0468,
+              "pips_mean": 0.15661235268203982,
+              "pph_mean": -1.0186501790067317,
+              "avg_resolution_min": 30.776,
+              "mfe_mean": 8.218693753049967,
+              "mae_mean": 9.980403148300056
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5058,
+                "sl_hit_rate": 0.4942,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.019071773885651323,
+                "pph_mean": -0.1421066160508714,
+                "avg_resolution_min": 14.267,
+                "mfe_mean": 8.218693753049967,
+                "mae_mean": 9.980403148300056
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.511,
+                "sl_hit_rate": 0.4854,
+                "timeout_rate": 0.0036,
+                "pips_mean": 0.06422092042308808,
+                "pph_mean": -0.486359170556994,
+                "avg_resolution_min": 19.185,
+                "mfe_mean": 8.218693753049967,
+                "mae_mean": 9.980403148300056
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.51,
+                "sl_hit_rate": 0.4716,
+                "timeout_rate": 0.0184,
+                "pips_mean": 0.11358668391286106,
+                "pph_mean": -0.732954179899012,
+                "avg_resolution_min": 24.524,
+                "mfe_mean": 8.218693753049967,
+                "mae_mean": 9.980403148300056
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5002,
+                "sl_hit_rate": 0.453,
+                "timeout_rate": 0.0468,
+                "pips_mean": 0.15661235268203982,
+                "pph_mean": -1.0186501790067317,
+                "avg_resolution_min": 30.776,
+                "mfe_mean": 8.218693753049967,
+                "mae_mean": 9.980403148300056
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4646,
+                "sl_hit_rate": 0.4434,
+                "timeout_rate": 0.092,
+                "pips_mean": 0.025174250765780892,
+                "pph_mean": -1.478680103535528,
+                "avg_resolution_min": 37.312,
+                "mfe_mean": 8.218693753049967,
+                "mae_mean": 9.980403148300056
+              }
+            }
+          }
+        },
+        {
+          "value": 0.14,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.14,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 218,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5256,
+              "sl_hit_rate": 0.4356,
+              "timeout_rate": 0.0388,
+              "pips_mean": 0.31563095128307533,
+              "pph_mean": 0.3158085493867319,
+              "avg_resolution_min": 29.271,
+              "mfe_mean": 8.272090305955475,
+              "mae_mean": 9.666251663732663
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5284,
+                "sl_hit_rate": 0.4716,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.11007475000771269,
+                "pph_mean": 1.0328498553873604,
+                "avg_resolution_min": 13.541,
+                "mfe_mean": 8.272090305955475,
+                "mae_mean": 9.666251663732663
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5326,
+                "sl_hit_rate": 0.4654,
+                "timeout_rate": 0.002,
+                "pips_mean": 0.17352057665383638,
+                "pph_mean": 0.7409519598275005,
+                "avg_resolution_min": 17.908,
+                "mfe_mean": 8.272090305955475,
+                "mae_mean": 9.666251663732663
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.536,
+                "sl_hit_rate": 0.4516,
+                "timeout_rate": 0.0124,
+                "pips_mean": 0.26516757327007107,
+                "pph_mean": 0.6256824541805621,
+                "avg_resolution_min": 23.006,
+                "mfe_mean": 8.272090305955475,
+                "mae_mean": 9.666251663732663
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5256,
+                "sl_hit_rate": 0.4356,
+                "timeout_rate": 0.0388,
+                "pips_mean": 0.31563095128307533,
+                "pph_mean": 0.3158085493867319,
+                "avg_resolution_min": 29.271,
+                "mfe_mean": 8.272090305955475,
+                "mae_mean": 9.666251663732663
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.492,
+                "sl_hit_rate": 0.4316,
+                "timeout_rate": 0.0764,
+                "pips_mean": 0.20536960539754054,
+                "pph_mean": 0.10501796514120156,
+                "avg_resolution_min": 35.569,
+                "mfe_mean": 8.272090305955475,
+                "mae_mean": 9.666251663732663
+              }
+            }
+          }
+        },
+        {
+          "value": 0.16,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.16,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 208,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5158,
+              "sl_hit_rate": 0.4462,
+              "timeout_rate": 0.038,
+              "pips_mean": 0.243373378620568,
+              "pph_mean": 0.15651876871469714,
+              "avg_resolution_min": 29.167,
+              "mfe_mean": 8.622263976706485,
+              "mae_mean": 9.489223903290466
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5176,
+                "sl_hit_rate": 0.4824,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.07032419815339867,
+                "pph_mean": 0.585899517650271,
+                "avg_resolution_min": 13.291,
+                "mfe_mean": 8.622263976706485,
+                "mae_mean": 9.489223903290466
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5198,
+                "sl_hit_rate": 0.477,
+                "timeout_rate": 0.0032,
+                "pips_mean": 0.10977083846246037,
+                "pph_mean": 0.1496217510183826,
+                "avg_resolution_min": 18.037,
+                "mfe_mean": 8.622263976706485,
+                "mae_mean": 9.489223903290466
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5238,
+                "sl_hit_rate": 0.4626,
+                "timeout_rate": 0.0136,
+                "pips_mean": 0.1884304078718527,
+                "pph_mean": 0.11430871441498866,
+                "avg_resolution_min": 23.008,
+                "mfe_mean": 8.622263976706485,
+                "mae_mean": 9.489223903290466
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5158,
+                "sl_hit_rate": 0.4462,
+                "timeout_rate": 0.038,
+                "pips_mean": 0.243373378620568,
+                "pph_mean": 0.15651876871469714,
+                "avg_resolution_min": 29.167,
+                "mfe_mean": 8.622263976706485,
+                "mae_mean": 9.489223903290466
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4848,
+                "sl_hit_rate": 0.439,
+                "timeout_rate": 0.0762,
+                "pips_mean": 0.16047199831865822,
+                "pph_mean": -0.0251194465969151,
+                "avg_resolution_min": 35.58,
+                "mfe_mean": 8.622263976706485,
+                "mae_mean": 9.489223903290466
+              }
+            }
+          }
+        }
+      ],
+      "confirm_sec": [
+        {
+          "value": 0.5,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.5,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 541,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4848,
+              "sl_hit_rate": 0.468,
+              "timeout_rate": 0.0472,
+              "pips_mean": 0.04826985379375428,
+              "pph_mean": -0.8714160025020452,
+              "avg_resolution_min": 30.182,
+              "mfe_mean": 8.783922713060702,
+              "mae_mean": 9.568225933560827
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4852,
+                "sl_hit_rate": 0.5124,
+                "timeout_rate": 0.0024,
+                "pips_mean": -0.04881237452384343,
+                "pph_mean": -0.7021439841974277,
+                "avg_resolution_min": 13.219,
+                "mfe_mean": 8.783922713060702,
+                "mae_mean": 9.568225933560827
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.498,
+                "sl_hit_rate": 0.4962,
+                "timeout_rate": 0.0058,
+                "pips_mean": 0.013513237927643865,
+                "pph_mean": -0.5699618976269759,
+                "avg_resolution_min": 18.626,
+                "mfe_mean": 8.783922713060702,
+                "mae_mean": 9.568225933560827
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.496,
+                "sl_hit_rate": 0.4828,
+                "timeout_rate": 0.0212,
+                "pips_mean": 0.044614788197944,
+                "pph_mean": -0.7200342834775999,
+                "avg_resolution_min": 24.183,
+                "mfe_mean": 8.783922713060702,
+                "mae_mean": 9.568225933560827
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4848,
+                "sl_hit_rate": 0.468,
+                "timeout_rate": 0.0472,
+                "pips_mean": 0.04826985379375428,
+                "pph_mean": -0.8714160025020452,
+                "avg_resolution_min": 30.182,
+                "mfe_mean": 8.783922713060702,
+                "mae_mean": 9.568225933560827
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4674,
+                "sl_hit_rate": 0.4584,
+                "timeout_rate": 0.0742,
+                "pips_mean": 0.00331449381833023,
+                "pph_mean": -1.3212343901687245,
+                "avg_resolution_min": 35.663,
+                "mfe_mean": 8.783922713060702,
+                "mae_mean": 9.568225933560827
+              }
+            }
+          }
+        },
+        {
+          "value": 0.75,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 228,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4996,
+              "sl_hit_rate": 0.4538,
+              "timeout_rate": 0.0466,
+              "pips_mean": 0.13659949660187898,
+              "pph_mean": -0.9409233336133228,
+              "avg_resolution_min": 30.205,
+              "mfe_mean": 8.301112537777902,
+              "mae_mean": 9.755703066979072
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4966,
+                "sl_hit_rate": 0.5034,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.01740277434940932,
+                "pph_mean": -0.31814273906180085,
+                "avg_resolution_min": 14.035,
+                "mfe_mean": 8.301112537777902,
+                "mae_mean": 9.755703066979072
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5046,
+                "sl_hit_rate": 0.4908,
+                "timeout_rate": 0.0046,
+                "pips_mean": 0.032416858378485104,
+                "pph_mean": -0.5934110789215491,
+                "avg_resolution_min": 18.95,
+                "mfe_mean": 8.301112537777902,
+                "mae_mean": 9.755703066979072
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.511,
+                "sl_hit_rate": 0.4684,
+                "timeout_rate": 0.0206,
+                "pips_mean": 0.11539290063877237,
+                "pph_mean": -0.5050396838566332,
+                "avg_resolution_min": 24.171,
+                "mfe_mean": 8.301112537777902,
+                "mae_mean": 9.755703066979072
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4996,
+                "sl_hit_rate": 0.4538,
+                "timeout_rate": 0.0466,
+                "pips_mean": 0.13659949660187898,
+                "pph_mean": -0.9409233336133228,
+                "avg_resolution_min": 30.205,
+                "mfe_mean": 8.301112537777902,
+                "mae_mean": 9.755703066979072
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.474,
+                "sl_hit_rate": 0.4424,
+                "timeout_rate": 0.0836,
+                "pips_mean": 0.06111566006086987,
+                "pph_mean": -1.2419784852420797,
+                "avg_resolution_min": 36.322,
+                "mfe_mean": 8.301112537777902,
+                "mae_mean": 9.755703066979072
+              }
+            }
+          }
+        },
+        {
+          "value": 1.0,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 1.0,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 228,
+            "trades_simulated": 5000,
+            "best_ladder": 2.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5138,
+              "sl_hit_rate": 0.4678,
+              "timeout_rate": 0.0184,
+              "pips_mean": 0.12406366434287913,
+              "pph_mean": -0.5431999803643525,
+              "avg_resolution_min": 24.18,
+              "mfe_mean": 8.16769112139957,
+              "mae_mean": 9.661411641800647
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4996,
+                "sl_hit_rate": 0.5004,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.007505876014157633,
+                "pph_mean": -0.09739405531577061,
+                "avg_resolution_min": 13.934,
+                "mfe_mean": 8.16769112139957,
+                "mae_mean": 9.661411641800647
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5098,
+                "sl_hit_rate": 0.4874,
+                "timeout_rate": 0.0028,
+                "pips_mean": 0.049554413410332177,
+                "pph_mean": -0.40387446126367926,
+                "avg_resolution_min": 18.89,
+                "mfe_mean": 8.16769112139957,
+                "mae_mean": 9.661411641800647
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5138,
+                "sl_hit_rate": 0.4678,
+                "timeout_rate": 0.0184,
+                "pips_mean": 0.12406366434287913,
+                "pph_mean": -0.5431999803643525,
+                "avg_resolution_min": 24.18,
+                "mfe_mean": 8.16769112139957,
+                "mae_mean": 9.661411641800647
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4944,
+                "sl_hit_rate": 0.4628,
+                "timeout_rate": 0.0428,
+                "pips_mean": 0.08318083329756364,
+                "pph_mean": -1.0309745044886254,
+                "avg_resolution_min": 29.868,
+                "mfe_mean": 8.16769112139957,
+                "mae_mean": 9.661411641800647
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4638,
+                "sl_hit_rate": 0.4522,
+                "timeout_rate": 0.084,
+                "pips_mean": -0.03437606805887475,
+                "pph_mean": -1.3506880738881881,
+                "avg_resolution_min": 36.652,
+                "mfe_mean": 8.16769112139957,
+                "mae_mean": 9.661411641800647
+              }
+            }
+          }
+        },
+        {
+          "value": 1.25,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 1.25,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 89,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.495,
+              "sl_hit_rate": 0.4672,
+              "timeout_rate": 0.0378,
+              "pips_mean": 0.11677597829780052,
+              "pph_mean": -1.0492154516272192,
+              "avg_resolution_min": 27.566,
+              "mfe_mean": 10.371299078823883,
+              "mae_mean": 8.969479659472007
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5062,
+                "sl_hit_rate": 0.4938,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.03198401948182046,
+                "pph_mean": -0.12286845666487324,
+                "avg_resolution_min": 14.359,
+                "mfe_mean": 10.371299078823883,
+                "mae_mean": 8.969479659472007
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.514,
+                "sl_hit_rate": 0.486,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.09531739524930892,
+                "pph_mean": -0.48802503996221375,
+                "avg_resolution_min": 18.615,
+                "mfe_mean": 10.371299078823883,
+                "mae_mean": 8.969479659472007
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5092,
+                "sl_hit_rate": 0.4828,
+                "timeout_rate": 0.008,
+                "pips_mean": 0.10379430584604732,
+                "pph_mean": -0.931521978410568,
+                "avg_resolution_min": 22.458,
+                "mfe_mean": 10.371299078823883,
+                "mae_mean": 8.969479659472007
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.495,
+                "sl_hit_rate": 0.4672,
+                "timeout_rate": 0.0378,
+                "pips_mean": 0.11677597829780052,
+                "pph_mean": -1.0492154516272192,
+                "avg_resolution_min": 27.566,
+                "mfe_mean": 10.371299078823883,
+                "mae_mean": 8.969479659472007
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4722,
+                "sl_hit_rate": 0.4502,
+                "timeout_rate": 0.0776,
+                "pips_mean": 0.10289314818726279,
+                "pph_mean": -1.392182600308359,
+                "avg_resolution_min": 33.506,
+                "mfe_mean": 10.371299078823883,
+                "mae_mean": 8.969479659472007
+              }
+            }
+          }
+        }
+      ],
+      "base_max_dist_atr": [
+        {
+          "value": 0.3,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.3
+            },
+            "candidate_count": 205,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5074,
+              "sl_hit_rate": 0.4468,
+              "timeout_rate": 0.0458,
+              "pips_mean": 0.21854600185485307,
+              "pph_mean": -0.2574611287753537,
+              "avg_resolution_min": 29.909,
+              "mfe_mean": 8.236061269088378,
+              "mae_mean": 9.953114361666842
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5112,
+                "sl_hit_rate": 0.4888,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.051169099607420346,
+                "pph_mean": 0.3297840088779039,
+                "avg_resolution_min": 13.975,
+                "mfe_mean": 8.236061269088378,
+                "mae_mean": 9.953114361666842
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.52,
+                "sl_hit_rate": 0.4774,
+                "timeout_rate": 0.0026,
+                "pips_mean": 0.12317178601408255,
+                "pph_mean": 0.20098312318799577,
+                "avg_resolution_min": 18.638,
+                "mfe_mean": 8.236061269088378,
+                "mae_mean": 9.953114361666842
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5208,
+                "sl_hit_rate": 0.4618,
+                "timeout_rate": 0.0174,
+                "pips_mean": 0.19066593371121207,
+                "pph_mean": 0.07225865970298923,
+                "avg_resolution_min": 23.842,
+                "mfe_mean": 8.236061269088378,
+                "mae_mean": 9.953114361666842
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5074,
+                "sl_hit_rate": 0.4468,
+                "timeout_rate": 0.0458,
+                "pips_mean": 0.21854600185485307,
+                "pph_mean": -0.2574611287753537,
+                "avg_resolution_min": 29.909,
+                "mfe_mean": 8.236061269088378,
+                "mae_mean": 9.953114361666842
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4836,
+                "sl_hit_rate": 0.4348,
+                "timeout_rate": 0.0816,
+                "pips_mean": 0.1878614050871818,
+                "pph_mean": -0.5307043397498397,
+                "avg_resolution_min": 36.032,
+                "mfe_mean": 8.236061269088378,
+                "mae_mean": 9.953114361666842
+              }
+            }
+          }
+        },
+        {
+          "value": 0.35,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 228,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4958,
+              "sl_hit_rate": 0.4554,
+              "timeout_rate": 0.0488,
+              "pips_mean": 0.11568786356263208,
+              "pph_mean": -0.6953500219595206,
+              "avg_resolution_min": 30.57,
+              "mfe_mean": 8.124814319867767,
+              "mae_mean": 9.636310444347505
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5,
+                "sl_hit_rate": 0.5,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.002198861687125961,
+                "pph_mean": -0.1273534158708013,
+                "avg_resolution_min": 14.143,
+                "mfe_mean": 8.124814319867767,
+                "mae_mean": 9.636310444347505
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5038,
+                "sl_hit_rate": 0.4932,
+                "timeout_rate": 0.003,
+                "pips_mean": 0.0285548231223985,
+                "pph_mean": -0.3940653008032916,
+                "avg_resolution_min": 19.309,
+                "mfe_mean": 8.124814319867767,
+                "mae_mean": 9.636310444347505
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5046,
+                "sl_hit_rate": 0.4782,
+                "timeout_rate": 0.0172,
+                "pips_mean": 0.07343405084994188,
+                "pph_mean": -0.5208615936139831,
+                "avg_resolution_min": 24.266,
+                "mfe_mean": 8.124814319867767,
+                "mae_mean": 9.636310444347505
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4958,
+                "sl_hit_rate": 0.4554,
+                "timeout_rate": 0.0488,
+                "pips_mean": 0.11568786356263208,
+                "pph_mean": -0.6953500219595206,
+                "avg_resolution_min": 30.57,
+                "mfe_mean": 8.124814319867767,
+                "mae_mean": 9.636310444347505
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4616,
+                "sl_hit_rate": 0.4494,
+                "timeout_rate": 0.089,
+                "pips_mean": -0.011370470504260544,
+                "pph_mean": -1.282126979278882,
+                "avg_resolution_min": 36.961,
+                "mfe_mean": 8.124814319867767,
+                "mae_mean": 9.636310444347505
+              }
+            }
+          }
+        },
+        {
+          "value": 0.4,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.4
+            },
+            "candidate_count": 252,
+            "trades_simulated": 5000,
+            "best_ladder": 2.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5198,
+              "sl_hit_rate": 0.465,
+              "timeout_rate": 0.0152,
+              "pips_mean": 0.1719196051323142,
+              "pph_mean": 0.011780545989993356,
+              "avg_resolution_min": 23.9,
+              "mfe_mean": 8.331410745646961,
+              "mae_mean": 10.028930335626075
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5066,
+                "sl_hit_rate": 0.4934,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.0307973482218472,
+                "pph_mean": 0.04025575308753756,
+                "avg_resolution_min": 13.778,
+                "mfe_mean": 8.331410745646961,
+                "mae_mean": 10.028930335626075
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5182,
+                "sl_hit_rate": 0.479,
+                "timeout_rate": 0.0028,
+                "pips_mean": 0.10668293942217325,
+                "pph_mean": 0.08299780656500531,
+                "avg_resolution_min": 18.918,
+                "mfe_mean": 8.331410745646961,
+                "mae_mean": 10.028930335626075
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5198,
+                "sl_hit_rate": 0.465,
+                "timeout_rate": 0.0152,
+                "pips_mean": 0.1719196051323142,
+                "pph_mean": 0.011780545989993356,
+                "avg_resolution_min": 23.9,
+                "mfe_mean": 8.331410745646961,
+                "mae_mean": 10.028930335626075
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.503,
+                "sl_hit_rate": 0.4576,
+                "timeout_rate": 0.0394,
+                "pips_mean": 0.15417804348208378,
+                "pph_mean": -0.21678163034420628,
+                "avg_resolution_min": 29.496,
+                "mfe_mean": 8.331410745646961,
+                "mae_mean": 10.028930335626075
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4706,
+                "sl_hit_rate": 0.4578,
+                "timeout_rate": 0.0716,
+                "pips_mean": 0.014721196228983246,
+                "pph_mean": -0.5258776523281894,
+                "avg_resolution_min": 35.459,
+                "mfe_mean": 8.331410745646961,
+                "mae_mean": 10.028930335626075
+              }
+            }
+          }
+        },
+        {
+          "value": 0.45,
+          "result": {
+            "direction": "LONG",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.45
+            },
+            "candidate_count": 281,
+            "trades_simulated": 5000,
+            "best_ladder": 3.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5064,
+              "sl_hit_rate": 0.4522,
+              "timeout_rate": 0.0414,
+              "pips_mean": 0.1903959383922661,
+              "pph_mean": -0.04699548449591289,
+              "avg_resolution_min": 29.599,
+              "mfe_mean": 8.541394882021084,
+              "mae_mean": 9.547913187820708
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4998,
+                "sl_hit_rate": 0.5002,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.0032000212091758584,
+                "pph_mean": -0.22313222503743235,
+                "avg_resolution_min": 13.804,
+                "mfe_mean": 8.541394882021084,
+                "mae_mean": 9.547913187820708
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5086,
+                "sl_hit_rate": 0.4884,
+                "timeout_rate": 0.003,
+                "pips_mean": 0.0609942855061785,
+                "pph_mean": -0.26463051228067286,
+                "avg_resolution_min": 18.789,
+                "mfe_mean": 8.541394882021084,
+                "mae_mean": 9.547913187820708
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5156,
+                "sl_hit_rate": 0.4662,
+                "timeout_rate": 0.0182,
+                "pips_mean": 0.16651203160049313,
+                "pph_mean": -0.10356200713968537,
+                "avg_resolution_min": 23.875,
+                "mfe_mean": 8.541394882021084,
+                "mae_mean": 9.547913187820708
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5064,
+                "sl_hit_rate": 0.4522,
+                "timeout_rate": 0.0414,
+                "pips_mean": 0.1903959383922661,
+                "pph_mean": -0.04699548449591289,
+                "avg_resolution_min": 29.599,
+                "mfe_mean": 8.541394882021084,
+                "mae_mean": 9.547913187820708
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.48,
+                "sl_hit_rate": 0.442,
+                "timeout_rate": 0.078,
+                "pips_mean": 0.12058245496206996,
+                "pph_mean": -0.30608263750657005,
+                "avg_resolution_min": 35.8,
+                "mfe_mean": 8.541394882021084,
+                "mae_mean": 9.547913187820708
+              }
+            }
+          }
+        }
+      ]
+    },
+    "direction": "LONG",
+    "ceiling": {
+      "direction": "LONG",
+      "knobs": {
+        "confirm_disp_atr": 0.14,
+        "confirm_sec": 0.75,
+        "base_max_dist_atr": 0.35
+      },
+      "candidate_count": 218,
+      "trades_simulated": 5000,
+      "best_ladder": 3.0,
+      "best": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5256,
+        "sl_hit_rate": 0.4356,
+        "timeout_rate": 0.0388,
+        "pips_mean": 0.31563095128307533,
+        "pph_mean": 0.3158085493867319,
+        "avg_resolution_min": 29.271,
+        "mfe_mean": 8.272090305955475,
+        "mae_mean": 9.666251663732663
+      },
+      "ladders": {
+        "1.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5284,
+          "sl_hit_rate": 0.4716,
+          "timeout_rate": 0.0,
+          "pips_mean": 0.11007475000771269,
+          "pph_mean": 1.0328498553873604,
+          "avg_resolution_min": 13.541,
+          "mfe_mean": 8.272090305955475,
+          "mae_mean": 9.666251663732663
+        },
+        "2.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5326,
+          "sl_hit_rate": 0.4654,
+          "timeout_rate": 0.002,
+          "pips_mean": 0.17352057665383638,
+          "pph_mean": 0.7409519598275005,
+          "avg_resolution_min": 17.908,
+          "mfe_mean": 8.272090305955475,
+          "mae_mean": 9.666251663732663
+        },
+        "2.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.536,
+          "sl_hit_rate": 0.4516,
+          "timeout_rate": 0.0124,
+          "pips_mean": 0.26516757327007107,
+          "pph_mean": 0.6256824541805621,
+          "avg_resolution_min": 23.006,
+          "mfe_mean": 8.272090305955475,
+          "mae_mean": 9.666251663732663
+        },
+        "3.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5256,
+          "sl_hit_rate": 0.4356,
+          "timeout_rate": 0.0388,
+          "pips_mean": 0.31563095128307533,
+          "pph_mean": 0.3158085493867319,
+          "avg_resolution_min": 29.271,
+          "mfe_mean": 8.272090305955475,
+          "mae_mean": 9.666251663732663
+        },
+        "3.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.492,
+          "sl_hit_rate": 0.4316,
+          "timeout_rate": 0.0764,
+          "pips_mean": 0.20536960539754054,
+          "pph_mean": 0.10501796514120156,
+          "avg_resolution_min": 35.569,
+          "mfe_mean": 8.272090305955475,
+          "mae_mean": 9.666251663732663
+        }
+      }
+    }
+  },
+  "short": {
+    "baseline": {
+      "direction": "SHORT",
+      "knobs": {
+        "confirm_disp_atr": 0.12,
+        "confirm_sec": 0.75,
+        "base_max_dist_atr": 0.35
+      },
+      "candidate_count": 191,
+      "trades_simulated": 5000,
+      "best_ladder": 2.0,
+      "best": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.4832,
+        "sl_hit_rate": 0.5152,
+        "timeout_rate": 0.0016,
+        "pips_mean": -0.08266283846668734,
+        "pph_mean": -1.2205361067908795,
+        "avg_resolution_min": 15.994,
+        "mfe_mean": 8.847009690591905,
+        "mae_mean": 9.221094375345693
+      },
+      "ladders": {
+        "1.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.4768,
+          "sl_hit_rate": 0.5232,
+          "timeout_rate": 0.0,
+          "pips_mean": -0.08764060911013957,
+          "pph_mean": -0.9646121892965533,
+          "avg_resolution_min": 11.877,
+          "mfe_mean": 8.847009690591905,
+          "mae_mean": 9.221094375345693
+        },
+        "2.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.4832,
+          "sl_hit_rate": 0.5152,
+          "timeout_rate": 0.0016,
+          "pips_mean": -0.08266283846668734,
+          "pph_mean": -1.2205361067908795,
+          "avg_resolution_min": 15.994,
+          "mfe_mean": 8.847009690591905,
+          "mae_mean": 9.221094375345693
+        },
+        "2.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.4752,
+          "sl_hit_rate": 0.5132,
+          "timeout_rate": 0.0116,
+          "pips_mean": -0.11083709983500535,
+          "pph_mean": -1.647066852305942,
+          "avg_resolution_min": 20.934,
+          "mfe_mean": 8.847009690591905,
+          "mae_mean": 9.221094375345693
+        },
+        "3.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.4636,
+          "sl_hit_rate": 0.507,
+          "timeout_rate": 0.0294,
+          "pips_mean": -0.13153039453986198,
+          "pph_mean": -2.117626525275541,
+          "avg_resolution_min": 26.682,
+          "mfe_mean": 8.847009690591905,
+          "mae_mean": 9.221094375345693
+        },
+        "3.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.451,
+          "sl_hit_rate": 0.4902,
+          "timeout_rate": 0.0588,
+          "pips_mean": -0.11286125616247794,
+          "pph_mean": -2.1590026903194275,
+          "avg_resolution_min": 32.843,
+          "mfe_mean": 8.847009690591905,
+          "mae_mean": 9.221094375345693
+        }
+      }
+    },
+    "sweeps": {
+      "confirm_disp_atr": [
+        {
+          "value": 0.1,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.1,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 196,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4672,
+              "sl_hit_rate": 0.5328,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.11948340003688084,
+              "pph_mean": -1.238523730055261,
+              "avg_resolution_min": 12.415,
+              "mfe_mean": 8.620799023369973,
+              "mae_mean": 9.770979378812607
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4672,
+                "sl_hit_rate": 0.5328,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.11948340003688084,
+                "pph_mean": -1.238523730055261,
+                "avg_resolution_min": 12.415,
+                "mfe_mean": 8.620799023369973,
+                "mae_mean": 9.770979378812607
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.462,
+                "sl_hit_rate": 0.536,
+                "timeout_rate": 0.002,
+                "pips_mean": -0.17989507769514743,
+                "pph_mean": -1.8033716945798122,
+                "avg_resolution_min": 16.769,
+                "mfe_mean": 8.620799023369973,
+                "mae_mean": 9.770979378812607
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4568,
+                "sl_hit_rate": 0.5312,
+                "timeout_rate": 0.012,
+                "pips_mean": -0.21588184973957095,
+                "pph_mean": -2.100758501942804,
+                "avg_resolution_min": 21.575,
+                "mfe_mean": 8.620799023369973,
+                "mae_mean": 9.770979378812607
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4446,
+                "sl_hit_rate": 0.5184,
+                "timeout_rate": 0.037,
+                "pips_mean": -0.23569358195187287,
+                "pph_mean": -2.779636736825213,
+                "avg_resolution_min": 27.752,
+                "mfe_mean": 8.620799023369973,
+                "mae_mean": 9.770979378812607
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4364,
+                "sl_hit_rate": 0.499,
+                "timeout_rate": 0.0646,
+                "pips_mean": -0.19980663113781594,
+                "pph_mean": -3.092816986581935,
+                "avg_resolution_min": 33.687,
+                "mfe_mean": 8.620799023369973,
+                "mae_mean": 9.770979378812607
+              }
+            }
+          }
+        },
+        {
+          "value": 0.12,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 191,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.462,
+              "sl_hit_rate": 0.538,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.1443034382657058,
+              "pph_mean": -1.301915504158404,
+              "avg_resolution_min": 11.918,
+              "mfe_mean": 8.867935454224824,
+              "mae_mean": 9.719147551967552
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.462,
+                "sl_hit_rate": 0.538,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.1443034382657058,
+                "pph_mean": -1.301915504158404,
+                "avg_resolution_min": 11.918,
+                "mfe_mean": 8.867935454224824,
+                "mae_mean": 9.719147551967552
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4666,
+                "sl_hit_rate": 0.5316,
+                "timeout_rate": 0.0018,
+                "pips_mean": -0.16673353281332748,
+                "pph_mean": -1.6164048132685358,
+                "avg_resolution_min": 16.017,
+                "mfe_mean": 8.867935454224824,
+                "mae_mean": 9.719147551967552
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.458,
+                "sl_hit_rate": 0.5288,
+                "timeout_rate": 0.0132,
+                "pips_mean": -0.20918427957605715,
+                "pph_mean": -2.07918889330196,
+                "avg_resolution_min": 21.189,
+                "mfe_mean": 8.867935454224824,
+                "mae_mean": 9.719147551967552
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4472,
+                "sl_hit_rate": 0.5192,
+                "timeout_rate": 0.0336,
+                "pips_mean": -0.22568915451960392,
+                "pph_mean": -2.5179974173511273,
+                "avg_resolution_min": 27.019,
+                "mfe_mean": 8.867935454224824,
+                "mae_mean": 9.719147551967552
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4366,
+                "sl_hit_rate": 0.4966,
+                "timeout_rate": 0.0668,
+                "pips_mean": -0.1816674471579239,
+                "pph_mean": -2.8702388528718727,
+                "avg_resolution_min": 33.252,
+                "mfe_mean": 8.867935454224824,
+                "mae_mean": 9.719147551967552
+              }
+            }
+          }
+        },
+        {
+          "value": 0.14,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.14,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 181,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4574,
+              "sl_hit_rate": 0.5426,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.16107115331967228,
+              "pph_mean": -1.3664718883917255,
+              "avg_resolution_min": 12.164,
+              "mfe_mean": 8.928114410008272,
+              "mae_mean": 9.532668233604264
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4574,
+                "sl_hit_rate": 0.5426,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.16107115331967228,
+                "pph_mean": -1.3664718883917255,
+                "avg_resolution_min": 12.164,
+                "mfe_mean": 8.928114410008272,
+                "mae_mean": 9.532668233604264
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4558,
+                "sl_hit_rate": 0.5424,
+                "timeout_rate": 0.0018,
+                "pips_mean": -0.22137648539272756,
+                "pph_mean": -1.817841056434869,
+                "avg_resolution_min": 16.056,
+                "mfe_mean": 8.928114410008272,
+                "mae_mean": 9.532668233604264
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.449,
+                "sl_hit_rate": 0.5404,
+                "timeout_rate": 0.0106,
+                "pips_mean": -0.2796623524334145,
+                "pph_mean": -2.2761840579271753,
+                "avg_resolution_min": 21.205,
+                "mfe_mean": 8.928114410008272,
+                "mae_mean": 9.532668233604264
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4396,
+                "sl_hit_rate": 0.527,
+                "timeout_rate": 0.0334,
+                "pips_mean": -0.2988534983314965,
+                "pph_mean": -2.630407192933235,
+                "avg_resolution_min": 27.276,
+                "mfe_mean": 8.928114410008272,
+                "mae_mean": 9.532668233604264
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.429,
+                "sl_hit_rate": 0.5066,
+                "timeout_rate": 0.0644,
+                "pips_mean": -0.2899938308283411,
+                "pph_mean": -2.59369511965709,
+                "avg_resolution_min": 33.526,
+                "mfe_mean": 8.928114410008272,
+                "mae_mean": 9.532668233604264
+              }
+            }
+          }
+        },
+        {
+          "value": 0.16,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.16,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 176,
+            "trades_simulated": 5000,
+            "best_ladder": 3.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4526,
+              "sl_hit_rate": 0.4816,
+              "timeout_rate": 0.0658,
+              "pips_mean": -0.046319984516135004,
+              "pph_mean": -2.2151334226579285,
+              "avg_resolution_min": 33.073,
+              "mfe_mean": 9.155829773557288,
+              "mae_mean": 9.20301773244096
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4692,
+                "sl_hit_rate": 0.5308,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.11616825101928589,
+                "pph_mean": -1.3684650490404846,
+                "avg_resolution_min": 11.725,
+                "mfe_mean": 9.155829773557288,
+                "mae_mean": 9.20301773244096
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4774,
+                "sl_hit_rate": 0.5202,
+                "timeout_rate": 0.0024,
+                "pips_mean": -0.10598257974255589,
+                "pph_mean": -1.484169862738017,
+                "avg_resolution_min": 16.038,
+                "mfe_mean": 9.155829773557288,
+                "mae_mean": 9.20301773244096
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4764,
+                "sl_hit_rate": 0.5116,
+                "timeout_rate": 0.012,
+                "pips_mean": -0.09185980885620205,
+                "pph_mean": -1.8313944378870677,
+                "avg_resolution_min": 21.06,
+                "mfe_mean": 9.155829773557288,
+                "mae_mean": 9.20301773244096
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4674,
+                "sl_hit_rate": 0.499,
+                "timeout_rate": 0.0336,
+                "pips_mean": -0.07322545870177348,
+                "pph_mean": -2.084261738260626,
+                "avg_resolution_min": 26.928,
+                "mfe_mean": 9.155829773557288,
+                "mae_mean": 9.20301773244096
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4526,
+                "sl_hit_rate": 0.4816,
+                "timeout_rate": 0.0658,
+                "pips_mean": -0.046319984516135004,
+                "pph_mean": -2.2151334226579285,
+                "avg_resolution_min": 33.073,
+                "mfe_mean": 9.155829773557288,
+                "mae_mean": 9.20301773244096
+              }
+            }
+          }
+        }
+      ],
+      "confirm_sec": [
+        {
+          "value": 0.5,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.5,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 473,
+            "trades_simulated": 5000,
+            "best_ladder": 2.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.5046,
+              "sl_hit_rate": 0.4864,
+              "timeout_rate": 0.009,
+              "pips_mean": 0.07273924088694975,
+              "pph_mean": 0.07891150718540091,
+              "avg_resolution_min": 20.612,
+              "mfe_mean": 9.600518641629296,
+              "mae_mean": 9.39181797269045
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5168,
+                "sl_hit_rate": 0.4832,
+                "timeout_rate": 0.0,
+                "pips_mean": 0.07176303280651648,
+                "pph_mean": 0.7479365415919805,
+                "avg_resolution_min": 11.968,
+                "mfe_mean": 9.600518641629296,
+                "mae_mean": 9.39181797269045
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5108,
+                "sl_hit_rate": 0.4868,
+                "timeout_rate": 0.0024,
+                "pips_mean": 0.06769804083263384,
+                "pph_mean": 0.3010407280126372,
+                "avg_resolution_min": 16.265,
+                "mfe_mean": 9.600518641629296,
+                "mae_mean": 9.39181797269045
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.5046,
+                "sl_hit_rate": 0.4864,
+                "timeout_rate": 0.009,
+                "pips_mean": 0.07273924088694975,
+                "pph_mean": 0.07891150718540091,
+                "avg_resolution_min": 20.612,
+                "mfe_mean": 9.600518641629296,
+                "mae_mean": 9.39181797269045
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4882,
+                "sl_hit_rate": 0.4828,
+                "timeout_rate": 0.029,
+                "pips_mean": 0.04489267678891769,
+                "pph_mean": -0.4063808926494663,
+                "avg_resolution_min": 26.092,
+                "mfe_mean": 9.600518641629296,
+                "mae_mean": 9.39181797269045
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.474,
+                "sl_hit_rate": 0.473,
+                "timeout_rate": 0.053,
+                "pips_mean": 0.03469666968049354,
+                "pph_mean": -0.8519411179768409,
+                "avg_resolution_min": 31.812,
+                "mfe_mean": 9.600518641629296,
+                "mae_mean": 9.39181797269045
+              }
+            }
+          }
+        },
+        {
+          "value": 0.75,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 191,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4554,
+              "sl_hit_rate": 0.5446,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.17010095022558616,
+              "pph_mean": -1.6047741169005694,
+              "avg_resolution_min": 11.759,
+              "mfe_mean": 8.87883965972756,
+              "mae_mean": 9.37804403142737
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4554,
+                "sl_hit_rate": 0.5446,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.17010095022558616,
+                "pph_mean": -1.6047741169005694,
+                "avg_resolution_min": 11.759,
+                "mfe_mean": 8.87883965972756,
+                "mae_mean": 9.37804403142737
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4536,
+                "sl_hit_rate": 0.545,
+                "timeout_rate": 0.0014,
+                "pips_mean": -0.23579902278121523,
+                "pph_mean": -2.2003039301307368,
+                "avg_resolution_min": 15.746,
+                "mfe_mean": 8.87883965972756,
+                "mae_mean": 9.37804403142737
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.453,
+                "sl_hit_rate": 0.538,
+                "timeout_rate": 0.009,
+                "pips_mean": -0.25996756925694,
+                "pph_mean": -2.471761695734764,
+                "avg_resolution_min": 20.703,
+                "mfe_mean": 8.87883965972756,
+                "mae_mean": 9.37804403142737
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4458,
+                "sl_hit_rate": 0.5234,
+                "timeout_rate": 0.0308,
+                "pips_mean": -0.2513527992535032,
+                "pph_mean": -2.986603655296917,
+                "avg_resolution_min": 26.6,
+                "mfe_mean": 8.87883965972756,
+                "mae_mean": 9.37804403142737
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4382,
+                "sl_hit_rate": 0.5008,
+                "timeout_rate": 0.061,
+                "pips_mean": -0.20519041860645684,
+                "pph_mean": -3.1199316212553536,
+                "avg_resolution_min": 32.811,
+                "mfe_mean": 8.87883965972756,
+                "mae_mean": 9.37804403142737
+              }
+            }
+          }
+        },
+        {
+          "value": 1.0,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 1.0,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 191,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4464,
+              "sl_hit_rate": 0.5536,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.20777614081812118,
+              "pph_mean": -1.6642811096630248,
+              "avg_resolution_min": 11.884,
+              "mfe_mean": 8.8439471471776,
+              "mae_mean": 9.715098118707012
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4464,
+                "sl_hit_rate": 0.5536,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.20777614081812118,
+                "pph_mean": -1.6642811096630248,
+                "avg_resolution_min": 11.884,
+                "mfe_mean": 8.8439471471776,
+                "mae_mean": 9.715098118707012
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.446,
+                "sl_hit_rate": 0.553,
+                "timeout_rate": 0.001,
+                "pips_mean": -0.27965593195496574,
+                "pph_mean": -2.162511601301596,
+                "avg_resolution_min": 15.741,
+                "mfe_mean": 8.8439471471776,
+                "mae_mean": 9.715098118707012
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4438,
+                "sl_hit_rate": 0.546,
+                "timeout_rate": 0.0102,
+                "pips_mean": -0.3231685952662792,
+                "pph_mean": -2.58760065195179,
+                "avg_resolution_min": 21.008,
+                "mfe_mean": 8.8439471471776,
+                "mae_mean": 9.715098118707012
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.432,
+                "sl_hit_rate": 0.539,
+                "timeout_rate": 0.029,
+                "pips_mean": -0.386541512690491,
+                "pph_mean": -3.2159589392597305,
+                "avg_resolution_min": 26.882,
+                "mfe_mean": 8.8439471471776,
+                "mae_mean": 9.715098118707012
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4178,
+                "sl_hit_rate": 0.5222,
+                "timeout_rate": 0.06,
+                "pips_mean": -0.4115497967822609,
+                "pph_mean": -3.380844583041198,
+                "avg_resolution_min": 32.915,
+                "mfe_mean": 8.8439471471776,
+                "mae_mean": 9.715098118707012
+              }
+            }
+          }
+        },
+        {
+          "value": 1.25,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 1.25,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 61,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.3924,
+              "sl_hit_rate": 0.6076,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.4094666790557963,
+              "pph_mean": -3.7443859859251454,
+              "avg_resolution_min": 11.73,
+              "mfe_mean": 9.700030766298417,
+              "mae_mean": 10.872395024350416
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.3924,
+                "sl_hit_rate": 0.6076,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.4094666790557963,
+                "pph_mean": -3.7443859859251454,
+                "avg_resolution_min": 11.73,
+                "mfe_mean": 9.700030766298417,
+                "mae_mean": 10.872395024350416
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4122,
+                "sl_hit_rate": 0.5878,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.4463899426032531,
+                "pph_mean": -3.6839255422356,
+                "avg_resolution_min": 15.823,
+                "mfe_mean": 9.700030766298417,
+                "mae_mean": 10.872395024350416
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.398,
+                "sl_hit_rate": 0.5974,
+                "timeout_rate": 0.0046,
+                "pips_mean": -0.6216588494707379,
+                "pph_mean": -4.904027476493686,
+                "avg_resolution_min": 20.513,
+                "mfe_mean": 9.700030766298417,
+                "mae_mean": 10.872395024350416
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.3906,
+                "sl_hit_rate": 0.5894,
+                "timeout_rate": 0.02,
+                "pips_mean": -0.7316137726712751,
+                "pph_mean": -6.30181392279318,
+                "avg_resolution_min": 25.5,
+                "mfe_mean": 9.700030766298417,
+                "mae_mean": 10.872395024350416
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.3972,
+                "sl_hit_rate": 0.5552,
+                "timeout_rate": 0.0476,
+                "pips_mean": -0.656506729826476,
+                "pph_mean": -6.888847252511836,
+                "avg_resolution_min": 30.964,
+                "mfe_mean": 9.700030766298417,
+                "mae_mean": 10.872395024350416
+              }
+            }
+          }
+        }
+      ],
+      "base_max_dist_atr": [
+        {
+          "value": 0.3,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.3
+            },
+            "candidate_count": 168,
+            "trades_simulated": 5000,
+            "best_ladder": 3.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4618,
+              "sl_hit_rate": 0.4672,
+              "timeout_rate": 0.071,
+              "pips_mean": 0.06060612827899445,
+              "pph_mean": -1.8734409047877278,
+              "avg_resolution_min": 35.449,
+              "mfe_mean": 9.162920152133275,
+              "mae_mean": 8.784766706146591
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4894,
+                "sl_hit_rate": 0.5106,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.03224152627274972,
+                "pph_mean": -0.5114375811109992,
+                "avg_resolution_min": 12.443,
+                "mfe_mean": 9.162920152133275,
+                "mae_mean": 8.784766706146591
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4942,
+                "sl_hit_rate": 0.5034,
+                "timeout_rate": 0.0024,
+                "pips_mean": -0.016284882661584458,
+                "pph_mean": -0.5472887494855276,
+                "avg_resolution_min": 16.687,
+                "mfe_mean": 9.162920152133275,
+                "mae_mean": 8.784766706146591
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4872,
+                "sl_hit_rate": 0.5008,
+                "timeout_rate": 0.012,
+                "pips_mean": -0.020219218801410282,
+                "pph_mean": -0.790369971298773,
+                "avg_resolution_min": 22.277,
+                "mfe_mean": 9.162920152133275,
+                "mae_mean": 8.784766706146591
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4694,
+                "sl_hit_rate": 0.492,
+                "timeout_rate": 0.0386,
+                "pips_mean": -0.0259662627861072,
+                "pph_mean": -1.5174957699574467,
+                "avg_resolution_min": 28.955,
+                "mfe_mean": 9.162920152133275,
+                "mae_mean": 8.784766706146591
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4618,
+                "sl_hit_rate": 0.4672,
+                "timeout_rate": 0.071,
+                "pips_mean": 0.06060612827899445,
+                "pph_mean": -1.8734409047877278,
+                "avg_resolution_min": 35.449,
+                "mfe_mean": 9.162920152133275,
+                "mae_mean": 8.784766706146591
+              }
+            }
+          }
+        },
+        {
+          "value": 0.35,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.35
+            },
+            "candidate_count": 191,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4514,
+              "sl_hit_rate": 0.5486,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.1882252431185364,
+              "pph_mean": -1.6362021720968654,
+              "avg_resolution_min": 11.89,
+              "mfe_mean": 8.793738716614703,
+              "mae_mean": 9.982063787534472
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4514,
+                "sl_hit_rate": 0.5486,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.1882252431185364,
+                "pph_mean": -1.6362021720968654,
+                "avg_resolution_min": 11.89,
+                "mfe_mean": 8.793738716614703,
+                "mae_mean": 9.982063787534472
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4556,
+                "sl_hit_rate": 0.543,
+                "timeout_rate": 0.0014,
+                "pips_mean": -0.23081494283029416,
+                "pph_mean": -1.9762460602294762,
+                "avg_resolution_min": 15.722,
+                "mfe_mean": 8.793738716614703,
+                "mae_mean": 9.982063787534472
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4446,
+                "sl_hit_rate": 0.5446,
+                "timeout_rate": 0.0108,
+                "pips_mean": -0.31412314496337385,
+                "pph_mean": -2.5951249045532863,
+                "avg_resolution_min": 20.673,
+                "mfe_mean": 8.793738716614703,
+                "mae_mean": 9.982063787534472
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.439,
+                "sl_hit_rate": 0.5286,
+                "timeout_rate": 0.0324,
+                "pips_mean": -0.30622319596132175,
+                "pph_mean": -3.071919042180811,
+                "avg_resolution_min": 26.566,
+                "mfe_mean": 8.793738716614703,
+                "mae_mean": 9.982063787534472
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.426,
+                "sl_hit_rate": 0.5118,
+                "timeout_rate": 0.0622,
+                "pips_mean": -0.32473654632199866,
+                "pph_mean": -3.3971658404671996,
+                "avg_resolution_min": 32.658,
+                "mfe_mean": 8.793738716614703,
+                "mae_mean": 9.982063787534472
+              }
+            }
+          }
+        },
+        {
+          "value": 0.4,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.4
+            },
+            "candidate_count": 222,
+            "trades_simulated": 5000,
+            "best_ladder": 1.5,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.4764,
+              "sl_hit_rate": 0.5236,
+              "timeout_rate": 0.0,
+              "pips_mean": -0.0965810843704374,
+              "pph_mean": -1.0297620820060616,
+              "avg_resolution_min": 12.369,
+              "mfe_mean": 8.598045087164486,
+              "mae_mean": 9.633486596797503
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4764,
+                "sl_hit_rate": 0.5236,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.0965810843704374,
+                "pph_mean": -1.0297620820060616,
+                "avg_resolution_min": 12.369,
+                "mfe_mean": 8.598045087164486,
+                "mae_mean": 9.633486596797503
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4786,
+                "sl_hit_rate": 0.519,
+                "timeout_rate": 0.0024,
+                "pips_mean": -0.10693542171463419,
+                "pph_mean": -1.225502284240678,
+                "avg_resolution_min": 16.723,
+                "mfe_mean": 8.598045087164486,
+                "mae_mean": 9.633486596797503
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4592,
+                "sl_hit_rate": 0.5262,
+                "timeout_rate": 0.0146,
+                "pips_mean": -0.19929023268451926,
+                "pph_mean": -1.8492595181366323,
+                "avg_resolution_min": 21.967,
+                "mfe_mean": 8.598045087164486,
+                "mae_mean": 9.633486596797503
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4446,
+                "sl_hit_rate": 0.5162,
+                "timeout_rate": 0.0392,
+                "pips_mean": -0.2555528563417321,
+                "pph_mean": -2.4373279607311766,
+                "avg_resolution_min": 27.806,
+                "mfe_mean": 8.598045087164486,
+                "mae_mean": 9.633486596797503
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4272,
+                "sl_hit_rate": 0.5016,
+                "timeout_rate": 0.0712,
+                "pips_mean": -0.2988876706792343,
+                "pph_mean": -2.820025846217278,
+                "avg_resolution_min": 33.664,
+                "mfe_mean": 8.598045087164486,
+                "mae_mean": 9.633486596797503
+              }
+            }
+          }
+        },
+        {
+          "value": 0.45,
+          "result": {
+            "direction": "SHORT",
+            "knobs": {
+              "confirm_disp_atr": 0.12,
+              "confirm_sec": 0.75,
+              "base_max_dist_atr": 0.45
+            },
+            "candidate_count": 253,
+            "trades_simulated": 5000,
+            "best_ladder": 2.0,
+            "best": {
+              "trade_count": 5000,
+              "tp_hit_rate": 0.49,
+              "sl_hit_rate": 0.5078,
+              "timeout_rate": 0.0022,
+              "pips_mean": -0.04610057518371009,
+              "pph_mean": -1.204639535455468,
+              "avg_resolution_min": 17.32,
+              "mfe_mean": 8.9046273537017,
+              "mae_mean": 9.576764014664919
+            },
+            "ladders": {
+              "1.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4848,
+                "sl_hit_rate": 0.5152,
+                "timeout_rate": 0.0,
+                "pips_mean": -0.060789605914784134,
+                "pph_mean": -0.8097914725896806,
+                "avg_resolution_min": 12.549,
+                "mfe_mean": 8.9046273537017,
+                "mae_mean": 9.576764014664919
+              },
+              "2.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.49,
+                "sl_hit_rate": 0.5078,
+                "timeout_rate": 0.0022,
+                "pips_mean": -0.04610057518371009,
+                "pph_mean": -1.204639535455468,
+                "avg_resolution_min": 17.32,
+                "mfe_mean": 8.9046273537017,
+                "mae_mean": 9.576764014664919
+              },
+              "2.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4744,
+                "sl_hit_rate": 0.5124,
+                "timeout_rate": 0.0132,
+                "pips_mean": -0.10317546266873875,
+                "pph_mean": -1.7930721026452048,
+                "avg_resolution_min": 22.956,
+                "mfe_mean": 8.9046273537017,
+                "mae_mean": 9.576764014664919
+              },
+              "3.0": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4584,
+                "sl_hit_rate": 0.5014,
+                "timeout_rate": 0.0402,
+                "pips_mean": -0.1317339122055043,
+                "pph_mean": -2.391918508480933,
+                "avg_resolution_min": 28.791,
+                "mfe_mean": 8.9046273537017,
+                "mae_mean": 9.576764014664919
+              },
+              "3.5": {
+                "trade_count": 5000,
+                "tp_hit_rate": 0.4374,
+                "sl_hit_rate": 0.4874,
+                "timeout_rate": 0.0752,
+                "pips_mean": -0.18841840363255735,
+                "pph_mean": -2.6302153112035733,
+                "avg_resolution_min": 34.823,
+                "mfe_mean": 8.9046273537017,
+                "mae_mean": 9.576764014664919
+              }
+            }
+          }
+        }
+      ]
+    },
+    "direction": "SHORT",
+    "ceiling": {
+      "direction": "SHORT",
+      "knobs": {
+        "confirm_disp_atr": 0.12,
+        "confirm_sec": 0.5,
+        "base_max_dist_atr": 0.35
+      },
+      "candidate_count": 473,
+      "trades_simulated": 5000,
+      "best_ladder": 2.5,
+      "best": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5046,
+        "sl_hit_rate": 0.4864,
+        "timeout_rate": 0.009,
+        "pips_mean": 0.07273924088694975,
+        "pph_mean": 0.07891150718540091,
+        "avg_resolution_min": 20.612,
+        "mfe_mean": 9.600518641629296,
+        "mae_mean": 9.39181797269045
+      },
+      "ladders": {
+        "1.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5168,
+          "sl_hit_rate": 0.4832,
+          "timeout_rate": 0.0,
+          "pips_mean": 0.07176303280651648,
+          "pph_mean": 0.7479365415919805,
+          "avg_resolution_min": 11.968,
+          "mfe_mean": 9.600518641629296,
+          "mae_mean": 9.39181797269045
+        },
+        "2.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5108,
+          "sl_hit_rate": 0.4868,
+          "timeout_rate": 0.0024,
+          "pips_mean": 0.06769804083263384,
+          "pph_mean": 0.3010407280126372,
+          "avg_resolution_min": 16.265,
+          "mfe_mean": 9.600518641629296,
+          "mae_mean": 9.39181797269045
+        },
+        "2.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.5046,
+          "sl_hit_rate": 0.4864,
+          "timeout_rate": 0.009,
+          "pips_mean": 0.07273924088694975,
+          "pph_mean": 0.07891150718540091,
+          "avg_resolution_min": 20.612,
+          "mfe_mean": 9.600518641629296,
+          "mae_mean": 9.39181797269045
+        },
+        "3.0": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.4882,
+          "sl_hit_rate": 0.4828,
+          "timeout_rate": 0.029,
+          "pips_mean": 0.04489267678891769,
+          "pph_mean": -0.4063808926494663,
+          "avg_resolution_min": 26.092,
+          "mfe_mean": 9.600518641629296,
+          "mae_mean": 9.39181797269045
+        },
+        "3.5": {
+          "trade_count": 5000,
+          "tp_hit_rate": 0.474,
+          "sl_hit_rate": 0.473,
+          "timeout_rate": 0.053,
+          "pips_mean": 0.03469666968049354,
+          "pph_mean": -0.8519411179768409,
+          "avg_resolution_min": 31.812,
+          "mfe_mean": 9.600518641629296,
+          "mae_mean": 9.39181797269045
+        }
+      }
+    }
+  },
+  "best_long_only": {
+    "direction": "LONG",
+    "knobs": {
+      "confirm_disp_atr": 0.14,
+      "confirm_sec": 0.75,
+      "base_max_dist_atr": 0.35
+    },
+    "candidate_count": 218,
+    "trades_simulated": 5000,
+    "best_ladder": 3.0,
+    "best": {
+      "trade_count": 5000,
+      "tp_hit_rate": 0.5256,
+      "sl_hit_rate": 0.4356,
+      "timeout_rate": 0.0388,
+      "pips_mean": 0.31563095128307533,
+      "pph_mean": 0.3158085493867319,
+      "avg_resolution_min": 29.271,
+      "mfe_mean": 8.272090305955475,
+      "mae_mean": 9.666251663732663
+    },
+    "ladders": {
+      "1.5": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5284,
+        "sl_hit_rate": 0.4716,
+        "timeout_rate": 0.0,
+        "pips_mean": 0.11007475000771269,
+        "pph_mean": 1.0328498553873604,
+        "avg_resolution_min": 13.541,
+        "mfe_mean": 8.272090305955475,
+        "mae_mean": 9.666251663732663
+      },
+      "2.0": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5326,
+        "sl_hit_rate": 0.4654,
+        "timeout_rate": 0.002,
+        "pips_mean": 0.17352057665383638,
+        "pph_mean": 0.7409519598275005,
+        "avg_resolution_min": 17.908,
+        "mfe_mean": 8.272090305955475,
+        "mae_mean": 9.666251663732663
+      },
+      "2.5": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.536,
+        "sl_hit_rate": 0.4516,
+        "timeout_rate": 0.0124,
+        "pips_mean": 0.26516757327007107,
+        "pph_mean": 0.6256824541805621,
+        "avg_resolution_min": 23.006,
+        "mfe_mean": 8.272090305955475,
+        "mae_mean": 9.666251663732663
+      },
+      "3.0": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5256,
+        "sl_hit_rate": 0.4356,
+        "timeout_rate": 0.0388,
+        "pips_mean": 0.31563095128307533,
+        "pph_mean": 0.3158085493867319,
+        "avg_resolution_min": 29.271,
+        "mfe_mean": 8.272090305955475,
+        "mae_mean": 9.666251663732663
+      },
+      "3.5": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.492,
+        "sl_hit_rate": 0.4316,
+        "timeout_rate": 0.0764,
+        "pips_mean": 0.20536960539754054,
+        "pph_mean": 0.10501796514120156,
+        "avg_resolution_min": 35.569,
+        "mfe_mean": 8.272090305955475,
+        "mae_mean": 9.666251663732663
+      }
+    }
+  },
+  "best_short_only": {
+    "direction": "SHORT",
+    "knobs": {
+      "confirm_disp_atr": 0.12,
+      "confirm_sec": 0.5,
+      "base_max_dist_atr": 0.35
+    },
+    "candidate_count": 473,
+    "trades_simulated": 5000,
+    "best_ladder": 2.5,
+    "best": {
+      "trade_count": 5000,
+      "tp_hit_rate": 0.5046,
+      "sl_hit_rate": 0.4864,
+      "timeout_rate": 0.009,
+      "pips_mean": 0.07273924088694975,
+      "pph_mean": 0.07891150718540091,
+      "avg_resolution_min": 20.612,
+      "mfe_mean": 9.600518641629296,
+      "mae_mean": 9.39181797269045
+    },
+    "ladders": {
+      "1.5": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5168,
+        "sl_hit_rate": 0.4832,
+        "timeout_rate": 0.0,
+        "pips_mean": 0.07176303280651648,
+        "pph_mean": 0.7479365415919805,
+        "avg_resolution_min": 11.968,
+        "mfe_mean": 9.600518641629296,
+        "mae_mean": 9.39181797269045
+      },
+      "2.0": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5108,
+        "sl_hit_rate": 0.4868,
+        "timeout_rate": 0.0024,
+        "pips_mean": 0.06769804083263384,
+        "pph_mean": 0.3010407280126372,
+        "avg_resolution_min": 16.265,
+        "mfe_mean": 9.600518641629296,
+        "mae_mean": 9.39181797269045
+      },
+      "2.5": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.5046,
+        "sl_hit_rate": 0.4864,
+        "timeout_rate": 0.009,
+        "pips_mean": 0.07273924088694975,
+        "pph_mean": 0.07891150718540091,
+        "avg_resolution_min": 20.612,
+        "mfe_mean": 9.600518641629296,
+        "mae_mean": 9.39181797269045
+      },
+      "3.0": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.4882,
+        "sl_hit_rate": 0.4828,
+        "timeout_rate": 0.029,
+        "pips_mean": 0.04489267678891769,
+        "pph_mean": -0.4063808926494663,
+        "avg_resolution_min": 26.092,
+        "mfe_mean": 9.600518641629296,
+        "mae_mean": 9.39181797269045
+      },
+      "3.5": {
+        "trade_count": 5000,
+        "tp_hit_rate": 0.474,
+        "sl_hit_rate": 0.473,
+        "timeout_rate": 0.053,
+        "pips_mean": 0.03469666968049354,
+        "pph_mean": -0.8519411179768409,
+        "avg_resolution_min": 31.812,
+        "mfe_mean": 9.600518641629296,
+        "mae_mean": 9.39181797269045
+      }
+    }
+  }
+}

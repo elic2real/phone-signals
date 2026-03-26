@@ -1,0 +1,118 @@
+{
+  "run_id": "AEE_RUN_20260326T074317Z",
+  "generated_at": "2026-03-26T07:43:17.521136Z",
+  "champion_reference": "strategy_performance_report_raw.json",
+  "intervention_class": "AEE_RUN",
+  "strategy_form": "entry_v36_firehose_all_families",
+  "aee_version": "v2",
+  "simulation_mode": "RAW_STREAM_REPLAY",
+  "data_coverage": {
+    "pair_coverage": [
+      "GBP_USD"
+    ],
+    "streams": 10,
+    "hours": 6755.4333,
+    "unique_days": 1,
+    "sessions_represented": {
+      "asia": 1,
+      "london": 1,
+      "new_york": 1,
+      "sydney": 1
+    },
+    "session_quarter_distribution": {
+      "UNKNOWN": 4
+    },
+    "contexts_represented": {
+      "GBP_USD__monday__asia": 1689.2833,
+      "GBP_USD__monday__london": 1689.3833,
+      "GBP_USD__monday__new_york": 1689.45,
+      "GBP_USD__monday__sydney": 1687.3167
+    },
+    "regime_distribution": {
+      "RANGE_ESCAPE": 4103,
+      "PULLBACK_CONTINUATION": 438,
+      "OTHER": 1240,
+      "EXPANSION_BREAKOUT": 1976,
+      "RECLAIM_CONTINUATION": 17
+    },
+    "dominance_concentration": {
+      "top_family": "EXPANSION_BREAKOUT",
+      "top_family_trade_share": 0.542226
+    }
+  },
+  "results": {
+    "trade_count": 1042,
+    "trades_per_hour": 0.154246,
+    "avg_pips_per_trade": 1.755086,
+    "entry_only_pph": 2.244993,
+    "realized_pph": 0.270715,
+    "gap": 1.974277,
+    "extraction_efficiency": 0.120586
+  },
+  "top_logic_paths": {
+    "entry": [
+      {
+        "name": "EXPANSION_BREAKOUT",
+        "count": 565
+      },
+      {
+        "name": "RANGE_ESCAPE",
+        "count": 428
+      },
+      {
+        "name": "OTHER",
+        "count": 49
+      }
+    ],
+    "exit": [
+      {
+        "name": "AEE_GIVEBACK_EXIT",
+        "count": 718
+      },
+      {
+        "name": "AEE_BAND_FAST_FAILURE_EXIT",
+        "count": 316
+      },
+      {
+        "name": "AEE_CONTINUATION_FAILED_EXIT",
+        "count": 6
+      },
+      {
+        "name": "AEE_NEVER_GREEN_TIMEOUT",
+        "count": 2
+      }
+    ]
+  },
+  "top_damage": {
+    "primary_destructive_branch": {
+      "name": "AEE_GIVEBACK_EXIT",
+      "count": 718
+    },
+    "secondary_destructive_branch": {
+      "name": "AEE_BAND_FAST_FAILURE_EXIT",
+      "count": 316
+    }
+  },
+  "signature_check": {
+    "expected": {
+      "realized_pph": "improve_or_hold",
+      "entry_only_vs_realized_gap": "shrink_or_hold",
+      "extraction_efficiency": "improve_or_hold"
+    },
+    "actual": {
+      "trade_count": 1042,
+      "trades_per_hour": 0.154246,
+      "avg_pips_per_trade": 1.755086,
+      "entry_only_pph": 2.244993,
+      "realized_pph": 0.270715,
+      "gap": 1.974277,
+      "extraction_efficiency": 0.120586
+    },
+    "delta_vs_champion": {
+      "breakout_net_pph": 0.0587,
+      "combined_keep_tune_net_pph": 0.1762
+    },
+    "matches_expected_model": true
+  },
+  "verdict": "PROMOTE"
+}

@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-03-23T22:48:54.822859Z",
+  "family": "PED",
+  "rule": "early_kill_if_no_positive_gross_delta_in_first_4_candidates",
+  "candidates_evaluated": 4,
+  "any_positive_gross_delta": false,
+  "early_kill_triggered": true,
+  "family_decision": "KILL",
+  "scoreboard": [
+    {
+      "candidate": "v1",
+      "name": "aee_ped_v1",
+      "gross_delta_pph": -1.083850610539751,
+      "net_delta_pph": -1.0838506105397507,
+      "ci95_lo": -1.1168452076713051,
+      "ci95_hi": -1.050078567608873,
+      "avg_pips_per_trade": 0.13510062420679117,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT",
+      "code_hash": "b79fc6222bbb3b64cdb792bc217bdf4383a0ca43dc279a7eb8039dd3244e743b",
+      "config_hash": "c7317d57abde3b79ee3cac35307c2a590555d7bb3b633e5952587d506d09c3d3"
+    },
+    {
+      "candidate": "v2",
+      "name": "aee_ped_v2",
+      "gross_delta_pph": -1.093607935180773,
+      "net_delta_pph": -1.093607935180773,
+      "ci95_lo": -1.124842516577702,
+      "ci95_hi": -1.0609957299570294,
+      "avg_pips_per_trade": 0.12512108575720687,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT",
+      "code_hash": "b79fc6222bbb3b64cdb792bc217bdf4383a0ca43dc279a7eb8039dd3244e743b",
+      "config_hash": "3f104693f3bfb8431264949b394b663225a78b25a7e5f1657ea56a7d298a261f"
+    },
+    {
+      "candidate": "v3",
+      "name": "aee_ped_v3",
+      "gross_delta_pph": -1.0834606214417188,
+      "net_delta_pph": -1.0834606214417188,
+      "ci95_lo": -1.1169389063507023,
+      "ci95_hi": -1.049493583961825,
+      "avg_pips_per_trade": 0.13549949493641378,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT",
+      "code_hash": "b79fc6222bbb3b64cdb792bc217bdf4383a0ca43dc279a7eb8039dd3244e743b",
+      "config_hash": "bc31f0206f227ee5b985742c50f449bef5fef6d7a657ed40ec662eeafd64335c"
+    },
+    {
+      "candidate": "v4",
+      "name": "aee_ped_v4",
+      "gross_delta_pph": -1.0734981726647188,
+      "net_delta_pph": -1.0734981726647188,
+      "ci95_lo": -1.1047606104257928,
+      "ci95_hi": -1.0406732461147756,
+      "avg_pips_per_trade": 0.1456888290295009,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT",
+      "code_hash": "b79fc6222bbb3b64cdb792bc217bdf4383a0ca43dc279a7eb8039dd3244e743b",
+      "config_hash": "9f64d40d4ec374bf6ef48de4f97674a4ea9f29e02c1f938c5199b6ba545a6104"
+    }
+  ],
+  "summary": {
+    "best_gross_delta_pph": -1.0734981726647188,
+    "best_net_delta_pph": -1.0734981726647188,
+    "best_candidate": "v4",
+    "viability_pass_count": 0
+  }
+}

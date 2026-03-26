@@ -1,0 +1,1290 @@
+{
+  "generated_at": "2026-03-25T01:53:01.095175Z",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "config": "/home/elic/Documents/phone signals/entry_v23_strict_plus_six_contexts.json",
+  "streams_used": 31,
+  "total_hours": 49614.31666666666,
+  "entry_types": {
+    "EXPANSION_BREAKOUT": {
+      "trade_count": 2889,
+      "trades_per_hour": 0.05822916033308935,
+      "gross_extraction_per_hour": 0.19766270421272894,
+      "friction_pips_per_hour": 0.06405207636639829,
+      "avg_mfe_pips": 14.5840429214261,
+      "median_mfe_pips": 10.9,
+      "p80_mfe_pips": 20.2,
+      "p90_mfe_pips": 28.6,
+      "avg_mae_pips": -5.117030114226376,
+      "avg_realized_pips": 3.394565593631014,
+      "avg_realized_r": 0.7039253017472125,
+      "pct_mfe_above_friction": 0.995846313603323,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 41.8061827023272,
+      "avg_time_to_mfe_sec": 3002.1391484942887,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1928,
+          "share": 0.6673589477327795
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 899,
+          "share": 0.31118033921772237
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 39,
+          "share": 0.013499480789200415
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 14,
+          "share": 0.004845967462789893
+        }
+      ],
+      "net_extraction_per_hour": 0.13361062784633065,
+      "verdict": "KEEP"
+    },
+    "RECLAIM_CONTINUATION": {
+      "trade_count": 18,
+      "trades_per_hour": 0.00036279850674822027,
+      "gross_extraction_per_hour": 0.0006207885559913991,
+      "friction_pips_per_hour": 0.0003990783574230423,
+      "avg_mfe_pips": 12.422222222222222,
+      "median_mfe_pips": 9.45,
+      "p80_mfe_pips": 21.4,
+      "p90_mfe_pips": 22.9,
+      "avg_mae_pips": -6.0777777777777775,
+      "avg_realized_pips": 1.7111111111111112,
+      "avg_realized_r": -0.15851851851851856,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 50.0,
+      "avg_time_to_mfe_sec": 2906.6666666666665,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 12,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 6,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.00022171019856835682,
+      "verdict": "NEEDS_MORE_ATTRIBUTION"
+    },
+    "PULLBACK_CONTINUATION": {
+      "trade_count": 12,
+      "trades_per_hour": 0.00024186567116548017,
+      "gross_extraction_per_hour": 0.0009775404209604822,
+      "friction_pips_per_hour": 0.0002660522382820282,
+      "avg_mfe_pips": 13.983333333333334,
+      "median_mfe_pips": 13.4,
+      "p80_mfe_pips": 15.6,
+      "p90_mfe_pips": 20.2,
+      "avg_mae_pips": -3.466666666666667,
+      "avg_realized_pips": 4.041666666666667,
+      "avg_realized_r": 0.2894368363118363,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 4155.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 11,
+          "share": 0.9166666666666666
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 1,
+          "share": 0.08333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0007114881826784541,
+      "verdict": "NEEDS_MORE_ATTRIBUTION"
+    },
+    "RANGE_ESCAPE": {
+      "trade_count": 2021,
+      "trades_per_hour": 0.040734210118786286,
+      "gross_extraction_per_hour": 0.10685423797364943,
+      "friction_pips_per_hour": 0.04480763113066492,
+      "avg_mfe_pips": 15.465017318159326,
+      "median_mfe_pips": 10.6,
+      "p80_mfe_pips": 21.1,
+      "p90_mfe_pips": 29.4,
+      "avg_mae_pips": -6.004453240969817,
+      "avg_realized_pips": 2.6232063334982683,
+      "avg_realized_r": 0.4147178655639813,
+      "pct_mfe_above_friction": 0.9940623453735774,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 69.48781700646444,
+      "avg_time_to_mfe_sec": 2976.9915883226126,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1139,
+          "share": 0.5635823849579417
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 840,
+          "share": 0.4156358238495794
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 31,
+          "share": 0.015338941118258289
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 11,
+          "share": 0.0054428500742206825
+        }
+      ],
+      "net_extraction_per_hour": 0.06204660684298451,
+      "verdict": "KEEP"
+    },
+    "OTHER": {
+      "trade_count": 152,
+      "trades_per_hour": 0.0030636318347627488,
+      "gross_extraction_per_hour": 0.00845320520723353,
+      "friction_pips_per_hour": 0.0033699950182390238,
+      "avg_mfe_pips": 14.188157894736841,
+      "median_mfe_pips": 9.0,
+      "p80_mfe_pips": 20.2,
+      "p90_mfe_pips": 29.3,
+      "avg_mae_pips": -5.856578947368422,
+      "avg_realized_pips": 2.759210526315789,
+      "avg_realized_r": 0.5692328358775727,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 38.28947368421053,
+      "avg_time_to_mfe_sec": 2494.342105263158,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 88,
+          "share": 0.5789473684210527
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 63,
+          "share": 0.4144736842105263
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 1,
+          "share": 0.006578947368421052
+        }
+      ],
+      "net_extraction_per_hour": 0.005083210188994507,
+      "verdict": "KEEP"
+    }
+  },
+  "pair_x_entry_type": {
+    "EUR_USD::RANGE_ESCAPE": {
+      "trade_count": 1774,
+      "trades_per_hour": 0.0682902605539056,
+      "gross_extraction_per_hour": 0.17869028211114676,
+      "friction_pips_per_hour": 0.07511928660929616,
+      "avg_mfe_pips": 15.895715896279594,
+      "median_mfe_pips": 10.649999999999999,
+      "p80_mfe_pips": 21.3,
+      "p90_mfe_pips": 30.6,
+      "avg_mae_pips": -6.112908680947012,
+      "avg_realized_pips": 2.61662908680947,
+      "avg_realized_r": 0.4194272700867966,
+      "pct_mfe_above_friction": 0.9954904171364148,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 61.49321266968326,
+      "avg_time_to_mfe_sec": 3052.795941375423,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1013,
+          "share": 0.5710259301014656
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 728,
+          "share": 0.41037204058624577
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 22,
+          "share": 0.012401352874859075
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 11,
+          "share": 0.0062006764374295375
+        }
+      ],
+      "net_extraction_per_hour": 0.1035709955018506
+    },
+    "EUR_USD::EXPANSION_BREAKOUT": {
+      "trade_count": 2436,
+      "trades_per_hour": 0.09377399927244309,
+      "gross_extraction_per_hour": 0.31055130719646146,
+      "friction_pips_per_hour": 0.10315139919968741,
+      "avg_mfe_pips": 14.76559934318555,
+      "median_mfe_pips": 10.75,
+      "p80_mfe_pips": 20.4,
+      "p90_mfe_pips": 29.2,
+      "avg_mae_pips": -5.3310344827586205,
+      "avg_realized_pips": 3.3116995073891626,
+      "avg_realized_r": 0.6719154057947161,
+      "pct_mfe_above_friction": 0.9950738916256158,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 41.648804616652924,
+      "avg_time_to_mfe_sec": 3017.3891625615765,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1620,
+          "share": 0.6650246305418719
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 769,
+          "share": 0.3156814449917898
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 27,
+          "share": 0.011083743842364532
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 13,
+          "share": 0.005336617405582923
+        }
+      ],
+      "net_extraction_per_hour": 0.20739990799677405
+    },
+    "EUR_USD::OTHER": {
+      "trade_count": 143,
+      "trades_per_hour": 0.005504795523792841,
+      "gross_extraction_per_hour": 0.015097767863157708,
+      "friction_pips_per_hour": 0.006055275076172126,
+      "avg_mfe_pips": 13.96993006993007,
+      "median_mfe_pips": 8.9,
+      "p80_mfe_pips": 19.2,
+      "p90_mfe_pips": 24.5,
+      "avg_mae_pips": -6.079020979020979,
+      "avg_realized_pips": 2.7426573426573424,
+      "avg_realized_r": 0.5591845528209164,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 39.44055944055944,
+      "avg_time_to_mfe_sec": 2450.3496503496503,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 82,
+          "share": 0.5734265734265734
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 60,
+          "share": 0.4195804195804196
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 1,
+          "share": 0.006993006993006993
+        }
+      ],
+      "net_extraction_per_hour": 0.009042492786985584
+    },
+    "EUR_USD::PULLBACK_CONTINUATION": {
+      "trade_count": 8,
+      "trades_per_hour": 0.00030796058874365547,
+      "gross_extraction_per_hour": 0.001127905656273638,
+      "friction_pips_per_hour": 0.00033875664761802107,
+      "avg_mfe_pips": 14.275,
+      "median_mfe_pips": 11.3,
+      "p80_mfe_pips": 20.2,
+      "p90_mfe_pips": 20.2,
+      "avg_mae_pips": -4.3,
+      "avg_realized_pips": 3.6625,
+      "avg_realized_r": 0.2159012862137862,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 3292.5,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 7,
+          "share": 0.875
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 1,
+          "share": 0.125
+        }
+      ],
+      "net_extraction_per_hour": 0.0007891490086556171
+    },
+    "EUR_USD::RECLAIM_CONTINUATION": {
+      "trade_count": 15,
+      "trades_per_hour": 0.000577426103894354,
+      "gross_extraction_per_hour": 0.0009854738839796975,
+      "friction_pips_per_hour": 0.0006351687142837894,
+      "avg_mfe_pips": 12.986666666666666,
+      "median_mfe_pips": 9.2,
+      "p80_mfe_pips": 21.4,
+      "p90_mfe_pips": 33.8,
+      "avg_mae_pips": -6.12,
+      "avg_realized_pips": 1.7066666666666668,
+      "avg_realized_r": -0.1848888888888889,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 32.0,
+      "avg_time_to_mfe_sec": 2804.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 10,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 5,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0003503051696959081
+    },
+    "USD_CAD::EXPANSION_BREAKOUT": {
+      "trade_count": 453,
+      "trades_per_hour": 0.06707566865902954,
+      "gross_extraction_per_hour": 0.2575824132433726,
+      "friction_pips_per_hour": 0.0737832355249325,
+      "avg_mfe_pips": 13.607726269315673,
+      "median_mfe_pips": 11.3,
+      "p80_mfe_pips": 19.8,
+      "p90_mfe_pips": 25.2,
+      "avg_mae_pips": -3.966225165562914,
+      "avg_realized_pips": 3.840176600441501,
+      "avg_realized_r": 0.8760579872665966,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 42.64900662251656,
+      "avg_time_to_mfe_sec": 2920.1324503311257,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 308,
+          "share": 0.6799116997792495
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 130,
+          "share": 0.2869757174392936
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 12,
+          "share": 0.026490066225165563
+        },
+        {
+          "name": "AEE_BAND_EXTENSION_HOLD",
+          "count": 2,
+          "share": 0.004415011037527594
+        }
+      ],
+      "net_extraction_per_hour": 0.18379917771844012
+    },
+    "USD_CAD::RANGE_ESCAPE": {
+      "trade_count": 247,
+      "trades_per_hour": 0.03657326745867615,
+      "gross_extraction_per_hour": 0.09766691180462668,
+      "friction_pips_per_hour": 0.04023059420454377,
+      "avg_mfe_pips": 12.37165991902834,
+      "median_mfe_pips": 9.7,
+      "p80_mfe_pips": 17.6,
+      "p90_mfe_pips": 23.8,
+      "avg_mae_pips": -5.225506072874494,
+      "avg_realized_pips": 2.6704453441295546,
+      "avg_realized_r": 0.380894045226029,
+      "pct_mfe_above_friction": 0.9838056680161943,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 127.65432098765432,
+      "avg_time_to_mfe_sec": 2432.5506072874496,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 126,
+          "share": 0.5101214574898786
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 112,
+          "share": 0.4534412955465587
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 9,
+          "share": 0.03643724696356275
+        }
+      ],
+      "net_extraction_per_hour": 0.05743631760008291
+    },
+    "USD_CAD::OTHER": {
+      "trade_count": 9,
+      "trades_per_hour": 0.001332629178656216,
+      "gross_extraction_per_hour": 0.004027501517716564,
+      "friction_pips_per_hour": 0.0014658920965218377,
+      "avg_mfe_pips": 17.655555555555555,
+      "median_mfe_pips": 12.1,
+      "p80_mfe_pips": 29.3,
+      "p90_mfe_pips": 29.3,
+      "avg_mae_pips": -2.322222222222222,
+      "avg_realized_pips": 3.022222222222222,
+      "avg_realized_r": 0.7288888888888888,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 20.0,
+      "avg_time_to_mfe_sec": 3193.3333333333335,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 6,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 3,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0025616094211947265
+    },
+    "USD_CAD::RECLAIM_CONTINUATION": {
+      "trade_count": 3,
+      "trades_per_hour": 0.00044420972621873867,
+      "gross_extraction_per_hour": 0.0007699635254458136,
+      "friction_pips_per_hour": 0.0004886306988406125,
+      "avg_mfe_pips": 9.6,
+      "median_mfe_pips": 11.5,
+      "p80_mfe_pips": 11.5,
+      "p90_mfe_pips": 11.5,
+      "avg_mae_pips": -5.866666666666666,
+      "avg_realized_pips": 1.7333333333333332,
+      "avg_realized_r": -0.0266666666666668,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 140.0,
+      "avg_time_to_mfe_sec": 3420.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 2,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0002813328266052011
+    },
+    "USD_CAD::PULLBACK_CONTINUATION": {
+      "trade_count": 4,
+      "trades_per_hour": 0.0005922796349583183,
+      "gross_extraction_per_hour": 0.0028429422477999275,
+      "friction_pips_per_hour": 0.0006515075984541501,
+      "avg_mfe_pips": 13.4,
+      "median_mfe_pips": 13.4,
+      "p80_mfe_pips": 13.4,
+      "p90_mfe_pips": 13.4,
+      "avg_mae_pips": -1.8,
+      "avg_realized_pips": 4.8,
+      "avg_realized_r": 0.4365079365079365,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 5880.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 4,
+          "share": 1.0
+        }
+      ],
+      "net_extraction_per_hour": 0.0021914346493457776
+    }
+  },
+  "session_x_entry_type": {
+    "new_york::RANGE_ESCAPE": {
+      "trade_count": 1057,
+      "trades_per_hour": 0.07637025726492844,
+      "gross_extraction_per_hour": 0.18036964071539013,
+      "friction_pips_per_hour": 0.08400728299142128,
+      "avg_mfe_pips": 12.268590350047303,
+      "median_mfe_pips": 10.2,
+      "p80_mfe_pips": 18.2,
+      "p90_mfe_pips": 23.4,
+      "avg_mae_pips": -5.789214758751182,
+      "avg_realized_pips": 2.361778618732261,
+      "avg_realized_r": 0.2680769873981794,
+      "pct_mfe_above_friction": 0.9952696310312205,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 55.673624288425046,
+      "avg_time_to_mfe_sec": 2863.1409649952698,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 585,
+          "share": 0.5534531693472091
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 453,
+          "share": 0.42857142857142855
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 15,
+          "share": 0.014191106906338695
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 4,
+          "share": 0.003784295175023652
+        }
+      ],
+      "net_extraction_per_hour": 0.09636235772396885
+    },
+    "new_york::EXPANSION_BREAKOUT": {
+      "trade_count": 1460,
+      "trades_per_hour": 0.10548777257028905,
+      "gross_extraction_per_hour": 0.3388541812173963,
+      "friction_pips_per_hour": 0.11603654982731795,
+      "avg_mfe_pips": 14.211164383561643,
+      "median_mfe_pips": 11.3,
+      "p80_mfe_pips": 19.9,
+      "p90_mfe_pips": 27.2,
+      "avg_mae_pips": -5.051164383561644,
+      "avg_realized_pips": 3.2122602739726025,
+      "avg_realized_r": 0.6447564556828255,
+      "pct_mfe_above_friction": 0.9938356164383562,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 34.48038540949759,
+      "avg_time_to_mfe_sec": 2931.4520547945203,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1010,
+          "share": 0.6917808219178082
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 424,
+          "share": 0.29041095890410956
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 14,
+          "share": 0.009589041095890411
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 6,
+          "share": 0.00410958904109589
+        }
+      ],
+      "net_extraction_per_hour": 0.22281763139007835
+    },
+    "new_york::OTHER": {
+      "trade_count": 93,
+      "trades_per_hour": 0.006719426608929371,
+      "gross_extraction_per_hour": 0.01933460817795161,
+      "friction_pips_per_hour": 0.007391369269822309,
+      "avg_mfe_pips": 11.506451612903225,
+      "median_mfe_pips": 8.9,
+      "p80_mfe_pips": 18.9,
+      "p90_mfe_pips": 23.3,
+      "avg_mae_pips": -5.972043010752688,
+      "avg_realized_pips": 2.87741935483871,
+      "avg_realized_r": 0.6704437617340843,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 36.774193548387096,
+      "avg_time_to_mfe_sec": 2072.2580645161293,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 54,
+          "share": 0.5806451612903226
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 39,
+          "share": 0.41935483870967744
+        }
+      ],
+      "net_extraction_per_hour": 0.011943238908129303
+    },
+    "new_york::PULLBACK_CONTINUATION": {
+      "trade_count": 9,
+      "trades_per_hour": 0.0006502670911867133,
+      "gross_extraction_per_hour": 0.0026660950738655246,
+      "friction_pips_per_hour": 0.0007152938003053847,
+      "avg_mfe_pips": 15.822222222222223,
+      "median_mfe_pips": 13.4,
+      "p80_mfe_pips": 15.6,
+      "p90_mfe_pips": 20.2,
+      "avg_mae_pips": -2.155555555555556,
+      "avg_realized_pips": 4.1,
+      "avg_realized_r": 0.29409479409479405,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 4553.333333333333,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 8,
+          "share": 0.8888888888888888
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 1,
+          "share": 0.1111111111111111
+        }
+      ],
+      "net_extraction_per_hour": 0.00195080127356014
+    },
+    "sydney::EXPANSION_BREAKOUT": {
+      "trade_count": 403,
+      "trades_per_hour": 0.028121870744066548,
+      "gross_extraction_per_hour": 0.11636034606881134,
+      "friction_pips_per_hour": 0.030934057818473207,
+      "avg_mfe_pips": 16.6575682382134,
+      "median_mfe_pips": 10.9,
+      "p80_mfe_pips": 25.1,
+      "p90_mfe_pips": 34.0,
+      "avg_mae_pips": -5.559057071960298,
+      "avg_realized_pips": 4.137717121588089,
+      "avg_realized_r": 0.9738212222021155,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 48.98263027295285,
+      "avg_time_to_mfe_sec": 2934.640198511166,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 268,
+          "share": 0.6650124069478908
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 126,
+          "share": 0.31265508684863524
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 7,
+          "share": 0.017369727047146403
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 1,
+          "share": 0.0024813895781637717
+        }
+      ],
+      "net_extraction_per_hour": 0.08542628825033813
+    },
+    "sydney::RANGE_ESCAPE": {
+      "trade_count": 271,
+      "trades_per_hour": 0.018910736902337556,
+      "gross_extraction_per_hour": 0.07533590981462591,
+      "friction_pips_per_hour": 0.020801810592571312,
+      "avg_mfe_pips": 23.679335793357936,
+      "median_mfe_pips": 12.8,
+      "p80_mfe_pips": 31.6,
+      "p90_mfe_pips": 62.2,
+      "avg_mae_pips": -7.0055350553505535,
+      "avg_realized_pips": 3.983763837638376,
+      "avg_realized_r": 1.0133069472552867,
+      "pct_mfe_above_friction": 0.992619926199262,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 103.49442379182156,
+      "avg_time_to_mfe_sec": 2906.1254612546127,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 184,
+          "share": 0.6789667896678967
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 86,
+          "share": 0.3173431734317343
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 1,
+          "share": 0.0036900369003690036
+        }
+      ],
+      "net_extraction_per_hour": 0.0545340992220546
+    },
+    "asia::EXPANSION_BREAKOUT": {
+      "trade_count": 496,
+      "trades_per_hour": 0.038164267934705245,
+      "gross_extraction_per_hour": 0.1506873030712233,
+      "friction_pips_per_hour": 0.041980694728175776,
+      "avg_mfe_pips": 16.504637096774193,
+      "median_mfe_pips": 10.5,
+      "p80_mfe_pips": 22.4,
+      "p90_mfe_pips": 34.0,
+      "avg_mae_pips": -4.724193548387096,
+      "avg_realized_pips": 3.948387096774194,
+      "avg_realized_r": 0.9250470631519018,
+      "pct_mfe_above_friction": 0.9979838709677419,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 64.84848484848484,
+      "avg_time_to_mfe_sec": 3051.048387096774,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 317,
+          "share": 0.6391129032258065
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 158,
+          "share": 0.3185483870967742
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 18,
+          "share": 0.036290322580645164
+        },
+        {
+          "name": "AEE_BAND_EXTENSION_HOLD",
+          "count": 2,
+          "share": 0.004032258064516129
+        }
+      ],
+      "net_extraction_per_hour": 0.10870660834304752
+    },
+    "asia::RANGE_ESCAPE": {
+      "trade_count": 359,
+      "trades_per_hour": 0.02762292779951448,
+      "gross_extraction_per_hour": 0.08804712055984518,
+      "friction_pips_per_hour": 0.03038522057946593,
+      "avg_mfe_pips": 21.201949860724234,
+      "median_mfe_pips": 11.0,
+      "p80_mfe_pips": 26.6,
+      "p90_mfe_pips": 50.6,
+      "avg_mae_pips": -5.816991643454039,
+      "avg_realized_pips": 3.1874651810584957,
+      "avg_realized_r": 0.7918675954191274,
+      "pct_mfe_above_friction": 0.9944289693593314,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 96.1344537815126,
+      "avg_time_to_mfe_sec": 3195.376044568245,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 209,
+          "share": 0.5821727019498607
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 135,
+          "share": 0.37604456824512533
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 14,
+          "share": 0.03899721448467967
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 1,
+          "share": 0.002785515320334262
+        }
+      ],
+      "net_extraction_per_hour": 0.057661899980379246
+    },
+    "asia::OTHER": {
+      "trade_count": 15,
+      "trades_per_hour": 0.0011541613286705215,
+      "gross_extraction_per_hour": 0.00340862312400694,
+      "friction_pips_per_hour": 0.0012695774615375738,
+      "avg_mfe_pips": 20.433333333333334,
+      "median_mfe_pips": 11.0,
+      "p80_mfe_pips": 29.3,
+      "p90_mfe_pips": 39.8,
+      "avg_mae_pips": -4.76,
+      "avg_realized_pips": 2.953333333333333,
+      "avg_realized_r": 0.5182222222222221,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 52.0,
+      "avg_time_to_mfe_sec": 3324.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 8,
+          "share": 0.5333333333333333
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 7,
+          "share": 0.4666666666666667
+        }
+      ],
+      "net_extraction_per_hour": 0.0021390456624693663
+    },
+    "london::EXPANSION_BREAKOUT": {
+      "trade_count": 530,
+      "trades_per_hour": 0.0627447885323047,
+      "gross_extraction_per_hour": 0.1765259512839991,
+      "friction_pips_per_hour": 0.06901926738553517,
+      "avg_mfe_pips": 12.237169811320754,
+      "median_mfe_pips": 10.5,
+      "p80_mfe_pips": 18.1,
+      "p90_mfe_pips": 23.5,
+      "avg_mae_pips": -5.33,
+      "avg_realized_pips": 2.8133962264150942,
+      "avg_realized_r": 0.4547593878867463,
+      "pct_mfe_above_friction": 0.9962264150943396,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 34.88636363636363,
+      "avg_time_to_mfe_sec": 3202.4150943396226,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 333,
+          "share": 0.6283018867924528
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 191,
+          "share": 0.360377358490566
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 6,
+          "share": 0.011320754716981131
+        }
+      ],
+      "net_extraction_per_hour": 0.10750668389846392
+    },
+    "london::OTHER": {
+      "trade_count": 29,
+      "trades_per_hour": 0.003433205410258181,
+      "gross_extraction_per_hour": 0.005741740082673166,
+      "friction_pips_per_hour": 0.0037765259512839997,
+      "avg_mfe_pips": 13.679310344827586,
+      "median_mfe_pips": 8.7,
+      "p80_mfe_pips": 14.2,
+      "p90_mfe_pips": 37.0,
+      "avg_mae_pips": -7.082758620689655,
+      "avg_realized_pips": 1.6724137931034482,
+      "avg_realized_r": 0.047126436781609125,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 43.44827586206897,
+      "avg_time_to_mfe_sec": 3293.793103448276,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 17,
+          "share": 0.5862068965517241
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 11,
+          "share": 0.3793103448275862
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 1,
+          "share": 0.034482758620689655
+        }
+      ],
+      "net_extraction_per_hour": 0.001965214131389166
+    },
+    "london::RANGE_ESCAPE": {
+      "trade_count": 334,
+      "trades_per_hour": 0.03954105541469767,
+      "gross_extraction_per_hour": 0.06880617187731225,
+      "friction_pips_per_hour": 0.04349516095616744,
+      "avg_mfe_pips": 12.749401197604792,
+      "median_mfe_pips": 10.5,
+      "p80_mfe_pips": 18.5,
+      "p90_mfe_pips": 24.6,
+      "avg_mae_pips": -6.074850299401198,
+      "avg_realized_pips": 1.7401197604790422,
+      "avg_realized_r": -0.01227311028957739,
+      "pct_mfe_above_friction": 0.9910179640718563,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 57.09969788519638,
+      "avg_time_to_mfe_sec": 3160.059880239521,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 166,
+          "share": 0.49700598802395207
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 161,
+          "share": 0.4820359281437126
+        },
+        {
+          "name": "AEE_CONTINUATION_FAILED_EXIT",
+          "count": 5,
+          "share": 0.014970059880239521
+        },
+        {
+          "name": "AEE_NEVER_GREEN_TIMEOUT",
+          "count": 2,
+          "share": 0.005988023952095809
+        }
+      ],
+      "net_extraction_per_hour": 0.025311010921144808
+    },
+    "london::RECLAIM_CONTINUATION": {
+      "trade_count": 3,
+      "trades_per_hour": 0.000355159180371536,
+      "gross_extraction_per_hour": 0.0006274478853230469,
+      "friction_pips_per_hour": 0.0003906750984086896,
+      "avg_mfe_pips": 13.133333333333333,
+      "median_mfe_pips": 9.0,
+      "p80_mfe_pips": 21.4,
+      "p90_mfe_pips": 21.4,
+      "avg_mae_pips": -3.433333333333333,
+      "avg_realized_pips": 1.7666666666666666,
+      "avg_realized_r": -0.17333333333333345,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 40.0,
+      "avg_time_to_mfe_sec": 2900.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 2,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0002367727869143573
+    },
+    "london::PULLBACK_CONTINUATION": {
+      "trade_count": 1,
+      "trades_per_hour": 0.00011838639345717866,
+      "gross_extraction_per_hour": 0.00020125686887720372,
+      "friction_pips_per_hour": 0.00013022503280289653,
+      "avg_mfe_pips": 7.9,
+      "median_mfe_pips": 7.9,
+      "p80_mfe_pips": 7.9,
+      "p90_mfe_pips": 7.9,
+      "avg_mae_pips": -11.5,
+      "avg_realized_pips": 1.7,
+      "avg_realized_r": 0.016666666666666646,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 2640.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1,
+          "share": 1.0
+        }
+      ],
+      "net_extraction_per_hour": 7.103183607430719e-05
+    },
+    "sydney::OTHER": {
+      "trade_count": 15,
+      "trades_per_hour": 0.001046719754741931,
+      "gross_extraction_per_hour": 0.004117097701984929,
+      "friction_pips_per_hour": 0.0011513917302161242,
+      "avg_mfe_pips": 25.553333333333335,
+      "median_mfe_pips": 17.2,
+      "p80_mfe_pips": 29.3,
+      "p90_mfe_pips": 98.6,
+      "avg_mae_pips": -3.8666666666666667,
+      "avg_realized_pips": 3.933333333333333,
+      "avg_realized_r": 1.002141414141414,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 24.0,
+      "avg_time_to_mfe_sec": 2736.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 10,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 5,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0029657059717688042
+    },
+    "sydney::PULLBACK_CONTINUATION": {
+      "trade_count": 1,
+      "trades_per_hour": 6.97813169827954e-05,
+      "gross_extraction_per_hour": 0.00025121274113806347,
+      "friction_pips_per_hour": 7.675944868107495e-05,
+      "avg_mfe_pips": 9.0,
+      "median_mfe_pips": 9.0,
+      "p80_mfe_pips": 9.0,
+      "p90_mfe_pips": 9.0,
+      "avg_mae_pips": -0.2,
+      "avg_realized_pips": 3.6,
+      "avg_realized_r": 0.2222222222222222,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 5820.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1,
+          "share": 1.0
+        }
+      ],
+      "net_extraction_per_hour": 0.0001744532924569885
+    },
+    "asia::PULLBACK_CONTINUATION": {
+      "trade_count": 1,
+      "trades_per_hour": 7.694408857803477e-05,
+      "gross_extraction_per_hour": 0.000484747758041619,
+      "friction_pips_per_hour": 8.463849743583826e-05,
+      "avg_mfe_pips": 8.5,
+      "median_mfe_pips": 8.5,
+      "p80_mfe_pips": 8.5,
+      "p90_mfe_pips": 8.5,
+      "avg_mae_pips": -10.5,
+      "avg_realized_pips": 6.3,
+      "avg_realized_r": 0.5874999999999999,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 120.0,
+      "avg_time_to_mfe_sec": 420.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1,
+          "share": 1.0
+        }
+      ],
+      "net_extraction_per_hour": 0.0004001092606057807
+    },
+    "new_york::RECLAIM_CONTINUATION": {
+      "trade_count": 12,
+      "trades_per_hour": 0.0008670227882489511,
+      "gross_extraction_per_hour": 0.0013655608914920978,
+      "friction_pips_per_hour": 0.0009537250670738463,
+      "avg_mfe_pips": 10.616666666666665,
+      "median_mfe_pips": 9.2,
+      "p80_mfe_pips": 10.0,
+      "p90_mfe_pips": 22.9,
+      "avg_mae_pips": -8.325,
+      "avg_realized_pips": 1.575,
+      "avg_realized_r": -0.11222222222222222,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 35.0,
+      "avg_time_to_mfe_sec": 2300.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 8,
+          "share": 0.6666666666666666
+        },
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 4,
+          "share": 0.3333333333333333
+        }
+      ],
+      "net_extraction_per_hour": 0.0004118358244182516
+    },
+    "sydney::RECLAIM_CONTINUATION": {
+      "trade_count": 1,
+      "trades_per_hour": 6.97813169827954e-05,
+      "gross_extraction_per_hour": 0.00041868790189677243,
+      "friction_pips_per_hour": 7.675944868107495e-05,
+      "avg_mfe_pips": 33.8,
+      "median_mfe_pips": 33.8,
+      "p80_mfe_pips": 33.8,
+      "p90_mfe_pips": 33.8,
+      "avg_mae_pips": 1.0,
+      "avg_realized_pips": 6.0,
+      "avg_realized_r": 0.29333333333333333,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 0.0,
+      "avg_time_to_mfe_sec": 5940.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_GIVEBACK_EXIT",
+          "count": 1,
+          "share": 1.0
+        }
+      ],
+      "net_extraction_per_hour": 0.00034192845321569747
+    },
+    "asia::RECLAIM_CONTINUATION": {
+      "trade_count": 2,
+      "trades_per_hour": 0.00015388817715606955,
+      "gross_extraction_per_hour": 4.616645314682086e-05,
+      "friction_pips_per_hour": 0.00016927699487167652,
+      "avg_mfe_pips": 11.5,
+      "median_mfe_pips": 11.5,
+      "p80_mfe_pips": 11.5,
+      "p90_mfe_pips": 11.5,
+      "avg_mae_pips": -0.1,
+      "avg_realized_pips": 0.3,
+      "avg_realized_r": -0.6400000000000001,
+      "pct_mfe_above_friction": 1.0,
+      "pct_mfe_above_0_05r": 1.0,
+      "pct_mfe_above_0_10r": 1.0,
+      "pct_mfe_above_0_20r": 1.0,
+      "avg_time_to_break_even_sec": 180.0,
+      "avg_time_to_mfe_sec": 5040.0,
+      "avg_time_to_first_green_sec": 0.0,
+      "dominant_exit_reasons": [
+        {
+          "name": "AEE_BAND_FAST_FAILURE_EXIT",
+          "count": 2,
+          "share": 1.0
+        }
+      ],
+      "net_extraction_per_hour": -0.00012311054172485565
+    }
+  },
+  "notes": {
+    "setup_ts_unavailable": true,
+    "armed_ts_unavailable": true,
+    "entry_and_trigger_price_unavailable": true,
+    "cost_accounting_model": "gross_per_trade_minus_friction_once_at_aggregate",
+    "fallback_used": "pre_entry_features_from_state_stream_and_deterministic_rules"
+  }
+}

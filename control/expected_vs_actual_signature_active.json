@@ -1,0 +1,1118 @@
+{
+  "run_id": "AEE_SLICE_SMOKE_20260326T030500Z",
+  "champion_reference": "strategy_performance_report_raw.json",
+  "intervention_class": "AEE_V3_ACTIVE_POLICY",
+  "expected_signature": {
+    "economic_objective": "maximize retained pips per hour after entry",
+    "realized_pph_change_pct": [
+      0.2,
+      0.8
+    ],
+    "gap_change_pct": [
+      -0.4,
+      -0.15
+    ],
+    "extraction_efficiency_abs_change": [
+      0.05,
+      0.25
+    ],
+    "bankable_green_loss_red_rate": "near_zero",
+    "giveback_ratio_change_pct": [
+      -0.3,
+      -0.1
+    ],
+    "trades_per_hour": "up",
+    "avg_loser_hold_sec": "down",
+    "avg_weak_winner_hold_sec": "down",
+    "baseline_hard_amplifier_gate_pass": true
+  },
+  "actual_signature": {
+    "trade_count": 60,
+    "trades_per_hour": 0.017779,
+    "avg_pips_per_trade": 1.848333,
+    "entry_only_pph": 0.35763,
+    "realized_pph": 0.032862,
+    "gap": 0.324768,
+    "extraction_efficiency": 0.091888,
+    "loss_compression_rate": 0.86024,
+    "failure_to_win_conversion_rate": 1.0,
+    "continuation_capture_rate": 0.100754,
+    "giveback_ratio": 0.899246,
+    "bankable_green_loss_red_rate": 0.186441,
+    "bankable_green_protection_rate": 0.813559,
+    "avg_loser_hold_sec": 360.0,
+    "avg_weak_winner_hold_sec": 314.482759,
+    "baseline_gate_all_pass": false
+  },
+  "delta_vs_champion": {
+    "breakout_net_pph": -0.0957,
+    "combined_keep_tune_net_pph": -0.0616
+  },
+  "matches_expected_model": true,
+  "hard_gates": {
+    "loss_compression_rate_pass": true,
+    "failure_to_win_conversion_rate_pass": true,
+    "continuation_capture_rate_pass": false,
+    "giveback_ratio_pass": false,
+    "blocking_overfire_absent_pass": false,
+    "baseline_amplifier_gate_pass": false,
+    "performance_core_rule_pass": false,
+    "promotion_gate_pass": false
+  },
+  "auto_verdict": "REJECT",
+  "ab_baseline_comparison": {
+    "baselines": {
+      "static_tp_sl": {
+        "trade_count": 60,
+        "total_net_pips": 50.0,
+        "avg_net_pips_per_trade": 0.833333,
+        "realized_pph": 0.014816
+      },
+      "minimal_protective_only": {
+        "trade_count": 60,
+        "total_net_pips": 275.2,
+        "avg_net_pips_per_trade": 4.586667,
+        "realized_pph": 0.081548
+      },
+      "no_aee_loose": {
+        "trade_count": 60,
+        "total_net_pips": 402.6,
+        "avg_net_pips_per_trade": 6.71,
+        "realized_pph": 0.119299
+      },
+      "aee_candidate": {
+        "trade_count": 60,
+        "total_net_pips": 110.9,
+        "avg_net_pips_per_trade": 1.848333,
+        "realized_pph": 0.032862
+      }
+    },
+    "candidate_vs_baselines": {
+      "static_tp_sl": {
+        "delta_realized_pph": 0.018046,
+        "delta_avg_net_pips_per_trade": 1.015,
+        "net_expectancy_shift": 1.015
+      },
+      "minimal_protective_only": {
+        "delta_realized_pph": -0.048686,
+        "delta_avg_net_pips_per_trade": -2.738334,
+        "net_expectancy_shift": -2.738334
+      },
+      "no_aee_loose": {
+        "delta_realized_pph": -0.086437,
+        "delta_avg_net_pips_per_trade": -4.861667,
+        "net_expectancy_shift": -4.861667
+      }
+    }
+  },
+  "performance_signature": {
+    "has_prior_reference": true,
+    "immediate_signature": {
+      "expected_range": {
+        "realized_pph_change_pct": [
+          0.2,
+          0.8
+        ],
+        "gap_change_pct": [
+          -0.4,
+          -0.15
+        ],
+        "efficiency_abs_change": [
+          0.05,
+          0.25
+        ]
+      },
+      "realized_pph_change_pct": -0.906338,
+      "gap_change_pct": -0.838587,
+      "efficiency_abs_change": -0.0566,
+      "pass": false
+    },
+    "global_expectation": {
+      "realized_pph_change_pct": -0.906338,
+      "gap_change_pct": -0.838587,
+      "efficiency_abs_change": -0.0566,
+      "pass": false
+    },
+    "bankable_green_protection": {
+      "bankable_green_loss_red_rate": 0.186441,
+      "prior_bankable_green_loss_red_rate": null,
+      "bankable_green_loss_red_rate_change_pct": null,
+      "near_elimination_target_max": 0.05,
+      "pass": false
+    },
+    "throughput_signature": {
+      "trades_per_hour_change_pct": -0.893899,
+      "avg_loser_hold_sec_change_pct": null,
+      "avg_weak_winner_hold_sec_change_pct": null,
+      "pass": false
+    },
+    "baseline_flip_signature": {
+      "hard_amplifier_gate_pass": false,
+      "pass": false
+    },
+    "gap_reduction_signature": {
+      "gap_change_pct": -0.838587,
+      "min_expected_reduction_pct": -0.15,
+      "pass": false
+    },
+    "giveback_fix_signature": {
+      "giveback_ratio_change_pct": 0.084269,
+      "giveback_exit_share_change_pct": null,
+      "continuation_capture_change_pct": -0.409563,
+      "breakout_pph_change_pct": 0.0,
+      "pass": false
+    },
+    "continuation_signature": {
+      "continuation_capture_change_pct": -0.409563,
+      "pass": false
+    },
+    "loss_compression_stability": {
+      "loss_compression_rate": 0.86024,
+      "pass": true
+    },
+    "core_rule_all_four": {
+      "pass": false
+    },
+    "auto_reject_patterns": [
+      "BANKABLE_GREEN_PROTECTION_FAILED",
+      "GAP_NOT_MATERIALLY_REDUCED",
+      "BASELINE_STILL_BETTER",
+      "THROUGHPUT_STALLED"
+    ]
+  },
+  "green_loss_audit": {
+    "thresholds": {
+      "micro_green_min_pips": 0.0,
+      "bankable_green_min_pips": 2.0,
+      "runner_green_min_pips": 5.0,
+      "weak_winner_max_pips": 2.0,
+      "time_inefficient_min_hold_sec": 600.0,
+      "time_value_floor_pips_per_min": 0.1
+    },
+    "summary": {
+      "losing_trade_count": 11,
+      "never_green_count": 0,
+      "micro_green_loss_count": 0,
+      "bankable_green_loss_count": 11,
+      "runner_green_loss_count": 11,
+      "green_then_loss_count": 11,
+      "green_then_loss_share_of_losers": 1.0,
+      "bankable_green_trade_count": 59,
+      "bankable_green_winner_count": 48,
+      "bankable_green_protection_rate": 0.813559,
+      "bankable_green_loss_red_rate": 0.186441,
+      "avg_mfe_green_then_loss": 16.2,
+      "avg_profit_given_back": 17.172727,
+      "avg_profit_given_back_bankable_green": 17.172727,
+      "giveback_exit_share_of_green_losses": 0.0
+    },
+    "green_tier_distribution": {
+      "runner_green": 11
+    },
+    "winner_taxonomy_distribution": {
+      "true_runner": 12,
+      "fake_runner": 21,
+      "underheld_winner": 6,
+      "standard_winner": 2,
+      "weak_winner": 8
+    },
+    "dead_trade_subtype_distribution": {
+      "immediate_failure": 1
+    },
+    "economic_state_distribution": {
+      "RUNNER_ELIGIBLE": 23,
+      "GREEN_PROTECTED": 14,
+      "GREEN_UNPROTECTED": 20,
+      "NEGATIVE_UNPROVEN": 1,
+      "TIME_INEFFICIENT": 2
+    },
+    "family_distribution": {
+      "BREAKOUT__fake_breakout": 7,
+      "RANGE_ESCAPE__noise_escape": 4
+    },
+    "exit_reason_distribution": {
+      "AEE_V3_FAMILY_FAST_FAILURE_EXIT": 1,
+      "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 4,
+      "AEE_V3_FAMILY_PROTECTION_EXIT": 6
+    },
+    "path_shape_distribution": {
+      "healthy_push_then_full_reversal": 3,
+      "slow_grind_then_reverse": 8
+    },
+    "path_shape_family_matrix": {
+      "BREAKOUT__fake_breakout": {
+        "healthy_push_then_full_reversal": 1,
+        "slow_grind_then_reverse": 6
+      },
+      "RANGE_ESCAPE__noise_escape": {
+        "healthy_push_then_full_reversal": 2,
+        "slow_grind_then_reverse": 2
+      }
+    },
+    "state_transition_stress": {
+      "runner_green_unprotected_loss_count": 9,
+      "bankable_green_unprotected_loss_count": 9,
+      "threshold_reactivity_proxy_count": 0,
+      "runner_green_unprotected_loss_share": 0.818182,
+      "bankable_green_unprotected_loss_share": 0.818182
+    },
+    "throughput": {
+      "avg_loser_hold_sec": 360.0,
+      "avg_weak_winner_hold_sec": 314.482759,
+      "avg_bankable_green_loser_hold_sec": 360.0,
+      "time_inefficient_trade_count": 2,
+      "time_inefficient_trade_share": 0.033333
+    },
+    "objective_alignment": {
+      "branch_objective_alignment": [
+        {
+          "exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+          "trade_count": 32,
+          "trade_share": 0.533333,
+          "avg_realized_pips": 3.3125,
+          "avg_hold_sec": 346.875,
+          "avg_retained_rate_pips_per_min": 0.69145
+        },
+        {
+          "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+          "trade_count": 18,
+          "trade_share": 0.3,
+          "avg_realized_pips": 0.177778,
+          "avg_hold_sec": 366.666667,
+          "avg_retained_rate_pips_per_min": 0.060736
+        },
+        {
+          "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+          "trade_count": 8,
+          "trade_share": 0.133333,
+          "avg_realized_pips": -0.0875,
+          "avg_hold_sec": 240.0,
+          "avg_retained_rate_pips_per_min": -0.021875
+        },
+        {
+          "exit_reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+          "trade_count": 1,
+          "trade_share": 0.016667,
+          "avg_realized_pips": -1.1,
+          "avg_hold_sec": 240.0,
+          "avg_retained_rate_pips_per_min": -0.275
+        },
+        {
+          "exit_reason": "AEE_V3_FAMILY_STALL_GIVEBACK_EXIT",
+          "trade_count": 1,
+          "trade_share": 0.016667,
+          "avg_realized_pips": 3.5,
+          "avg_hold_sec": 1680.0,
+          "avg_retained_rate_pips_per_min": 0.125
+        }
+      ],
+      "objective_misalignment_flags": [],
+      "overheld_winner_count": 0,
+      "fake_runner_count": 21
+    },
+    "green_then_loss_samples": [
+      {
+        "trade_id": "T000216",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T14:00:00.000000000Z",
+        "time_of_first_green": "2024-09-27T14:01:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:40:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:40:00.000000000Z",
+        "mfe_pips": 22.2,
+        "mfe_net_pips": 21.1,
+        "profit_given_back": 23.6,
+        "final_pnl": -1.4,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.233333,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000217",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T14:00:00.000000000Z",
+        "time_of_first_green": "2024-09-27T14:01:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:40:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:40:00.000000000Z",
+        "mfe_pips": 22.2,
+        "mfe_net_pips": 21.1,
+        "profit_given_back": 23.6,
+        "final_pnl": -1.4,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.233333,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000211",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T13:50:00.000000000Z",
+        "time_of_first_green": "2024-09-27T13:51:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:26:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:30:00.000000000Z",
+        "mfe_pips": 19.4,
+        "mfe_net_pips": 18.3,
+        "profit_given_back": 21.6,
+        "final_pnl": -2.2,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.366667,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000212",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T13:50:00.000000000Z",
+        "time_of_first_green": "2024-09-27T13:51:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:26:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:30:00.000000000Z",
+        "mfe_pips": 19.4,
+        "mfe_net_pips": 18.3,
+        "profit_given_back": 21.6,
+        "final_pnl": -2.2,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.366667,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000137",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T13:49:00.000000000Z",
+        "time_of_first_green": "2024-09-20T13:50:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T15:29:00.000000000Z",
+        "time_of_exit": "2024-09-20T15:29:00.000000000Z",
+        "mfe_pips": 20.8,
+        "mfe_net_pips": 19.7,
+        "profit_given_back": 21.4,
+        "final_pnl": -0.6,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.15,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000138",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T13:49:00.000000000Z",
+        "time_of_first_green": "2024-09-20T13:50:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T15:29:00.000000000Z",
+        "time_of_exit": "2024-09-20T15:29:00.000000000Z",
+        "mfe_pips": 20.8,
+        "mfe_net_pips": 19.7,
+        "profit_given_back": 21.4,
+        "final_pnl": -0.6,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.15,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000032",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-06T15:52:00.000000000Z",
+        "time_of_first_green": "2024-09-06T15:53:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-06T16:49:00.000000000Z",
+        "time_of_exit": "2024-09-06T17:32:00.000000000Z",
+        "mfe_pips": 16.2,
+        "mfe_net_pips": 15.1,
+        "profit_given_back": 17.3,
+        "final_pnl": -1.1,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.275,
+        "exit_reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000173",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "TIME_INEFFICIENT",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T17:11:00.000000000Z",
+        "time_of_first_green": "2024-09-20T17:12:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T18:03:00.000000000Z",
+        "time_of_exit": "2024-09-20T18:51:00.000000000Z",
+        "mfe_pips": 12.5,
+        "mfe_net_pips": 11.4,
+        "profit_given_back": 12.6,
+        "final_pnl": -0.1,
+        "hold_sec": 660.0,
+        "retained_rate_pips_per_min": -0.009091,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000174",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "TIME_INEFFICIENT",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T17:11:00.000000000Z",
+        "time_of_first_green": "2024-09-20T17:12:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T18:03:00.000000000Z",
+        "time_of_exit": "2024-09-20T18:51:00.000000000Z",
+        "mfe_pips": 12.5,
+        "mfe_net_pips": 11.4,
+        "profit_given_back": 12.6,
+        "final_pnl": -0.1,
+        "hold_sec": 660.0,
+        "retained_rate_pips_per_min": -0.009091,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000110",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-13T17:32:00.000000000Z",
+        "time_of_first_green": "2024-09-13T17:33:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-13T19:04:00.000000000Z",
+        "time_of_exit": "2024-09-13T19:12:00.000000000Z",
+        "mfe_pips": 6.1,
+        "mfe_net_pips": 5.0,
+        "profit_given_back": 6.6,
+        "final_pnl": -0.5,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.125,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000111",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-13T17:32:00.000000000Z",
+        "time_of_first_green": "2024-09-13T17:33:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-13T19:04:00.000000000Z",
+        "time_of_exit": "2024-09-13T19:12:00.000000000Z",
+        "mfe_pips": 6.1,
+        "mfe_net_pips": 5.0,
+        "profit_given_back": 6.6,
+        "final_pnl": -0.5,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.125,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      }
+    ],
+    "bankable_green_loss_samples": [
+      {
+        "trade_id": "T000216",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T14:00:00.000000000Z",
+        "time_of_first_green": "2024-09-27T14:01:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:40:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:40:00.000000000Z",
+        "mfe_pips": 22.2,
+        "mfe_net_pips": 21.1,
+        "profit_given_back": 23.6,
+        "final_pnl": -1.4,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.233333,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000217",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T14:00:00.000000000Z",
+        "time_of_first_green": "2024-09-27T14:01:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:40:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:40:00.000000000Z",
+        "mfe_pips": 22.2,
+        "mfe_net_pips": 21.1,
+        "profit_given_back": 23.6,
+        "final_pnl": -1.4,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.233333,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000137",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T13:49:00.000000000Z",
+        "time_of_first_green": "2024-09-20T13:50:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T15:29:00.000000000Z",
+        "time_of_exit": "2024-09-20T15:29:00.000000000Z",
+        "mfe_pips": 20.8,
+        "mfe_net_pips": 19.7,
+        "profit_given_back": 21.4,
+        "final_pnl": -0.6,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.15,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000138",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T13:49:00.000000000Z",
+        "time_of_first_green": "2024-09-20T13:50:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T15:29:00.000000000Z",
+        "time_of_exit": "2024-09-20T15:29:00.000000000Z",
+        "mfe_pips": 20.8,
+        "mfe_net_pips": 19.7,
+        "profit_given_back": 21.4,
+        "final_pnl": -0.6,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.15,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000211",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T13:50:00.000000000Z",
+        "time_of_first_green": "2024-09-27T13:51:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:26:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:30:00.000000000Z",
+        "mfe_pips": 19.4,
+        "mfe_net_pips": 18.3,
+        "profit_given_back": 21.6,
+        "final_pnl": -2.2,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.366667,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000212",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-27T13:50:00.000000000Z",
+        "time_of_first_green": "2024-09-27T13:51:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-27T15:26:00.000000000Z",
+        "time_of_exit": "2024-09-27T15:30:00.000000000Z",
+        "mfe_pips": 19.4,
+        "mfe_net_pips": 18.3,
+        "profit_given_back": 21.6,
+        "final_pnl": -2.2,
+        "hold_sec": 360.0,
+        "retained_rate_pips_per_min": -0.366667,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000032",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-06T15:52:00.000000000Z",
+        "time_of_first_green": "2024-09-06T15:53:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-06T16:49:00.000000000Z",
+        "time_of_exit": "2024-09-06T17:32:00.000000000Z",
+        "mfe_pips": 16.2,
+        "mfe_net_pips": 15.1,
+        "profit_given_back": 17.3,
+        "final_pnl": -1.1,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.275,
+        "exit_reason": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000173",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "TIME_INEFFICIENT",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T17:11:00.000000000Z",
+        "time_of_first_green": "2024-09-20T17:12:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T18:03:00.000000000Z",
+        "time_of_exit": "2024-09-20T18:51:00.000000000Z",
+        "mfe_pips": 12.5,
+        "mfe_net_pips": 11.4,
+        "profit_given_back": 12.6,
+        "final_pnl": -0.1,
+        "hold_sec": 660.0,
+        "retained_rate_pips_per_min": -0.009091,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000174",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "TIME_INEFFICIENT",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-20T17:11:00.000000000Z",
+        "time_of_first_green": "2024-09-20T17:12:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-20T18:03:00.000000000Z",
+        "time_of_exit": "2024-09-20T18:51:00.000000000Z",
+        "mfe_pips": 12.5,
+        "mfe_net_pips": 11.4,
+        "profit_given_back": 12.6,
+        "final_pnl": -0.1,
+        "hold_sec": 660.0,
+        "retained_rate_pips_per_min": -0.009091,
+        "exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000110",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-13T17:32:00.000000000Z",
+        "time_of_first_green": "2024-09-13T17:33:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-13T19:04:00.000000000Z",
+        "time_of_exit": "2024-09-13T19:12:00.000000000Z",
+        "mfe_pips": 6.1,
+        "mfe_net_pips": 5.0,
+        "profit_given_back": 6.6,
+        "final_pnl": -0.5,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.125,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      },
+      {
+        "trade_id": "T000111",
+        "family": "BREAKOUT__fake_breakout",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "runner_green",
+        "economic_state": "GREEN_UNPROTECTED",
+        "dead_trade_subtype": null,
+        "entry_time": "2024-09-13T17:32:00.000000000Z",
+        "time_of_first_green": "2024-09-13T17:33:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-13T19:04:00.000000000Z",
+        "time_of_exit": "2024-09-13T19:12:00.000000000Z",
+        "mfe_pips": 6.1,
+        "mfe_net_pips": 5.0,
+        "profit_given_back": 6.6,
+        "final_pnl": -0.5,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": -0.125,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "slow_grind_then_reverse",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": null
+      }
+    ],
+    "dead_trade_samples": [
+      {
+        "trade_id": "T000082",
+        "family": "RANGE_ESCAPE__noise_escape",
+        "context": "EUR_USD__friday__new_york",
+        "green_tier": "micro_green",
+        "economic_state": "NEGATIVE_UNPROVEN",
+        "dead_trade_subtype": "immediate_failure",
+        "entry_time": "2024-09-13T13:55:00.000000000Z",
+        "time_of_first_green": "2024-09-13T13:56:00.000000000Z",
+        "time_of_peak_mfe": "2024-09-13T13:58:00.000000000Z",
+        "time_of_exit": "2024-09-13T15:35:00.000000000Z",
+        "mfe_pips": 1.5,
+        "mfe_net_pips": 0.4,
+        "profit_given_back": 1.1,
+        "final_pnl": 0.4,
+        "hold_sec": 240.0,
+        "retained_rate_pips_per_min": 0.1,
+        "exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+        "path_shape": "healthy_push_then_full_reversal",
+        "lifecycle_at_peak": "EXTENDING",
+        "winner_taxonomy": "weak_winner"
+      }
+    ],
+    "never_green_samples": []
+  },
+  "family_taxonomy_audit": {
+    "step": "STEP_1_SPLIT_FAMILIES",
+    "family_invalid_detected": false,
+    "family_rows": [
+      {
+        "family": "BREAKOUT__clean_expansion",
+        "cluster_count": 1,
+        "realized_pips_spread": 9.9,
+        "has_sign_split": false,
+        "dominant_exit_variety": 1,
+        "invalid_family_flag": false,
+        "clusters": [
+          {
+            "cluster": "stall_then_continuation",
+            "trade_count": 20,
+            "avg_realized_pips": 2.98,
+            "avg_hold_sec": 312.0,
+            "avg_mfe_net_pips": 21.975,
+            "bankable_green_red_rate": 0.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+          }
+        ]
+      },
+      {
+        "family": "BREAKOUT__fake_breakout",
+        "cluster_count": 1,
+        "realized_pips_spread": 0.9,
+        "has_sign_split": false,
+        "dominant_exit_variety": 1,
+        "invalid_family_flag": false,
+        "clusters": [
+          {
+            "cluster": "pop_then_reverse",
+            "trade_count": 7,
+            "avg_realized_pips": -0.871429,
+            "avg_hold_sec": 274.285714,
+            "avg_mfe_net_pips": 15.242857,
+            "bankable_green_red_rate": 1.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT"
+          }
+        ]
+      },
+      {
+        "family": "BREAKOUT__weak_expansion",
+        "cluster_count": 1,
+        "realized_pips_spread": 4.4,
+        "has_sign_split": false,
+        "dominant_exit_variety": 1,
+        "invalid_family_flag": false,
+        "clusters": [
+          {
+            "cluster": "chop_no_follow_through",
+            "trade_count": 8,
+            "avg_realized_pips": 2.8125,
+            "avg_hold_sec": 247.5,
+            "avg_mfe_net_pips": 38.4125,
+            "bankable_green_red_rate": 0.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+          }
+        ]
+      },
+      {
+        "family": "RANGE_ESCAPE__noise_escape",
+        "cluster_count": 2,
+        "realized_pips_spread": 2.6,
+        "has_sign_split": true,
+        "dominant_exit_variety": 2,
+        "invalid_family_flag": false,
+        "clusters": [
+          {
+            "cluster": "pop_then_reverse",
+            "trade_count": 4,
+            "avg_realized_pips": -1.15,
+            "avg_hold_sec": 510.0,
+            "avg_mfe_net_pips": 14.85,
+            "bankable_green_red_rate": 1.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT"
+          },
+          {
+            "cluster": "chop_no_follow_through",
+            "trade_count": 1,
+            "avg_realized_pips": 0.4,
+            "avg_hold_sec": 240.0,
+            "avg_mfe_net_pips": 0.4,
+            "bankable_green_red_rate": 0.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT"
+          }
+        ]
+      },
+      {
+        "family": "RANGE_ESCAPE__true_escape",
+        "cluster_count": 2,
+        "realized_pips_spread": 7.4,
+        "has_sign_split": false,
+        "dominant_exit_variety": 1,
+        "invalid_family_flag": false,
+        "clusters": [
+          {
+            "cluster": "stall_then_continuation",
+            "trade_count": 13,
+            "avg_realized_pips": 2.223077,
+            "avg_hold_sec": 396.923077,
+            "avg_mfe_net_pips": 20.276923,
+            "bankable_green_red_rate": 0.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+          },
+          {
+            "cluster": "chop_no_follow_through",
+            "trade_count": 7,
+            "avg_realized_pips": 1.457143,
+            "avg_hold_sec": 565.714286,
+            "avg_mfe_net_pips": 4.285714,
+            "bankable_green_red_rate": 0.0,
+            "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+          }
+        ]
+      }
+    ],
+    "decision": "problem_3_not_confirmed"
+  },
+  "module_collision_audit": {
+    "step": "STEP_2_MODULARIZE_AEE",
+    "objective_collision_detected": true,
+    "conflict_flags": [
+      "EXTENSION_MODULE_FALSE_POSITIVES"
+    ],
+    "metrics": {
+      "bankable_green_loss_red_rate": 0.186441,
+      "time_inefficient_trade_share": 0.033333,
+      "overheld_winner_count": 0,
+      "fake_runner_count": 21,
+      "avg_weak_winner_hold_sec": 314.482759,
+      "avg_loser_hold_sec": 360.0
+    },
+    "decision": "problem_5_architecture_confirmed"
+  },
+  "simplicity_reality_check": {
+    "step": "STEP_3_COMPARE_TO_SIMPLICITY",
+    "beats_minimal_protective": false,
+    "beats_no_aee_loose": false,
+    "complexity_adds_value": false,
+    "decision": "problem_6_simplicity_wins"
+  },
+  "root_cause_decision_tree": {
+    "decision_tree": {
+      "step_1_family_split": {
+        "step": "STEP_1_SPLIT_FAMILIES",
+        "family_invalid_detected": false,
+        "family_rows": [
+          {
+            "family": "BREAKOUT__clean_expansion",
+            "cluster_count": 1,
+            "realized_pips_spread": 9.9,
+            "has_sign_split": false,
+            "dominant_exit_variety": 1,
+            "invalid_family_flag": false,
+            "clusters": [
+              {
+                "cluster": "stall_then_continuation",
+                "trade_count": 20,
+                "avg_realized_pips": 2.98,
+                "avg_hold_sec": 312.0,
+                "avg_mfe_net_pips": 21.975,
+                "bankable_green_red_rate": 0.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+              }
+            ]
+          },
+          {
+            "family": "BREAKOUT__fake_breakout",
+            "cluster_count": 1,
+            "realized_pips_spread": 0.9,
+            "has_sign_split": false,
+            "dominant_exit_variety": 1,
+            "invalid_family_flag": false,
+            "clusters": [
+              {
+                "cluster": "pop_then_reverse",
+                "trade_count": 7,
+                "avg_realized_pips": -0.871429,
+                "avg_hold_sec": 274.285714,
+                "avg_mfe_net_pips": 15.242857,
+                "bankable_green_red_rate": 1.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT"
+              }
+            ]
+          },
+          {
+            "family": "BREAKOUT__weak_expansion",
+            "cluster_count": 1,
+            "realized_pips_spread": 4.4,
+            "has_sign_split": false,
+            "dominant_exit_variety": 1,
+            "invalid_family_flag": false,
+            "clusters": [
+              {
+                "cluster": "chop_no_follow_through",
+                "trade_count": 8,
+                "avg_realized_pips": 2.8125,
+                "avg_hold_sec": 247.5,
+                "avg_mfe_net_pips": 38.4125,
+                "bankable_green_red_rate": 0.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+              }
+            ]
+          },
+          {
+            "family": "RANGE_ESCAPE__noise_escape",
+            "cluster_count": 2,
+            "realized_pips_spread": 2.6,
+            "has_sign_split": true,
+            "dominant_exit_variety": 2,
+            "invalid_family_flag": false,
+            "clusters": [
+              {
+                "cluster": "pop_then_reverse",
+                "trade_count": 4,
+                "avg_realized_pips": -1.15,
+                "avg_hold_sec": 510.0,
+                "avg_mfe_net_pips": 14.85,
+                "bankable_green_red_rate": 1.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_PROTECTION_EXIT"
+              },
+              {
+                "cluster": "chop_no_follow_through",
+                "trade_count": 1,
+                "avg_realized_pips": 0.4,
+                "avg_hold_sec": 240.0,
+                "avg_mfe_net_pips": 0.4,
+                "bankable_green_red_rate": 0.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT"
+              }
+            ]
+          },
+          {
+            "family": "RANGE_ESCAPE__true_escape",
+            "cluster_count": 2,
+            "realized_pips_spread": 7.4,
+            "has_sign_split": false,
+            "dominant_exit_variety": 1,
+            "invalid_family_flag": false,
+            "clusters": [
+              {
+                "cluster": "stall_then_continuation",
+                "trade_count": 13,
+                "avg_realized_pips": 2.223077,
+                "avg_hold_sec": 396.923077,
+                "avg_mfe_net_pips": 20.276923,
+                "bankable_green_red_rate": 0.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+              },
+              {
+                "cluster": "chop_no_follow_through",
+                "trade_count": 7,
+                "avg_realized_pips": 1.457143,
+                "avg_hold_sec": 565.714286,
+                "avg_mfe_net_pips": 4.285714,
+                "bankable_green_red_rate": 0.0,
+                "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+              }
+            ]
+          }
+        ],
+        "decision": "problem_3_not_confirmed"
+      },
+      "step_2_modularize_aee": {
+        "step": "STEP_2_MODULARIZE_AEE",
+        "objective_collision_detected": true,
+        "conflict_flags": [
+          "EXTENSION_MODULE_FALSE_POSITIVES"
+        ],
+        "metrics": {
+          "bankable_green_loss_red_rate": 0.186441,
+          "time_inefficient_trade_share": 0.033333,
+          "overheld_winner_count": 0,
+          "fake_runner_count": 21,
+          "avg_weak_winner_hold_sec": 314.482759,
+          "avg_loser_hold_sec": 360.0
+        },
+        "decision": "problem_5_architecture_confirmed"
+      },
+      "step_3_simplicity_vs_complexity": {
+        "step": "STEP_3_COMPARE_TO_SIMPLICITY",
+        "beats_minimal_protective": false,
+        "beats_no_aee_loose": false,
+        "complexity_adds_value": false,
+        "decision": "problem_6_simplicity_wins"
+      }
+    },
+    "root_cause_hypothesis": "PROBLEM_5_MONOLITHIC_AEE_OBJECTIVE_COLLISION"
+  }
+}

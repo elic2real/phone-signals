@@ -1,0 +1,58 @@
+{
+  "name": "aee_value_density_family_microbatch_kill_report",
+  "rule": "kill_if_all_3_fail_net_extraction_and_economic_viability",
+  "candidates": [
+    {
+      "candidate": "v2",
+      "gross_delta_pph": -1.0802495423748057,
+      "net_delta_pph": -1.0802495423748057,
+      "avg_pips_per_trade": 0.1387837032816183,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "ci_ok": false,
+      "ci95": [
+        -1.1100052040753017,
+        -1.0473410467324273
+      ],
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT"
+    },
+    {
+      "candidate": "v3",
+      "gross_delta_pph": -1.0914553979513755,
+      "net_delta_pph": -1.0914553979513755,
+      "avg_pips_per_trade": 0.12732264497914994,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "ci_ok": false,
+      "ci95": [
+        -1.1225532299243193,
+        -1.0587494940482345
+      ],
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT"
+    },
+    {
+      "candidate": "v4",
+      "gross_delta_pph": -1.0966974592041436,
+      "net_delta_pph": -1.0966974592041439,
+      "avg_pips_per_trade": 0.12196120075630035,
+      "required_min_pips_per_trade": 1.2100000000000002,
+      "economic_viability_ok": false,
+      "ci_ok": false,
+      "ci95": [
+        -1.1283726776339142,
+        -1.0657895569867348
+      ],
+      "verdict": "BASELINE_REJECTED",
+      "decision": "REJECT"
+    }
+  ],
+  "family_decision": "KILL",
+  "kill_triggered": true,
+  "summary": {
+    "best_net_delta_pph": -1.0802495423748057,
+    "best_candidate": "v2",
+    "viability_pass_count": 0
+  }
+}

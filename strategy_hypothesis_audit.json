@@ -1,0 +1,321 @@
+{
+  "generated_at": "2026-03-25T16:27:39.175558Z",
+  "pair": "EUR_USD",
+  "families": {
+    "EXPANSION_BREAKOUT": {
+      "hypothesis_scores": {
+        "H1_detector_misclassification": {
+          "score": 0.2,
+          "evidence": [
+            "cluster_count=1",
+            "family=EXPANSION_BREAKOUT",
+            "assignment_reason samples included"
+          ]
+        },
+        "H2_missing_structural_layers": {
+          "score": 0.2,
+          "evidence": [
+            "entry_only_potential_pph=2.10128",
+            "aee_realized_net_pph=0.09566"
+          ]
+        },
+        "H3_entry_aee_mismatch": {
+          "score": 0.2,
+          "evidence": [
+            "aee_realization_ratio=0.0455",
+            "top_exit_reason=AEE_BAND_FAST_FAILURE_EXIT"
+          ]
+        },
+        "H5_regime_context_dilution": {
+          "score": 0.2,
+          "evidence": [
+            "mixed_session_sign=False",
+            "session_rows=4"
+          ]
+        },
+        "H12_family_over_generalization": {
+          "score": 0.2,
+          "evidence": [
+            "subcluster_count=1",
+            "best_vs_worst_cluster_gap=0.0000"
+          ]
+        }
+      },
+      "ranked_hypotheses": [
+        {
+          "hypothesis": "H1_detector_misclassification",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H2_missing_structural_layers",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H3_entry_aee_mismatch",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H5_regime_context_dilution",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H12_family_over_generalization",
+          "score": 0.2
+        }
+      ],
+      "trustworthiness": "STRUCTURALLY_TRUSTWORTHY"
+    },
+    "RECLAIM_CONTINUATION": {
+      "hypothesis_scores": {
+        "H1_detector_misclassification": {
+          "score": 0.4,
+          "evidence": [
+            "cluster_count=2",
+            "family=RECLAIM_CONTINUATION",
+            "assignment_reason samples included"
+          ]
+        },
+        "H2_missing_structural_layers": {
+          "score": 0.2,
+          "evidence": [
+            "entry_only_potential_pph=0.01738",
+            "aee_realized_net_pph=-0.00112"
+          ]
+        },
+        "H3_entry_aee_mismatch": {
+          "score": 0.8999999999999999,
+          "evidence": [
+            "aee_realization_ratio=-0.0644",
+            "top_exit_reason=AEE_BAND_FAST_FAILURE_EXIT"
+          ]
+        },
+        "H5_regime_context_dilution": {
+          "score": 0.7,
+          "evidence": [
+            "mixed_session_sign=True",
+            "session_rows=4"
+          ]
+        },
+        "H12_family_over_generalization": {
+          "score": 0.7,
+          "evidence": [
+            "subcluster_count=2",
+            "best_vs_worst_cluster_gap=0.6805"
+          ]
+        }
+      },
+      "ranked_hypotheses": [
+        {
+          "hypothesis": "H3_entry_aee_mismatch",
+          "score": 0.8999999999999999
+        },
+        {
+          "hypothesis": "H5_regime_context_dilution",
+          "score": 0.7
+        },
+        {
+          "hypothesis": "H12_family_over_generalization",
+          "score": 0.7
+        },
+        {
+          "hypothesis": "H1_detector_misclassification",
+          "score": 0.4
+        },
+        {
+          "hypothesis": "H2_missing_structural_layers",
+          "score": 0.2
+        }
+      ],
+      "trustworthiness": "STRUCTURALLY_UNTRUSTWORTHY_OR_INCOMPLETE"
+    },
+    "PULLBACK_CONTINUATION": {
+      "hypothesis_scores": {
+        "H1_detector_misclassification": {
+          "score": 0.2,
+          "evidence": [
+            "cluster_count=1",
+            "family=PULLBACK_CONTINUATION",
+            "assignment_reason samples included"
+          ]
+        },
+        "H2_missing_structural_layers": {
+          "score": 0.4,
+          "evidence": [
+            "entry_only_potential_pph=0.48152",
+            "aee_realized_net_pph=-0.05225"
+          ]
+        },
+        "H3_entry_aee_mismatch": {
+          "score": 0.8999999999999999,
+          "evidence": [
+            "aee_realization_ratio=-0.1085",
+            "top_exit_reason=AEE_BAND_FAST_FAILURE_EXIT"
+          ]
+        },
+        "H5_regime_context_dilution": {
+          "score": 0.2,
+          "evidence": [
+            "mixed_session_sign=False",
+            "session_rows=4"
+          ]
+        },
+        "H12_family_over_generalization": {
+          "score": 0.2,
+          "evidence": [
+            "subcluster_count=1",
+            "best_vs_worst_cluster_gap=0.0000"
+          ]
+        }
+      },
+      "ranked_hypotheses": [
+        {
+          "hypothesis": "H3_entry_aee_mismatch",
+          "score": 0.8999999999999999
+        },
+        {
+          "hypothesis": "H2_missing_structural_layers",
+          "score": 0.4
+        },
+        {
+          "hypothesis": "H1_detector_misclassification",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H5_regime_context_dilution",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H12_family_over_generalization",
+          "score": 0.2
+        }
+      ],
+      "trustworthiness": "STRUCTURALLY_UNTRUSTWORTHY_OR_INCOMPLETE"
+    },
+    "RANGE_ESCAPE": {
+      "hypothesis_scores": {
+        "H1_detector_misclassification": {
+          "score": 0.4,
+          "evidence": [
+            "cluster_count=2",
+            "family=RANGE_ESCAPE",
+            "assignment_reason samples included"
+          ]
+        },
+        "H2_missing_structural_layers": {
+          "score": 0.4,
+          "evidence": [
+            "entry_only_potential_pph=4.44986",
+            "aee_realized_net_pph=-0.33336"
+          ]
+        },
+        "H3_entry_aee_mismatch": {
+          "score": 0.8999999999999999,
+          "evidence": [
+            "aee_realization_ratio=-0.0749",
+            "top_exit_reason=AEE_BAND_FAST_FAILURE_EXIT"
+          ]
+        },
+        "H5_regime_context_dilution": {
+          "score": 0.7,
+          "evidence": [
+            "mixed_session_sign=True",
+            "session_rows=4"
+          ]
+        },
+        "H12_family_over_generalization": {
+          "score": 0.7,
+          "evidence": [
+            "subcluster_count=2",
+            "best_vs_worst_cluster_gap=0.7555"
+          ]
+        }
+      },
+      "ranked_hypotheses": [
+        {
+          "hypothesis": "H3_entry_aee_mismatch",
+          "score": 0.8999999999999999
+        },
+        {
+          "hypothesis": "H5_regime_context_dilution",
+          "score": 0.7
+        },
+        {
+          "hypothesis": "H12_family_over_generalization",
+          "score": 0.7
+        },
+        {
+          "hypothesis": "H1_detector_misclassification",
+          "score": 0.4
+        },
+        {
+          "hypothesis": "H2_missing_structural_layers",
+          "score": 0.4
+        }
+      ],
+      "trustworthiness": "STRUCTURALLY_UNTRUSTWORTHY_OR_INCOMPLETE"
+    },
+    "OTHER": {
+      "hypothesis_scores": {
+        "H1_detector_misclassification": {
+          "score": 0.6000000000000001,
+          "evidence": [
+            "cluster_count=1",
+            "family=OTHER",
+            "assignment_reason samples included"
+          ]
+        },
+        "H2_missing_structural_layers": {
+          "score": 0.2,
+          "evidence": [
+            "entry_only_potential_pph=1.21716",
+            "aee_realized_net_pph=-0.24348"
+          ]
+        },
+        "H3_entry_aee_mismatch": {
+          "score": 0.8999999999999999,
+          "evidence": [
+            "aee_realization_ratio=-0.2000",
+            "top_exit_reason=AEE_BAND_FAST_FAILURE_EXIT"
+          ]
+        },
+        "H5_regime_context_dilution": {
+          "score": 0.2,
+          "evidence": [
+            "mixed_session_sign=False",
+            "session_rows=4"
+          ]
+        },
+        "H12_family_over_generalization": {
+          "score": 0.2,
+          "evidence": [
+            "subcluster_count=1",
+            "best_vs_worst_cluster_gap=0.0000"
+          ]
+        }
+      },
+      "ranked_hypotheses": [
+        {
+          "hypothesis": "H3_entry_aee_mismatch",
+          "score": 0.8999999999999999
+        },
+        {
+          "hypothesis": "H1_detector_misclassification",
+          "score": 0.6000000000000001
+        },
+        {
+          "hypothesis": "H2_missing_structural_layers",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H5_regime_context_dilution",
+          "score": 0.2
+        },
+        {
+          "hypothesis": "H12_family_over_generalization",
+          "score": 0.2
+        }
+      ],
+      "trustworthiness": "STRUCTURALLY_UNTRUSTWORTHY_OR_INCOMPLETE"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-03-25T18:19:04.079171Z",
+  "task_id": "TASK-014",
+  "scope": "simulation_reconstruction_implementation",
+  "streams": 16,
+  "total_trades": 21390,
+  "total_hours": 25977.35,
+  "implemented_modules": [
+    "truth_anchor_metrics",
+    "extraction_efficiency",
+    "sequence_preservation_diagnostics",
+    "pricing_realism_diagnostics",
+    "balanced_benchmark_windows",
+    "family_retest_vs_champion"
+  ],
+  "regime_distribution": {
+    "neutral": 0.2708,
+    "compressed": 0.6609,
+    "strong_bullish": 0.0621,
+    "strong_bearish": 0.0062
+  },
+  "quarter_distribution": {
+    "Q1": 0.1898,
+    "Q3": 0.1194,
+    "Q4": 0.6406,
+    "Q2": 0.0502
+  },
+  "headline_findings": [
+    "truth-anchor metrics are now explicit for every family",
+    "extraction efficiency is measured and banded (broken/weak/viable/strong)",
+    "reclaim representability now uses path-sequence diagnostics independent of progress_ratio monotonicity",
+    "pricing realism now reports suspicious bar1 fill rates per family",
+    "balanced benchmark outputs are produced alongside raw metrics"
+  ]
+}

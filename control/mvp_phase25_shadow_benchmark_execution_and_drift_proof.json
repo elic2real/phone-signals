@@ -1,0 +1,193 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T10:21:26.292367+00:00",
+  "task_id": "MVP_PHASE25_SHADOW_BENCHMARK_EXECUTION_AND_DRIFT_PROOF",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "SHADOW_INTERVENTION_V1"
+  },
+  "dependency": {
+    "phase24_status": "PASS",
+    "phase24_path": "control/mvp_phase24_policy_package_hardening_and_release_guard_recheck.json",
+    "phase11_status": "PASS",
+    "phase11_path": "control/mvp_phase11_exit_timing_and_drawdown_pattern_decomposition_no_tuning.json",
+    "phase6_phase7_refs": [
+      "control/mvp_phase6_w3_eur_usd.json",
+      "control/mvp_phase6_w3_gbp_usd.json",
+      "control/mvp_phase7_runtime_eur_usd.json",
+      "control/mvp_phase7_runtime_gbp_usd.json"
+    ]
+  },
+  "intervention_v1_focus": [
+    "long_peak_to_close_delay",
+    "prolonged_drawdown_selected"
+  ],
+  "results_by_pair": {
+    "EUR_USD": {
+      "pair": "EUR_USD",
+      "intervention_v1": {
+        "rules": {
+          "early_post_peak_guard": "time_from_peak_to_close_seconds > 3900.0 and loss_after_peak_pips >= 1.0 and net_pips <= 1.0",
+          "drawdown_fail_fast": "time_in_drawdown_seconds > 1140.0 and net_pips <= 0.0",
+          "timing_tolerance_cap": "time_to_first_profit_seconds < 600 and time_in_drawdown_seconds > 1800 and net_pips <= 0.0"
+        },
+        "rule_hit_counts": {
+          "early_post_peak_guard": 41,
+          "drawdown_fail_fast": 58,
+          "timing_tolerance_cap": 49
+        }
+      },
+      "phase6_phase7_baseline": {
+        "phase6_w3_pph": 0.0504,
+        "phase7_runtime_pph": 0.0438,
+        "phase7_minus_phase6_decay_pph": -0.006600000000000002,
+        "trades_per_hour": 0.03437610071851055
+      },
+      "shadow_counterfactual_estimate": {
+        "sample_count": 200,
+        "triggered_count": 68,
+        "trigger_rate": 0.34,
+        "baseline_mean_net_pips": 0.6629999999999999,
+        "counterfactual_mean_net_pips": 1.4994999999999998,
+        "delta_mean_net_pips": 0.8364999999999999,
+        "estimated_pph_delta": 0.02875560825103407,
+        "estimated_intervention_pph": 0.07255560825103408,
+        "extraction_proxy": {
+          "baseline_peak_to_close_loss_mean": 11.9725,
+          "counterfactual_peak_to_close_loss_mean": 11.136,
+          "delta": 0.8365000000000009
+        },
+        "decay_proxy": {
+          "recovered_decay_pph": 0.028755608251034077,
+          "decay_recovery_ratio": 4.356910341065769
+        },
+        "false_cut_rate_on_winners": 0.025974025974025976,
+        "family_trigger_shares": {
+          "EXPANSION_BREAKOUT": 0.45588235294117646,
+          "RANGE_ESCAPE": 0.5,
+          "OTHER": 0.04411764705882353
+        }
+      },
+      "failure_count_comparison": {
+        "long_peak_to_close_delay": {
+          "before": 63,
+          "after": 22,
+          "prevented": 41
+        },
+        "prolonged_drawdown_selected": {
+          "before": 87,
+          "after": 27,
+          "prevented": 60
+        }
+      },
+      "pair_gate": {
+        "pph_delta_positive": true,
+        "extraction_improved": true,
+        "failure_counts_reduced": true,
+        "false_cut_rate_within_limit": true
+      }
+    },
+    "GBP_USD": {
+      "pair": "GBP_USD",
+      "intervention_v1": {
+        "rules": {
+          "early_post_peak_guard": "time_from_peak_to_close_seconds > 2520.0 and loss_after_peak_pips >= 1.0 and net_pips <= 1.0",
+          "drawdown_fail_fast": "time_in_drawdown_seconds > 2760.0 and net_pips <= 0.0",
+          "timing_tolerance_cap": "time_to_first_profit_seconds < 600 and time_in_drawdown_seconds > 1800 and net_pips <= 0.0"
+        },
+        "rule_hit_counts": {
+          "early_post_peak_guard": 33,
+          "drawdown_fail_fast": 30,
+          "timing_tolerance_cap": 41
+        }
+      },
+      "phase6_phase7_baseline": {
+        "phase6_w3_pph": 0.2708,
+        "phase7_runtime_pph": 0.2708,
+        "phase7_minus_phase6_decay_pph": 0.0,
+        "trades_per_hour": 0.1542462878010726
+      },
+      "shadow_counterfactual_estimate": {
+        "sample_count": 200,
+        "triggered_count": 57,
+        "trigger_rate": 0.285,
+        "baseline_mean_net_pips": 1.376,
+        "counterfactual_mean_net_pips": 2.122,
+        "delta_mean_net_pips": 0.746,
+        "estimated_pph_delta": 0.11506773069960016,
+        "estimated_intervention_pph": 0.3858677306996001,
+        "extraction_proxy": {
+          "baseline_peak_to_close_loss_mean": 13.4655,
+          "counterfactual_peak_to_close_loss_mean": 12.7195,
+          "delta": 0.7460000000000004
+        },
+        "decay_proxy": {
+          "recovered_decay_pph": 0.11506773069960013,
+          "decay_recovery_ratio": null
+        },
+        "false_cut_rate_on_winners": 0.07692307692307693,
+        "family_trigger_shares": {
+          "EXPANSION_BREAKOUT": 0.5263157894736842,
+          "OTHER": 0.05263157894736842,
+          "RANGE_ESCAPE": 0.42105263157894735
+        }
+      },
+      "failure_count_comparison": {
+        "long_peak_to_close_delay": {
+          "before": 61,
+          "after": 28,
+          "prevented": 33
+        },
+        "prolonged_drawdown_selected": {
+          "before": 50,
+          "after": 17,
+          "prevented": 33
+        }
+      },
+      "pair_gate": {
+        "pph_delta_positive": true,
+        "extraction_improved": true,
+        "failure_counts_reduced": true,
+        "false_cut_rate_within_limit": true
+      }
+    }
+  },
+  "cross_pair_drift_proof": {
+    "checks": {
+      "both_pairs_positive_pph_delta": true,
+      "false_cut_guard_respected": true,
+      "pair_delta_asymmetry_bounded": true,
+      "family_trigger_balance_bounded": true
+    },
+    "summary": {
+      "eur_estimated_pph_delta": 0.02875560825103407,
+      "gbp_estimated_pph_delta": 0.11506773069960016,
+      "max_false_cut_rate": 0.07692307692307693,
+      "max_family_trigger_share_gap": 0.07894736842105265
+    },
+    "overall_pass": true
+  },
+  "pass_conditions": {
+    "phase24_dependency_passed": true,
+    "intervention_v1_executed_shadow_only": true,
+    "phase6_phase7_comparison_complete": true,
+    "pair_gate_pass": true,
+    "cross_pair_drift_proof_pass": true,
+    "no_tuning_applied": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Intervention V1 clears pair gates and cross-pair drift proof under shadow benchmark.",
+    "release_action": "SHADOW_ONLY_CONTINUE",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE26_SHADOW_STABILITY_WINDOW_PROOF",
+  "status": "PASS"
+}

@@ -1,0 +1,58 @@
+{
+  "run_id": "AEE_RUN_20260326T074317Z",
+  "strategy_family": [
+    "EXPANSION_BREAKOUT",
+    "OTHER",
+    "RANGE_ESCAPE"
+  ],
+  "strategy_form_id": "entry_v36_firehose_all_families",
+  "thresholds": {
+    "spread_pips": 0.8,
+    "slippage_pips_per_side": 0.15,
+    "commission_pips_roundtrip": 0.0,
+    "latency_penalty_pips": 0.0,
+    "economic_viability_mult": 1.1
+  },
+  "enabled_gates": {
+    "micro_confirm": true,
+    "displacement_rules": 3,
+    "progress_rules": 1,
+    "release_quality_rules": 1,
+    "noise_rules": 1
+  },
+  "disabled_gates": {
+    "raw_core_mode": false,
+    "excluded_contexts": [
+      "eur_chf__monday__asia",
+      "eur_chf__monday__london",
+      "eur_chf__monday__new_york",
+      "eur_chf__monday__sydney",
+      "eur_chf__wednesday__london",
+      "eur_gbp__monday__asia",
+      "eur_gbp__monday__london",
+      "eur_gbp__monday__new_york",
+      "eur_gbp__monday__sydney",
+      "eur_gbp__thursday__sydney",
+      "eur_usd__friday__asia",
+      "eur_usd__tuesday__new_york",
+      "usd_cad__monday__london"
+    ]
+  },
+  "aee_version": "v2",
+  "simulation_mode": "RAW_STREAM_REPLAY",
+  "dataset_window_id": "EUR_USD_RAW_CORE_FULL",
+  "pair_session_coverage": {
+    "pairs": [
+      "GBP_USD"
+    ],
+    "sessions": {
+      "asia": 1,
+      "london": 1,
+      "new_york": 1,
+      "sydney": 1
+    }
+  },
+  "code_version": "workspace-local",
+  "artifact_version": "run_multi_strategy_firehose_v2",
+  "config_path": "/home/elic/Documents/phone signals/entry_v23_policy_guarded_active.json"
+}

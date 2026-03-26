@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-03-26T03:13:12.540556Z",
+  "run_tag": "MVP_GBP_USD_MVP_SMOKE_20260325",
+  "pair": "GBP_USD",
+  "aee_version": "v3",
+  "slice": {
+    "slice_file": "/home/elic/Documents/phone signals/control/failure_slices/MVP_SMOKE_20260325/GBP_USD/fake_runner_slice.json",
+    "include_contexts": "",
+    "include_trade_ids": "",
+    "max_trades": 120
+  },
+  "rows": [
+    {
+      "name": "baseline",
+      "run_id": "AEE_MATRIX_MVP_GBP_USD_MVP_SMOKE_20260325_baseline",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/MVP_GBP_USD_MVP_SMOKE_20260325/baseline",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__clean_expansion    0.0059      +1.3400 100.0%  +0.00790   +14.2100  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              10\n  trades_per_hour:          0.00592\n  avg_net_pips_per_trade:   +1.34000\n  entry_only_pph:           +0.09204\n  realized_pph (combined):  +0.00793\n  gap (entry - realized):   +0.08411\n  extraction_efficiency:    +0.08617\n  loss_compression_rate:    +1.00000\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.08617\n  giveback_ratio:           +0.91383\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.007932,
+        "gap": 0.08411,
+        "extraction_efficiency": 0.086174,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.0,
+        "fake_runner_count": 10,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": false
+      }
+    },
+    {
+      "name": "variant_a_reclaim_stall_only",
+      "run_id": "AEE_MATRIX_MVP_GBP_USD_MVP_SMOKE_20260325_variant_a_reclaim_stall_only",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/MVP_GBP_USD_MVP_SMOKE_20260325/variant_a_reclaim_stall_only",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__clean_expansion    0.0059      +1.3400 100.0%  +0.00790   +14.2100  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              10\n  trades_per_hour:          0.00592\n  avg_net_pips_per_trade:   +1.34000\n  entry_only_pph:           +0.09204\n  realized_pph (combined):  +0.00793\n  gap (entry - realized):   +0.08411\n  extraction_efficiency:    +0.08617\n  loss_compression_rate:    +1.00000\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.08617\n  giveback_ratio:           +0.91383\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.007932,
+        "gap": 0.08411,
+        "extraction_efficiency": 0.086174,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.0,
+        "fake_runner_count": 10,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": false
+      }
+    },
+    {
+      "name": "variant_b_fake_runner_demotion",
+      "run_id": "AEE_MATRIX_MVP_GBP_USD_MVP_SMOKE_20260325_variant_b_fake_runner_demotion",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/MVP_GBP_USD_MVP_SMOKE_20260325/variant_b_fake_runner_demotion",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__clean_expansion    0.0059      +1.3400 100.0%  +0.00790   +14.2100  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              10\n  trades_per_hour:          0.00592\n  avg_net_pips_per_trade:   +1.34000\n  entry_only_pph:           +0.09204\n  realized_pph (combined):  +0.00793\n  gap (entry - realized):   +0.08411\n  extraction_efficiency:    +0.08617\n  loss_compression_rate:    +1.00000\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.08617\n  giveback_ratio:           +0.91383\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.007932,
+        "gap": 0.08411,
+        "extraction_efficiency": 0.086174,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.0,
+        "fake_runner_count": 10,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": false
+      }
+    },
+    {
+      "name": "variant_c_failed_progress_harvest",
+      "run_id": "AEE_MATRIX_MVP_GBP_USD_MVP_SMOKE_20260325_variant_c_failed_progress_harvest",
+      "result_dir": "/home/elic/Documents/phone signals/control/variant_runs/MVP_GBP_USD_MVP_SMOKE_20260325/variant_c_failed_progress_harvest",
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": "  BREAKOUT__clean_expansion    0.0059      +1.3400 100.0%  +0.00790   +14.2100  ~  TUNE\n\n------------------------------------------------------------------------\n  LAYER AGGREGATE \u2014 FULL RESULTS\n------------------------------------------------------------------------\n  trade_count:              10\n  trades_per_hour:          0.00592\n  avg_net_pips_per_trade:   +1.34000\n  entry_only_pph:           +0.09204\n  realized_pph (combined):  +0.00793\n  gap (entry - realized):   +0.08411\n  extraction_efficiency:    +0.08617\n  loss_compression_rate:    +1.00000\n  failure_to_win_rate:      +1.00000\n  continuation_capture:     +0.08617\n  giveback_ratio:           +0.91383\n  breakout_net_pph:         +0.00000  (\u0394 vs champion: -0.09570)\n\n  TOP DAMAGE:\n    primary:   AEE_V3_FAMILY_HARD_GIVEBACK_EXIT\n    secondary: AEE_V3_FAMILY_PROTECTION_EXIT\n\n  FAILURE LAYER:  AEE  (confidence: 0.93)\n  SUBLAYER:       continuation_capture_and_giveback_logic\n  REASON:         Blocking overfire flags present (HIGH_GIVEBACK_RATIO), primary branch=AEE_V3_FAMILY_HARD_GIVEBACK_EXIT, secondary branch=AEE_V3_FAMILY_PROTECTION_EXIT\n\n========================================================================\n  VERDICT: \u2717  REJECT \u2014 primary edge below protection floor\n========================================================================\n",
+      "metrics": {
+        "realized_pph": 0.007932,
+        "gap": 0.08411,
+        "extraction_efficiency": 0.086174,
+        "objective_collision_detected": true,
+        "bankable_green_loss_red_rate": 0.0,
+        "fake_runner_count": 10,
+        "overheld_winner_count": 0,
+        "complexity_adds_value": false
+      }
+    }
+  ]
+}

@@ -48,6 +48,8 @@ from outcome_accelerator import should_force_close, oa_event
 from active_artifacts import load_active_artifacts
 from vol_bucket_spec import bucket_from_rank, cuts_for_session, load_vol_bucket_spec, validate_vol_bucket_spec
 from aee_live_doctrine import LiveDoctrineEngine
+from pocket_profiles import load_pocket_profiles, resolve_effective_policy
+from entry_breakout_v2 import detect_expansion_breakout
 
 # Notification system
 import hashlib
@@ -64,6 +66,18 @@ _SESSION_TEMPLATE_CACHE: Dict[str, dict] = {}
 _RUNTIME_SETTINGS_CACHE: Dict[str, dict] = {}
 _STRATEGY_OVERRIDES: Dict[str, Dict[str, Any]] = {}
 _STRATEGY_OVERRIDES_META: Dict[str, Any] = {}
+_STRATEGY_POLICY: Dict[str, Any] = {}
+_STRATEGY_POLICY_META: Dict[str, Any] = {}
+_POCKET_POLICY_PROFILES: Dict[str, Any] = {"pockets": {}}
+_POCKET_POLICY_META: Dict[str, Any] = {}
+_POCKET_POLICY_LAST_GOOD: Dict[str, Any] = {"pockets": {}}
+_POCKET_POLICY_RUNTIME_STATE: Dict[str, Any] = {
+    "path": "",
+    "last_attempt_ts": 0.0,
+    "last_success_ts": 0.0,
+    "next_retry_ts": 0.0,
+    "last_loaded_mtime": None,
+}
 _TRADE_STRATEGY_CONTEXT: Dict[int, Dict[str, Any]] = {}
 
 def _now_ms():
@@ -166,6 +180,72 @@ def _strategy_key(entry_family: str, trade_type: str, target_profile: str) -> st
     return f"{str(entry_family or '').upper()}|{str(trade_type or '').upper()}|{str(target_profile or '').upper()}"
 
 
+def _snap_distance_to_override_bucket(distance_pips: float, direction: str = "", trade_type: str = "") -> Optional[float]:
+    if not math.isfinite(float(distance_pips)) or float(distance_pips) <= 0.0:
+        return None
+    # Prefer explicit strategy-policy ENABLE buckets for this side/mode when available.
+    try:
+        side = str(direction or "").strip().upper()
+        mode = str(trade_type or "").strip().upper()
+        enable_keys: Set[str] = set(_STRATEGY_POLICY.get("enable", set()) or set())
+        policy_buckets: List[float] = []
+        if side and mode and enable_keys:
+            for key in enable_keys:
+                parts = str(key or "").strip().upper().split("|")
+                if len(parts) != 3:
+                    continue
+                key_side, key_mode, key_profile = parts
+                if key_side != side or key_mode != mode:
+                    continue
+                bucket = _distance_from_target_profile(key_profile)
+                if bucket is not None and math.isfinite(bucket) and bucket > 0.0:
+                    policy_buckets.append(float(bucket))
+        if policy_buckets:
+            return float(min(policy_buckets, key=lambda x: abs(float(x) - float(distance_pips))))
+    except Exception:
+        pass
+
+    if not _STRATEGY_OVERRIDES:
+        return None
+    side = str(direction or "").strip().lower()
+    mode = str(trade_type or "").strip().lower()
+    candidates: List[float] = []
+    fallback: List[float] = []
+    for key in _STRATEGY_OVERRIDES.keys():
+        parts = str(key).strip().lower().split(":")
+        if len(parts) != 3:
+            continue
+        try:
+            bucket = float(parts[2])
+        except Exception:
+            continue
+        if not math.isfinite(bucket) or bucket <= 0.0:
+            continue
+        fallback.append(bucket)
+        if (not side or parts[0] == side) and (not mode or parts[1] == mode):
+            candidates.append(bucket)
+    pool = candidates or fallback
+    if not pool:
+        return None
+    return float(min(pool, key=lambda x: abs(float(x) - float(distance_pips))))
+
+
+def _normalize_target_profile(
+    target_profile: str,
+    *,
+    direction: str = "",
+    trade_type: str = "",
+    fallback_distance: float = 0.0,
+) -> str:
+    dist = _distance_from_target_profile(target_profile)
+    if dist is None:
+        dist = float(fallback_distance or 0.0)
+    snapped = _snap_distance_to_override_bucket(dist, direction=direction, trade_type=trade_type)
+    if snapped is not None:
+        dist = float(snapped)
+    return _target_profile_from_distance(dist)
+
+
 def _infer_entry_family_from_setup(setup_name: str) -> str:
     s = str(setup_name or "").upper()
     if "FAILED_BREAKOUT_FADE" in s:
@@ -179,14 +259,21 @@ def _infer_entry_family_from_setup(setup_name: str) -> str:
     return "UNKNOWN"
 
 
-def _compute_target_profile(pair: str, entry: float, tp: float, fallback_distance: float = 0.0) -> str:
+def _compute_target_profile(
+    pair: str,
+    entry: float,
+    tp: float,
+    fallback_distance: float = 0.0,
+    direction: str = "",
+    trade_type: str = "",
+) -> str:
     dist = float(fallback_distance or 0.0)
     try:
         if math.isfinite(float(entry)) and math.isfinite(float(tp)) and float(entry) > 0.0 and float(tp) > 0.0:
             dist = abs(float(to_pips(pair, float(tp) - float(entry))))
     except Exception:
         pass
-    return _target_profile_from_distance(dist)
+    return _normalize_target_profile("", direction=direction, trade_type=trade_type, fallback_distance=dist)
 
 
 def _load_strategy_runtime_overrides() -> None:
@@ -227,22 +314,289 @@ def _load_strategy_runtime_overrides() -> None:
         log_runtime("error", "AEE_STRATEGY_OVERRIDES_LOAD_FAILED", path=str(path), error=str(exc))
 
 
+def _normalize_policy_key(key: str) -> str:
+    return str(key or "").strip().upper()
+
+
+def _utc_weekday_name(ts_utc: float) -> str:
+    try:
+        dt = datetime.fromtimestamp(float(ts_utc), tz=timezone.utc)
+        return str(dt.strftime("%A") or "").strip().lower() or "*"
+    except Exception:
+        return "*"
+
+
+def _resolve_policy_sets(context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    _refresh_pocket_policy_if_needed()
+    base_policy = {
+        "enable": set(_STRATEGY_POLICY.get("enable", set()) or set()),
+        "suppress": set(_STRATEGY_POLICY.get("suppress", set()) or set()),
+        "needs_sample": set(_STRATEGY_POLICY.get("needs_sample", set()) or set()),
+        "quarantine": set(_STRATEGY_POLICY.get("quarantine", set()) or set()),
+        "strict": bool(_STRATEGY_POLICY.get("strict", True)),
+    }
+    if not _POCKET_POLICY_META.get("loaded", False):
+        return {
+            "policy": base_policy,
+            "pocket": {
+                "matched": None,
+                "energy_valid": False,
+                "degraded": bool(_POCKET_POLICY_META.get("degraded", True)),
+                "source": str(_POCKET_POLICY_META.get("source", "base_policy") or "base_policy"),
+                "reason": str(_POCKET_POLICY_META.get("reason", "pocket_unavailable") or "pocket_unavailable"),
+            },
+        }
+    try:
+        return resolve_effective_policy(
+            base_policy=base_policy,
+            profiles=_POCKET_POLICY_PROFILES,
+            context=context,
+        )
+    except Exception as exc:
+        log_runtime("warning", "AEE_POCKET_POLICY_RESOLVE_FAILED", error=str(exc), context=context or {})
+        return {"policy": base_policy, "pocket": {"matched": None, "energy_valid": False, "reason": str(exc)}}
+
+
+def _load_pocket_profiles_with_retry(*, force: bool = False) -> None:
+    global _POCKET_POLICY_PROFILES, _POCKET_POLICY_META, _POCKET_POLICY_LAST_GOOD, _POCKET_POLICY_RUNTIME_STATE
+    retry_sec = max(1, _env_int("AEE_POCKET_RETRY_SEC", 20))
+    now = time.time()
+    path_value = os.getenv("AEE_STRATEGY_POCKET_PROFILES_PATH", "strategy_pocket_profiles.json").strip() or "strategy_pocket_profiles.json"
+    path = Path(path_value)
+    if not path.is_absolute():
+        path = Path(PROJECT_DIR) / path
+
+    state = _POCKET_POLICY_RUNTIME_STATE
+    state["path"] = str(path)
+
+    if not force and float(state.get("next_retry_ts", 0.0) or 0.0) > now:
+        return
+
+    prev_loaded = bool(_POCKET_POLICY_META.get("loaded", False))
+    state["last_attempt_ts"] = now
+    profiles, meta = load_pocket_profiles(str(path))
+
+    if bool(meta.get("loaded", False)):
+        _POCKET_POLICY_PROFILES = profiles
+        _POCKET_POLICY_META = meta
+        _POCKET_POLICY_LAST_GOOD = profiles
+        try:
+            state["last_loaded_mtime"] = path.stat().st_mtime
+        except Exception:
+            state["last_loaded_mtime"] = None
+        state["last_success_ts"] = now
+        state["next_retry_ts"] = now + retry_sec
+        if (not prev_loaded) or force:
+            log_runtime(
+                "info",
+                "AEE_POCKET_POLICY_LOADED",
+                path=str(meta.get("path", "")),
+                count=int(meta.get("count", 0) or 0),
+                retry_sec=retry_sec,
+            )
+        return
+
+    # Keep trading with the last known good pockets if new load attempt fails.
+    if bool((_POCKET_POLICY_LAST_GOOD or {}).get("pockets")):
+        _POCKET_POLICY_PROFILES = _POCKET_POLICY_LAST_GOOD
+        _POCKET_POLICY_META = {
+            "loaded": True,
+            "path": str(meta.get("path", "")),
+            "count": int(len(dict((_POCKET_POLICY_LAST_GOOD or {}).get("pockets") or {}))),
+            "reason": str(meta.get("reason", "load_failed_using_last_good")),
+            "degraded": True,
+            "source": "last_good",
+        }
+        log_runtime(
+            "warning",
+            "AEE_POCKET_POLICY_RELOAD_FAILED_USING_LAST_GOOD",
+            path=str(meta.get("path", "")),
+            reason=str(meta.get("reason", "unknown")),
+            retry_sec=retry_sec,
+        )
+    else:
+        # No pocket file available yet. Degrade cleanly to base strategy policy.
+        _POCKET_POLICY_PROFILES = {"pockets": {}}
+        _POCKET_POLICY_META = {
+            "loaded": False,
+            "path": str(meta.get("path", "")),
+            "reason": str(meta.get("reason", "missing_or_invalid")),
+            "degraded": True,
+            "source": "base_policy",
+        }
+        log_runtime(
+            "warning",
+            "AEE_POCKET_POLICY_MISSING_OR_INVALID",
+            path=str(meta.get("path", "")),
+            reason=str(meta.get("reason", "missing_or_invalid")),
+            retry_sec=retry_sec,
+        )
+
+    state["next_retry_ts"] = now + retry_sec
+
+
+def _refresh_pocket_policy_if_needed() -> None:
+    state = _POCKET_POLICY_RUNTIME_STATE
+    path_text = str(state.get("path", "") or "")
+    if not path_text:
+        _load_pocket_profiles_with_retry(force=False)
+        return
+
+    path = Path(path_text)
+    now = time.time()
+    retry_sec = max(1, _env_int("AEE_POCKET_RETRY_SEC", 20))
+
+    try:
+        current_mtime = path.stat().st_mtime
+    except Exception:
+        current_mtime = None
+
+    previous_mtime = state.get("last_loaded_mtime")
+    mtime_changed = (current_mtime is not None and previous_mtime is not None and float(current_mtime) != float(previous_mtime))
+
+    if mtime_changed:
+        _load_pocket_profiles_with_retry(force=True)
+        return
+
+    if float(state.get("next_retry_ts", 0.0) or 0.0) <= now:
+        _load_pocket_profiles_with_retry(force=False)
+        return
+
+    # Light periodic health probe to recover if file appears after startup.
+    if not _POCKET_POLICY_META.get("loaded", False) and float(state.get("last_attempt_ts", 0.0) or 0.0) + retry_sec <= now:
+        _load_pocket_profiles_with_retry(force=False)
+
+
+def _load_strategy_runtime_policy() -> None:
+    global _STRATEGY_POLICY, _STRATEGY_POLICY_META
+    cfg_path = os.getenv("AEE_STRATEGY_POLICY_PATH", "strategy_runtime_policy_patch.json").strip() or "strategy_runtime_policy_patch.json"
+    path = Path(cfg_path)
+    if not path.is_absolute():
+        path = Path(PROJECT_DIR) / path
+    if not path.exists():
+        _STRATEGY_POLICY = {"enable": set(), "suppress": set(), "needs_sample": set(), "quarantine": set()}
+        _STRATEGY_POLICY_META = {"path": str(path), "loaded": False, "reason": "missing", "strict": False}
+        log_runtime("warning", "AEE_STRATEGY_POLICY_MISSING", path=str(path))
+        return
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        enable = {_normalize_policy_key(x) for x in (raw.get("ENABLE") or raw.get("enable") or []) if str(x or "").strip()}
+        suppress = {_normalize_policy_key(x) for x in (raw.get("SUPPRESS") or raw.get("suppress") or []) if str(x or "").strip()}
+        needs_sample = {_normalize_policy_key(x) for x in (raw.get("NEEDS_SAMPLE") or raw.get("needs_sample") or []) if str(x or "").strip()}
+        quarantine = {_normalize_policy_key(x) for x in (raw.get("QUARANTINE") or raw.get("quarantine") or []) if str(x or "").strip()}
+        strict = bool(raw.get("strict_enable_only", True))
+        _STRATEGY_POLICY = {
+            "enable": enable,
+            "suppress": suppress,
+            "needs_sample": needs_sample,
+            "quarantine": quarantine,
+            "strict": strict,
+        }
+        _STRATEGY_POLICY_META = {
+            "path": str(path),
+            "loaded": True,
+            "strict": strict,
+            "count_enable": len(enable),
+            "count_suppress": len(suppress),
+            "count_needs_sample": len(needs_sample),
+            "count_quarantine": len(quarantine),
+        }
+        log_runtime(
+            "info",
+            "AEE_STRATEGY_POLICY_LOADED",
+            path=str(path),
+            strict=bool(strict),
+            count_enable=len(enable),
+            count_suppress=len(suppress),
+            count_needs_sample=len(needs_sample),
+            count_quarantine=len(quarantine),
+        )
+        emit_trade_kind(
+            "AEE_STRATEGY_POLICY_LOADED",
+            {
+                **build_event_envelope(kind="AEE_STRATEGY_POLICY_LOADED"),
+                "path": str(path),
+                "strict": bool(strict),
+                "count_enable": len(enable),
+                "count_suppress": len(suppress),
+                "count_needs_sample": len(needs_sample),
+                "count_quarantine": len(quarantine),
+            },
+        )
+
+        _load_pocket_profiles_with_retry(force=True)
+    except Exception as exc:
+        _STRATEGY_POLICY = {"enable": set(), "suppress": set(), "needs_sample": set(), "quarantine": set()}
+        _STRATEGY_POLICY_META = {"path": str(path), "loaded": False, "reason": str(exc), "strict": False}
+        log_runtime("error", "AEE_STRATEGY_POLICY_LOAD_FAILED", path=str(path), error=str(exc))
+
+
+def _strategy_policy_decision(strategy_key: str, aliases: Optional[Set[str]] = None, context: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, str, Dict[str, Any]]:
+    key = _normalize_policy_key(strategy_key)
+    candidate_keys: Set[str] = {key} if key else set()
+    for alias in (aliases or set()):
+        norm_alias = _normalize_policy_key(alias)
+        if norm_alias:
+            candidate_keys.add(norm_alias)
+
+    if not candidate_keys:
+        return True, "ALLOW_EMPTY_KEY", "NONE", {"matched": None, "energy_valid": False}
+    if not _STRATEGY_POLICY_META.get("loaded", False):
+        return True, "ALLOW_NO_POLICY", "NONE", {"matched": None, "energy_valid": False}
+
+    effective = _resolve_policy_sets(context=context)
+    policy = dict(effective.get("policy") or {})
+    pocket_meta = dict(effective.get("pocket") or {})
+    enable: Set[str] = set(policy.get("enable", set()) or set())
+    suppress: Set[str] = set(policy.get("suppress", set()) or set())
+    needs_sample: Set[str] = set(policy.get("needs_sample", set()) or set())
+    quarantine: Set[str] = set(policy.get("quarantine", set()) or set())
+    strict = bool(policy.get("strict", True))
+    enable_needs_sample = os.getenv("AEE_POLICY_ENABLE_NEEDS_SAMPLE", "0").strip().lower() in ("1", "true", "yes")
+    pocket_enhancement_only = _env_bool("AEE_POCKET_ENHANCEMENT_ONLY", "1")
+    pocket_unavailable_degraded = (
+        str(pocket_meta.get("source", "") or "").strip().lower() == "base_policy"
+        and bool(pocket_meta.get("degraded", False))
+    )
+
+    # Pocket map must remain an enhancement layer: if unavailable, never block entries from this gate.
+    if pocket_enhancement_only and pocket_unavailable_degraded:
+        return True, "ALLOW_POCKET_MAP_UNAVAILABLE", "POCKET_DEGRADED", pocket_meta
+
+    if any("CONTINUATION" in cand for cand in candidate_keys):
+        return False, "policy_quarantined", "QUARANTINE", pocket_meta
+    if any(cand in quarantine for cand in candidate_keys):
+        return False, "policy_quarantined", "QUARANTINE", pocket_meta
+    if any(cand in suppress for cand in candidate_keys):
+        return False, "policy_suppressed", "SUPPRESS", pocket_meta
+    if any(cand in enable for cand in candidate_keys):
+        return True, "ALLOW_ENABLE", "ENABLE", pocket_meta
+    if any(cand in needs_sample for cand in candidate_keys) and not enable_needs_sample:
+        return False, "policy_needs_sample_off", "NEEDS_SAMPLE", pocket_meta
+    if strict and bool(enable):
+        return False, "policy_not_enabled", "STRICT", pocket_meta
+    return True, "ALLOW_DEFAULT", "DEFAULT", pocket_meta
+
+
 def _register_trade_strategy_context(trade_id: Any, *, pair: str, direction: str, entry_family: str, trade_type: str, target_profile: str) -> Dict[str, Any]:
     try:
         tid = int(trade_id)
     except Exception:
         return {}
     family = str(entry_family or "UNKNOWN").upper()
+    direction_norm = str(direction or "").upper()
     ttype = str(trade_type or "HARVESTER").upper()
-    tprof = str(target_profile or "T0_0").upper()
-    skey = _strategy_key(family, ttype, tprof)
+    tprof = _normalize_target_profile(target_profile, direction=direction, trade_type=ttype).upper()
+    skey = _strategy_key(direction_norm, ttype, tprof)
+    skey_family_alias = _strategy_key(family, ttype, tprof)
     ctx = {
         "pair": str(pair or ""),
-        "direction": str(direction or "").upper(),
+        "direction": direction_norm,
         "entry_family": family,
         "trade_type": ttype,
         "target_profile": tprof,
         "strategy_key": skey,
+        "strategy_key_alias_family": skey_family_alias,
     }
     _TRADE_STRATEGY_CONTEXT[tid] = ctx
     return ctx
@@ -263,16 +617,24 @@ def _resolve_trade_strategy_context(tr: dict, *, pair: str, direction: str, leg_
             float(tr.get("entry", 0.0) or 0.0),
             float(tr.get("tp", 0.0) or 0.0),
             fallback_distance=0.0,
+            direction=direction,
+            trade_type=trade_type,
         )
-    strategy = _strategy_key(entry_family, trade_type, target_profile)
+    else:
+        target_profile = _normalize_target_profile(target_profile, direction=direction, trade_type=trade_type).upper()
+    direction_norm = str(direction or "").upper()
+    strategy = _strategy_key(direction_norm, trade_type, target_profile)
+    strategy_alias_family = _strategy_key(entry_family, trade_type, target_profile)
     resolved = {
+        "direction": direction_norm,
         "entry_family": entry_family,
         "trade_type": trade_type,
         "target_profile": target_profile,
         "strategy_key": strategy,
+        "strategy_key_alias_family": strategy_alias_family,
     }
     if tid:
-        _TRADE_STRATEGY_CONTEXT[tid] = {**existing, **resolved, "pair": pair, "direction": str(direction or "").upper()}
+        _TRADE_STRATEGY_CONTEXT[tid] = {**existing, **resolved, "pair": pair, "direction": direction_norm}
     return resolved
 
 
@@ -1050,7 +1412,8 @@ def log(event, meta=None):
 
 def build_event_envelope(
     *,
-    kind: strst",
+    kind: str,
+    pair: str = "",
     direction: str = "",
     trade_id: Any = None,
     broker_trade_id: Any = None,
@@ -1735,6 +2098,8 @@ def initialize_bot():
     account_id = str(os.getenv("OANDA_ACCOUNT_ID", "101-001-22881868-001")).strip()
     env_raw = str(os.getenv("OANDA_ENV", "practice")).strip()
     env = normalize_oanda_env(env_raw) or "practice"
+    if AEE_STRESS_DEMO_MODE and env != "practice":
+        raise RuntimeError("AEE_STRESS_DEMO_MODE requires OANDA_ENV=practice (demo only)")
     if not api_key or not account_id:
         raise RuntimeError("initialize_bot: missing OANDA_API_KEY or OANDA_ACCOUNT_ID")
 
@@ -3400,6 +3765,13 @@ PAIRS = [
         "USD_DKK",
     ]
 ]
+AEE_STRESS_DEMO_MODE = os.getenv("AEE_STRESS_DEMO_MODE", "0").strip().lower() in ("1", "true", "yes")
+_AEE_STRESS_DEFAULT_PAIRS = [
+    "AUD_CAD", "AUD_JPY", "AUD_USD", "CHF_JPY",
+    "EUR_CHF", "EUR_GBP", "EUR_JPY", "EUR_USD",
+    "GBP_CHF", "GBP_JPY", "GBP_USD", "NZD_JPY",
+    "NZD_USD", "USD_CAD", "USD_CHF", "USD_JPY",
+]
 _pair_env = (os.getenv("PAIR_LIST", "") or "").strip()
 if _pair_env:
     parts = []
@@ -3408,6 +3780,93 @@ if _pair_env:
     _pair_override = [normalize_pair(p) for p in parts if normalize_pair(p)]
     if _pair_override:
         PAIRS = _pair_override
+elif AEE_STRESS_DEMO_MODE:
+    # Stress mode intentionally broadens pair coverage to maximize AEE scenario sampling.
+    PAIRS = [normalize_pair(p) for p in _AEE_STRESS_DEFAULT_PAIRS]
+
+ENTRY_INVENTORY_PATH = (
+    os.getenv("ENTRY_INVENTORY_PATH", "artifacts/entry_inventory_v1_aee_max_extract_v1_2.json").strip()
+    or "artifacts/entry_inventory_v1_aee_max_extract_v1_2.json"
+)
+ENFORCE_ENTRY_INVENTORY_SCOPE = os.getenv("ENFORCE_ENTRY_INVENTORY_SCOPE", "1").strip().lower() in ("1", "true", "yes")
+if AEE_STRESS_DEMO_MODE:
+    # Stress mode is intentionally separate from inventory-restricted operation.
+    ENFORCE_ENTRY_INVENTORY_SCOPE = False
+_ENTRY_INVENTORY_ALLOWED_NODES: Set[str] = set()
+_ENTRY_INVENTORY_ALLOWED_PAIRS: Set[str] = set()
+
+
+def _load_entry_inventory_scope() -> None:
+    global PAIRS, _ENTRY_INVENTORY_ALLOWED_NODES, _ENTRY_INVENTORY_ALLOWED_PAIRS
+
+    inv_path = Path(ENTRY_INVENTORY_PATH)
+    if not inv_path.is_absolute():
+        inv_path = Path(__file__).resolve().parent / inv_path
+
+    if not inv_path.exists():
+        _ENTRY_INVENTORY_ALLOWED_NODES = set()
+        _ENTRY_INVENTORY_ALLOWED_PAIRS = set()
+        if ENFORCE_ENTRY_INVENTORY_SCOPE:
+            # Fail closed when strict inventory enforcement is enabled.
+            PAIRS = []
+        log_runtime(
+            "warning",
+            "ENTRY_INVENTORY_SCOPE_MISSING",
+            path=str(inv_path),
+            enforce=bool(ENFORCE_ENTRY_INVENTORY_SCOPE),
+            fail_closed=bool(ENFORCE_ENTRY_INVENTORY_SCOPE),
+        )
+        return
+
+    try:
+        payload = json.loads(inv_path.read_text(encoding="utf-8"))
+        allow_nodes = [str(x).strip() for x in (payload.get("allow_nodes") or []) if str(x).strip()]
+        allow_pairs = {normalize_pair(node.split("__", 1)[0]) for node in allow_nodes if "__" in node}
+        allow_pairs |= {
+            normalize_pair(str(x).strip())
+            for x in (payload.get("allow_pairs") or [])
+            if str(x).strip()
+        }
+
+        _ENTRY_INVENTORY_ALLOWED_NODES = set(allow_nodes)
+        _ENTRY_INVENTORY_ALLOWED_PAIRS = set(allow_pairs)
+
+        if ENFORCE_ENTRY_INVENTORY_SCOPE:
+            PAIRS = [p for p in PAIRS if p in _ENTRY_INVENTORY_ALLOWED_PAIRS]
+
+        log_runtime(
+            "info",
+            "ENTRY_INVENTORY_SCOPE_LOADED",
+            path=str(inv_path),
+            enforce=bool(ENFORCE_ENTRY_INVENTORY_SCOPE),
+            allowed_nodes=len(_ENTRY_INVENTORY_ALLOWED_NODES),
+            allowed_pairs=sorted(_ENTRY_INVENTORY_ALLOWED_PAIRS),
+            active_pairs=sorted(PAIRS),
+        )
+    except Exception as exc:
+        _ENTRY_INVENTORY_ALLOWED_NODES = set()
+        _ENTRY_INVENTORY_ALLOWED_PAIRS = set()
+        if ENFORCE_ENTRY_INVENTORY_SCOPE:
+            PAIRS = []
+        log_runtime(
+            "error",
+            "ENTRY_INVENTORY_SCOPE_LOAD_FAILED",
+            path=str(inv_path),
+            enforce=bool(ENFORCE_ENTRY_INVENTORY_SCOPE),
+            error=str(exc),
+            fail_closed=bool(ENFORCE_ENTRY_INVENTORY_SCOPE),
+        )
+
+
+def _pair_allowed_by_inventory_scope(pair: str) -> bool:
+    if not ENFORCE_ENTRY_INVENTORY_SCOPE:
+        return True
+    if not _ENTRY_INVENTORY_ALLOWED_PAIRS:
+        return False
+    return normalize_pair(pair) in _ENTRY_INVENTORY_ALLOWED_PAIRS
+
+
+_load_entry_inventory_scope()
 
 # Broker rejection logging
 BROKER_REJECT_LOG = "broker_rejections.log"
@@ -3438,11 +3897,21 @@ WATCH_SCAN_SEC = float(os.getenv("WATCH_SCAN_SEC", "60") or "60")  # 1 minute fo
 FOCUS_SCAN_SEC = float(os.getenv("FOCUS_SCAN_SEC", "5") or "5")    # 5 seconds for GET_READY/ENTER
 EXIT_SCAN_SEC = float(os.getenv("EXIT_SCAN_SEC", "2") or "2")      # Every 2 seconds for open trades
 EXIT_REFRESH_SEC = float(os.getenv("EXIT_REFRESH_SEC", "20") or "20")
+if AEE_STRESS_DEMO_MODE:
+    SKIP_SCAN_SEC = min(SKIP_SCAN_SEC, float(os.getenv("AEE_STRESS_SKIP_SCAN_SEC", "2") or "2"))
+    WATCH_SCAN_SEC = min(WATCH_SCAN_SEC, float(os.getenv("AEE_STRESS_WATCH_SCAN_SEC", "2") or "2"))
+    FOCUS_SCAN_SEC = min(FOCUS_SCAN_SEC, float(os.getenv("AEE_STRESS_FOCUS_SCAN_SEC", "1") or "1"))
+    EXIT_SCAN_SEC = min(EXIT_SCAN_SEC, float(os.getenv("AEE_STRESS_EXIT_SCAN_SEC", "0.5") or "0.5"))
+    EXIT_REFRESH_SEC = min(EXIT_REFRESH_SEC, float(os.getenv("AEE_STRESS_EXIT_REFRESH_SEC", "5") or "5"))
 # Force periodic AEE decisions across all open trades, independent of pair state.
 AEE_FORCE_SCAN_SEC = float(os.getenv("AEE_FORCE_SCAN_SEC", "0.20") or "0.20")
 # Young trades get an even tighter scan window to avoid broker-SL owning the lifecycle.
 AEE_FORCE_SCAN_YOUNG_SEC = float(os.getenv("AEE_FORCE_SCAN_YOUNG_SEC", "0.10") or "0.10")
 AEE_FORCE_SCAN_YOUNG_AGE_SEC = float(os.getenv("AEE_FORCE_SCAN_YOUNG_AGE_SEC", "30") or "30")
+if AEE_STRESS_DEMO_MODE:
+    AEE_FORCE_SCAN_SEC = min(AEE_FORCE_SCAN_SEC, float(os.getenv("AEE_STRESS_FORCE_SCAN_SEC", "0.08") or "0.08"))
+    AEE_FORCE_SCAN_YOUNG_SEC = min(AEE_FORCE_SCAN_YOUNG_SEC, float(os.getenv("AEE_STRESS_FORCE_SCAN_YOUNG_SEC", "0.05") or "0.05"))
+    AEE_FORCE_SCAN_YOUNG_AGE_SEC = max(AEE_FORCE_SCAN_YOUNG_AGE_SEC, float(os.getenv("AEE_STRESS_FORCE_SCAN_YOUNG_AGE_SEC", "90") or "90"))
 # Reconciliation ownership guardrails: do not classify fresh fills as manual close
 # on a single flat snapshot before AEE gets first evaluation.
 AEE_RECON_POST_FILL_GRACE_SEC = float(os.getenv("AEE_RECON_POST_FILL_GRACE_SEC", "12") or "12")
@@ -3502,6 +3971,10 @@ SPREAD_F_MAX = float(os.getenv("SPREAD_F_MAX", "3.0") or "3.0")
 USE_FE_SPREAD_SIZING = os.getenv("USE_FE_SPREAD_SIZING", "0").strip().lower() in ("1", "true", "yes")
 
 MAX_POS_PER_PAIR = 2
+if AEE_STRESS_DEMO_MODE:
+    MAX_POS_PER_PAIR = int(os.getenv("AEE_STRESS_MAX_POS_PER_PAIR", "6") or "6")
+AEE_STRESS_MAX_OPEN_TRADES_GLOBAL = int(os.getenv("AEE_STRESS_MAX_OPEN_TRADES_GLOBAL", "40") or "40")
+AEE_STRESS_MAX_OPEN_TRADES_PER_PAIR = int(os.getenv("AEE_STRESS_MAX_OPEN_TRADES_PER_PAIR", "8") or "8")
 # No global limit - we have currency exposure limits instead
 
 MAX_FAST_TRADES = 999  # Effectively unlimited - controlled by currency exposure
@@ -3543,6 +4016,10 @@ LIVE_MODE = os.getenv("LIVE_MODE", "0").strip().lower() in ("1", "true", "yes")
 DRY_RUN_ONLY = os.getenv("DRY_RUN_ONLY", "1" if not LIVE_MODE else "0").strip().lower() in ("1", "true", "yes")
 ALLOW_ENTRIES = os.getenv("ALLOW_ENTRIES", "1").strip().lower() in ("1", "true", "yes")
 MANAGE_ONLY = os.getenv("MANAGE_ONLY", "0").strip().lower() in ("1", "true", "yes")
+# Temporarily quarantine continuation entries until live quality recovers.
+SUPPRESS_CONTINUATION_ENTRIES = os.getenv("SUPPRESS_CONTINUATION_ENTRIES", "1").strip().lower() in ("1", "true", "yes")
+if AEE_STRESS_DEMO_MODE:
+    SUPPRESS_CONTINUATION_ENTRIES = False
 
 
 def self_heal_startup_config() -> dict:
@@ -3812,6 +4289,7 @@ MAX_LOG_SIZE = 2 * 1024 * 1024
 
 # Load per-strategy AEE runtime overrides once at startup.
 _load_strategy_runtime_overrides()
+_load_strategy_runtime_policy()
 
 BOT_ID = os.getenv("PHONE_BOT_ID", "phone-bot").strip() or "phone-bot"
 MAX_RISK_USD_PER_TRADE = float(os.getenv("MAX_RISK_USD_PER_TRADE", "0") or "0")
@@ -4738,6 +5216,22 @@ def log_trade_attempt(
         spread_pips = extra.get("spread_pips")
         disp_atr = extra.get("disp_atr")
 
+    setup_name = str(getattr(sig, "setup_name", "") or "")
+    entry_family = str(getattr(sig, "entry_family", "") or _infer_entry_family_from_setup(setup_name) or "UNKNOWN").upper()
+    trade_type = str(
+        getattr(sig, "trade_type", "")
+        or ("RUNNER" if "_RUN" in setup_name.upper() or str(leg or "").upper() == "RUN" else "HARVESTER")
+    ).upper()
+    direction_norm = str(getattr(sig, "direction", "") or "").upper()
+    target_profile = _normalize_target_profile(
+        str(getattr(sig, "target_profile", "") or ""),
+        direction=direction_norm,
+        trade_type=trade_type,
+        fallback_distance=0.0,
+    ).upper()
+    strategy_key = _strategy_key(direction_norm, trade_type, target_profile)
+    strategy_key_alias_family = _strategy_key(entry_family, trade_type, target_profile)
+
     gate_eval = build_entry_gate_eval(
         decision=gate_decision,
         block_reason=reason if gate_decision != "ALLOW" else "",
@@ -4871,16 +5365,22 @@ def log_trade_attempt(
         source_key=tune_ctx.get("source_key", ""),
     )
 
+    attempt_event = "TRADE_ATTEMPT" if decision_norm == "PLACE" else "TRADE_CANDIDATE"
     payload = {
-        "event": "TRADE_ATTEMPT",
+        "event": attempt_event,
         "pair": pair,
-        "setup": getattr(sig, "setup_name", ""),
-        "direction": getattr(sig, "direction", ""),
+        "setup": setup_name,
+        "direction": direction_norm,
         "state": getattr(st, "state", ""),
         "speed_class": speed_class,
         "decision": decision,
         "reason": reason,
         "leg": leg,
+        "entry_family": entry_family,
+        "trade_type": trade_type,
+        "target_profile": target_profile,
+        "strategy_key": strategy_key,
+        "strategy_key_alias_family": strategy_key_alias_family,
         "state_from": state_from,
         "state_to": state_to,
         "bar_complete": bar_complete,
@@ -5157,7 +5657,24 @@ def _exit_log(
     strategy_ctx = _TRADE_STRATEGY_CONTEXT.get(tr_id_int, {}) if tr_id_int > 0 else {}
     entry_family = str(tr.get("entry_family") or strategy_ctx.get("entry_family") or _infer_entry_family_from_setup(setup_name) or "UNKNOWN").upper()
     trade_type_meta = str(tr.get("trade_type") or strategy_ctx.get("trade_type") or ("RUNNER" if "_RUN" in setup_name.upper() else "HARVESTER") or "HARVESTER").upper()
-    target_profile = str(tr.get("target_profile") or strategy_ctx.get("target_profile") or _compute_target_profile(str(tr.get("pair", "")), float(tr.get("entry", 0.0) or 0.0), float(tr.get("tp", 0.0) or 0.0), fallback_distance=0.0) or "T0_0").upper()
+    target_profile = str(
+        tr.get("target_profile")
+        or strategy_ctx.get("target_profile")
+        or _compute_target_profile(
+            str(tr.get("pair", "")),
+            float(tr.get("entry", 0.0) or 0.0),
+            float(tr.get("tp", 0.0) or 0.0),
+            fallback_distance=0.0,
+            direction=str(tr.get("dir", "") or ""),
+            trade_type=trade_type_meta,
+        )
+        or "T0_0"
+    ).upper()
+    target_profile = _normalize_target_profile(
+        target_profile,
+        direction=str(tr.get("dir", "") or ""),
+        trade_type=trade_type_meta,
+    ).upper()
     strategy_key_meta = str(tr.get("strategy_key") or strategy_ctx.get("strategy_key") or _strategy_key(entry_family, trade_type_meta, target_profile) or "")
     leg = "RUN" if "_RUN" in setup_name else "MAIN"
     setup_id = setup_id_from_name(setup_name)
@@ -5227,6 +5744,7 @@ def _exit_log(
     capture_ratio_pips = None
     if math.isfinite(mfe_pips) and mfe_pips > 1e-12 and math.isfinite(exit_pips):
         capture_ratio_pips = float(exit_pips) / float(mfe_pips)
+    giveback_pips = float(max(0.0, (float(mfe_pips) - float(exit_pips)))) if math.isfinite(mfe_pips) and math.isfinite(exit_pips) else 0.0
     emit_trade_kind(
         "EXIT_RESULT",
         {
@@ -5257,6 +5775,7 @@ def _exit_log(
             "exit_pips": float(exit_pips),
             "capture_ratio_pips": capture_ratio_pips,
             "GB": float(max(0.0, peak - float(exit_atr_val))) if peak > 0 else 0.0,
+            "giveback_pips": float(giveback_pips),
             "hold_sec": round(now_ts() - entry_ts, 2),
             "aee_reason": str(reason or "NONE"),
             "exit_reason": str(reason or "NONE"),
@@ -5267,6 +5786,12 @@ def _exit_log(
             "closed_before_tp_ref": closed_before_tp_ref,
             "closed_after_tp_ref": closed_after_tp_ref,
             "closed_negative_before_sl": closed_negative_before_sl,
+            "entry_ts": float(entry_ts),
+            "exit_ts": float(now_ts()),
+            "entry_price": float(tr.get("entry", 0.0) or 0.0),
+            "original_sl": float(tr.get("sl", 0.0) or 0.0),
+            "original_tp": float(tr.get("tp", 0.0) or 0.0),
+            "entry_reason": str(tr.get("note", "") or ""),
         },
     )
     # Backward-compatible alias for reporting pipelines that still key off EXIT_PNL_AUDIT.
@@ -5300,6 +5825,7 @@ def _exit_log(
             "exit_pips": float(exit_pips),
             "capture_ratio_pips": capture_ratio_pips,
             "GB": float(max(0.0, peak - float(exit_atr_val))) if peak > 0 else 0.0,
+            "giveback_pips": float(giveback_pips),
             "hold_sec": round(now_ts() - entry_ts, 2),
             "aee_reason": str(reason or "NONE"),
             "exit_reason": str(reason or "NONE"),
@@ -5310,8 +5836,375 @@ def _exit_log(
             "closed_before_tp_ref": closed_before_tp_ref,
             "closed_after_tp_ref": closed_after_tp_ref,
             "closed_negative_before_sl": closed_negative_before_sl,
+            "entry_ts": float(entry_ts),
+            "exit_ts": float(now_ts()),
+            "entry_price": float(tr.get("entry", 0.0) or 0.0),
+            "original_sl": float(tr.get("sl", 0.0) or 0.0),
+            "original_tp": float(tr.get("tp", 0.0) or 0.0),
+            "entry_reason": str(tr.get("note", "") or ""),
         },
     )
+    emit_trade_kind(
+        "AEE_TRADE_LIFECYCLE",
+        {
+            **build_event_envelope(
+                kind="AEE_TRADE_LIFECYCLE",
+                pair=str(tr.get("pair", "")),
+                direction=str(tr.get("dir", "")),
+                trade_id=int(tr.get("id", 0) or 0),
+                broker_trade_id=tr.get("oanda_trade_id"),
+                leg_type=leg,
+            ),
+            "entry_ts": float(entry_ts),
+            "exit_ts": float(now_ts()),
+            "hold_sec": round(now_ts() - entry_ts, 2),
+            "entry_price": float(tr.get("entry", 0.0) or 0.0),
+            "original_sl": float(tr.get("sl", 0.0) or 0.0),
+            "original_tp": float(tr.get("tp", 0.0) or 0.0),
+            "entry_reason": str(tr.get("note", "") or ""),
+            "aee_state": str(tr.get("aee_phase", "")),
+            "exit_reason": str(reason or "NONE"),
+            "aee_exited_before_original_sl": bool(closed_negative_before_sl),
+            "realized_pips": float(pnl_pips),
+            "realized_pnl": float(pnl_pips),
+            "mfe_pips": float(mfe_pips),
+            "mae_pips": float(mae_pips),
+            "peak_unrealized_pips": float(mfe_pips),
+            "giveback_pips": float(giveback_pips),
+        },
+    )
+    trigger_common = {
+        "side": str(tr.get("dir", "")),
+        "aee_state": str(tr.get("aee_phase", "")),
+        "current_pnl_pips": float(exit_pips),
+        "peak_pnl_pips": float(mfe_pips),
+        "mfe_pips": float(mfe_pips),
+        "mae_pips": float(mae_pips),
+        "giveback_pips": float(giveback_pips),
+        "original_sl": float(tr.get("sl", 0.0) or 0.0),
+        "normalized_pnl": float(exit_atr_val),
+    }
+    if closed_negative_before_sl:
+        emit_trade_kind(
+            "AEE_PRE_SL_PROTECTION_TRIGGER",
+            {
+                **build_event_envelope(kind="AEE_PRE_SL_PROTECTION_TRIGGER", pair=str(tr.get("pair", "")), direction=str(tr.get("dir", "")), trade_id=int(tr.get("id", 0) or 0), broker_trade_id=tr.get("oanda_trade_id"), leg_type=leg),
+                **trigger_common,
+                "exit_reason": str(reason or "NONE"),
+                "realized_pips": float(pnl_pips),
+            },
+        )
+    if float(pnl_pips) > 0.0 and closed_before_tp_ref:
+        emit_trade_kind(
+            "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+            {
+                **build_event_envelope(kind="AEE_EARLY_PROFIT_LOCK_TRIGGER", pair=str(tr.get("pair", "")), direction=str(tr.get("dir", "")), trade_id=int(tr.get("id", 0) or 0), broker_trade_id=tr.get("oanda_trade_id"), leg_type=leg),
+                **trigger_common,
+                "exit_reason": str(reason or "NONE"),
+                "realized_pips": float(pnl_pips),
+                "tp_atr_ref": tp_atr_ref,
+            },
+        )
+    mapped_feature_kind = _aee_feature_trigger_from_exit_reason(reason)
+    if mapped_feature_kind:
+        emit_trade_kind(
+            mapped_feature_kind,
+            {
+                **build_event_envelope(
+                    kind=mapped_feature_kind,
+                    pair=str(tr.get("pair", "")),
+                    direction=str(tr.get("dir", "")),
+                    trade_id=int(tr.get("id", 0) or 0),
+                    broker_trade_id=tr.get("oanda_trade_id"),
+                    leg_type=leg,
+                ),
+                **trigger_common,
+                "exit_reason": str(reason or "NONE"),
+            },
+        )
+
+
+def _parse_iso_utc(val: Any) -> Optional[float]:
+    try:
+        if not val:
+            return None
+        s = str(val).strip()
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        return datetime.fromisoformat(s).timestamp()
+    except Exception:
+        return None
+
+
+def _pair_pip_scale(pair: str) -> float:
+    p = normalize_pair(pair)
+    if p.endswith("_JPY"):
+        return 100.0
+    return 10000.0
+
+
+def _aee_feature_trigger_from_exit_reason(reason: Any) -> Optional[str]:
+    r = str(reason or "").strip().upper()
+    if not r:
+        return None
+    mapping = {
+        "PANIC_EXIT": "AEE_PANIC_EXIT_TRIGGER",
+        "AEE_PANIC_EXIT": "AEE_PANIC_EXIT_TRIGGER",
+        "AEE_FAST_ADVERSE_EXIT": "AEE_FAST_ADVERSE_EXIT_TRIGGER",
+        "AEE_BAND_FAST_FAILURE_EXIT": "AEE_FAST_ADVERSE_EXIT_TRIGGER",
+        "AEE_NEVER_GREEN_TIMEOUT": "AEE_NEVER_GREEN_TIMEOUT_TRIGGER",
+        "AEE_BAND_NEVER_GREEN_TIMEOUT": "AEE_NEVER_GREEN_TIMEOUT_TRIGGER",
+        "AEE_PROFIT_STALL_EXIT": "AEE_PROFIT_STALL_EXIT_TRIGGER",
+        "AEE_BAND_PROFIT_STALL_EXIT": "AEE_PROFIT_STALL_EXIT_TRIGGER",
+        "AEE_EARLY_PROFIT_LOCK": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+        "AEE_BAND_EARLY_PROFIT_LOCK": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+        "AEE_BAND_GIVEBACK_EXIT": "AEE_GIVEBACK_EXIT_TRIGGER",
+        "AEE_BAND_EXTENSION_HOLD": "AEE_EXTENSION_HOLD_TRIGGER",
+        "AEE_EXTENSION_DECAY_EXIT": "AEE_EXTENSION_DECAY_EXIT_TRIGGER",
+        "AEE_BAND_EXTENSION_DECAY_EXIT": "AEE_EXTENSION_DECAY_EXIT_TRIGGER",
+        "AEE_PRE_SL_EXIT": "AEE_PRE_SL_PROTECTION_TRIGGER",
+        "AEE_PROFIT_LOCK": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+        "AEE_PROFIT_LOCK_STRONG": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+        "AEE_WEAK_TRADE_KILL": "AEE_WEAK_TRADE_KILL_TRIGGER",
+        "AEE_STALL_KILL": "AEE_STALL_CAPTURE_TRIGGER",
+        "AEE_TIME_PRESSURE_EXIT": "AEE_TIME_PRESSURE_EXIT_TRIGGER",
+        "NEVER_GREEN_FAST_EXIT": "AEE_WEAK_TRADE_KILL_TRIGGER",
+        "AEE_GIVEBACK_EXIT": "AEE_GIVEBACK_EXIT_TRIGGER",
+        "EXTRACTION_LOSS_EXIT": "AEE_GIVEBACK_EXIT_TRIGGER",
+        "NEAR_TP_STALL_CAPTURE": "AEE_STALL_CAPTURE_TRIGGER",
+        "PULSE_STALL_CAPTURE": "AEE_STALL_CAPTURE_TRIGGER",
+        "MISSED_PROFIT_EXTRACTION_EXIT": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+        "GREEN_STALL_CAPTURE": "AEE_STALL_CAPTURE_TRIGGER",
+        "NEVER_GREEN_STALL_EXIT": "AEE_WEAK_TRADE_KILL_TRIGGER",
+        "FAILED_TO_CONTINUE_DECAY": "AEE_RUNNER_FALLBACK_TRIGGER",
+        "TIME_DECAY_PROFIT_CAPTURE": "AEE_TIME_PRESSURE_EXIT_TRIGGER",
+    }
+    return mapping.get(r)
+
+
+def _write_aee_stress_demo_artifacts(run_start_ts: float, run_end_ts: float) -> None:
+    if not AEE_STRESS_DEMO_MODE:
+        return
+    try:
+        def _event_ts_epoch(evt: dict) -> Optional[float]:
+            ts = _parse_iso_utc(evt.get("ts_utc"))
+            if ts is not None:
+                return ts
+
+            raw_ts = evt.get("ts")
+            if isinstance(raw_ts, (int, float)):
+                return float(raw_ts)
+            if isinstance(raw_ts, str):
+                s = raw_ts.strip()
+                if not s:
+                    return None
+                try:
+                    return float(s)
+                except Exception:
+                    pass
+                ts = _parse_iso_utc(s)
+                if ts is not None:
+                    return ts
+                try:
+                    return datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp()
+                except Exception:
+                    return None
+            return None
+
+        base_dir = Path(__file__).resolve().parent
+        logs_path = base_dir / "logs" / "trades.jsonl"
+        out_dir = base_dir / "artifacts"
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        if not logs_path.exists():
+            return
+
+        events: List[dict] = []
+        with logs_path.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    evt = json.loads(line)
+                except Exception:
+                    continue
+                ts = _event_ts_epoch(evt)
+                if ts and run_start_ts <= ts <= run_end_ts:
+                    events.append(evt)
+
+        duration_sec = max(1.0, float(run_end_ts - run_start_ts))
+        duration_min = duration_sec / 60.0
+
+        filled_entries = [e for e in events if str(e.get("kind", "")) == "ORDER_FILLED"]
+        exits = [e for e in events if str(e.get("kind", "")) == "EXIT_RESULT"]
+        lifecycle = [e for e in events if str(e.get("kind", "")) == "AEE_TRADE_LIFECYCLE"]
+
+        close_reason_counts: Dict[str, int] = {}
+        for e in exits:
+            r = str(e.get("exit_reason", "UNKNOWN") or "UNKNOWN")
+            close_reason_counts[r] = int(close_reason_counts.get(r, 0)) + 1
+
+        realized_pips = [float(e.get("pnl_pips", 0.0) or 0.0) for e in exits]
+        hold_sec_vals = [float(e.get("hold_sec", 0.0) or 0.0) for e in exits]
+        win_vals = [x for x in realized_pips if x > 0.0]
+        loss_vals = [x for x in realized_pips if x < 0.0]
+        pre_sl_count = sum(1 for e in exits if bool(e.get("closed_negative_before_sl", False)))
+
+        summary = {
+            "mode": "AEE_STRESS_DEMO_MODE",
+            "run_start_ts": run_start_ts,
+            "run_end_ts": run_end_ts,
+            "duration_sec": duration_sec,
+            "duration_min": duration_min,
+            "total_entries": len(filled_entries),
+            "entries_per_minute": (len(filled_entries) / duration_min) if duration_min > 0 else 0.0,
+            "total_aee_exits": len(exits),
+            "close_reasons_count": close_reason_counts,
+            "percent_exited_before_original_sl": (100.0 * pre_sl_count / len(exits)) if exits else 0.0,
+            "average_hold_time_sec": (sum(hold_sec_vals) / len(hold_sec_vals)) if hold_sec_vals else 0.0,
+            "average_realized_pips": (sum(realized_pips) / len(realized_pips)) if realized_pips else 0.0,
+            "win_rate": (len(win_vals) / len(realized_pips)) if realized_pips else 0.0,
+            "loss_rate": (len(loss_vals) / len(realized_pips)) if realized_pips else 0.0,
+            "average_loss_size": (sum(loss_vals) / len(loss_vals)) if loss_vals else 0.0,
+            "average_win_size": (sum(win_vals) / len(win_vals)) if win_vals else 0.0,
+        }
+
+        feature_keys = [
+            "AEE_FAST_ADVERSE_EXIT_TRIGGER",
+            "AEE_NEVER_GREEN_TIMEOUT_TRIGGER",
+            "AEE_PROFIT_STALL_EXIT_TRIGGER",
+            "AEE_EXTENSION_DECAY_EXIT_TRIGGER",
+            "AEE_PRE_SL_PROTECTION_TRIGGER",
+            "AEE_STALL_CAPTURE_TRIGGER",
+            "AEE_WEAK_TRADE_KILL_TRIGGER",
+            "AEE_RUNNER_HOLD_TRIGGER",
+            "AEE_RUNNER_FALLBACK_TRIGGER",
+            "AEE_GIVEBACK_EXIT_TRIGGER",
+            "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+            "AEE_PANIC_EXIT_TRIGGER",
+            "AEE_TIME_PRESSURE_TRIGGER",
+            "AEE_TIME_PRESSURE_EXIT_TRIGGER",
+        ]
+        feature_counts: Dict[str, int] = {k: 0 for k in feature_keys}
+        other_feature_counts: Dict[str, int] = {}
+        for e in events:
+            k = str(e.get("kind", ""))
+            if k in feature_counts:
+                feature_counts[k] += 1
+            elif k.startswith("AEE_") and k.endswith("_TRIGGER"):
+                other_feature_counts[k] = int(other_feature_counts.get(k, 0)) + 1
+        decision_rows = [e for e in events if str(e.get("kind", "")) == "AEE_STRATEGY_OVERRIDE_DECISION"]
+        runner_hold_from_decision = 0
+        for e in decision_rows:
+            if str(e.get("decision", "")).upper() != "HOLD":
+                continue
+            if str(e.get("aee_phase", "")).upper() != "RUNNER":
+                continue
+            runner_hold_from_decision += 1
+        feature_counts["AEE_RUNNER_HOLD_TRIGGER"] = max(
+            int(feature_counts.get("AEE_RUNNER_HOLD_TRIGGER", 0) or 0),
+            int(runner_hold_from_decision),
+        )
+
+        lifecycle_rows: List[dict] = []
+        for e in lifecycle:
+            side = str(e.get("direction") or e.get("dir") or "")
+            lifecycle_rows.append(
+                {
+                    "trade_id": e.get("trade_id"),
+                    "pair": e.get("pair"),
+                    "side": side,
+                    "entry_timestamp": e.get("entry_ts"),
+                    "entry_reason": e.get("entry_reason"),
+                    "stress_mode_source": "stress_demo_generator",
+                    "original_sl": e.get("original_sl"),
+                    "original_tp": e.get("original_tp"),
+                    "entry_price": e.get("entry_price"),
+                    "current_aee_mode_state": e.get("aee_state"),
+                    "final_exit_timestamp": e.get("exit_ts"),
+                    "final_exit_reason": e.get("exit_reason"),
+                    "aee_exited_before_original_sl": bool(e.get("aee_exited_before_original_sl", False)),
+                    "realized_pips": float(e.get("realized_pips", 0.0) or 0.0),
+                    "realized_pnl": float(e.get("realized_pnl", 0.0) or 0.0),
+                    "max_favorable_excursion_pips": float(e.get("mfe_pips", 0.0) or 0.0),
+                    "max_adverse_excursion_pips": float(e.get("mae_pips", 0.0) or 0.0),
+                    "peak_unrealized_profit_pips": float(e.get("peak_unrealized_pips", 0.0) or 0.0),
+                    "giveback_amount_pips": float(e.get("giveback_pips", 0.0) or 0.0),
+                    "hold_duration_sec": float(e.get("hold_sec", 0.0) or 0.0),
+                }
+            )
+
+        pre_sl_rows: List[dict] = []
+        for row in lifecycle_rows:
+            if not row.get("aee_exited_before_original_sl"):
+                continue
+            pair = normalize_pair(str(row.get("pair", "") or ""))
+            entry = float(row.get("entry_price", 0.0) or 0.0)
+            sl = float(row.get("original_sl", 0.0) or 0.0)
+            realized_pips = float(row.get("realized_pips", 0.0) or 0.0)
+            distance_from_sl_pips: Optional[float] = None
+            estimated_loss_saved_vs_sl_pips: Optional[float] = None
+            if entry > 0.0 and sl > 0.0:
+                scale = _pair_pip_scale(pair)
+                sl_distance_pips = abs(entry - sl) * scale
+                distance_from_sl_pips = max(0.0, sl_distance_pips - abs(realized_pips))
+                estimated_loss_saved_vs_sl_pips = max(0.0, sl_distance_pips - abs(realized_pips))
+            pre_sl_rows.append(
+                {
+                    "trade_id": row.get("trade_id"),
+                    "pair": pair,
+                    "distance_from_original_sl_pips": distance_from_sl_pips,
+                    "estimated_loss_saved_vs_original_sl_pips": estimated_loss_saved_vs_sl_pips,
+                }
+            )
+
+        _distance_vals = [
+            float(r["distance_from_original_sl_pips"])
+            for r in pre_sl_rows
+            if isinstance(r.get("distance_from_original_sl_pips"), (int, float))
+        ]
+        _saved_vals = [
+            float(r["estimated_loss_saved_vs_original_sl_pips"])
+            for r in pre_sl_rows
+            if isinstance(r.get("estimated_loss_saved_vs_original_sl_pips"), (int, float))
+        ]
+
+        pre_sl_report = {
+            "mode": "AEE_STRESS_DEMO_MODE",
+            "count_closed_before_original_sl": len(pre_sl_rows),
+            "rows_with_sl_reference": len(_distance_vals),
+            "avg_distance_from_original_sl_pips": (sum(_distance_vals) / len(_distance_vals)) if _distance_vals else 0.0,
+            "avg_estimated_loss_saved_vs_original_sl_pips": (sum(_saved_vals) / len(_saved_vals)) if _saved_vals else 0.0,
+            "rows": pre_sl_rows,
+        }
+
+        (out_dir / "aee_stress_demo_run_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+        (out_dir / "aee_feature_activation_report.json").write_text(
+            json.dumps(
+                {
+                    "mode": "AEE_STRESS_DEMO_MODE",
+                    "feature_counts": feature_counts,
+                    "other_aee_trigger_counts": other_feature_counts,
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        (out_dir / "aee_trade_lifecycle_table.json").write_text(json.dumps(lifecycle_rows, indent=2) + "\n", encoding="utf-8")
+        (out_dir / "aee_pre_sl_proof_report.json").write_text(json.dumps(pre_sl_report, indent=2) + "\n", encoding="utf-8")
+
+        log_runtime(
+            "info",
+            "AEE_STRESS_ARTIFACTS_WRITTEN",
+            entries=len(filled_entries),
+            exits=len(exits),
+            lifecycle_rows=len(lifecycle_rows),
+            pre_sl_count=len(pre_sl_rows),
+        )
+    except Exception as exc:
+        log_runtime("error", "AEE_STRESS_ARTIFACTS_FAILED", error=str(exc))
 
 
 def directional_closes(candles: List[dict], k: int, direction: str) -> bool:
@@ -5658,6 +6551,16 @@ def compute_open_trade_counts(broker_snapshot: Optional[Dict] = None) -> Dict[st
 
 def can_enter(pair: str, spread: float, now: float, signal: Optional[Any] = None) -> Tuple[bool, str]:
     pair = normalize_pair(pair)
+    if (not AEE_STRESS_DEMO_MODE) and (not _pair_allowed_by_inventory_scope(pair)):
+        emit_trade_kind(
+            "ENTRY_INVENTORY_BLOCK",
+            {
+                **build_event_envelope(kind="ENTRY_INVENTORY_BLOCK", pair=pair),
+                "reason": "out_of_inventory_scope",
+                "allowed_pairs": sorted(_ENTRY_INVENTORY_ALLOWED_PAIRS),
+            },
+        )
+        return False, "out_of_inventory_scope"
     if NO_THROTTLE_MODE:
         emit_trade_kind(
             "NO_THROTTLE_MODE_BYPASS",
@@ -5665,6 +6568,19 @@ def can_enter(pair: str, spread: float, now: float, signal: Optional[Any] = None
         )
     if DRY_RUN_ONLY:
         return False, REASON_DRY_RUN
+    if AEE_STRESS_DEMO_MODE:
+        if not LIVE_MODE:
+            return False, "stress_demo_requires_live_mode"
+        if signal is not None:
+            emit_trade_kind(
+                "AEE_STRESS_ENTRY_BYPASS",
+                {
+                    **build_event_envelope(kind="AEE_STRESS_ENTRY_BYPASS", pair=pair, direction=str(getattr(signal, "direction", ""))),
+                    "reason": "stress_demo_entry_permissive",
+                    "spread": float(spread or 0.0),
+                },
+            )
+        return True, ""
     if not ALLOW_ENTRIES:
         return False, REASON_ENTRIES_DISABLED
     if signal is not None:
@@ -6027,6 +6943,12 @@ def _tick_entry_triggered(st: PairState, bid: float, ask: float, now: float) -> 
             return True, "resume"
         if arm.get("pullback_seen") and px >= (resume_lvl - resume_soft_margin):
             return True, "resume_soft"
+        # Relax last-inch confirm for non-continuation setups when price is in-zone with directional intent.
+        sig_setup = str((arm.get("sig") or {}).get("setup_name", "") or "").upper()
+        if "CONTINUATION" not in sig_setup:
+            relax_near = max(resume_near_zone_abs, resume_soft_margin)
+            if _zone_ok(zone_low, zone_high, resume_lvl, relax_near) and _directional_intent_ok(direction, 0.0):
+                return True, "resume_zone_relaxed"
     else:
         if px >= pullback_lvl:
             arm["pullback_seen"] = True
@@ -6040,6 +6962,12 @@ def _tick_entry_triggered(st: PairState, bid: float, ask: float, now: float) -> 
             return True, "resume"
         if arm.get("pullback_seen") and px <= (resume_lvl + resume_soft_margin):
             return True, "resume_soft"
+        # Relax last-inch confirm for non-continuation setups when price is in-zone with directional intent.
+        sig_setup = str((arm.get("sig") or {}).get("setup_name", "") or "").upper()
+        if "CONTINUATION" not in sig_setup:
+            relax_near = max(resume_near_zone_abs, resume_soft_margin)
+            if _zone_ok(zone_low, zone_high, resume_lvl, relax_near) and _directional_intent_ok(direction, 0.0):
+                return True, "resume_zone_relaxed"
     return False, "resume_wait_confirm"
 
 
@@ -6895,6 +7823,39 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
     def _spread_block(limit: float) -> bool:
         return (not math.isfinite(st.spread_pips)) or float(st.spread_pips) > float(limit)
 
+    def _canonical_entry_family(setup_name: str) -> str:
+        s = str(setup_name or "").upper()
+        if "FAILED_BREAKOUT_FADE" in s:
+            return "RECLAIM_CONTINUATION"
+        if "INTENTIONAL_RUNNER" in s or "CONTINUATION_PUSH" in s:
+            return "PULLBACK_CONTINUATION"
+        if "COMPRESSION_EXPANSION" in s or "VOL_REIGNITE" in s:
+            return "EXPANSION_BREAKOUT"
+        if "EXHAUSTION_SNAPBACK" in s or "LIQUIDITY_SWEEP" in s or "RANGE" in s:
+            return "RANGE_ESCAPE"
+        return "OTHER"
+
+    def _parse_family_set(env_name: str, fallback: set[str]) -> set[str]:
+        raw = str(os.getenv(env_name, "")).strip()
+        if not raw:
+            return set(fallback)
+        out = {x.strip().upper() for x in raw.split(",") if x.strip()}
+        return out if out else set(fallback)
+
+    active_families = _parse_family_set("ENTRY_ACTIVE_FAMILIES", {"EXPANSION_BREAKOUT"})
+    guarded_families = _parse_family_set("ENTRY_GUARDED_FAMILIES", {"RANGE_ESCAPE", "OTHER"})
+    deprioritized_families = _parse_family_set("ENTRY_DEPRIORITIZED_FAMILIES", {"RECLAIM_CONTINUATION", "PULLBACK_CONTINUATION"})
+
+    def _family_policy_decision(canonical_family: str) -> tuple[bool, str]:
+        fam = str(canonical_family or "OTHER").upper()
+        if fam in deprioritized_families:
+            return False, "family_deprioritized"
+        if fam in active_families:
+            return True, "allow_active"
+        if fam in guarded_families:
+            return True, "allow_guarded"
+        return False, "family_not_routed"
+
     def _emit_decision(
         *,
         setup_name: str,
@@ -6907,12 +7868,17 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         allowed: bool,
         reason: str,
     ) -> None:
+        canonical_family = _canonical_entry_family(setup_name)
+        session_name = compute_session(now)
+        quarter_name = compute_quarter(now, session_name)
         payload = {
             "event": "ENTRY_FAMILY_DECISION",
             "pair": pair,
+            "context": f"{pair}__{session_name}__{quarter_name}",
             "direction": direction,
             "setup_name": setup_name,
-            "entry_family": family,
+            "entry_family": canonical_family,
+            "raw_entry_family": family,
             "trade_type": trade_type,
             "macro_bias": macro_bias,
             "micro_bias": micro_bias,
@@ -6937,6 +7903,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         z_hi: float,
         reason: str,
     ) -> SignalDef:
+        canonical_family = _canonical_entry_family(setup_name)
         speed_class = "SLOW" if trade_type == "RUNNER" else "MED"
         sp = get_speed_params(speed_class)
         sig_setup_name = setup_name if trade_type == "HARVESTER" else f"{setup_name}_RUN"
@@ -6957,40 +7924,98 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
             entry_zone_price=float((z_lo + z_hi) * 0.5),
             invalid_level=float(z_lo - (0.15 * atr)) if direction == "LONG" else float(z_hi + (0.15 * atr)),
             tp_anchor_price=float(close + (sp["tp1_atr"] * atr)) if direction == "LONG" else float(close - (sp["tp1_atr"] * atr)),
-            entry_family=family,
+            entry_family=canonical_family,
             trade_type=trade_type,
             macro_bias=macro_bias,
             micro_bias=micro_bias,
             entry_zone_low=float(z_lo),
             entry_zone_high=float(z_hi),
-            target_profile=_target_profile_from_distance(abs(float(to_pips(pair, sp["tp1_atr"] * atr))) if math.isfinite(float(atr)) else 0.0),
+            target_profile=_compute_target_profile(
+                pair,
+                0.0,
+                0.0,
+                fallback_distance=abs(float(to_pips(pair, sp["tp1_atr"] * atr))) if math.isfinite(float(atr)) else 0.0,
+                direction=direction,
+                trade_type=trade_type,
+            ),
+        )
+
+    def _emit_allowed_or_blocked_by_family(
+        *,
+        setup_id: int,
+        setup_name: str,
+        family: str,
+        trade_type: str,
+        direction: str,
+        z_lo: float,
+        z_hi: float,
+        freshness: float,
+        base_reason: str,
+    ) -> None:
+        canonical_family = _canonical_entry_family(setup_name)
+        allowed, policy_reason = _family_policy_decision(canonical_family)
+        if not allowed:
+            _emit_decision(
+                setup_name=setup_name,
+                family=canonical_family,
+                trade_type=trade_type,
+                direction=direction,
+                z_lo=z_lo,
+                z_hi=z_hi,
+                freshness=freshness,
+                allowed=False,
+                reason=policy_reason,
+            )
+            return
+        _emit_decision(
+            setup_name=setup_name,
+            family=canonical_family,
+            trade_type=trade_type,
+            direction=direction,
+            z_lo=z_lo,
+            z_hi=z_hi,
+            freshness=freshness,
+            allowed=True,
+            reason=policy_reason,
+        )
+        out.append(
+            _make_signal(
+                setup_id=setup_id,
+                setup_name=setup_name,
+                family=family,
+                trade_type=trade_type,
+                direction=direction,
+                z_lo=z_lo,
+                z_hi=z_hi,
+                reason=base_reason,
+            )
         )
 
     # 1) COMPRESSION_EXPANSION -> BREAK -> RUNNER
-    near_edge = PC1_ENTRY_BREAK_NEAR_EDGE_ATR * atr
-    break_up = close > (zone_high + (PC1_ENTRY_BREAK_BUFFER_ATR * atr))
-    break_dn = close < (zone_low - (PC1_ENTRY_BREAK_BUFFER_ATR * atr))
-    break_up = break_up or (close >= (zone_high - near_edge) and close > prev_close and _bias_is_supportive("LONG"))
-    break_dn = break_dn or (close <= (zone_low + near_edge) and close < prev_close and _bias_is_supportive("SHORT"))
-    if break_up or break_dn:
-        direction = "LONG" if break_up else "SHORT"
-        freshness = abs(close - (zone_high if direction == "LONG" else zone_low)) / max(atr, 1e-9)
-        if _spread_block(PC1_ENTRY_SPREAD_LIMIT_BREAK):
-            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="spread_too_high")
-        elif price_age_sec > PC1_ENTRY_MAX_PRICE_AGE_SEC:
+    breakout_eval = detect_expansion_breakout(
+        closes=closes,
+        highs=highs,
+        lows=lows,
+        atr=atr,
+        spread_pips=float(st.spread_pips),
+        spread_limit_pips=PC1_ENTRY_SPREAD_LIMIT_BREAK,
+        max_freshness_atr=PC1_ENTRY_BREAK_FRESH_MAX_ATR,
+    )
+    if breakout_eval.is_valid and breakout_eval.direction in ("LONG", "SHORT"):
+        direction = breakout_eval.direction
+        freshness = breakout_eval.freshness_atr if math.isfinite(breakout_eval.freshness_atr) else abs(close - (zone_high if direction == "LONG" else zone_low)) / max(atr, 1e-9)
+        if price_age_sec > PC1_ENTRY_MAX_PRICE_AGE_SEC:
             _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="stale_pricing")
-        elif freshness > PC1_ENTRY_BREAK_FRESH_MAX_ATR:
-            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="setup_too_late")
         elif _bias_is_opposed(direction):
             _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=False, reason="bias_misaligned")
         else:
             st.pc1_last_break_dir = direction
             st.pc1_last_break_level = float(zone_high if direction == "LONG" else zone_low)
             st.pc1_last_break_ts = now
-            _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=1, setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, reason="pc1_break_compression"))
+            _emit_allowed_or_blocked_by_family(setup_id=1, setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction=direction, z_lo=zone_low, z_hi=zone_high, freshness=freshness, base_reason="pc1_break_structural")
     else:
-        _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_trigger")
+        fail_reason = str(breakout_eval.reason or "no_trigger") if breakout_eval else "no_trigger"
+        _emit_decision(setup_name="COMPRESSION_EXPANSION", family="BREAK", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason=fail_reason)
 
     # 2) FAILED_BREAKOUT_FADE -> PULLBACK_RECLAIM -> HARVESTER
     has_break_memory = (
@@ -7042,8 +8067,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         elif not resumed:
             _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=False, reason="no_reclaim_resume")
         else:
-            _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=4, setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, reason="pc1_pullback_reclaim"))
+            _emit_allowed_or_blocked_by_family(setup_id=4, setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction=direction, z_lo=reclaim_lo, z_hi=reclaim_hi, freshness=freshness, base_reason="pc1_pullback_reclaim")
     else:
         _emit_decision(setup_name="FAILED_BREAKOUT_FADE", family="PULLBACK_RECLAIM", trade_type="HARVESTER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_break_memory")
 
@@ -7064,8 +8088,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         elif freshness > PC1_ENTRY_BREAK_FRESH_MAX_ATR:
             _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="setup_too_late")
         else:
-            _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=3, setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, reason="pc1_bounce_exhaustion"))
+            _emit_allowed_or_blocked_by_family(setup_id=3, setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, base_reason="pc1_bounce_exhaustion")
     else:
         _emit_decision(setup_name="EXHAUSTION_SNAPBACK", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_trigger")
 
@@ -7086,8 +8109,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         elif _bias_is_opposed(direction):
             _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=False, reason="macro_opposes")
         else:
-            _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=5, setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, reason="pc1_bounce_sweep"))
+            _emit_allowed_or_blocked_by_family(setup_id=5, setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction=direction, z_lo=z_lo, z_hi=z_hi, freshness=freshness, base_reason="pc1_bounce_sweep")
     else:
         _emit_decision(setup_name="LIQUIDITY_SWEEP", family="OSCILLATION_BOUNCE", trade_type="HARVESTER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="no_trigger")
 
@@ -7108,8 +8130,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         elif not resumed:
             _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="no_resume_from_zone")
         else:
-            _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=2, setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, reason="pc1_continuation_push"))
+            _emit_allowed_or_blocked_by_family(setup_id=2, setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, base_reason="pc1_continuation_push")
     else:
         _emit_decision(setup_name="CONTINUATION_PUSH", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="bias_not_aligned")
 
@@ -7130,8 +8151,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         elif not resumed:
             _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="no_resume_from_zone")
         else:
-            _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=6, setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, reason="pc1_continuation_vol_reignite"))
+            _emit_allowed_or_blocked_by_family(setup_id=6, setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, base_reason="pc1_continuation_vol_reignite")
     else:
         _emit_decision(setup_name="VOL_REIGNITE", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="bias_not_aligned")
 
@@ -7153,8 +8173,7 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
         elif not resumed:
             _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=False, reason="no_resume_from_zone")
         else:
-            _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, allowed=True, reason="allow")
-            out.append(_make_signal(setup_id=7, setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, reason="pc1_continuation_intentional_runner"))
+            _emit_allowed_or_blocked_by_family(setup_id=7, setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction=direction, z_lo=cont_lo, z_hi=cont_hi, freshness=freshness, base_reason="pc1_continuation_intentional_runner")
     else:
         _emit_decision(setup_name="INTENTIONAL_RUNNER", family="BIAS_ALIGNMENT_CONTINUATION", trade_type="RUNNER", direction="NONE", z_lo=zone_low, z_hi=zone_high, freshness=float("nan"), allowed=False, reason="bias_not_aligned")
 
@@ -7611,87 +8630,48 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
             ),
         }
 
-    # STRATEGY 1: COMPRESSION_EXPANSION (upgraded to use path-space primitives)
-    # Check compression using path-space overlap instead of candle range
-    s1_block_reason = ""
-    if not (box_range_atr <= V12_SETUP_THRESH[1]["boxrange_max"]):
-        s1_block_reason = "boxrange_gt_max"
-    elif not (progress < V12_SETUP_THRESH[1]["progress_max"]):
-        s1_block_reason = "progress_ge_max"
-    elif not (rolling_high > float("-inf") and rolling_low < float("inf")):
-        s1_block_reason = "extrema_unavailable"
-    else:
-        break_up = close >= rolling_high
-        break_dn = close <= rolling_low
-        if not (break_up or break_dn):
-            s1_block_reason = "no_boundary_break"
-        else:
-            disp_from_boundary_atr = (abs(close - rolling_high) / atrv) if break_up and atrv > 0 else ((abs(close - rolling_low) / atrv) if atrv > 0 else 0.0)
-            if not (energy >= V12_SETUP_THRESH[1]["energy_min"]):
-                s1_block_reason = "energy_lt_min"
-            elif not efficiency_rising:
-                s1_block_reason = "efficiency_not_rising"
-            elif not (disp_from_boundary_atr >= V12_SETUP_THRESH[1]["entry_disp_min"]):
-                s1_block_reason = "entry_disp_lt_min"
-    if s1_block_reason:
-        _bump_signal_reject(pair, 1, s1_block_reason)
-        log_runtime("debug", "BUILD_SIGNALS_STRATEGY_CONDITIONS",
+    # STRATEGY 1: COMPRESSION_EXPANSION (structural detector path)
+    closes_v12 = [float(c.get("c", float("nan"))) for c in c_exec if isinstance(c, dict)]
+    highs_v12 = [float(c.get("h", c.get("c", float("nan")))) for c in c_exec if isinstance(c, dict)]
+    lows_v12 = [float(c.get("l", c.get("c", float("nan")))) for c in c_exec if isinstance(c, dict)]
+    breakout_eval_v12 = detect_expansion_breakout(
+        closes=closes_v12,
+        highs=highs_v12,
+        lows=lows_v12,
+        atr=atrv,
+        spread_pips=float(st.spread_pips),
+        spread_limit_pips=PC1_ENTRY_SPREAD_LIMIT_BREAK,
+        max_freshness_atr=PC1_ENTRY_BREAK_FRESH_MAX_ATR,
+    )
+    if breakout_eval_v12.is_valid and breakout_eval_v12.direction in ("LONG", "SHORT"):
+        speed_class = "MED"
+        sp = get_speed_params(speed_class)
+        direction = breakout_eval_v12.direction
+        out.append(_attach_v12_fields(
+            SignalDef(
                 pair=pair,
-                box_range_atr=round(box_range_atr, 4),
-                progress=round(progress, 4),
-                energy=round(energy, 4),
-                efficiency=round(efficiency, 4),
-                efficiency_rising=efficiency_rising,
-                rolling_high=round(rolling_high, 5),
-                rolling_low=round(rolling_low, 5),
-                close=round(close, 5),
-                atrv=round(atrv, 4))
-
-    if box_range_atr <= V12_SETUP_THRESH[1]["boxrange_max"] and progress < V12_SETUP_THRESH[1]["progress_max"]:
-        # Check if we have valid extrema
-        if rolling_high > float('-inf') and rolling_low < float('inf'):
-            # Check for breakout (price equals or exceeds rolling high/low)
-            break_up = close >= rolling_high  # Include equality for exact breakout
-            break_dn = close <= rolling_low  # Include equality for exact breakout
-            # E1 strict: Remove overlap > 1.0 gate (if present)
-            if break_up or break_dn:
-                disp_from_boundary_atr = (abs(close - rolling_high) / atrv) if break_up and atrv > 0 else ((abs(close - rolling_low) / atrv) if atrv > 0 else 0.0)
-                log_runtime("debug", "BUILD_SIGNALS_SETUP1_CHECK",
-                            pair=pair,
-                            break_up=break_up,
-                            break_dn=break_dn,
-                            energy_min=V12_SETUP_THRESH[1]["energy_min"],
-                            energy=round(energy, 4),
-                            efficiency_rising=efficiency_rising,
-                            disp_from_boundary_atr=round(disp_from_boundary_atr, 4),
-                            entry_disp_min=V12_SETUP_THRESH[1]["entry_disp_min"])
-                if energy >= V12_SETUP_THRESH[1]["energy_min"] and efficiency_rising and disp_from_boundary_atr >= V12_SETUP_THRESH[1]["entry_disp_min"]:
-                    speed_class = "MED"
-                    sp = get_speed_params(speed_class)
-                    direction = "LONG" if break_up else "SHORT"
-                    out.append(_attach_v12_fields(
-                        SignalDef(
-                            pair=pair,
-                            setup_id=1,
-                            setup_name="COMPRESSION_EXPANSION",
-                            direction=direction,
-                            mode=st.mode,
-                            ttl_sec=sp["ttl_main"],
-                            pg_t=int(sp["ttl_main"] * sp["pg_t_frac"]),
-                            pg_atr=sp["pg_atr"],
-                            tp1_atr=sp["tp1_atr"],
-                            tp2_atr=sp["tp2_atr"],
-                            sl_atr=sp["sl_atr"],
-                            reason=_with_friction_reason(
-                                reason=f"compression_break path_space energy={energy:.2f} eff={efficiency:.2f} | bar_complete={bar_complete}",
-                                pair=pair,
-                                atr=atrv,
-                                spread_pips=st.spread_pips,
-                                tp1_atr=sp["tp1_atr"],
-                                sl_atr=sp["sl_atr"],
-                            ),
-                        )
-                    ))
+                setup_id=1,
+                setup_name="COMPRESSION_EXPANSION",
+                direction=direction,
+                mode=st.mode,
+                ttl_sec=sp["ttl_main"],
+                pg_t=int(sp["ttl_main"] * sp["pg_t_frac"]),
+                pg_atr=sp["pg_atr"],
+                tp1_atr=sp["tp1_atr"],
+                tp2_atr=sp["tp2_atr"],
+                sl_atr=sp["sl_atr"],
+                reason=_with_friction_reason(
+                    reason=f"compression_break_structural phase=ok freshness_atr={breakout_eval_v12.freshness_atr:.2f} | bar_complete={bar_complete}",
+                    pair=pair,
+                    atr=atrv,
+                    spread_pips=st.spread_pips,
+                    tp1_atr=sp["tp1_atr"],
+                    sl_atr=sp["sl_atr"],
+                ),
+            )
+        ))
+    else:
+        _bump_signal_reject(pair, 1, str(breakout_eval_v12.reason or breakout_eval_v12.fail_phase or "structural_not_met"))
 
     # STRATEGY 2: CONTINUATION_PUSH (upgraded to use path-space primitives)
     s2_block_reason = ""
@@ -10815,7 +11795,9 @@ def build_trade_state_snapshot(tr, aee_state, aee_metrics, mid, spread_pips):
     if not math.isfinite(mae_atr):
         missing_fields.append("mae_atr")
         missing_reason["mae_atr"] = "local_high/low not finite or atr_exec not finite"
-    # energy_ratio is optional in dataset v1 completeness checks.
+    # Operational guard: treat missing energy_ratio as a neutral value so exits are not globally blocked.
+    if energy_ratio is None:
+        energy_ratio = 0.0
 
     # New fields
     ts_utc = time.time()
@@ -11339,6 +12321,102 @@ AEE_PC1_R_ACTIVATE_TRIGGER = float(os.getenv("AEE_PC1_R_ACTIVATE_TRIGGER", "0.00
 AEE_PC1_R_LOCK1_VALUE = float(os.getenv("AEE_PC1_R_LOCK1_VALUE", "0.00008") or "0.00008")
 AEE_PC1_R_LOCK2_TRIGGER = float(os.getenv("AEE_PC1_R_LOCK2_TRIGGER", "0.00045") or "0.00045")
 AEE_PC1_R_LOCK2_VALUE = float(os.getenv("AEE_PC1_R_LOCK2_VALUE", "0.00020") or "0.00020")
+AEE_PC1_RUNNER_ONLY = os.getenv("AEE_PC1_RUNNER_ONLY", "1").strip().lower() in ("1", "true", "yes")
+
+# MVP harvester policy: aggressive and always-on for rapid close conversion.
+AEE_HARVESTER_MVP_AGGRESSIVE_ENABLED = os.getenv("AEE_HARVESTER_MVP_AGGRESSIVE_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+AEE_H_STALL_MIN_AGE_SEC = float(os.getenv("AEE_H_STALL_MIN_AGE_SEC", "8") or "8")
+AEE_H_STALL_MFE_R_MAX = float(os.getenv("AEE_H_STALL_MFE_R_MAX", "0.18") or "0.18")
+AEE_H_STALL_NET_R_MAX = float(os.getenv("AEE_H_STALL_NET_R_MAX", "0.05") or "0.05")
+AEE_H_WEAK_MIN_AGE_SEC = float(os.getenv("AEE_H_WEAK_MIN_AGE_SEC", "5") or "5")
+AEE_H_WEAK_MFE_R_MAX = float(os.getenv("AEE_H_WEAK_MFE_R_MAX", "0.10") or "0.10")
+AEE_H_WEAK_MAE_R_MIN = float(os.getenv("AEE_H_WEAK_MAE_R_MIN", "-0.22") or "-0.22")
+AEE_H_WEAK_PROGRESS_VEL_R_PER_SEC_MIN = float(os.getenv("AEE_H_WEAK_PROGRESS_VEL_R_PER_SEC_MIN", "0.002") or "0.002")
+AEE_H_LOCK_ARM_MFE_R = float(os.getenv("AEE_H_LOCK_ARM_MFE_R", "0.22") or "0.22")
+AEE_H_LOCK_GIVEBACK_FRAC = float(os.getenv("AEE_H_LOCK_GIVEBACK_FRAC", "0.35") or "0.35")
+AEE_H_LOCK_MIN_EXIT_R = float(os.getenv("AEE_H_LOCK_MIN_EXIT_R", "0.06") or "0.06")
+AEE_H_LOCK2_ARM_MFE_R = float(os.getenv("AEE_H_LOCK2_ARM_MFE_R", "0.40") or "0.40")
+AEE_H_LOCK2_GIVEBACK_FRAC = float(os.getenv("AEE_H_LOCK2_GIVEBACK_FRAC", "0.25") or "0.25")
+AEE_H_LOCK2_MIN_EXIT_R = float(os.getenv("AEE_H_LOCK2_MIN_EXIT_R", "0.15") or "0.15")
+AEE_H_PRE_SL_ARM_MAE_R = float(os.getenv("AEE_H_PRE_SL_ARM_MAE_R", "-0.45") or "-0.45")
+AEE_H_PRE_SL_HARD_EXIT_R = float(os.getenv("AEE_H_PRE_SL_HARD_EXIT_R", "-0.55") or "-0.55")
+AEE_H_TIME_PRESSURE_SEC = float(os.getenv("AEE_H_TIME_PRESSURE_SEC", "20") or "20")
+AEE_H_TIME_PRESSURE_NET_R_MAX = float(os.getenv("AEE_H_TIME_PRESSURE_NET_R_MAX", "0.12") or "0.12")
+AEE_H_PANIC_EXIT_R = float(os.getenv("AEE_H_PANIC_EXIT_R", "-0.75") or "-0.75")
+# Minimal harvester extraction block (profit-first): explicit lock/stall/giveback exits.
+AEE_H_MINIMAL_EXTRACTOR_ENABLED = os.getenv("AEE_H_MINIMAL_EXTRACTOR_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+AEE_H_MIN_EXTRACT_PROFITLOCK_MFE_R = float(os.getenv("AEE_H_MIN_EXTRACT_PROFITLOCK_MFE_R", "0.18") or "0.18")
+AEE_H_MIN_EXTRACT_PROFITLOCK_GIVEBACK_R = float(os.getenv("AEE_H_MIN_EXTRACT_PROFITLOCK_GIVEBACK_R", "0.06") or "0.06")
+AEE_H_MIN_EXTRACT_PROFITLOCK_MIN_NET_R = float(os.getenv("AEE_H_MIN_EXTRACT_PROFITLOCK_MIN_NET_R", "0.03") or "0.03")
+AEE_H_MIN_EXTRACT_STALL_MIN_HOLD_SEC = float(os.getenv("AEE_H_MIN_EXTRACT_STALL_MIN_HOLD_SEC", "14") or "14")
+AEE_H_MIN_EXTRACT_STALL_MIN_FAVORABLE_STALL_SEC = float(os.getenv("AEE_H_MIN_EXTRACT_STALL_MIN_FAVORABLE_STALL_SEC", "6") or "6")
+AEE_H_MIN_EXTRACT_STALL_MAX_ABS_VEL_R_PER_SEC = float(os.getenv("AEE_H_MIN_EXTRACT_STALL_MAX_ABS_VEL_R_PER_SEC", "0.003") or "0.003")
+AEE_H_MIN_EXTRACT_STALL_NET_R_MAX = float(os.getenv("AEE_H_MIN_EXTRACT_STALL_NET_R_MAX", "0.08") or "0.08")
+AEE_H_MIN_EXTRACT_GIVEBACK_MIN_MFE_R = float(os.getenv("AEE_H_MIN_EXTRACT_GIVEBACK_MIN_MFE_R", "0.14") or "0.14")
+AEE_H_MIN_EXTRACT_GIVEBACK_MIN_GIVEBACK_R = float(os.getenv("AEE_H_MIN_EXTRACT_GIVEBACK_MIN_GIVEBACK_R", "0.07") or "0.07")
+AEE_H_MIN_EXTRACT_GIVEBACK_MAX_RETAIN_FRAC = float(os.getenv("AEE_H_MIN_EXTRACT_GIVEBACK_MAX_RETAIN_FRAC", "0.55") or "0.55")
+AEE_H_MIN_EXTRACT_GIVEBACK_MAX_CONTINUATION_STRENGTH = float(os.getenv("AEE_H_MIN_EXTRACT_GIVEBACK_MAX_CONTINUATION_STRENGTH", "0.02") or "0.02")
+
+# Isolated doctrine branches: fast adverse, profit stall, never-green timeout.
+AEE_H_FAST_ADVERSE_WINDOW_SEC = float(os.getenv("AEE_H_FAST_ADVERSE_WINDOW_SEC", "3.0") or "3.0")
+AEE_H_FAST_ADVERSE_MIN_MOVE_R = float(os.getenv("AEE_H_FAST_ADVERSE_MIN_MOVE_R", "0.10") or "0.10")
+AEE_H_FAST_ADVERSE_MIN_VEL_R_PER_SEC = float(os.getenv("AEE_H_FAST_ADVERSE_MIN_VEL_R_PER_SEC", "0.035") or "0.035")
+AEE_H_FAST_ADVERSE_MIN_HOLD_SEC = float(os.getenv("AEE_H_FAST_ADVERSE_MIN_HOLD_SEC", "0.5") or "0.5")
+
+AEE_H_PROFIT_STALL_MIN_NET_R = float(os.getenv("AEE_H_PROFIT_STALL_MIN_NET_R", "0.01") or "0.01")
+AEE_H_PROFIT_STALL_MIN_BEST_R = float(os.getenv("AEE_H_PROFIT_STALL_MIN_BEST_R", "0.05") or "0.05")
+AEE_H_PROFIT_STALL_MIN_STALL_SEC = float(os.getenv("AEE_H_PROFIT_STALL_MIN_STALL_SEC", "1.5") or "1.5")
+AEE_H_PROFIT_STALL_MAX_VEL_R_PER_SEC = float(os.getenv("AEE_H_PROFIT_STALL_MAX_VEL_R_PER_SEC", "0.006") or "0.006")
+AEE_H_PROFIT_STALL_MIN_GIVEBACK_R = float(os.getenv("AEE_H_PROFIT_STALL_MIN_GIVEBACK_R", "0.01") or "0.01")
+
+AEE_H_NEVER_GREEN_TIMEOUT_SEC = float(os.getenv("AEE_H_NEVER_GREEN_TIMEOUT_SEC", "14.0") or "14.0")
+AEE_H_NEVER_GREEN_MAX_BEST_R = float(os.getenv("AEE_H_NEVER_GREEN_MAX_BEST_R", "0.10") or "0.10")
+AEE_H_NEVER_GREEN_MAX_NET_R = float(os.getenv("AEE_H_NEVER_GREEN_MAX_NET_R", "0.03") or "0.03")
+AEE_H_NEVER_GREEN_MAX_VEL_R_PER_SEC = float(os.getenv("AEE_H_NEVER_GREEN_MAX_VEL_R_PER_SEC", "0.003") or "0.003")
+
+# Profit-side extraction state machine (hourly extraction optimization).
+AEE_PROFIT_SIDE_ENABLED = os.getenv("AEE_PROFIT_SIDE_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+AEE_BAND_WIDTH_R = float(os.getenv("AEE_BAND_WIDTH_R", "0.10") or "0.10")
+AEE_BAND_NEAR_ENTRY_MAX_IDX = int(float(os.getenv("AEE_BAND_NEAR_ENTRY_MAX_IDX", "1") or "1"))
+AEE_BAND_NEVER_GREEN_TIMEOUT_SEC = float(os.getenv("AEE_BAND_NEVER_GREEN_TIMEOUT_SEC", "14") or "14")
+AEE_BAND_PROFIT_MIN_IDX = int(float(os.getenv("AEE_BAND_PROFIT_MIN_IDX", "1") or "1"))
+AEE_BAND_PROFIT_DWELL_SEC = float(os.getenv("AEE_BAND_PROFIT_DWELL_SEC", "1.5") or "1.5")
+AEE_BAND_GIVEBACK_MIN_PEAK_IDX = int(float(os.getenv("AEE_BAND_GIVEBACK_MIN_PEAK_IDX", "2") or "2"))
+AEE_BAND_GIVEBACK_FALLBACK_BANDS = int(float(os.getenv("AEE_BAND_GIVEBACK_FALLBACK_BANDS", "1") or "1"))
+AEE_BAND_FAST_FAILURE_MIN_NEG_BANDS = int(float(os.getenv("AEE_BAND_FAST_FAILURE_MIN_NEG_BANDS", "3") or "3"))
+AEE_BAND_FAST_FAILURE_MAX_SEC = float(os.getenv("AEE_BAND_FAST_FAILURE_MAX_SEC", "3.0") or "3.0")
+AEE_BAND_EXTENSION_HOLD_MIN_VEL_R_PER_SEC = float(os.getenv("AEE_BAND_EXTENSION_HOLD_MIN_VEL_R_PER_SEC", "0.003") or "0.003")
+AEE_BAND_EXTENSION_HOLD_MAX_DWELL_SEC = float(os.getenv("AEE_BAND_EXTENSION_HOLD_MAX_DWELL_SEC", "2.5") or "2.5")
+AEE_BAND_LOOP_DEBUG_ENABLED = os.getenv("AEE_BAND_LOOP_DEBUG_ENABLED", "1").strip().lower() in ("1", "true", "yes")
+AEE_P_EARLY_LOCK_MIN_NET_R = float(os.getenv("AEE_P_EARLY_LOCK_MIN_NET_R", "0.02") or "0.02")
+AEE_P_EARLY_LOCK_MIN_BEST_R = float(os.getenv("AEE_P_EARLY_LOCK_MIN_BEST_R", "0.05") or "0.05")
+AEE_P_EARLY_LOCK_MIN_GIVEBACK_R = float(os.getenv("AEE_P_EARLY_LOCK_MIN_GIVEBACK_R", "0.01") or "0.01")
+AEE_P_EARLY_LOCK_MAX_VEL_R_PER_SEC = float(os.getenv("AEE_P_EARLY_LOCK_MAX_VEL_R_PER_SEC", "0.004") or "0.004")
+
+AEE_P_STALL_MIN_BEST_R = float(os.getenv("AEE_P_STALL_MIN_BEST_R", "0.05") or "0.05")
+AEE_P_STALL_MIN_NET_R = float(os.getenv("AEE_P_STALL_MIN_NET_R", "0.01") or "0.01")
+AEE_P_STALL_MIN_GREEN_AGE_SEC = float(os.getenv("AEE_P_STALL_MIN_GREEN_AGE_SEC", "1.0") or "1.0")
+AEE_P_STALL_MIN_TIME_SINCE_PEAK_SEC = float(os.getenv("AEE_P_STALL_MIN_TIME_SINCE_PEAK_SEC", "1.0") or "1.0")
+AEE_P_STALL_MAX_VEL_R_PER_SEC = float(os.getenv("AEE_P_STALL_MAX_VEL_R_PER_SEC", "0.006") or "0.006")
+
+AEE_P_GIVEBACK_MIN_BEST_R = float(os.getenv("AEE_P_GIVEBACK_MIN_BEST_R", "0.07") or "0.07")
+AEE_P_GIVEBACK_MIN_R = float(os.getenv("AEE_P_GIVEBACK_MIN_R", "0.02") or "0.02")
+AEE_P_GIVEBACK_MIN_FRAC = float(os.getenv("AEE_P_GIVEBACK_MIN_FRAC", "0.20") or "0.20")
+AEE_P_GIVEBACK_MIN_TIME_SINCE_PEAK_SEC = float(os.getenv("AEE_P_GIVEBACK_MIN_TIME_SINCE_PEAK_SEC", "0.8") or "0.8")
+
+AEE_P_EXTENSION_HOLD_MIN_NET_R = float(os.getenv("AEE_P_EXTENSION_HOLD_MIN_NET_R", "0.06") or "0.06")
+AEE_P_EXTENSION_HOLD_MIN_VEL_R_PER_SEC = float(os.getenv("AEE_P_EXTENSION_HOLD_MIN_VEL_R_PER_SEC", "0.003") or "0.003")
+AEE_P_EXTENSION_HOLD_MAX_GIVEBACK_FRAC = float(os.getenv("AEE_P_EXTENSION_HOLD_MAX_GIVEBACK_FRAC", "0.30") or "0.30")
+
+AEE_P_EXTENSION_DECAY_MIN_BEST_R = float(os.getenv("AEE_P_EXTENSION_DECAY_MIN_BEST_R", "0.10") or "0.10")
+AEE_P_EXTENSION_DECAY_MAX_VEL_R_PER_SEC = float(os.getenv("AEE_P_EXTENSION_DECAY_MAX_VEL_R_PER_SEC", "0.0015") or "0.0015")
+AEE_P_EXTENSION_DECAY_MIN_GIVEBACK_FRAC = float(os.getenv("AEE_P_EXTENSION_DECAY_MIN_GIVEBACK_FRAC", "0.25") or "0.25")
+AEE_P_EXTENSION_DECAY_MIN_TIME_SINCE_PEAK_SEC = float(os.getenv("AEE_P_EXTENSION_DECAY_MIN_TIME_SINCE_PEAK_SEC", "1.0") or "1.0")
+
+
+def _band_idx_from_r(value_r: float) -> int:
+    width = max(1e-6, float(AEE_BAND_WIDTH_R))
+    return int(math.floor(float(value_r) / width))
 
 NEAR_TP_BAND_ATR_BASE = 0.25
 PROTECT_EXIT_PROGRESS_BASE = 0.35
@@ -11783,6 +12861,15 @@ class AEEState:
     override_giveback_trigger_norm: float = 0.0
     override_panic_trigger_norm: float = 0.0
     override_match_key: str = ""
+    band_current_idx: int = 0
+    band_prev_idx: int = 0
+    band_highest_idx: int = 0
+    band_lowest_idx: int = 0
+    band_enter_ts: float = 0.0
+    band_exit_dir: str = ""
+    band_exit_count_up: int = 0
+    band_exit_count_down: int = 0
+    first_green_ts: float = 0.0
 
 
 def _aee_is_mobile_runtime() -> bool:
@@ -12095,6 +13182,301 @@ def _pc1_evaluate_exit_reason(
     return None
 
 
+def _emit_aee_branch_trigger(trade: dict, metrics: dict, branch: str, thresholds: dict, debug: dict) -> None:
+    trade_id = int(float((trade or {}).get("id", 0) or 0))
+    pair = str((trade or {}).get("pair", "") or "")
+    trade_type = str(metrics.get("trade_type", "HARVESTER") or "HARVESTER").upper()
+    payload = {
+        "branch": str(branch),
+        "trade_id": trade_id,
+        "pair": pair,
+        "trade_type": trade_type,
+        "hold_sec": float(metrics.get("hold_sec", 0.0) or 0.0),
+        "net_r": float(metrics.get("net_r", 0.0) or 0.0),
+        "mae_r": float(metrics.get("mae_r", 0.0) or 0.0),
+        "best_favorable_r": float(metrics.get("best_favorable_r", 0.0) or 0.0),
+        "favorable_giveback_r": float(metrics.get("favorable_giveback_r", 0.0) or 0.0),
+        "progress_vel_r_per_sec": float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0),
+        "rolling_adverse_move_r_short": float(metrics.get("rolling_adverse_move_r_short", 0.0) or 0.0),
+        "rolling_favorable_move_r_short": float(metrics.get("rolling_favorable_move_r_short", 0.0) or 0.0),
+        "thresholds": dict(thresholds or {}),
+        "debug": dict(debug or {}),
+    }
+    log_runtime("info", "AEE_BRANCH_TRIGGER", **payload)
+
+
+def check_fast_adverse_exit(metrics: dict) -> tuple[bool, str, dict]:
+    window_sec = float(metrics.get("rolling_window_sec_short", 0.0) or 0.0)
+    adverse_r = float(metrics.get("rolling_adverse_move_r_short", 0.0) or 0.0)
+    adverse_vel = float(metrics.get("rolling_adverse_vel_r_per_sec_short", 0.0) or 0.0)
+    hold_sec = float(metrics.get("hold_sec", 0.0) or 0.0)
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    hold_sec = float(metrics.get("hold_sec", 0.0) or 0.0)
+    thresholds = {
+        "window_sec": float(AEE_H_FAST_ADVERSE_WINDOW_SEC),
+        "min_move_r": float(AEE_H_FAST_ADVERSE_MIN_MOVE_R),
+        "min_vel_r_per_sec": float(AEE_H_FAST_ADVERSE_MIN_VEL_R_PER_SEC),
+        "min_hold_sec": float(AEE_H_FAST_ADVERSE_MIN_HOLD_SEC),
+        "min_neg_bands": int(AEE_BAND_FAST_FAILURE_MIN_NEG_BANDS),
+        "max_sec": float(AEE_BAND_FAST_FAILURE_MAX_SEC),
+    }
+    trigger = (
+        (
+            hold_sec >= float(AEE_H_FAST_ADVERSE_MIN_HOLD_SEC)
+            and window_sec <= float(AEE_H_FAST_ADVERSE_WINDOW_SEC)
+            and adverse_r >= float(AEE_H_FAST_ADVERSE_MIN_MOVE_R)
+            and adverse_vel <= (-1.0 * float(AEE_H_FAST_ADVERSE_MIN_VEL_R_PER_SEC))
+        )
+        or (
+            hold_sec <= float(AEE_BAND_FAST_FAILURE_MAX_SEC)
+            and current_band <= (-1 * int(AEE_BAND_FAST_FAILURE_MIN_NEG_BANDS))
+        )
+    )
+    debug = {"window_sec": window_sec, "adverse_r": adverse_r, "adverse_vel": adverse_vel, "current_band_idx": current_band}
+    return bool(trigger), "AEE_BAND_FAST_FAILURE_EXIT", {"thresholds": thresholds, "debug": debug}
+
+
+def check_profit_stall_exit(metrics: dict) -> tuple[bool, str, dict]:
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    best_r = float(metrics.get("best_favorable_r", 0.0) or 0.0)
+    giveback_r = float(metrics.get("favorable_giveback_r", 0.0) or 0.0)
+    stall_s = float(metrics.get("favorable_stall_s", 0.0) or 0.0)
+    vel_r = float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0)
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    time_in_band_sec = float(metrics.get("time_in_band_sec", 0.0) or 0.0)
+    thresholds = {
+        "min_net_r": float(AEE_H_PROFIT_STALL_MIN_NET_R),
+        "min_best_r": float(AEE_H_PROFIT_STALL_MIN_BEST_R),
+        "min_stall_sec": float(AEE_H_PROFIT_STALL_MIN_STALL_SEC),
+        "max_vel_r_per_sec": float(AEE_H_PROFIT_STALL_MAX_VEL_R_PER_SEC),
+        "min_giveback_r": float(AEE_H_PROFIT_STALL_MIN_GIVEBACK_R),
+        "profit_min_band": int(AEE_BAND_PROFIT_MIN_IDX),
+        "profit_dwell_sec": float(AEE_BAND_PROFIT_DWELL_SEC),
+    }
+    trigger = (
+        net_r >= float(AEE_H_PROFIT_STALL_MIN_NET_R)
+        and best_r >= float(AEE_H_PROFIT_STALL_MIN_BEST_R)
+        and stall_s >= float(AEE_H_PROFIT_STALL_MIN_STALL_SEC)
+        and abs(vel_r) <= float(AEE_H_PROFIT_STALL_MAX_VEL_R_PER_SEC)
+        and giveback_r >= float(AEE_H_PROFIT_STALL_MIN_GIVEBACK_R)
+        and current_band >= int(AEE_BAND_PROFIT_MIN_IDX)
+        and time_in_band_sec >= float(AEE_BAND_PROFIT_DWELL_SEC)
+    )
+    debug = {"net_r": net_r, "best_r": best_r, "giveback_r": giveback_r, "stall_s": stall_s, "vel_r": vel_r, "current_band_idx": current_band, "time_in_band_sec": time_in_band_sec}
+    return bool(trigger), "AEE_BAND_PROFIT_STALL_EXIT", {"thresholds": thresholds, "debug": debug}
+
+
+def check_never_green_timeout(metrics: dict) -> tuple[bool, str, dict]:
+    hold_sec = float(metrics.get("hold_sec", 0.0) or 0.0)
+    best_r = float(metrics.get("best_favorable_r", 0.0) or 0.0)
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    vel_r = float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0)
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    highest_band = int(metrics.get("highest_band_reached", 0) or 0)
+    lowest_band = int(metrics.get("lowest_band_reached", 0) or 0)
+    thresholds = {
+        "timeout_sec": float(AEE_H_NEVER_GREEN_TIMEOUT_SEC),
+        "max_best_r": float(AEE_H_NEVER_GREEN_MAX_BEST_R),
+        "max_net_r": float(AEE_H_NEVER_GREEN_MAX_NET_R),
+        "max_vel_r_per_sec": float(AEE_H_NEVER_GREEN_MAX_VEL_R_PER_SEC),
+        "near_entry_max_idx": int(AEE_BAND_NEAR_ENTRY_MAX_IDX),
+        "band_timeout_sec": float(AEE_BAND_NEVER_GREEN_TIMEOUT_SEC),
+    }
+    trigger = (
+        hold_sec >= max(float(AEE_H_NEVER_GREEN_TIMEOUT_SEC), float(AEE_BAND_NEVER_GREEN_TIMEOUT_SEC))
+        and best_r <= float(AEE_H_NEVER_GREEN_MAX_BEST_R)
+        and net_r <= float(AEE_H_NEVER_GREEN_MAX_NET_R)
+        and vel_r <= float(AEE_H_NEVER_GREEN_MAX_VEL_R_PER_SEC)
+        and highest_band <= int(AEE_BAND_NEAR_ENTRY_MAX_IDX)
+        and lowest_band >= (-1 * int(AEE_BAND_NEAR_ENTRY_MAX_IDX))
+        and abs(current_band) <= int(AEE_BAND_NEAR_ENTRY_MAX_IDX)
+    )
+    debug = {
+        "hold_sec": hold_sec,
+        "best_r": best_r,
+        "net_r": net_r,
+        "vel_r": vel_r,
+        "current_band_idx": current_band,
+        "highest_band_reached": highest_band,
+        "lowest_band_reached": lowest_band,
+    }
+    return bool(trigger), "AEE_BAND_NEVER_GREEN_TIMEOUT", {"thresholds": thresholds, "debug": debug}
+
+
+def check_pre_sl_exit(metrics: dict) -> tuple[bool, str, dict]:
+    mae_r = float(metrics.get("mae_r", 0.0) or 0.0)
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    thresholds = {
+        "arm_mae_r": float(AEE_H_PRE_SL_ARM_MAE_R),
+        "hard_exit_r": float(AEE_H_PRE_SL_HARD_EXIT_R),
+    }
+    trigger = mae_r <= float(AEE_H_PRE_SL_ARM_MAE_R) and net_r <= float(AEE_H_PRE_SL_HARD_EXIT_R)
+    debug = {"mae_r": mae_r, "net_r": net_r}
+    return bool(trigger), "AEE_PRE_SL_EXIT", {"thresholds": thresholds, "debug": debug}
+
+
+def check_panic_exit(metrics: dict) -> tuple[bool, str, dict]:
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    thresholds = {"panic_exit_r": float(AEE_H_PANIC_EXIT_R)}
+    trigger = net_r <= float(AEE_H_PANIC_EXIT_R)
+    debug = {"net_r": net_r}
+    return bool(trigger), "AEE_PANIC_EXIT", {"thresholds": thresholds, "debug": debug}
+
+
+def classify_profit_state(metrics: dict) -> str:
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    highest_band = int(metrics.get("highest_band_reached", 0) or 0)
+    time_in_band_sec = float(metrics.get("time_in_band_sec", 0.0) or 0.0)
+    vel_r = float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0)
+
+    if highest_band <= 0:
+        return "NEVER_GREEN"
+    if highest_band <= 1:
+        return "MICRO_GREEN"
+    if current_band >= max(2, int(AEE_BAND_PROFIT_MIN_IDX)) and vel_r > 0.0 and time_in_band_sec <= float(AEE_BAND_EXTENSION_HOLD_MAX_DWELL_SEC):
+        return "GREEN_ACCELERATING"
+    if current_band >= max(2, int(AEE_BAND_PROFIT_MIN_IDX)) and abs(vel_r) <= float(AEE_H_PROFIT_STALL_MAX_VEL_R_PER_SEC):
+        return "GREEN_STALLED"
+    if current_band < highest_band:
+        return "GREEN_GIVEBACK"
+    if highest_band >= max(4, int(AEE_BAND_GIVEBACK_MIN_PEAK_IDX + 1)):
+        return "EXTENSION_ACTIVE"
+    if highest_band >= int(AEE_BAND_GIVEBACK_MIN_PEAK_IDX) and current_band <= (highest_band - int(AEE_BAND_GIVEBACK_FALLBACK_BANDS)):
+        return "EXTENSION_DECAY"
+    return "MICRO_GREEN"
+
+
+def check_early_profit_lock(metrics: dict) -> tuple[bool, str, dict]:
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    best_r = float(metrics.get("best_favorable_r", 0.0) or 0.0)
+    giveback_r = float(metrics.get("favorable_giveback_r", 0.0) or 0.0)
+    vel_r = float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0)
+    thresholds = {
+        "min_net_r": float(AEE_P_EARLY_LOCK_MIN_NET_R),
+        "min_best_r": float(AEE_P_EARLY_LOCK_MIN_BEST_R),
+        "min_giveback_r": float(AEE_P_EARLY_LOCK_MIN_GIVEBACK_R),
+        "max_vel_r_per_sec": float(AEE_P_EARLY_LOCK_MAX_VEL_R_PER_SEC),
+    }
+    trigger = (
+        net_r >= float(AEE_P_EARLY_LOCK_MIN_NET_R)
+        and best_r >= float(AEE_P_EARLY_LOCK_MIN_BEST_R)
+        and giveback_r >= float(AEE_P_EARLY_LOCK_MIN_GIVEBACK_R)
+        and vel_r <= float(AEE_P_EARLY_LOCK_MAX_VEL_R_PER_SEC)
+    )
+    debug = {"net_r": net_r, "best_r": best_r, "giveback_r": giveback_r, "vel_r": vel_r}
+    return bool(trigger), "AEE_BAND_EARLY_PROFIT_LOCK", {"thresholds": thresholds, "debug": debug}
+
+
+def check_giveback_exit(metrics: dict) -> tuple[bool, str, dict]:
+    best_r = float(metrics.get("best_favorable_r", 0.0) or 0.0)
+    giveback_r = max(0.0, float(metrics.get("favorable_giveback_r", 0.0) or 0.0))
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    time_since_peak_sec = float(metrics.get("time_since_best_favorable_sec", 0.0) or 0.0)
+    giveback_frac = (giveback_r / max(best_r, 1e-9)) if best_r > 1e-9 else 0.0
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    highest_band = int(metrics.get("highest_band_reached", 0) or 0)
+    thresholds = {
+        "min_best_r": float(AEE_P_GIVEBACK_MIN_BEST_R),
+        "min_giveback_r": float(AEE_P_GIVEBACK_MIN_R),
+        "min_giveback_frac": float(AEE_P_GIVEBACK_MIN_FRAC),
+        "min_time_since_peak_sec": float(AEE_P_GIVEBACK_MIN_TIME_SINCE_PEAK_SEC),
+        "min_peak_band": int(AEE_BAND_GIVEBACK_MIN_PEAK_IDX),
+        "fallback_bands": int(AEE_BAND_GIVEBACK_FALLBACK_BANDS),
+    }
+    trigger = (
+        best_r >= float(AEE_P_GIVEBACK_MIN_BEST_R)
+        and giveback_r >= float(AEE_P_GIVEBACK_MIN_R)
+        and giveback_frac >= float(AEE_P_GIVEBACK_MIN_FRAC)
+        and time_since_peak_sec >= float(AEE_P_GIVEBACK_MIN_TIME_SINCE_PEAK_SEC)
+        and net_r > 0.0
+        and highest_band >= int(AEE_BAND_GIVEBACK_MIN_PEAK_IDX)
+        and current_band <= (highest_band - int(AEE_BAND_GIVEBACK_FALLBACK_BANDS))
+    )
+    debug = {
+        "best_r": best_r,
+        "giveback_r": giveback_r,
+        "giveback_frac": giveback_frac,
+        "time_since_peak_sec": time_since_peak_sec,
+        "net_r": net_r,
+        "current_band_idx": current_band,
+        "highest_band_reached": highest_band,
+    }
+    return bool(trigger), "AEE_BAND_GIVEBACK_EXIT", {"thresholds": thresholds, "debug": debug}
+
+
+def check_extension_hold(metrics: dict) -> tuple[bool, str, dict]:
+    net_r = float(metrics.get("net_r", 0.0) or 0.0)
+    best_r = float(metrics.get("best_favorable_r", 0.0) or 0.0)
+    giveback_r = max(0.0, float(metrics.get("favorable_giveback_r", 0.0) or 0.0))
+    vel_r = float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0)
+    giveback_frac = (giveback_r / max(best_r, 1e-9)) if best_r > 1e-9 else 0.0
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    highest_band = int(metrics.get("highest_band_reached", 0) or 0)
+    time_in_band_sec = float(metrics.get("time_in_band_sec", 0.0) or 0.0)
+    thresholds = {
+        "min_net_r": float(AEE_P_EXTENSION_HOLD_MIN_NET_R),
+        "min_vel_r_per_sec": float(AEE_P_EXTENSION_HOLD_MIN_VEL_R_PER_SEC),
+        "max_giveback_frac": float(AEE_P_EXTENSION_HOLD_MAX_GIVEBACK_FRAC),
+        "profit_min_band": int(AEE_BAND_PROFIT_MIN_IDX),
+        "max_dwell_sec": float(AEE_BAND_EXTENSION_HOLD_MAX_DWELL_SEC),
+    }
+    trigger = (
+        best_r >= float(AEE_P_STALL_MIN_BEST_R)
+        and net_r >= float(AEE_P_EXTENSION_HOLD_MIN_NET_R)
+        and vel_r >= max(float(AEE_P_EXTENSION_HOLD_MIN_VEL_R_PER_SEC), float(AEE_BAND_EXTENSION_HOLD_MIN_VEL_R_PER_SEC))
+        and giveback_frac <= float(AEE_P_EXTENSION_HOLD_MAX_GIVEBACK_FRAC)
+        and current_band >= int(AEE_BAND_PROFIT_MIN_IDX)
+        and current_band >= highest_band
+        and time_in_band_sec <= float(AEE_BAND_EXTENSION_HOLD_MAX_DWELL_SEC)
+    )
+    debug = {
+        "best_r": best_r,
+        "net_r": net_r,
+        "vel_r": vel_r,
+        "giveback_frac": giveback_frac,
+        "current_band_idx": current_band,
+        "highest_band_reached": highest_band,
+        "time_in_band_sec": time_in_band_sec,
+    }
+    return bool(trigger), "AEE_BAND_EXTENSION_HOLD", {"thresholds": thresholds, "debug": debug}
+
+
+def check_extension_decay_exit(metrics: dict) -> tuple[bool, str, dict]:
+    best_r = float(metrics.get("best_favorable_r", 0.0) or 0.0)
+    giveback_r = max(0.0, float(metrics.get("favorable_giveback_r", 0.0) or 0.0))
+    vel_r = float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0)
+    time_since_peak_sec = float(metrics.get("time_since_best_favorable_sec", 0.0) or 0.0)
+    giveback_frac = (giveback_r / max(best_r, 1e-9)) if best_r > 1e-9 else 0.0
+    current_band = int(metrics.get("current_band_idx", 0) or 0)
+    highest_band = int(metrics.get("highest_band_reached", 0) or 0)
+    thresholds = {
+        "min_best_r": float(AEE_P_EXTENSION_DECAY_MIN_BEST_R),
+        "max_vel_r_per_sec": float(AEE_P_EXTENSION_DECAY_MAX_VEL_R_PER_SEC),
+        "min_giveback_frac": float(AEE_P_EXTENSION_DECAY_MIN_GIVEBACK_FRAC),
+        "min_time_since_peak_sec": float(AEE_P_EXTENSION_DECAY_MIN_TIME_SINCE_PEAK_SEC),
+        "min_peak_band": int(AEE_BAND_GIVEBACK_MIN_PEAK_IDX),
+        "fallback_bands": int(AEE_BAND_GIVEBACK_FALLBACK_BANDS),
+    }
+    trigger = (
+        best_r >= float(AEE_P_EXTENSION_DECAY_MIN_BEST_R)
+        and vel_r <= float(AEE_P_EXTENSION_DECAY_MAX_VEL_R_PER_SEC)
+        and giveback_frac >= float(AEE_P_EXTENSION_DECAY_MIN_GIVEBACK_FRAC)
+        and time_since_peak_sec >= float(AEE_P_EXTENSION_DECAY_MIN_TIME_SINCE_PEAK_SEC)
+        and highest_band >= int(AEE_BAND_GIVEBACK_MIN_PEAK_IDX)
+        and current_band <= (highest_band - int(AEE_BAND_GIVEBACK_FALLBACK_BANDS))
+    )
+    debug = {
+        "best_r": best_r,
+        "giveback_r": giveback_r,
+        "giveback_frac": giveback_frac,
+        "vel_r": vel_r,
+        "time_since_peak_sec": time_since_peak_sec,
+        "current_band_idx": current_band,
+        "highest_band_reached": highest_band,
+    }
+    return bool(trigger), "AEE_BAND_EXTENSION_DECAY_EXIT", {"thresholds": thresholds, "debug": debug}
+
+
 def _evaluate_exit_rules(
     trade: dict,
     metrics: dict,
@@ -12129,6 +13511,15 @@ def _evaluate_exit_rules(
     favorable_atr = (favorable_px / atr_exec) if atr_exec > 0.0 else 0.0
     local_high = float(metrics.get("local_high", aee_state.local_high) or aee_state.local_high)
     local_low = float(metrics.get("local_low", aee_state.local_low) or aee_state.local_low)
+    sl_px_eval = ffloat((trade or {}).get("sl"), float("nan"))
+    risk_px: Optional[float] = None
+    if math.isfinite(float(sl_px_eval)):
+        sl_dist = abs(float(entry_px) - float(sl_px_eval))
+        if sl_dist > 1e-9:
+            risk_px = float(sl_dist)
+    if risk_px is None and atr_exec > 1e-9:
+        # Safe fallback when SL is not available: use ATR as a proxy denominator.
+        risk_px = float(atr_exec)
     if atr_exec > 0.0:
         if direction == "LONG":
             best_favorable_atr = max(0.0, (local_high - entry_px) / atr_exec)
@@ -12136,6 +13527,18 @@ def _evaluate_exit_rules(
             best_favorable_atr = max(0.0, (entry_px - local_low) / atr_exec)
     else:
         best_favorable_atr = 0.0
+    if risk_px is not None and risk_px > 1e-9:
+        if direction == "LONG":
+            best_favorable_r = max(0.0, (local_high - entry_px) / risk_px)
+            mae_r = min(0.0, (local_low - entry_px) / risk_px)
+        else:
+            best_favorable_r = max(0.0, (entry_px - local_low) / risk_px)
+            mae_r = min(0.0, (entry_px - local_high) / risk_px)
+        net_r = float(favorable_px / risk_px)
+    else:
+        best_favorable_r = float(best_favorable_atr)
+        mae_r = -max(0.0, -float(favorable_atr))
+        net_r = float(favorable_atr)
 
     prev_best_favorable_atr = float(getattr(aee_state, "peak_progress", 0.0) or 0.0)
     if best_favorable_atr > (prev_best_favorable_atr + 1e-9):
@@ -12145,11 +13548,186 @@ def _evaluate_exit_rules(
         last_favorable_ext_ts = now_v
         aee_state.last_favorable_ext_ts = now_v
     favorable_stall_s = max(0.0, now_v - last_favorable_ext_ts)
+    first_green_ts = float(getattr(aee_state, "first_green_ts", 0.0) or 0.0)
+    if net_r > 0.0 and first_green_ts <= 0.0:
+        first_green_ts = now_v
+        aee_state.first_green_ts = now_v
+    if net_r <= 0.0:
+        first_green_ts = 0.0
+        aee_state.first_green_ts = 0.0
+    green_age_sec = max(0.0, now_v - first_green_ts) if first_green_ts > 0.0 else 0.0
+    time_since_best_favorable_sec = favorable_stall_s
     favorable_now_pos = max(0.0, favorable_atr)
     favorable_giveback_atr = max(0.0, best_favorable_atr - favorable_now_pos)
+    favorable_now_r = max(0.0, net_r)
+    favorable_giveback_r = max(0.0, best_favorable_r - favorable_now_r)
+    prev_norm_short = float(getattr(aee_state, "prev_normalized_pnl", net_r) or net_r)
+    prev_ts_short = float(getattr(aee_state, "prev_normalized_ts", now_v) or now_v)
+    rolling_window_sec_short = max(1e-6, float(now_v - prev_ts_short))
+    rolling_delta_r_short = float(net_r - prev_norm_short)
+    rolling_adverse_move_r_short = max(0.0, -rolling_delta_r_short)
+    rolling_favorable_move_r_short = max(0.0, rolling_delta_r_short)
+    rolling_adverse_vel_r_per_sec_short = float(rolling_delta_r_short / rolling_window_sec_short)
     retained_frac = (favorable_now_pos / best_favorable_atr) if best_favorable_atr > 1e-9 else 1.0
     continuation_strength = float(speed) - float(pullback_rate)
     adverse_atr = max(0.0, -favorable_atr)
+    progress_vel_r_per_sec = float(net_r) / max(hold_sec, 1e-6)
+    trade_type = str(metrics.get("trade_type", getattr(aee_state, "trade_type", "HARVESTER")) or "HARVESTER").upper()
+    is_runner_trade = trade_type == "RUNNER"
+
+    current_band_idx = _band_idx_from_r(net_r)
+    prev_band_idx = int(getattr(aee_state, "band_current_idx", current_band_idx) or current_band_idx)
+    band_enter_ts = float(getattr(aee_state, "band_enter_ts", 0.0) or 0.0)
+    if band_enter_ts <= 0.0:
+        band_enter_ts = now_v
+        aee_state.band_enter_ts = now_v
+    band_exit_dir = str(getattr(aee_state, "band_exit_dir", "") or "")
+    if current_band_idx != prev_band_idx:
+        band_exit_dir = "UP" if current_band_idx > prev_band_idx else "DOWN"
+        if current_band_idx > prev_band_idx:
+            aee_state.band_exit_count_up = int(getattr(aee_state, "band_exit_count_up", 0) or 0) + 1
+        else:
+            aee_state.band_exit_count_down = int(getattr(aee_state, "band_exit_count_down", 0) or 0) + 1
+        band_enter_ts = now_v
+        aee_state.band_enter_ts = now_v
+    aee_state.band_prev_idx = prev_band_idx
+    aee_state.band_current_idx = current_band_idx
+    aee_state.band_exit_dir = band_exit_dir
+    aee_state.band_highest_idx = max(int(getattr(aee_state, "band_highest_idx", current_band_idx) or current_band_idx), current_band_idx)
+    aee_state.band_lowest_idx = min(int(getattr(aee_state, "band_lowest_idx", current_band_idx) or current_band_idx), current_band_idx)
+    time_in_band_sec = max(0.0, now_v - float(getattr(aee_state, "band_enter_ts", now_v) or now_v))
+    entered_new_band = bool(current_band_idx != prev_band_idx)
+    highest_band_reached = int(getattr(aee_state, "band_highest_idx", current_band_idx) or current_band_idx)
+    fell_back = bool(current_band_idx < highest_band_reached)
+    time_since_last_band_change_sec = float(time_in_band_sec)
+    metrics["hold_sec"] = float(hold_sec)
+    metrics["best_favorable_atr"] = float(best_favorable_atr)
+    metrics["favorable_giveback_atr"] = float(favorable_giveback_atr)
+    metrics["best_favorable_r"] = float(best_favorable_r)
+    metrics["favorable_giveback_r"] = float(favorable_giveback_r)
+    metrics["net_r"] = float(net_r)
+    metrics["mae_r"] = float(mae_r)
+    metrics["progress_vel_r_per_sec"] = float(progress_vel_r_per_sec)
+    metrics["favorable_stall_s"] = float(favorable_stall_s)
+    metrics["green_age_sec"] = float(green_age_sec)
+    metrics["time_since_best_favorable_sec"] = float(time_since_best_favorable_sec)
+    metrics["current_band_idx"] = int(current_band_idx)
+    metrics["previous_band_idx"] = int(prev_band_idx)
+    metrics["highest_band_reached"] = int(highest_band_reached)
+    metrics["lowest_band_reached"] = int(getattr(aee_state, "band_lowest_idx", current_band_idx) or current_band_idx)
+    metrics["band_exit_dir"] = str(band_exit_dir or "")
+    metrics["time_in_band_sec"] = float(time_in_band_sec)
+    metrics["time_since_last_band_change_sec"] = float(time_since_last_band_change_sec)
+    metrics["entered_new_band"] = bool(entered_new_band)
+    metrics["fell_back"] = bool(fell_back)
+    metrics["rolling_window_sec_short"] = float(rolling_window_sec_short)
+    metrics["rolling_delta_r_short"] = float(rolling_delta_r_short)
+    metrics["rolling_adverse_move_r_short"] = float(rolling_adverse_move_r_short)
+    metrics["rolling_favorable_move_r_short"] = float(rolling_favorable_move_r_short)
+    metrics["rolling_adverse_vel_r_per_sec_short"] = float(rolling_adverse_vel_r_per_sec_short)
+    metrics["fast_adverse_trigger"] = False
+    metrics["profit_stall_trigger"] = False
+    metrics["never_green_timeout_trigger"] = False
+    metrics["pre_sl_trigger"] = False
+    metrics["panic_trigger"] = False
+    metrics["early_profit_lock_trigger"] = False
+    metrics["giveback_trigger"] = False
+    metrics["extension_hold_trigger"] = False
+    metrics["extension_decay_trigger"] = False
+    metrics["profit_state"] = classify_profit_state(metrics)
+
+    if AEE_BAND_LOOP_DEBUG_ENABLED:
+        log_runtime(
+            "info",
+            "AEE_BAND_LOOP_DEBUG",
+            trade_id=trade_id_val,
+            pair=str((trade or {}).get("pair", "") or ""),
+            direction=direction,
+            current_band=int(current_band_idx),
+            highest_band_reached=int(highest_band_reached),
+            time_in_current_band=round(float(time_in_band_sec), 3),
+            time_since_last_band_change=round(float(time_since_last_band_change_sec), 3),
+            entered_new_band=bool(entered_new_band),
+            fell_back=bool(fell_back),
+            net_r=round(float(net_r), 6),
+            best_favorable_r=round(float(best_favorable_r), 6),
+        )
+
+    # Harvester and runner are separate contracts: apply aggressive MVP exits only to harvesters.
+    if AEE_HARVESTER_MVP_AGGRESSIVE_ENABLED and (not is_runner_trade):
+        checks = [("fast_adverse_trigger", check_fast_adverse_exit)]
+        if AEE_PROFIT_SIDE_ENABLED:
+            checks.extend(
+                [
+                    ("early_profit_lock_trigger", check_early_profit_lock),
+                    ("profit_stall_trigger", check_profit_stall_exit),
+                    ("giveback_trigger", check_giveback_exit),
+                    ("extension_decay_trigger", check_extension_decay_exit),
+                ]
+            )
+        checks.extend(
+            [
+                ("never_green_timeout_trigger", check_never_green_timeout),
+                ("pre_sl_trigger", check_pre_sl_exit),
+                ("panic_trigger", check_panic_exit),
+            ]
+        )
+
+        if AEE_PROFIT_SIDE_ENABLED:
+            hold_fired, hold_reason, hold_detail = check_extension_hold(metrics)
+            if hold_fired:
+                metrics["extension_hold_trigger"] = True
+                metrics["profit_state"] = "EXTENSION_ACTIVE"
+                metrics["path_bucket"] = "EXTENSION_ACTIVE"
+                _emit_aee_branch_trigger(
+                    trade,
+                    metrics,
+                    branch=str(hold_reason),
+                    thresholds=dict((hold_detail or {}).get("thresholds", {})),
+                    debug=dict((hold_detail or {}).get("debug", {})),
+                )
+                return None
+
+        for trigger_key, fn in checks:
+            fired, reason, detail = fn(metrics)
+            if not fired:
+                continue
+            metrics[trigger_key] = True
+            if reason == "AEE_FAST_ADVERSE_EXIT":
+                metrics["path_bucket"] = "FAST_ADVERSE"
+            elif reason == "AEE_EARLY_PROFIT_LOCK":
+                metrics["path_bucket"] = "EARLY_PROFIT_LOCK"
+            elif reason == "AEE_BAND_EARLY_PROFIT_LOCK":
+                metrics["path_bucket"] = "EARLY_PROFIT_LOCK"
+            elif reason == "AEE_PROFIT_STALL_EXIT":
+                metrics["path_bucket"] = "PROFIT_STALL"
+            elif reason == "AEE_BAND_PROFIT_STALL_EXIT":
+                metrics["path_bucket"] = "PROFIT_STALL"
+            elif reason == "AEE_GIVEBACK_EXIT":
+                metrics["path_bucket"] = "GIVEBACK"
+            elif reason == "AEE_BAND_GIVEBACK_EXIT":
+                metrics["path_bucket"] = "GIVEBACK"
+            elif reason == "AEE_EXTENSION_DECAY_EXIT":
+                metrics["path_bucket"] = "EXTENSION_DECAY"
+            elif reason == "AEE_BAND_EXTENSION_DECAY_EXIT":
+                metrics["path_bucket"] = "EXTENSION_DECAY"
+            elif reason == "AEE_NEVER_GREEN_TIMEOUT":
+                metrics["path_bucket"] = "NEVER_GREEN_TIMEOUT"
+            elif reason == "AEE_BAND_NEVER_GREEN_TIMEOUT":
+                metrics["path_bucket"] = "NEVER_GREEN_TIMEOUT"
+            elif reason == "AEE_PRE_SL_EXIT":
+                metrics["path_bucket"] = "PRE_SL_DANGER"
+            elif reason == "AEE_PANIC_EXIT":
+                metrics["path_bucket"] = "PANIC"
+            _emit_aee_branch_trigger(
+                trade,
+                metrics,
+                branch=str(reason),
+                thresholds=dict((detail or {}).get("thresholds", {})),
+                debug=dict((detail or {}).get("debug", {})),
+            )
+            return str(reason)
+
     path_bucket = "GREEN_THEN_STALL" if best_favorable_atr >= AEE_GREEN_STALL_MIN_FAVORABLE_ATR else "IMMEDIATE_FAILURE"
     metrics["path_bucket"] = path_bucket
     aee_state.rule_trace = {
@@ -12576,7 +14154,9 @@ def _aee_eval_for_trade(
         eval_mode = "NORMAL"
 
     if tick_due:
-        if AEE_PC1_CONTRACT_ENABLED:
+        trade_type_eval = str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER").upper()
+        use_pc1_for_trade = bool(AEE_PC1_CONTRACT_ENABLED and ((not AEE_PC1_RUNNER_ONLY) or trade_type_eval == "RUNNER"))
+        if use_pc1_for_trade:
             exit_reason = _pc1_evaluate_exit_reason(
                 trade=tr,
                 aee_state=st,
@@ -12599,7 +14179,7 @@ def _aee_eval_for_trade(
             )
 
     actions: Dict[str, Any] = {}
-    if AEE_PC1_CONTRACT_ENABLED:
+    if bool(AEE_PC1_CONTRACT_ENABLED and ((not AEE_PC1_RUNNER_ONLY) or str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER").upper() == "RUNNER")):
         actions = _pc1_plan_management_actions(
             trade=tr,
             aee_state=st,
@@ -12610,7 +14190,7 @@ def _aee_eval_for_trade(
             first_partial_fraction=float(metrics.get("first_partial_fraction", 0.45) or 0.45),
         )
 
-    if AEE_PC1_CONTRACT_ENABLED and tick_due:
+    if bool(AEE_PC1_CONTRACT_ENABLED and ((not AEE_PC1_RUNNER_ONLY) or str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER").upper() == "RUNNER")) and tick_due:
         prev_ts_dbg = float(getattr(st, "prev_normalized_ts", now) or now)
         prev_norm_dbg = float(getattr(st, "prev_normalized_pnl", normalized_pnl) or normalized_pnl)
         dt_dbg = max(0.05, float(now - prev_ts_dbg))
@@ -12649,6 +14229,88 @@ def _aee_eval_for_trade(
         f"exit={bool(exit_reason)} reason={exit_reason} phase={getattr(st, 'phase', None)} trade_id={trade_id} pair={pair}"
     )
     emit_trade_kind(
+        "AEE_PROFIT_BRANCH_DEBUG",
+        {
+            **build_event_envelope(
+                kind="AEE_PROFIT_BRANCH_DEBUG",
+                pair=pair,
+                direction=direction,
+                trade_id=trade_id,
+                broker_trade_id=tr.get("oanda_trade_id"),
+                leg_type=str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER"),
+            ),
+            "trade_type": str(getattr(st, "trade_type", "HARVESTER") or "HARVESTER").upper(),
+            "profit_state": str(metrics.get("profit_state", "") or ""),
+            "decision": "EXIT" if bool(exit_reason) else "HOLD",
+            "exit_reason": str(exit_reason or ""),
+            "net_r": float(metrics.get("net_r", 0.0) or 0.0),
+            "best_favorable_r": float(metrics.get("best_favorable_r", 0.0) or 0.0),
+            "favorable_giveback_r": float(metrics.get("favorable_giveback_r", 0.0) or 0.0),
+            "progress_vel_r_per_sec": float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0),
+            "hold_sec": float(metrics.get("hold_sec", 0.0) or 0.0),
+            "green_age_sec": float(metrics.get("green_age_sec", 0.0) or 0.0),
+            "time_since_best_favorable_sec": float(metrics.get("time_since_best_favorable_sec", 0.0) or 0.0),
+            "current_band_idx": int(metrics.get("current_band_idx", 0) or 0),
+            "previous_band_idx": int(metrics.get("previous_band_idx", 0) or 0),
+            "highest_band_reached": int(metrics.get("highest_band_reached", 0) or 0),
+            "lowest_band_reached": int(metrics.get("lowest_band_reached", 0) or 0),
+            "time_in_band_sec": float(metrics.get("time_in_band_sec", 0.0) or 0.0),
+            "time_since_last_band_change_sec": float(metrics.get("time_since_last_band_change_sec", 0.0) or 0.0),
+            "band_exit_dir": str(metrics.get("band_exit_dir", "") or ""),
+            "entered_new_band": bool(metrics.get("entered_new_band", False)),
+            "fell_back": bool(metrics.get("fell_back", False)),
+            "rolling_adverse_move_r_short": float(metrics.get("rolling_adverse_move_r_short", 0.0) or 0.0),
+            "rolling_favorable_move_r_short": float(metrics.get("rolling_favorable_move_r_short", 0.0) or 0.0),
+            "fast_adverse_trigger": bool(metrics.get("fast_adverse_trigger", False)),
+            "early_profit_lock_trigger": bool(metrics.get("early_profit_lock_trigger", False)),
+            "profit_stall_trigger": bool(metrics.get("profit_stall_trigger", False)),
+            "giveback_trigger": bool(metrics.get("giveback_trigger", False)),
+            "extension_hold_trigger": bool(metrics.get("extension_hold_trigger", False)),
+            "extension_decay_trigger": bool(metrics.get("extension_decay_trigger", False)),
+            "never_green_timeout_trigger": bool(metrics.get("never_green_timeout_trigger", False)),
+            "pre_sl_trigger": bool(metrics.get("pre_sl_trigger", False)),
+            "panic_trigger": bool(metrics.get("panic_trigger", False)),
+            "thresholds": {
+                "fast_adverse": {
+                    "window_sec": float(AEE_H_FAST_ADVERSE_WINDOW_SEC),
+                    "min_move_r": float(AEE_H_FAST_ADVERSE_MIN_MOVE_R),
+                    "min_vel_r_per_sec": float(AEE_H_FAST_ADVERSE_MIN_VEL_R_PER_SEC),
+                },
+                "early_profit_lock": {
+                    "min_net_r": float(AEE_P_EARLY_LOCK_MIN_NET_R),
+                    "min_best_r": float(AEE_P_EARLY_LOCK_MIN_BEST_R),
+                    "min_giveback_r": float(AEE_P_EARLY_LOCK_MIN_GIVEBACK_R),
+                },
+                "profit_stall": {
+                    "min_best_r": float(AEE_P_STALL_MIN_BEST_R),
+                    "min_green_age_sec": float(AEE_P_STALL_MIN_GREEN_AGE_SEC),
+                    "max_vel_r_per_sec": float(AEE_P_STALL_MAX_VEL_R_PER_SEC),
+                },
+                "giveback": {
+                    "min_best_r": float(AEE_P_GIVEBACK_MIN_BEST_R),
+                    "min_giveback_frac": float(AEE_P_GIVEBACK_MIN_FRAC),
+                },
+                "extension_hold": {
+                    "min_net_r": float(AEE_P_EXTENSION_HOLD_MIN_NET_R),
+                    "min_vel_r_per_sec": float(AEE_P_EXTENSION_HOLD_MIN_VEL_R_PER_SEC),
+                },
+                "extension_decay": {
+                    "min_best_r": float(AEE_P_EXTENSION_DECAY_MIN_BEST_R),
+                    "min_giveback_frac": float(AEE_P_EXTENSION_DECAY_MIN_GIVEBACK_FRAC),
+                },
+                "never_green": {
+                    "timeout_sec": float(AEE_H_NEVER_GREEN_TIMEOUT_SEC),
+                    "max_best_r": float(AEE_H_NEVER_GREEN_MAX_BEST_R),
+                },
+                "pre_sl": {
+                    "arm_mae_r": float(AEE_H_PRE_SL_ARM_MAE_R),
+                    "hard_exit_r": float(AEE_H_PRE_SL_HARD_EXIT_R),
+                },
+                "panic": {"panic_exit_r": float(AEE_H_PANIC_EXIT_R)},
+            },
+        },
+    )
+    emit_trade_kind(
         "AEE_STRATEGY_OVERRIDE_DECISION",
         {
             **build_event_envelope(
@@ -12669,8 +14331,20 @@ def _aee_eval_for_trade(
             "panic_trigger_pips": float(override.get("panic_trigger_pips", 0.0) or 0.0),
             "normalized_pnl": float(normalized_pnl),
             "peak_normalized_pnl": float(getattr(st, "peak_normalized_pnl", 0.0) or 0.0),
+            "aee_phase": str(getattr(st, "phase", "") or ""),
             "decision": "EXIT" if bool(exit_reason) else "HOLD",
             "exit_reason": str(exit_reason or ""),
+            "profit_state": str(metrics.get("profit_state", "") or ""),
+            "green_age_sec": float(metrics.get("green_age_sec", 0.0) or 0.0),
+            "time_since_best_favorable_sec": float(metrics.get("time_since_best_favorable_sec", 0.0) or 0.0),
+            "best_favorable_r": float(metrics.get("best_favorable_r", 0.0) or 0.0),
+            "favorable_giveback_r": float(metrics.get("favorable_giveback_r", 0.0) or 0.0),
+            "progress_vel_r_per_sec": float(metrics.get("progress_vel_r_per_sec", 0.0) or 0.0),
+            "early_profit_lock_trigger": bool(metrics.get("early_profit_lock_trigger", False)),
+            "profit_stall_trigger": bool(metrics.get("profit_stall_trigger", False)),
+            "giveback_trigger": bool(metrics.get("giveback_trigger", False)),
+            "extension_hold_trigger": bool(metrics.get("extension_hold_trigger", False)),
+            "extension_decay_trigger": bool(metrics.get("extension_decay_trigger", False)),
         },
     )
     return {
@@ -14861,6 +16535,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     signal.signal(signal.SIGINT, _signal_handler)
     signal.signal(signal.SIGTERM, _signal_handler)
     global DRY_RUN_ONLY
+    run_start_ts = now_ts()
     if dry_run is not None:
         DRY_RUN_ONLY = bool(dry_run)
         os.environ["DRY_RUN_ONLY"] = "true" if DRY_RUN_ONLY else "false"
@@ -14884,6 +16559,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
         MAX_OPEN_TRADES_PER_PAIR=MAX_OPEN_TRADES_PER_PAIR,
         MAX_ORDERS_PER_MIN=MAX_ORDERS_PER_MIN,
         ENTRY_DEDUP_TTL_SEC=ENTRY_DEDUP_TTL_SEC,
+        AEE_STRESS_DEMO_MODE=AEE_STRESS_DEMO_MODE,
     )
     _load_runtime_tunes()
 
@@ -14957,6 +16633,9 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     oanda_api_key_env = str(os.getenv("OANDA_API_KEY", oanda_api_key_env) or "").strip()
     oanda_account_id_env = str(os.getenv("OANDA_ACCOUNT_ID", oanda_account_id_env) or "").strip()
     oanda_env = str(os.getenv("OANDA_ENV", "practice") or "practice").strip()
+    if AEE_STRESS_DEMO_MODE and normalize_oanda_env(oanda_env) != "practice":
+        print("BOOT_FAIL: AEE_STRESS_DEMO_MODE requires OANDA_ENV=practice (demo only).")
+        sys.exit(1)
     if not oanda_api_key_env or not oanda_account_id_env:
         print(
             "BOOT_FAIL: missing OANDA credentials. "
@@ -15009,6 +16688,18 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
             "allow_entries": ALLOW_ENTRIES,
         },
     )
+    if AEE_STRESS_DEMO_MODE:
+        emit_trade_kind(
+            "AEE_STRESS_DEMO_MODE_ACTIVE",
+            {
+                **build_event_envelope(kind="AEE_STRESS_DEMO_MODE_ACTIVE"),
+                "oanda_env": oanda_env,
+                "pairs": sorted(PAIRS),
+                "max_open_global": AEE_STRESS_MAX_OPEN_TRADES_GLOBAL,
+                "max_open_per_pair": AEE_STRESS_MAX_OPEN_TRADES_PER_PAIR,
+                "max_pos_per_pair": MAX_POS_PER_PAIR,
+            },
+        )
 
     o = OandaClient(oanda_api_key_env, oanda_account_id_env, oanda_env)
     _RUNTIME_OANDA = o
@@ -17156,6 +18847,56 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         if bridge_profit_candidate:
                             exit_reason = "PROFIT_CAPTURE_EXIT"
                         aee_state_obj = aee_eval.get("state")
+                        # Hard fail-closed boundary: after state snapshot build, block normal AEE on incomplete state.
+                        doctrine_snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                        state_complete_ok = bool(doctrine_snapshot.get("state_complete_ok", False))
+                        energy_ratio_present = doctrine_snapshot.get("energy_ratio") is not None
+                        degraded_state = (not state_complete_ok) or (not energy_ratio_present)
+                        if degraded_state:
+                            blocked_reason = "state_incomplete" if not state_complete_ok else "missing_energy_ratio"
+                            normal_exit_reason = str(exit_reason) if exit_reason else ""
+                            mech_reason = None
+                            if isinstance(aee_state_obj, AEEState):
+                                try:
+                                    mech_reason = _pc1_evaluate_exit_reason(
+                                        trade=tr,
+                                        aee_state=aee_state_obj,
+                                        normalized_pnl=float(aee_metrics.get("normalized_pnl", 0.0) or 0.0),
+                                        now=float(now),
+                                        entry=float(entry),
+                                        mid=float(mid),
+                                        direction=str(direction),
+                                    )
+                                except Exception:
+                                    mech_reason = None
+                            if mech_reason in {"IMPULSE", "PROGRESS_FAILURE", "PRE_SL_PROTECTION"}:
+                                exit_reason = str(mech_reason)
+                                log_runtime(
+                                    "warning",
+                                    "AEE_MECH_ONLY_FALLBACK",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=tr.get("id"),
+                                    blocked_reason=blocked_reason,
+                                    normal_exit_reason=normal_exit_reason,
+                                    mech_exit_reason=str(mech_reason),
+                                    state_complete_ok=state_complete_ok,
+                                    missing_fields=doctrine_snapshot.get("missing_fields", []),
+                                )
+                            else:
+                                exit_reason = None
+                                log_runtime(
+                                    "warning",
+                                    "AEE_DEGRADED_STATE_BLOCK",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=tr.get("id"),
+                                    blocked_reason=blocked_reason,
+                                    normal_exit_reason=normal_exit_reason,
+                                    state_complete_ok=state_complete_ok,
+                                    missing_fields=doctrine_snapshot.get("missing_fields", []),
+                                )
+
                         trade_id_int = None
                         broker_trade_id = None
                         try:
@@ -17211,7 +18952,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 hold_required_sec=float(AEE_MIN_HOLD_GREEN_SEC),
                             )
 
-                        doctrine_snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                        doctrine_snapshot = doctrine_snapshot if isinstance(doctrine_snapshot, dict) else build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
                         emit_aee_doctrine_action(
                             trade_id_key=trade_id_key,
                             trade_id=trade_id_int,
@@ -17598,7 +19339,27 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             )
                             evt_kind = {
                                 "PANIC_EXIT": "AEE_PANIC_EXIT",
+                                "AEE_PANIC_EXIT": "AEE_PANIC_EXIT",
+                                "AEE_FAST_ADVERSE_EXIT": "AEE_DECAY_EXIT",
+                                "AEE_BAND_FAST_FAILURE_EXIT": "AEE_DECAY_EXIT",
+                                "AEE_NEVER_GREEN_TIMEOUT": "AEE_STALL_EXIT",
+                                "AEE_BAND_NEVER_GREEN_TIMEOUT": "AEE_STALL_EXIT",
+                                "AEE_PROFIT_STALL_EXIT": "AEE_STALL_EXIT",
+                                "AEE_BAND_PROFIT_STALL_EXIT": "AEE_STALL_EXIT",
+                                "AEE_EARLY_PROFIT_LOCK": "AEE_DECAY_EXIT",
+                                "AEE_BAND_EARLY_PROFIT_LOCK": "AEE_DECAY_EXIT",
+                                "AEE_BAND_GIVEBACK_EXIT": "AEE_DECAY_EXIT",
+                                "AEE_BAND_EXTENSION_HOLD": "AEE_DATA_EXIT",
+                                "AEE_EXTENSION_DECAY_EXIT": "AEE_DECAY_EXIT",
+                                "AEE_BAND_EXTENSION_DECAY_EXIT": "AEE_DECAY_EXIT",
+                                "AEE_PRE_SL_EXIT": "AEE_PRE_SL_EXIT",
+                                "AEE_PROFIT_LOCK_STRONG": "AEE_DECAY_EXIT",
+                                "AEE_PROFIT_LOCK": "AEE_DECAY_EXIT",
+                                "AEE_WEAK_TRADE_KILL": "AEE_STALL_EXIT",
+                                "AEE_STALL_KILL": "AEE_STALL_EXIT",
+                                "AEE_TIME_PRESSURE_EXIT": "AEE_DECAY_EXIT",
                                 "NEVER_GREEN_FAST_EXIT": "AEE_STALL_EXIT",
+                                "AEE_GIVEBACK_EXIT": "AEE_DECAY_EXIT",
                                 "EXTRACTION_LOSS_EXIT": "AEE_DECAY_EXIT",
                                 "NEAR_TP_STALL_CAPTURE": "AEE_STALL_EXIT",
                                 "PULSE_STALL_CAPTURE": "AEE_STALL_EXIT",
@@ -17608,6 +19369,59 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 "FAILED_TO_CONTINUE_DECAY": "AEE_DECAY_EXIT",
                                 "TIME_DECAY_PROFIT_CAPTURE": "AEE_DECAY_EXIT",
                             }.get(str(exit_reason), "AEE_DATA_EXIT")
+                            feature_kind = {
+                                "PANIC_EXIT": "AEE_PANIC_EXIT_TRIGGER",
+                                "AEE_PANIC_EXIT": "AEE_PANIC_EXIT_TRIGGER",
+                                "AEE_FAST_ADVERSE_EXIT": "AEE_FAST_ADVERSE_EXIT_TRIGGER",
+                                "AEE_BAND_FAST_FAILURE_EXIT": "AEE_FAST_ADVERSE_EXIT_TRIGGER",
+                                "AEE_NEVER_GREEN_TIMEOUT": "AEE_NEVER_GREEN_TIMEOUT_TRIGGER",
+                                "AEE_BAND_NEVER_GREEN_TIMEOUT": "AEE_NEVER_GREEN_TIMEOUT_TRIGGER",
+                                "AEE_PROFIT_STALL_EXIT": "AEE_PROFIT_STALL_EXIT_TRIGGER",
+                                "AEE_BAND_PROFIT_STALL_EXIT": "AEE_PROFIT_STALL_EXIT_TRIGGER",
+                                "AEE_EARLY_PROFIT_LOCK": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+                                "AEE_BAND_EARLY_PROFIT_LOCK": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+                                "AEE_BAND_GIVEBACK_EXIT": "AEE_GIVEBACK_EXIT_TRIGGER",
+                                "AEE_BAND_EXTENSION_HOLD": "AEE_EXTENSION_HOLD_TRIGGER",
+                                "AEE_EXTENSION_DECAY_EXIT": "AEE_EXTENSION_DECAY_EXIT_TRIGGER",
+                                "AEE_BAND_EXTENSION_DECAY_EXIT": "AEE_EXTENSION_DECAY_EXIT_TRIGGER",
+                                "AEE_PRE_SL_EXIT": "AEE_PRE_SL_PROTECTION_TRIGGER",
+                                "AEE_PROFIT_LOCK_STRONG": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+                                "AEE_PROFIT_LOCK": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+                                "AEE_WEAK_TRADE_KILL": "AEE_WEAK_TRADE_KILL_TRIGGER",
+                                "AEE_STALL_KILL": "AEE_STALL_CAPTURE_TRIGGER",
+                                "AEE_TIME_PRESSURE_EXIT": "AEE_TIME_PRESSURE_TRIGGER",
+                                "NEVER_GREEN_FAST_EXIT": "AEE_WEAK_TRADE_KILL_TRIGGER",
+                                "AEE_GIVEBACK_EXIT": "AEE_GIVEBACK_EXIT_TRIGGER",
+                                "EXTRACTION_LOSS_EXIT": "AEE_GIVEBACK_EXIT_TRIGGER",
+                                "NEAR_TP_STALL_CAPTURE": "AEE_STALL_CAPTURE_TRIGGER",
+                                "PULSE_STALL_CAPTURE": "AEE_STALL_CAPTURE_TRIGGER",
+                                "MISSED_PROFIT_EXTRACTION_EXIT": "AEE_EARLY_PROFIT_LOCK_TRIGGER",
+                                "GREEN_STALL_CAPTURE": "AEE_STALL_CAPTURE_TRIGGER",
+                                "NEVER_GREEN_STALL_EXIT": "AEE_WEAK_TRADE_KILL_TRIGGER",
+                                "FAILED_TO_CONTINUE_DECAY": "AEE_RUNNER_FALLBACK_TRIGGER",
+                                "TIME_DECAY_PROFIT_CAPTURE": "AEE_TIME_PRESSURE_TRIGGER",
+                            }.get(str(exit_reason), "AEE_STRESS_FEATURE_TRIGGER")
+                            emit_trade_kind(
+                                feature_kind,
+                                {
+                                    **build_event_envelope(
+                                        kind=feature_kind,
+                                        pair=pair,
+                                        direction=direction,
+                                        trade_id=trade_id_int,
+                                        broker_trade_id=oanda_trade_id,
+                                        leg_type=leg_type,
+                                    ),
+                                    "aee_reason": str(exit_reason),
+                                    "phase": aee_phase,
+                                    "time_in_trade_sec": float(aee_metrics.get("trade_age_sec", 0.0) or 0.0),
+                                    "mfe_r": float(aee_metrics.get("best_favorable_r", 0.0) or 0.0),
+                                    "giveback_r": float(aee_metrics.get("favorable_giveback_r", 0.0) or 0.0),
+                                    "normalized_pnl": float(aee_metrics.get("normalized_pnl", 0.0) or 0.0),
+                                    "peak_normalized_pnl": float(aee_metrics.get("peak_normalized_pnl", 0.0) or 0.0),
+                                    "giveback": float(aee_metrics.get("giveback", 0.0) or 0.0),
+                                },
+                            )
                             emit_trade_kind(
                                 evt_kind,
                                 {
@@ -17978,6 +19792,56 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         aee_metrics = dict(aee_eval.get("metrics", {}) or {})
                         aee_actions = dict(aee_eval.get("actions", {}) or {})
                         exit_reason = aee_eval.get("exit_reason")
+                        aee_state_obj = aee_eval.get("state")
+                        periodic_snapshot = build_trade_state_snapshot(tr, aee_state_obj, aee_metrics, mid, spread_pips)
+                        periodic_state_complete_ok = bool(periodic_snapshot.get("state_complete_ok", False))
+                        periodic_energy_ratio_present = periodic_snapshot.get("energy_ratio") is not None
+                        periodic_degraded_state = (not periodic_state_complete_ok) or (not periodic_energy_ratio_present)
+                        if periodic_degraded_state:
+                            blocked_reason = "state_incomplete" if not periodic_state_complete_ok else "missing_energy_ratio"
+                            normal_exit_reason = str(exit_reason) if exit_reason else ""
+                            mech_reason = None
+                            if isinstance(aee_state_obj, AEEState):
+                                try:
+                                    mech_reason = _pc1_evaluate_exit_reason(
+                                        trade=tr,
+                                        aee_state=aee_state_obj,
+                                        normalized_pnl=float(aee_metrics.get("normalized_pnl", 0.0) or 0.0),
+                                        now=float(aee_now),
+                                        entry=float(entry),
+                                        mid=float(mid),
+                                        direction=str(direction),
+                                    )
+                                except Exception:
+                                    mech_reason = None
+                            if mech_reason in {"IMPULSE", "PROGRESS_FAILURE", "PRE_SL_PROTECTION"}:
+                                exit_reason = str(mech_reason)
+                                log_runtime(
+                                    "warning",
+                                    "AEE_MECH_ONLY_FALLBACK",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=trade_id_int,
+                                    blocked_reason=blocked_reason,
+                                    normal_exit_reason=normal_exit_reason,
+                                    mech_exit_reason=str(mech_reason),
+                                    state_complete_ok=periodic_state_complete_ok,
+                                    missing_fields=periodic_snapshot.get("missing_fields", []),
+                                )
+                            else:
+                                exit_reason = None
+                                log_runtime(
+                                    "warning",
+                                    "AEE_DEGRADED_STATE_BLOCK",
+                                    pair=pair,
+                                    direction=direction,
+                                    trade_id=trade_id_int,
+                                    blocked_reason=blocked_reason,
+                                    normal_exit_reason=normal_exit_reason,
+                                    state_complete_ok=periodic_state_complete_ok,
+                                    missing_fields=periodic_snapshot.get("missing_fields", []),
+                                )
+
                         favorable_now = (mid - entry) if direction == "LONG" else (entry - mid)
                         favorable_atr_now = (favorable_now / atr_entry) if atr_entry > 0.0 else float("nan")
                         favorable_pips_now = to_pips(pair, max(0.0, favorable_now))
@@ -17985,6 +19849,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         velocity_now = float(aee_metrics.get("velocity", 999.0) or 999.0)
                         if (
                             not exit_reason
+                            and (not periodic_degraded_state)
                             and (not AEE_PC1_CONTRACT_ENABLED)
                             and AEE_FORCE_GREEN_EXIT_ENABLED
                             and float(trade_age_sec) >= float(AEE_FORCE_GREEN_EXIT_MIN_AGE_SEC)
@@ -17995,6 +19860,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             exit_reason = "FORCE_GREEN_EXIT"
                         bridge_profit_candidate = (
                             not exit_reason
+                            and (not periodic_degraded_state)
                             and (not AEE_PC1_CONTRACT_ENABLED)
                             and AEE_PROFIT_CAPTURE_BRIDGE_MODE
                             and math.isfinite(float(favorable_atr_now))
@@ -18076,6 +19942,36 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 "target_profile": str(aee_metrics.get("target_profile", tr.get("target_profile", "T0_0")) or "T0_0"),
                                 "strategy_key": str(aee_metrics.get("strategy_key", tr.get("strategy_key", "")) or ""),
                                 "override_match_key": str(aee_metrics.get("override_match_key", "") or ""),
+                                "hold_sec": float(aee_metrics.get("hold_sec", 0.0) or 0.0),
+                                "green_age_sec": float(aee_metrics.get("green_age_sec", 0.0) or 0.0),
+                                "time_since_best_favorable_sec": float(aee_metrics.get("time_since_best_favorable_sec", 0.0) or 0.0),
+                                "best_favorable_r": float(aee_metrics.get("best_favorable_r", 0.0) or 0.0),
+                                "favorable_giveback_r": float(aee_metrics.get("favorable_giveback_r", 0.0) or 0.0),
+                                "net_r": float(aee_metrics.get("net_r", 0.0) or 0.0),
+                                "mae_r": float(aee_metrics.get("mae_r", 0.0) or 0.0),
+                                "progress_vel_r_per_sec": float(aee_metrics.get("progress_vel_r_per_sec", 0.0) or 0.0),
+                                "path_bucket": str(aee_metrics.get("path_bucket", "") or ""),
+                                "profit_state": str(aee_metrics.get("profit_state", "") or ""),
+                                "current_band_idx": int(aee_metrics.get("current_band_idx", 0) or 0),
+                                "previous_band_idx": int(aee_metrics.get("previous_band_idx", 0) or 0),
+                                "highest_band_reached": int(aee_metrics.get("highest_band_reached", 0) or 0),
+                                "lowest_band_reached": int(aee_metrics.get("lowest_band_reached", 0) or 0),
+                                "time_in_band_sec": float(aee_metrics.get("time_in_band_sec", 0.0) or 0.0),
+                                "time_since_last_band_change_sec": float(aee_metrics.get("time_since_last_band_change_sec", 0.0) or 0.0),
+                                "band_exit_dir": str(aee_metrics.get("band_exit_dir", "") or ""),
+                                "entered_new_band": bool(aee_metrics.get("entered_new_band", False)),
+                                "fell_back": bool(aee_metrics.get("fell_back", False)),
+                                "rolling_adverse_move_r_short": float(aee_metrics.get("rolling_adverse_move_r_short", 0.0) or 0.0),
+                                "rolling_favorable_move_r_short": float(aee_metrics.get("rolling_favorable_move_r_short", 0.0) or 0.0),
+                                "fast_adverse_trigger": bool(aee_metrics.get("fast_adverse_trigger", False)),
+                                "profit_stall_trigger": bool(aee_metrics.get("profit_stall_trigger", False)),
+                                "never_green_timeout_trigger": bool(aee_metrics.get("never_green_timeout_trigger", False)),
+                                "pre_sl_trigger": bool(aee_metrics.get("pre_sl_trigger", False)),
+                                "panic_trigger": bool(aee_metrics.get("panic_trigger", False)),
+                                "early_profit_lock_trigger": bool(aee_metrics.get("early_profit_lock_trigger", False)),
+                                "giveback_trigger": bool(aee_metrics.get("giveback_trigger", False)),
+                                "extension_hold_trigger": bool(aee_metrics.get("extension_hold_trigger", False)),
+                                "extension_decay_trigger": bool(aee_metrics.get("extension_decay_trigger", False)),
                             },
                         )
                         log_runtime(
@@ -18155,6 +20051,12 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 trade_id_int,
                                 "BROKER_ALREADY_CLOSED_BEFORE_AEE",
                             )
+                            with _trade_track_lock:
+                                track = trade_track.get(trade_id_int)
+                            exit_atr_broker_closed = float(track["samples"][-1][1]) if track and track.get("samples") else float(favorable_atr_now)
+                            if str(leg_type or "").upper() == "RUNNER":
+                                _record_runner_exit("BROKER_ALREADY_CLOSED_BEFORE_AEE", tr, exit_atr_broker_closed, track)
+                            _exit_log(tr, "BROKER_ALREADY_CLOSED_BEFORE_AEE", exit_atr_broker_closed, track)
                             _register_pair_close(pair, direction, "BROKER_ALREADY_CLOSED_BEFORE_AEE", trade_id_int)
                             continue
 
@@ -18283,6 +20185,12 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             continue
 
                         db_call("mark_trade_closed", db.mark_trade_closed, trade_id_int, str(exit_reason))
+                        with _trade_track_lock:
+                            track = trade_track.get(trade_id_int)
+                        exit_atr_periodic = float(track["samples"][-1][1]) if track and track.get("samples") else float(favorable_atr_now)
+                        if str(leg_type or "").upper() == "RUNNER":
+                            _record_runner_exit(str(exit_reason), tr, exit_atr_periodic, track)
+                        _exit_log(tr, str(exit_reason), exit_atr_periodic, track)
                         _register_pair_close(pair, direction, str(exit_reason), trade_id_int)
                     except Exception as e:
                         log_runtime("error", "AEE_PERIODIC_SCAN_ERROR", trade_id=tr.get("id"), pair=tr.get("pair"), error=str(e))
@@ -19701,14 +21609,118 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     )
 
                 # V12 single-authority entry gate
+                if (not AEE_STRESS_DEMO_MODE) and SUPPRESS_CONTINUATION_ENTRIES and str(getattr(sig, "entry_family", "") or "").upper() == "BIAS_ALIGNMENT_CONTINUATION":
+                    _reject(
+                        "continuation_quarantined",
+                        extra={
+                            "entry_family": str(getattr(sig, "entry_family", "") or ""),
+                            "trade_type": str(getattr(sig, "trade_type", "") or ""),
+                            "target_profile": str(getattr(sig, "target_profile", "") or ""),
+                            "suppress_continuation_entries": True,
+                        },
+                    )
+                    continue
+
+                # Runtime strategy policy gate (enable/suppress/quarantine/needs-sample).
+                policy_trade_type = str(getattr(sig, "trade_type", "") or "HARVESTER").upper()
+                policy_entry_family = str(getattr(sig, "entry_family", "") or "UNKNOWN").upper()
+                policy_direction = str(getattr(sig, "direction", "") or "").upper()
+                policy_target_profile = _normalize_target_profile(
+                    str(getattr(sig, "target_profile", "") or ""),
+                    direction=sig.direction,
+                    trade_type=policy_trade_type,
+                    fallback_distance=0.0,
+                ).upper()
+                strategy_key_candidate = _strategy_key(policy_direction, policy_trade_type, policy_target_profile)
+                policy_family_alias = _strategy_key(policy_entry_family, policy_trade_type, policy_target_profile)
+                policy_ts = now_ts()
+                policy_session = str(compute_session(policy_ts) or "").strip().lower()
+                policy_context = {
+                    "pair": str(pair or "").replace("/", "_").lower(),
+                    "session": policy_session,
+                    "weekday": _utc_weekday_name(policy_ts),
+                    "session_quarter": (
+                        f"{policy_session}_"
+                        f"{str(compute_quarter(policy_ts, policy_session) or '').strip().lower()}"
+                    ),
+                }
+                if AEE_STRESS_DEMO_MODE:
+                    policy_allowed, policy_reason, policy_bucket, policy_pocket_meta = True, "stress_demo_policy_bypass", "ENABLE", {}
+                else:
+                    policy_allowed, policy_reason, policy_bucket, policy_pocket_meta = _strategy_policy_decision(
+                        strategy_key_candidate,
+                        aliases={policy_family_alias},
+                        context=policy_context,
+                    )
+                emit_trade_kind(
+                    "STRATEGY_POLICY_DECISION",
+                    {
+                        **build_event_envelope(kind="STRATEGY_POLICY_DECISION", pair=pair, direction=sig.direction),
+                        "strategy_key": strategy_key_candidate,
+                        "strategy_key_alias_family": policy_family_alias,
+                        "entry_family": policy_entry_family,
+                        "trade_type": policy_trade_type,
+                        "target_profile": policy_target_profile,
+                        "policy_allowed": bool(policy_allowed),
+                        "policy_reason": policy_reason,
+                        "policy_bucket": policy_bucket,
+                        "policy_path": str(_STRATEGY_POLICY_META.get("path", "")),
+                        "policy_loaded": bool(_STRATEGY_POLICY_META.get("loaded", False)),
+                        "policy_context": dict(policy_context),
+                        "pocket_requested": str(policy_pocket_meta.get("requested", "") or ""),
+                        "pocket_matched": str(policy_pocket_meta.get("matched", "") or ""),
+                        "pocket_match_mode": str(policy_pocket_meta.get("match_mode", "") or ""),
+                        "pocket_mechanical_loaded": bool(policy_pocket_meta.get("mechanical_loaded", False)),
+                        "pocket_energy_present": bool(policy_pocket_meta.get("energy_present", False)),
+                        "pocket_energy_valid": bool(policy_pocket_meta.get("energy_valid", False)),
+                        "pocket_source": str(_POCKET_POLICY_META.get("source", "active") or "active"),
+                        "pocket_degraded": bool(_POCKET_POLICY_META.get("degraded", False)),
+                        "pocket_reason": str(_POCKET_POLICY_META.get("reason", "") or ""),
+                    },
+                )
+                if not policy_allowed:
+                    _reject(
+                        policy_reason,
+                        extra={
+                            "strategy_key": strategy_key_candidate,
+                            "strategy_key_alias_family": policy_family_alias,
+                            "entry_family": policy_entry_family,
+                            "trade_type": policy_trade_type,
+                            "target_profile": policy_target_profile,
+                            "policy_reason": policy_reason,
+                            "policy_bucket": policy_bucket,
+                            "policy_path": str(_STRATEGY_POLICY_META.get("path", "")),
+                        },
+                    )
+                    continue
+
                 allowed, block_reason = can_enter(pair, st.spread_pips, now_ts(), sig)
                 if not allowed:
                     _reject(block_reason, extra={"ALLOW_ENTRIES": ALLOW_ENTRIES, "DRY_RUN_ONLY": DRY_RUN_ONLY, "spread_pips": st.spread_pips})
                     continue
 
                 active_parent_count = _pair_parent_count(db_open_trades, pair)
-                proof_entry_only = bool(PC1_PROOF_ENTRY_ONLY_MODE or NO_THROTTLE_MODE or NO_TRADE_LIMITERS)
+                proof_entry_only = bool(PC1_PROOF_ENTRY_ONLY_MODE or NO_THROTTLE_MODE or NO_TRADE_LIMITERS or AEE_STRESS_DEMO_MODE)
                 st.active_parent_count_for_pair = active_parent_count
+                if AEE_STRESS_DEMO_MODE:
+                    if len(db_open_trades) >= AEE_STRESS_MAX_OPEN_TRADES_GLOBAL:
+                        _reject(
+                            "stress_open_global_cap",
+                            extra={
+                                "open_trades": len(db_open_trades),
+                                "stress_cap_global": AEE_STRESS_MAX_OPEN_TRADES_GLOBAL,
+                            },
+                        )
+                        continue
+                    if active_parent_count >= AEE_STRESS_MAX_OPEN_TRADES_PER_PAIR:
+                        _reject(
+                            "stress_open_pair_cap",
+                            extra={
+                                "pair_open_trades": active_parent_count,
+                                "stress_cap_per_pair": AEE_STRESS_MAX_OPEN_TRADES_PER_PAIR,
+                            },
+                        )
+                        continue
                 base_priority_score = float(getattr(sig, "priority_score", 0.0) or 0.0)
                 same_pair_penalty = min(float(active_parent_count), 4.0) * SAME_PAIR_LINEAR_PENALTY
                 effective_priority_score = base_priority_score - same_pair_penalty
@@ -19799,6 +21811,12 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                         )
                                         if ok_close and tr.get("id"):
                                             db_call("mark_trade_closed", db.mark_trade_closed, int(tr["id"]), "opposite_side_replace")
+                                            with _trade_track_lock:
+                                                track_rep = trade_track.get(int(tr.get("id", 0) or 0))
+                                            exit_atr_rep = float(track_rep["samples"][-1][1]) if track_rep and track_rep.get("samples") else 0.0
+                                            if str(tr.get("setup", "")).upper().endswith("_RUN") or "_RUN" in str(tr.get("setup", "")).upper():
+                                                _record_runner_exit("opposite_side_replace", tr, exit_atr_rep, track_rep)
+                                            _exit_log(tr, "opposite_side_replace", exit_atr_rep, track_rep)
                                     db_open_trades = [tr for tr in db_open_trades if not (normalize_pair(tr.get("pair")) == normalize_pair(pair) and str(tr.get("dir", "")).upper() == opposite_dir)]
                                 except Exception as e:
                                     _reject("opposite_side_conflict", extra={"reason": "close_replace_failed", "error": str(e), "family_pnl": family_pnl})
@@ -20357,7 +22375,17 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     oanda_trade_id=tid1,
                 )
                 if trade_id_main:
-                    target_profile_main = str(getattr(sig, "target_profile", "") or _compute_target_profile(pair, float(entry1), float(tp1), fallback_distance=0.0))
+                    target_profile_main = str(
+                        getattr(sig, "target_profile", "")
+                        or _compute_target_profile(
+                            pair,
+                            float(entry1),
+                            float(tp1),
+                            fallback_distance=0.0,
+                            direction=sig.direction,
+                            trade_type=str(getattr(sig, "trade_type", "HARVESTER") or "HARVESTER"),
+                        )
+                    )
                     strategy_ctx_main = _register_trade_strategy_context(
                         trade_id_main,
                         pair=pair,
@@ -20390,6 +22418,23 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             "fill_ts": main_trace.get("fill_ts"),
                         },
                     )
+                    if AEE_STRESS_DEMO_MODE:
+                        emit_trade_kind(
+                            "AEE_STRESS_ENTRY_SOURCE",
+                            {
+                                **build_event_envelope(
+                                    kind="AEE_STRESS_ENTRY_SOURCE",
+                                    pair=pair,
+                                    direction=sig.direction,
+                                    trade_id=int(trade_id_main),
+                                    broker_trade_id=str(tid1 or ""),
+                                    entry_group_id=parent_entry_id,
+                                    leg_type="MAIN",
+                                ),
+                                "entry_reason": str(sig.reason or ""),
+                                "stress_mode_source": "stress_demo_generator",
+                            },
+                        )
 
                     # Create TradeSpec contract
                     sp = get_speed_params(speed_class)
@@ -20477,6 +22522,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             "trade_type": str(getattr(sig, "trade_type", "") or ""),
                             "target_profile": str(strategy_ctx_main.get("target_profile", "")),
                             "strategy_key": str(strategy_ctx_main.get("strategy_key", "")),
+                            "strategy_key_alias_family": str(strategy_ctx_main.get("strategy_key_alias_family", "")),
                             "speed_class": speed_class,
                             "conf_score": conf_score_main,
                             "grade": conf_grade_main,
@@ -20704,7 +22750,17 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             oanda_trade_id=tid2,
                         )
                         if trade_id_run:
-                            target_profile_run = str(getattr(sig, "target_profile", "") or _compute_target_profile(pair, float(entry2), float(tp2), fallback_distance=0.0))
+                            target_profile_run = str(
+                                getattr(sig, "target_profile", "")
+                                or _compute_target_profile(
+                                    pair,
+                                    float(entry2),
+                                    float(tp2),
+                                    fallback_distance=0.0,
+                                    direction=sig.direction,
+                                    trade_type="RUNNER",
+                                )
+                            )
                             strategy_ctx_run = _register_trade_strategy_context(
                                 trade_id_run,
                                 pair=pair,
@@ -20737,6 +22793,23 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                     "fill_ts": run_trace.get("fill_ts"),
                                 },
                             )
+                            if AEE_STRESS_DEMO_MODE:
+                                emit_trade_kind(
+                                    "AEE_STRESS_ENTRY_SOURCE",
+                                    {
+                                        **build_event_envelope(
+                                            kind="AEE_STRESS_ENTRY_SOURCE",
+                                            pair=pair,
+                                            direction=sig.direction,
+                                            trade_id=int(trade_id_run),
+                                            broker_trade_id=str(tid2 or ""),
+                                            entry_group_id=parent_entry_id,
+                                            leg_type="RUNNER",
+                                        ),
+                                        "entry_reason": str(sig.reason or ""),
+                                        "stress_mode_source": "stress_demo_generator",
+                                    },
+                                )
                             notify(
                                 kind="ENTRY_FILLED",
                                 title=f"{EMOJI_ENTER} ENTRY {pair} {sig.direction} RUNNER",
@@ -20792,6 +22865,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                     "trade_type": "RUNNER",
                                     "target_profile": str(strategy_ctx_run.get("target_profile", "")),
                                     "strategy_key": str(strategy_ctx_run.get("strategy_key", "")),
+                                    "strategy_key_alias_family": str(strategy_ctx_run.get("strategy_key_alias_family", "")),
                                     "speed_class": speed_class,
                                     "conf_score": conf_score_run,
                                     "grade": conf_grade_run,
@@ -20922,6 +22996,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
     if _pricing_stream:
         _pricing_stream.stop()
         log_runtime("info", "PRICING_STREAM_STOPPED_GRACEFULLY", {})
+
+    _write_aee_stress_demo_artifacts(run_start_ts, now_ts())
     
     notify(
         kind="BOT_STOP",

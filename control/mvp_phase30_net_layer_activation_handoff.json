@@ -1,0 +1,82 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T12:18:11.479166+00:00",
+  "task_id": "MVP_PHASE30_NET_LAYER_ACTIVATION_HANDOFF",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "NET_LAYER_PREP_ONLY"
+  },
+  "dependency": {
+    "phase29_status": "PASS",
+    "phase29_path": "control/mvp_phase29_shadow_soak_retrospective_and_live_gating_decision.json"
+  },
+  "net_layer_handoff": {
+    "activation_mode": "NET_LAYER_PREP_ONLY",
+    "policy": {
+      "scope_lock": {
+        "pairs": [
+          "EUR_USD",
+          "GBP_USD"
+        ],
+        "session": "LONDON",
+        "tuning": "NONE",
+        "mode": "SHADOW_RETROSPECTIVE_AND_LIVE_GATING"
+      },
+      "execution_window": "MICRO_LIVE_PILOT_PREP",
+      "hard_guards": [
+        "hard kill-switch must stay enabled",
+        "instant rollback must remain armed",
+        "live promotion remains blocked",
+        "no tuning allowed in net-layer prep"
+      ]
+    },
+    "entry_contract": {
+      "accepted_pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "accepted_sessions": [
+        "LONDON"
+      ],
+      "max_false_cut_rate": 0.1,
+      "max_weighted_relative_spread": 0.5,
+      "min_weighted_delta_pph": 0.0
+    },
+    "evidence_snapshot": {
+      "phase29_task_id": "MVP_PHASE29_SHADOW_SOAK_RETROSPECTIVE_AND_LIVE_GATING_DECISION",
+      "soak_total_hours": 72,
+      "hard_stop_trigger_count": 0,
+      "incident_count": 0,
+      "observed_live_gates": {
+        "max_false_cut_rate": 0.07692307692307693,
+        "weighted_relative_spread": 0.4250786788545134,
+        "min_weighted_delta_pph": 0.07721467801644938
+      }
+    }
+  },
+  "pass_conditions": {
+    "phase29_dependency_passed": true,
+    "phase29_verdict_promote": true,
+    "micro_live_pilot_allowed": true,
+    "live_promotion_still_blocked": true,
+    "critical_live_entry_gates_all_pass": true,
+    "false_cut_within_cap": true,
+    "stability_spread_within_cap": true,
+    "no_tuning_applied": true
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "Net Layer handoff packet is activated from Phase29 evidence with strict prep-only live guardrails.",
+    "release_action": "NET_LAYER_PREP_ONLY",
+    "live_promotion_allowed": false
+  },
+  "next_recommended_task": "MVP_PHASE31_NET_LAYER_MICRO_LIVE_EXECUTION_PLAN",
+  "status": "PASS"
+}

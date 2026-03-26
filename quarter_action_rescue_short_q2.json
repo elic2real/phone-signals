@@ -1,0 +1,34 @@
+{
+  "rule_name": "panic_decay_split",
+  "params": {
+    "panic_time_open_mult": 1.8,
+    "panic_time_since_peak_mult": 1.8,
+    "short_panic_opp_mult": 1.8,
+    "bad_trade_opp_mult": 1.8,
+    "panic_giveback_mult": 1.5,
+    "decay_time_open_mult": 1.7,
+    "decay_time_since_peak_mult": 1.6,
+    "decay_giveback_mult": 1.6,
+    "harvest_time_mult": 0.4,
+    "harvest_under_profit_mult": 0.4,
+    "harvest_giveback_mult": 0.35,
+    "harvest_velocity_add": 0.02
+  },
+  "report": {
+    "label": "SHORT_Q2",
+    "total_trades": 144,
+    "HOLD_count": 10,
+    "HARVEST_count": 0,
+    "PANIC_count": 127,
+    "DECAY_EXIT_count": 7,
+    "DO_NOT_ENTER_count": 717,
+    "avg_static_pips": 1.1763888888888838,
+    "avg_aee_pips": -3.5277777777777404,
+    "avg_static_R": 0.42916666666666603,
+    "avg_aee_R": -0.9329075727513139,
+    "static_pips_per_hour": 84.69999999999965,
+    "aee_pips_per_hour": -253.9999999999973,
+    "delta_pips_per_hour": -338.699999999997,
+    "delta_avg_R": -1.36207423941798
+  }
+}

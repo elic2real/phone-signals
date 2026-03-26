@@ -1,0 +1,299 @@
+{
+  "generated_at": "2026-03-25T00:00:00Z",
+  "audit_principle": "A component is presumed structurally suspect until its code explicitly models the real-world behavior it claims to represent without relying on threshold stacking, context amputation, or downstream rescue.",
+  "overall_findings": {
+    "core_machine_verdict": "Entry and AEE contain some real structure, but both are materially contaminated by threshold ladders and rescue behavior.",
+    "strongest_component": "viability_friction_logic",
+    "highest_risk_components": [
+      "context_filters",
+      "scoring_priority",
+      "quality_detectors",
+      "calibration_logic"
+    ],
+    "major_contradictions": [
+      "Entry-only family ranking previously showed RANGE_ESCAPE as positive, but full EUR_USD firehose with actual AEE/accounting showed RANGE_ESCAPE at -0.357 net pph and PULLBACK_CONTINUATION at -0.052 net pph. That means earlier attribution was being rescued or misattributed downstream.",
+      "AEE has an explicit phase model, but actual exits are governed by a large ordered trigger ladder and exit-reason remapping, so the phase machine is only a partial model of behavior.",
+      "Context exclusion is implemented as an amputative list of pair-session cells rather than a regime model, so positivity obtained after heavy context cutting is structurally suspect."
+    ],
+    "program_level_recommendation": "Rebuild the system around explicit pattern-state and trade-state models. Treat context, calibration, scoring, and quality gates as observational overlays until proven necessary by structure-first tests."
+  },
+  "audit_order": [
+    "entry_pattern_detection",
+    "aee_core",
+    "context_filters",
+    "family_routing",
+    "calibration_logic",
+    "mapping_logic",
+    "macro_opposition_filters",
+    "viability_friction_logic",
+    "scoring_priority",
+    "quality_detectors",
+    "panic_stall_continuation_logic"
+  ],
+  "components": [
+    {
+      "component": "entry_pattern_detection",
+      "intended_real_world_behavior": "Detect distinct entry behaviors such as breakout expansion, reclaim, pullback continuation, and range escape from market structure.",
+      "minimum_structural_ingredients": [
+        "pattern-specific trigger geometry",
+        "stateful precondition memory where the pattern requires it",
+        "directional resumption logic",
+        "clear separation between breakout, reclaim, continuation, and range behaviors"
+      ],
+      "explicit_structure_present": "yes",
+      "threshold_removed_core_logic_survives": "partial",
+      "threshold_stack_risk": "medium",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "possible",
+      "calibration_compensating_for_bad_structure": "possible",
+      "structurally_trustworthy": "medium-low",
+      "recommendation": "SPLIT",
+      "diagnosis": "The live PC1 entry engine contains real pattern branches, especially for breakout and bounce/reclaim memory, so this is not pure gate sludge. But family quality is uneven: breakout is the only family with strong replay evidence, reclaim and pullback are underdefined, and range is partly a residual bucket. The replay classifier in run_aee_band_floor_baseline.py also falls back to additive score heuristics when metadata is absent, which weakens structural integrity.",
+      "evidence": [
+        "phone_bot.py:_canonical_entry_family and build_signals branches define pattern-specific entry logic",
+        "run_aee_band_floor_baseline.py:_infer_trade_family uses additive score thresholds when labels are missing",
+        "strategy_performance_report.json shows EXPANSION_BREAKOUT +0.1211 net pph, PULLBACK_CONTINUATION -0.0523, RANGE_ESCAPE -0.3570 on EUR_USD"
+      ]
+    },
+    {
+      "component": "aee_core",
+      "intended_real_world_behavior": "Model the life of a trade from early protection through build, harvest, runner continuation, decay, and emergency panic states.",
+      "minimum_structural_ingredients": [
+        "explicit trade phase state machine",
+        "state-specific transitions tied to realized trade-life conditions",
+        "clear separation between profit extraction, continuation, decay, and safety exits",
+        "single coherent accounting basis for decision thresholds"
+      ],
+      "explicit_structure_present": "yes",
+      "threshold_removed_core_logic_survives": "partial",
+      "threshold_stack_risk": "high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "no",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "medium-low",
+      "recommendation": "REBUILD",
+      "diagnosis": "AEE has a real skeleton: get_aee_phase defines PROTECT, BUILD, HARVEST, RUNNER, PANIC. But the actual management contract is dominated by a large ordered trigger ladder in _evaluate_exit_rules plus many check_* threshold blocks. Exit reasons are also remapped after the fact, which obscures the real mechanism. This means AEE is part real model, part accumulated patch system.",
+      "evidence": [
+        "phone_bot.py:get_aee_phase defines explicit phases",
+        "phone_bot.py:_evaluate_exit_rules contains many ordered threshold branches for fast adverse, never green, pre-SL, panic, giveback, extension hold, extension decay, extraction loss, green stall",
+        "phone_bot.py:_aee_feature_trigger_from_exit_reason remaps many exit reasons into shared trigger labels",
+        "aee_reverse_engineer/aee_reverse_engineer_validation_v1.json rejected overfit AEE discovery candidates with economic viability failure"
+      ]
+    },
+    {
+      "component": "context_filters",
+      "intended_real_world_behavior": "Block or adapt trading in regimes where the same pattern has materially different quality.",
+      "minimum_structural_ingredients": [
+        "explicit regime model",
+        "context-specific causal explanation",
+        "evidence that retained and removed contexts differ structurally, not just by past PnL"
+      ],
+      "explicit_structure_present": "no",
+      "threshold_removed_core_logic_survives": "yes",
+      "threshold_stack_risk": "high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "yes",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "low",
+      "recommendation": "FREEZE_AS_REFERENCE_ONLY",
+      "diagnosis": "The strict policy uses a hard-coded exclude_contexts list. That is not a model of regime; it is direct amputation. It can be useful as evidence, but not as proof that the underlying entry or AEE structure is valid.",
+      "evidence": [
+        "entry_v23_policy_strict_active_only.json contains a direct exclude_contexts list of pair-day-session cells",
+        "entry_rebuild_recommendation_afterfix.json reports results mainly hurt by bad_contexts",
+        "Recent EUR_USD firehose performance improved massively with gates removed for breakout, which indicates strict cuts were removing real edge as well as noise"
+      ]
+    },
+    {
+      "component": "family_routing",
+      "intended_real_world_behavior": "Route distinct entry families through distinct activation policies because they represent different market behaviors.",
+      "minimum_structural_ingredients": [
+        "family definitions tied to distinct behavior",
+        "policy differences justified by structural differences",
+        "routing logic that does more than relabel setups"
+      ],
+      "explicit_structure_present": "partial",
+      "threshold_removed_core_logic_survives": "no",
+      "threshold_stack_risk": "medium-high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "possible",
+      "calibration_compensating_for_bad_structure": "possible",
+      "structurally_trustworthy": "low",
+      "recommendation": "REBUILD",
+      "diagnosis": "Routing currently relies on canonical setup-name mapping plus active/guarded/deprioritized allowlists. That is labeling with policy, not proof of distinct downstream logic. It is useful as an organizing layer, but not yet a trustworthy behavior partition.",
+      "evidence": [
+        "phone_bot.py:_canonical_entry_family maps setup names to families",
+        "phone_bot.py:_family_policy_decision only applies active/guarded/deprioritized allowlists",
+        "run_aee_band_floor_baseline.py and phone_bot.py use different family-inference schemes, increasing structural drift risk"
+      ]
+    },
+    {
+      "component": "calibration_logic",
+      "intended_real_world_behavior": "Adapt runtime parameters to the currently relevant researched market regime without inventing behavior that was never validated.",
+      "minimum_structural_ingredients": [
+        "stable mapping from runtime state to validated configuration",
+        "clear separation between researched configurations and emergency fallbacks",
+        "no silent replacement of missing evidence with generic heuristics"
+      ],
+      "explicit_structure_present": "partial",
+      "threshold_removed_core_logic_survives": "no",
+      "threshold_stack_risk": "high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "no",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "low",
+      "recommendation": "REBUILD",
+      "diagnosis": "The calibration framework has strong precedence structure, but its adaptive branch is heuristic and can generate entry, management, sizing, target, and AEE settings from coarse volatility/regime summaries. That is a classic way for calibration to compensate around broken structure rather than represent behavior faithfully.",
+      "evidence": [
+        "runtime_calibration.py prioritizes compiled map, then adaptive calibration, then research fallback, then emergency fallback",
+        "adaptive_market_calibration.py derives config from sample count, simple trend/range inference, volatility buckets, and confidence thresholds",
+        "The system can continue operating with adaptive or fallback configs even when pair-specific compiled evidence is missing"
+      ]
+    },
+    {
+      "component": "mapping_logic",
+      "intended_real_world_behavior": "Map runtime market state to the correct policy/tune surface without collapsing materially different states into the same bucket.",
+      "minimum_structural_ingredients": [
+        "behaviorally meaningful state keys",
+        "non-lossy mapping from research nodes to runtime states",
+        "clear distinction between pair-specific and family/global fallbacks"
+      ],
+      "explicit_structure_present": "partial",
+      "threshold_removed_core_logic_survives": "partial",
+      "threshold_stack_risk": "medium-high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "no",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "medium-low",
+      "recommendation": "SPLIT",
+      "diagnosis": "The mapping system is organized, but it compresses state heavily. CompiledTradingMap loads session-level nodes and stamps them across all quarters. TuneMap resolves via a fallback ladder across FULL to GLOBAL levels. That is operationally convenient, but it can hide behavioral mismatch behind hierarchy.",
+      "evidence": [
+        "compiled_trading_map.py stores the same node config for all quarters because research output is session-level",
+        "state_key.py derives state from pair, mode, entry_type, strategy_id, speed_class, session, quarter, weekday, regime",
+        "tune_map.py resolves knobs via FULL/MID/COARSE/SESSION_PAIR/SESSION_GLOBAL/GLOBAL ladder"
+      ]
+    },
+    {
+      "component": "macro_opposition_filters",
+      "intended_real_world_behavior": "Prevent entries that are directly fighting higher-level directional pressure.",
+      "minimum_structural_ingredients": [
+        "directional bias estimate",
+        "clear distinction between supportive, neutral, and opposed conditions",
+        "family-aware use of opposition vetoes"
+      ],
+      "explicit_structure_present": "yes",
+      "threshold_removed_core_logic_survives": "yes",
+      "threshold_stack_risk": "medium",
+      "depends_on_other_component_rescue": "possible",
+      "depends_on_context_amputation": "no",
+      "calibration_compensating_for_bad_structure": "possible",
+      "structurally_trustworthy": "medium",
+      "recommendation": "KEEP",
+      "diagnosis": "Macro opposition is one of the more defensible filters because it attempts to represent directional conflict rather than arbitrary quality. The weakness is overuse: it is scattered through multiple pattern branches as a blocker instead of being a single explicit regime contract.",
+      "evidence": [
+        "phone_bot.py:_bias_is_opposed and _bias_is_supportive are applied across multiple PC1 entry branches",
+        "Macro bias is logged on signals and family decisions",
+        "This filter is directional rather than purely score-based, which makes it structurally stronger than quality gates"
+      ]
+    },
+    {
+      "component": "viability_friction_logic",
+      "intended_real_world_behavior": "Enforce a coherent, singular rule that a trade must be capable of covering friction before it is considered economically viable.",
+      "minimum_structural_ingredients": [
+        "single cost model",
+        "single required payoff comparison",
+        "clear diagnostics when friction is not covered"
+      ],
+      "explicit_structure_present": "yes",
+      "threshold_removed_core_logic_survives": "yes",
+      "threshold_stack_risk": "low-medium",
+      "depends_on_other_component_rescue": "no",
+      "depends_on_context_amputation": "no",
+      "calibration_compensating_for_bad_structure": "unlikely",
+      "structurally_trustworthy": "high",
+      "recommendation": "KEEP",
+      "diagnosis": "This is the cleanest component in the stack. It applies a singular friction model with explicit inputs and debug output. It still has tunable severity multipliers, but the logic is coherent and centralized rather than distributed across layers.",
+      "evidence": [
+        "phone_bot.py:check_economic_viability computes cost_pips once and compares payoff_pips_min against min_required",
+        "Spread gating was explicitly removed elsewhere so viability could be centralized here",
+        "Recent accounting defect discovery strengthened rather than weakened the case for a singular viability layer"
+      ]
+    },
+    {
+      "component": "scoring_priority",
+      "intended_real_world_behavior": "Rank competing signals by the strongest current opportunity while preserving real edge differences.",
+      "minimum_structural_ingredients": [
+        "small number of causally justified ranking signals",
+        "stable relationship between score inputs and realized edge",
+        "clear separation between ranking and gating"
+      ],
+      "explicit_structure_present": "no",
+      "threshold_removed_core_logic_survives": "no",
+      "threshold_stack_risk": "high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "possible",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "low",
+      "recommendation": "REBUILD",
+      "diagnosis": "The priority scorer is a weighted composite of energy, efficiency, speed, volatility, path, move, spread, freshness, template scores, richness, grade bonuses, action bonuses, and pair tier adjustments. That is a score blender, not a clear model of opportunity quality.",
+      "evidence": [
+        "phone_bot.py:_score_signal_priority blends many weighted factors and template bonuses into one scalar",
+        "Weights are runtime-configurable, increasing tuning degrees of freedom",
+        "The scorer explicitly prefers score-driven ordering over setup-driven structure"
+      ]
+    },
+    {
+      "component": "quality_detectors",
+      "intended_real_world_behavior": "Estimate whether the current setup or market state has enough quality to justify taking or managing a trade.",
+      "minimum_structural_ingredients": [
+        "quality signal tied to a specific physical market mechanism",
+        "clear semantics for what the score measures",
+        "evidence that score changes correspond to distinct downstream behavior"
+      ],
+      "explicit_structure_present": "no",
+      "threshold_removed_core_logic_survives": "yes",
+      "threshold_stack_risk": "high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "possible",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "low",
+      "recommendation": "FREEZE_AS_REFERENCE_ONLY",
+      "diagnosis": "Release quality, noise, energy, efficiency, richness, and related scalar detectors are used across entry filtering and scoring, but most are generic numeric summaries rather than explicit models of one behavior. They are better treated as diagnostics than as validity proofs.",
+      "evidence": [
+        "run_aee_band_floor_baseline.py entry filters gate on release_quality and noise thresholds",
+        "phone_bot.py scoring blends energy, efficiency, richness, grades, and template metrics",
+        "aee_entry_population_quality_screen.py builds a synthetic quality_score before AEE optimization"
+      ]
+    },
+    {
+      "component": "panic_stall_continuation_logic",
+      "intended_real_world_behavior": "Separate true emergency failure, healthy continuation, and decaying green trades so management action matches the actual trade-life state.",
+      "minimum_structural_ingredients": [
+        "explicit continuation definition",
+        "explicit emergency definition",
+        "separate decay logic from panic logic",
+        "consistent trigger semantics across metrics and emitted reasons"
+      ],
+      "explicit_structure_present": "partial",
+      "threshold_removed_core_logic_survives": "no",
+      "threshold_stack_risk": "high",
+      "depends_on_other_component_rescue": "yes",
+      "depends_on_context_amputation": "no",
+      "calibration_compensating_for_bad_structure": "likely",
+      "structurally_trustworthy": "low",
+      "recommendation": "SPLIT",
+      "diagnosis": "The code mixes genuine state ideas with many overlapping exit motifs. Panic is both a phase and a hard threshold. Continuation is partly phase-earned and partly inferred from retained fraction, speed, velocity, and giveback. Stall and giveback overlap heavily. This should be split into explicit safety backstop logic and explicit green-trade decay logic.",
+      "evidence": [
+        "phone_bot.py:get_aee_phase can enter PANIC and RUNNER phases",
+        "phone_bot.py:_evaluate_exit_rules mixes NEVER_GREEN_FAST_EXIT, EXTRACTION_LOSS_EXIT, GREEN_LOCK_FAILURE_EXIT, PANIC_EXIT, extension hold, extension decay, and near-TP stall motifs",
+        "phone_bot.py:_aee_feature_trigger_from_exit_reason maps several different reasons into the same trigger families, reducing semantic clarity"
+      ]
+    }
+  ],
+  "next_actions": [
+    "Rebuild entry around explicit family contracts, starting with EXPANSION_BREAKOUT as the reference family and forcing each other family to prove distinct trigger geometry.",
+    "Refactor AEE into a small explicit trade-state machine where each state owns a narrow transition set, then demote current branch thresholds to measurement-only overlays.",
+    "Freeze context cuts, quality scores, and adaptive calibration as reference-only overlays until they are justified by structure-first proofs.",
+    "Split mapping into behaviorally validated pair/session contracts versus coarse fallback ladders, and prohibit quarter stamping without evidence.",
+    "Replace the current priority score blender with a smaller ranking contract tied to measured edge contributors only."
+  ]
+}

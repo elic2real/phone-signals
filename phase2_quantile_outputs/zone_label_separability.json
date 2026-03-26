@@ -1,0 +1,70 @@
+{
+  "classification_method": "quantile_based",
+  "bucket_definitions": {
+    "A+": [
+      0.9,
+      1.0
+    ],
+    "A": [
+      0.8,
+      0.9
+    ],
+    "B": [
+      0.5,
+      0.8
+    ],
+    "C": [
+      0.3,
+      0.5
+    ],
+    "D": [
+      0.0,
+      0.3
+    ]
+  },
+  "bucket_statistics": {
+    "A+": {
+      "count": 51,
+      "mean_score": 0.7502147525676992,
+      "median_score": 0.7440000000000552,
+      "min_score": 0.7279999999999504,
+      "max_score": 0.8080000000000304
+    },
+    "A": {
+      "count": 47,
+      "mean_score": 0.7127902735562425,
+      "median_score": 0.7120000000000232,
+      "min_score": 0.7040000000000596,
+      "max_score": 0.724000000000013
+    },
+    "B": {
+      "count": 161,
+      "mean_score": 0.5716411244678787,
+      "median_score": 0.5591627906975754,
+      "min_score": 0.3946493506493446,
+      "max_score": 0.7039999999999708
+    },
+    "C": {
+      "count": 104,
+      "mean_score": 0.2878508834645415,
+      "median_score": 0.2807003866917872,
+      "min_score": 0.2015238095235852,
+      "max_score": 0.3942857142853191
+    },
+    "D": {
+      "count": 156,
+      "mean_score": 0.0745879392552877,
+      "median_score": 0.08141386554621197,
+      "min_score": -0.10611469534038509,
+      "max_score": 0.20112918660280946
+    }
+  },
+  "monotonic_quality_decrease": true,
+  "separability_status": "QUANTILE_BUCKETS_VALID",
+  "validation_notes": [
+    "Quantile-based classification ensures balanced bucket sizes",
+    "Monotonic quality decrease validates proper bucket ordering",
+    "Bucket means: [0.7502147525676992, 0.7127902735562425, 0.5716411244678787, 0.2878508834645415, 0.0745879392552877]",
+    "Monotonic ordering: True"
+  ]
+}

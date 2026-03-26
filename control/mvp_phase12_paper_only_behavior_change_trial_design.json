@@ -1,0 +1,154 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T07:52:00.991392+00:00",
+  "task_id": "MVP_PHASE12_PAPER_ONLY_BEHAVIOR_CHANGE_TRIAL_DESIGN",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "PAPER_ONLY"
+  },
+  "dependency": {
+    "phase11_status": "PASS",
+    "phase11_path": "control/mvp_phase11_exit_timing_and_drawdown_pattern_decomposition_no_tuning.json"
+  },
+  "inputs_used": {
+    "top_non_tuning_diagnoses": [
+      {
+        "name": "long_peak::peak_obvious_and_ignored",
+        "count": 9,
+        "diagnosis": "Peak was visible and value loss after peak was material before close."
+      },
+      {
+        "name": "drawdown::dead_early_no_recovery",
+        "count": 7,
+        "diagnosis": "Extended drawdown cases often fail to recover, indicating dead-early holds."
+      },
+      {
+        "name": "drawdown::timing_tolerance_pattern",
+        "count": 7,
+        "diagnosis": "Recovered trades still spend excessive time in drawdown, suggesting tolerance leakage."
+      }
+    ],
+    "first_behavior_change_to_test_later": {
+      "proposal": "Test an earlier exit trigger when post-peak delay exceeds pair-specific p75 while loss_after_peak_pips >= 1.0.",
+      "scope": "paper-only experiment after decomposition approval",
+      "why": "Top leak counts concentrate in long peak-to-close delay and prolonged drawdown tolerance."
+    }
+  },
+  "paper_trials": [
+    {
+      "trial_id": "P12-T1",
+      "title": "Post-peak delay guardrail",
+      "priority": 1,
+      "trigger_family": "long_peak::peak_obvious_and_ignored",
+      "evidence_weight": 9,
+      "hypothesis": "When post-peak delay exceeds pair p75 and giveback is at least 1.0 pip, value leakage dominates late exits.",
+      "paper_policy": {
+        "EUR_USD": {
+          "if": "time_from_peak_to_close_seconds > 3900.0 and loss_after_peak_pips >= 1.0",
+          "then": "candidate_exit=EARLY_POST_PEAK_GUARD"
+        },
+        "GBP_USD": {
+          "if": "time_from_peak_to_close_seconds > 2520.0 and loss_after_peak_pips >= 1.0",
+          "then": "candidate_exit=EARLY_POST_PEAK_GUARD"
+        }
+      },
+      "expected_effect_direction": {
+        "peak_to_close_loss_distribution": "down",
+        "drawdown_duration": "down",
+        "win_rate": "flat_to_up"
+      },
+      "risk_notes": [
+        "Could cut late-accelerating winners.",
+        "Must verify no pair asymmetry in high-momentum tails."
+      ],
+      "status": "DESIGN_ONLY"
+    },
+    {
+      "trial_id": "P12-T2",
+      "title": "Dead-early drawdown fail-fast",
+      "priority": 2,
+      "trigger_family": "drawdown::dead_early_no_recovery",
+      "evidence_weight": 7,
+      "hypothesis": "Trades that remain in deep drawdown beyond p75 with no recovery signal are low-probability holds.",
+      "paper_policy": {
+        "EUR_USD": {
+          "if": "time_in_drawdown_seconds > 1140.0 and outcome_proxy=no_recovery",
+          "then": "candidate_exit=DRAWDOWN_FAIL_FAST"
+        },
+        "GBP_USD": {
+          "if": "time_in_drawdown_seconds > 2760.0 and outcome_proxy=no_recovery",
+          "then": "candidate_exit=DRAWDOWN_FAIL_FAST"
+        }
+      },
+      "expected_effect_direction": {
+        "avg_loser_hold_time": "down",
+        "tail_loss": "down",
+        "trades_per_hour": "flat_to_up"
+      },
+      "risk_notes": [
+        "Recovery classifier definition must be frozen before any simulation.",
+        "Could conflict with continuation patterns in volatile windows."
+      ],
+      "status": "DESIGN_ONLY"
+    },
+    {
+      "trial_id": "P12-T3",
+      "title": "Drawdown tolerance cap",
+      "priority": 3,
+      "trigger_family": "drawdown::timing_tolerance_pattern",
+      "evidence_weight": 7,
+      "hypothesis": "Recovered winners with prolonged drawdown indicate tolerance leakage that can be capped with minimal edge damage.",
+      "paper_policy": {
+        "shared": {
+          "if": "time_to_first_profit_seconds < 600 and time_in_drawdown_seconds > 1800",
+          "then": "candidate_exit=TIMING_TOLERANCE_CAP"
+        }
+      },
+      "expected_effect_direction": {
+        "drawdown_duration": "down",
+        "loss_after_peak": "down",
+        "realized_pph": "up_if_false_cut_rate_controlled"
+      },
+      "risk_notes": [
+        "May reduce upside on mean-reversion recoveries.",
+        "Needs pair-by-pair false-cut accounting before promotion."
+      ],
+      "status": "DESIGN_ONLY"
+    }
+  ],
+  "experiment_guardrails": {
+    "forbidden_actions": [
+      "production parameter tuning",
+      "architecture expansion",
+      "session widening"
+    ],
+    "required_before_any_simulation": [
+      "freeze trial definitions",
+      "freeze acceptance metrics",
+      "freeze rollback criteria"
+    ]
+  },
+  "promotion_gate_for_phase13": {
+    "requires": [
+      "paper trial cards approved",
+      "counterfactual measurement plan approved",
+      "risk matrix approved"
+    ],
+    "status": "PENDING_REVIEW"
+  },
+  "pass_conditions": {
+    "phase11_dependency_passed": true,
+    "trials_defined": true,
+    "contains_ranked_priorities": true,
+    "contains_guardrails": true,
+    "paper_only_confirmed": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-03-25T00:00:00Z",
+  "task_id": "TASK-015",
+  "implementation": {
+    "v3_module": "aee_family_state_machine_v3.py",
+    "baseline_hook": "run_aee_band_floor_baseline.py::_eval_trade_baseline",
+    "enablement": "config extraction.aee_version = v3"
+  },
+  "branch_treatment_summary": {
+    "REMOVED": 5,
+    "FAMILY_OVERRIDE": 5,
+    "RETAINED": 10,
+    "DIAGNOSTIC_ONLY": 8
+  },
+  "notes": [
+    "v2 remains default unless extraction.aee_version is set to v3",
+    "v3 applies family-specific fast-failure, stall, giveback, and never-green handling",
+    "family state labels are exposed in evaluator output for diagnostics"
+  ]
+}

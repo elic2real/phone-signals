@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-03-25T15:42:57.452030Z",
+  "config": "/home/elic/Documents/phone signals/entry_v36_firehose_all_families.json",
+  "streams_used": 11,
+  "trade_count": 15053,
+  "dataset_id": "D",
+  "window_duration_hr": 18052.433333333338,
+  "gross_realized_pips_per_hour": 0.35708205542004484,
+  "realized_pips_per_hour": 0.35708205542004484,
+  "gross_static_pips_per_hour": 1.0845906276716155,
+  "realized_r_per_hour": -0.5168561195457845,
+  "realized_usd_per_hour": 0.28566564433603586,
+  "close_cycle_capture_rate": 0.8338488070860252,
+  "capital_recycling_rate": 0.8338488070860252,
+  "trades_per_hour": 0.8338488070860252,
+  "avg_pips_per_trade": 0.42823357470271706,
+  "avg_hold_sec": 187.2224805686574,
+  "avg_realized_r": -0.6198439275244564,
+  "sl_hit_rate": 0.8199030093669036,
+  "deep_loss_frequency": 0.28944396465820765,
+  "pre_sl_save_rate": 0.0,
+  "reason_counts": {
+    "AEE_BAND_FAST_FAILURE_EXIT": 12342,
+    "AEE_GIVEBACK_EXIT": 2306,
+    "AEE_NEVER_GREEN_TIMEOUT": 370,
+    "AEE_CONTINUATION_FAILED_EXIT": 25,
+    "AEE_BAND_EXTENSION_HOLD": 10
+  },
+  "entry_filter_counts": {
+    "ENTRY_FAMILY_NOT_INCLUDED": 3012
+  },
+  "giveback_avoided_estimate_r": 0.6147495233250628,
+  "friction_model": {
+    "spread_pips": 0.8,
+    "slippage_pips_per_side": 0.15,
+    "commission_pips_roundtrip": 0.0,
+    "latency_penalty_pips": 0.0,
+    "friction_per_trade_pips": 1.1,
+    "friction_pips_per_hour": 0.9172336877946278
+  },
+  "execution_price_mode": "side_aware",
+  "timeout_units": "legacy_minutes",
+  "net_realized_pips_per_hour": -0.560151632374583,
+  "net_static_pips_per_hour": 0.16735693987698774,
+  "net_delta_realized_pips_per_hour": -0.7275085722515707,
+  "cost_model": {
+    "canonical_trade_field": "gross_pips",
+    "aggregate_net_formula": "net_realized_pips_per_hour = gross_realized_pips_per_hour - friction_pips_per_hour",
+    "spread_fallback_source": "spread_pips"
+  },
+  "economic_viability": {
+    "avg_pips_per_trade": 0.42823357470271706,
+    "required_min_pips_per_trade": 1.2100000000000002,
+    "multiplier": 1.1,
+    "ok": false
+  },
+  "confidence": {
+    "bootstrap_samples": 400,
+    "min_trades_for_ci": 1000,
+    "delta_pips_per_hour_95ci": [
+      -0.775457786854219,
+      -0.6822293578151051
+    ]
+  },
+  "baseline_delta": {
+    "delta_realized_pips_per_hour": -0.7275085722515706,
+    "delta_realized_r_per_hour": -0.1741149324966279,
+    "delta_avg_hold_sec": -855.5769614030426
+  },
+  "verdict": "BASELINE_REJECTED",
+  "gate_checks": {
+    "extraction_ok": false,
+    "distribution_ok": false,
+    "throughput_ok": true,
+    "defensive_ok": false,
+    "profit_branch_fire_ok": true,
+    "economic_viability_ok": false,
+    "ci_ok": false
+  },
+  "reproducibility": {
+    "code_hash": "04b5d69cbaf3a8d1315c87f6711310410e1521a456b60b27eff8823622025a40",
+    "evaluation_script_hash": "04b5d69cbaf3a8d1315c87f6711310410e1521a456b60b27eff8823622025a40",
+    "config_hash": "0648bba42e34fb8871db52969a6e1263dba4b7047bcde8402af7d3de69cef5b5",
+    "stream_set_hash": "11e7db67e52935f21d421a50806fdcf6a513b2484957f4c19c4d1a2d979d0efc",
+    "run_timestamp": "2026-03-25T15:42:57.452030Z",
+    "friction_model_hash": "20691194df707021de55a59cdb54c4f307727787e27d99db4ebe194e64f36051",
+    "dataset_id": "D",
+    "stream_manifest": [
+      "compiled_market_nodes/EUR_CHF__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_CHF__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__monday__london/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_GBP__thursday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__friday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__monday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__thursday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__tuesday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/EUR_USD__wednesday__new_york/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/USD_CAD__monday__asia/aee_stage/aee_state_stream/aee_state_stream.csv",
+      "compiled_market_nodes/USD_CAD__monday__sydney/aee_stage/aee_state_stream/aee_state_stream.csv"
+    ]
+  }
+}

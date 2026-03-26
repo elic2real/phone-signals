@@ -1,0 +1,119 @@
+{
+  "branch": "AEE_PRE_SL_EXIT",
+  "generated_at": "2026-03-23T16:22:05.851942Z",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "threshold_snapshot": {
+    "arm_mae_r": -0.45,
+    "hard_exit_r": -0.55
+  },
+  "representative_samples": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PRE_SL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "arm_mae_r": -0.45,
+          "hard_exit_r": -0.55
+        },
+        "debug": {
+          "mae_r": -0.7,
+          "net_r": -0.58
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PRE_SL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "arm_mae_r": -0.45,
+          "hard_exit_r": -0.55
+        },
+        "debug": {
+          "mae_r": -0.46,
+          "net_r": -0.56
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_PRE_SL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "arm_mae_r": -0.45,
+          "hard_exit_r": -0.55
+        },
+        "debug": {
+          "mae_r": -0.3,
+          "net_r": -0.2
+        }
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "scenario": "obvious_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PRE_SL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "arm_mae_r": -0.45,
+          "hard_exit_r": -0.55
+        },
+        "debug": {
+          "mae_r": -0.7,
+          "net_r": -0.58
+        }
+      }
+    },
+    {
+      "scenario": "borderline_pass",
+      "expected": true,
+      "got": true,
+      "reason": "AEE_PRE_SL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "arm_mae_r": -0.45,
+          "hard_exit_r": -0.55
+        },
+        "debug": {
+          "mae_r": -0.46,
+          "net_r": -0.56
+        }
+      }
+    },
+    {
+      "scenario": "control_no_trigger",
+      "expected": false,
+      "got": false,
+      "reason": "AEE_PRE_SL_EXIT",
+      "ok": true,
+      "detail": {
+        "thresholds": {
+          "arm_mae_r": -0.45,
+          "hard_exit_r": -0.55
+        },
+        "debug": {
+          "mae_r": -0.3,
+          "net_r": -0.2
+        }
+      }
+    }
+  ]
+}

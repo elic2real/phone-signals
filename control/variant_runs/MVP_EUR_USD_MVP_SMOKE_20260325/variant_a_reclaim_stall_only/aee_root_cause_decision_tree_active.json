@@ -1,0 +1,55 @@
+{
+  "decision_tree": {
+    "step_1_family_split": {
+      "step": "STEP_1_SPLIT_FAMILIES",
+      "family_invalid_detected": false,
+      "family_rows": [
+        {
+          "family": "BREAKOUT__clean_expansion",
+          "cluster_count": 1,
+          "realized_pips_spread": 1.4,
+          "has_sign_split": false,
+          "dominant_exit_variety": 1,
+          "invalid_family_flag": false,
+          "clusters": [
+            {
+              "cluster": "stall_then_continuation",
+              "trade_count": 11,
+              "avg_realized_pips": 1.4,
+              "avg_hold_sec": 321.818182,
+              "avg_mfe_net_pips": 20.118182,
+              "bankable_green_red_rate": 0.0,
+              "dominant_exit_reason": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT"
+            }
+          ]
+        }
+      ],
+      "decision": "problem_3_not_confirmed"
+    },
+    "step_2_modularize_aee": {
+      "step": "STEP_2_MODULARIZE_AEE",
+      "objective_collision_detected": true,
+      "conflict_flags": [
+        "EXTENSION_MODULE_FALSE_POSITIVES",
+        "THROUGHPUT_COLLISION_WEAK_WINNERS_OVERHELD"
+      ],
+      "metrics": {
+        "bankable_green_loss_red_rate": 0.0,
+        "time_inefficient_trade_share": 0.0,
+        "overheld_winner_count": 0,
+        "fake_runner_count": 11,
+        "avg_weak_winner_hold_sec": 321.818182,
+        "avg_loser_hold_sec": 0.0
+      },
+      "decision": "problem_5_architecture_confirmed"
+    },
+    "step_3_simplicity_vs_complexity": {
+      "step": "STEP_3_COMPARE_TO_SIMPLICITY",
+      "beats_minimal_protective": false,
+      "beats_no_aee_loose": false,
+      "complexity_adds_value": false,
+      "decision": "problem_6_simplicity_wins"
+    }
+  },
+  "root_cause_hypothesis": "PROBLEM_5_MONOLITHIC_AEE_OBJECTIVE_COLLISION"
+}

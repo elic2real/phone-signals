@@ -1,0 +1,35 @@
+{
+  "name": "aee_band_baseline_floor_v1",
+  "doctrine": "cant_lose_baseline",
+  "objective": "maximum_realized_extraction_per_hour",
+  "band_width_r": 0.10,
+  "near_entry": {
+    "z_min": -1,
+    "z_max": 1,
+    "timeout_sec": 12
+  },
+  "profit_region": {
+    "start_z": 2,
+    "dwell_timeout_sec": 2.0
+  },
+  "fallback": {
+    "drop_positive_bands": 1
+  },
+  "fast_adverse": {
+    "adverse_r": 0.35,
+    "window_sec": 1.5
+  },
+  "defensive": {
+    "pre_sl_exit_enabled": true,
+    "panic_exit_enabled": true
+  },
+  "branch_set": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_BAND_NEVER_GREEN_TIMEOUT",
+    "AEE_BAND_PROFIT_STALL_EXIT",
+    "AEE_BAND_FALLBACK_EXIT",
+    "AEE_PRE_SL_EXIT",
+    "AEE_PANIC_EXIT"
+  ],
+  "optional_branch": "AEE_BAND_EXTENSION_HOLD"
+}

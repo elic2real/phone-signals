@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-03-25T04:14:36.576100Z",
+  "objective": "stability_proof_no_tuning",
+  "lock": {
+    "config": "entry_v27_policy_strict_plus_range_selective_tight.json",
+    "aee_and_routing": "frozen",
+    "cost_model": {
+      "spread_pips": 0.8,
+      "slippage_pips_per_side": 0.15,
+      "commission_pips_roundtrip": 0.0,
+      "latency_penalty_pips": 0.0
+    },
+    "tuning_changes": "none"
+  },
+  "windows": [
+    {
+      "name": "window_1",
+      "stream_count": 24,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_1_run.json",
+      "verdict": "BASELINE_ACCEPTED",
+      "trade_count": 3861,
+      "gross_realized_pips_per_hour": 0.33247062202764616,
+      "net_realized_pips_per_hour": 0.22256830348921508,
+      "net_delta_realized_pips_per_hour": 0.05504302271269729
+    },
+    {
+      "name": "window_2",
+      "stream_count": 24,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_2_run.json",
+      "verdict": "BASELINE_REJECTED",
+      "trade_count": 4142,
+      "gross_realized_pips_per_hour": 0.3472762633047614,
+      "net_realized_pips_per_hour": 0.22674607013247772,
+      "net_delta_realized_pips_per_hour": 0.06054021927807629
+    },
+    {
+      "name": "window_3",
+      "stream_count": 24,
+      "run_json": "/home/elic/Documents/phone signals/stability_window_3_run.json",
+      "verdict": "BASELINE_ACCEPTED",
+      "trade_count": 2952,
+      "gross_realized_pips_per_hour": 0.25547936545237887,
+      "net_realized_pips_per_hour": 0.17253503588200506,
+      "net_delta_realized_pips_per_hour": 0.03286916829611877
+    }
+  ],
+  "window_generation": {
+    "mode": "sampled",
+    "streams_per_window": 24,
+    "seed": 20260324,
+    "total_streams_available": 31
+  },
+  "pass_criteria": {
+    "all_three_positive_net_delta": true,
+    "all_three_baseline_accepted": false
+  },
+  "stability_verdict": "NOT_YET_PROVEN"
+}

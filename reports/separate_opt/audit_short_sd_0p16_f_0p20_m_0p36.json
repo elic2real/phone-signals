@@ -1,0 +1,727 @@
+{
+  "dataset_glob": "scenarios/golden/v1.0/*.csv",
+  "bucket_sec": 300,
+  "cooldown_sec": 300,
+  "schedule_32": true,
+  "scenario_count": 20,
+  "modes": {
+    "LONG": {
+      "trade_count": 35,
+      "pips_mean": 1.2754285714289206,
+      "pph_mean": 113.94749113412554,
+      "win_rate": 0.8857142857142857,
+      "avg_hold_sec": 234.85714285714286,
+      "core_exit_reason_counts": {
+        "TP_HIT": 24,
+        "SL_HIT": 4,
+        "TIME_DECAY_PROFIT_CAPTURE": 5,
+        "NEAR_TP_STALL_CAPTURE": 2
+      },
+      "sl_hit_rate": 0.11428571428571428,
+      "tp_hit_rate": 0.6857142857142857,
+      "aee_close_rate": 0.2,
+      "entry_funnel_counts": {
+        "WATCH": 116,
+        "PROMOTE": 35,
+        "ENTRY_ATTEMPT": 35,
+        "ORDER_FILLED": 35
+      },
+      "directional_opportunity_count": {
+        "LONG": 35,
+        "SHORT": 15
+      },
+      "per_scenario": {
+        "energy_depletion.csv": {
+          "summary": {
+            "trade_count": 11,
+            "pips_mean": 0.4945454545458684,
+            "pph_mean": 20.849887638183585,
+            "win_rate": 0.8181818181818182,
+            "avg_hold_sec": 286.3636363636364,
+            "core_exit_reason_counts": {
+              "TP_HIT": 7,
+              "SL_HIT": 2,
+              "TIME_DECAY_PROFIT_CAPTURE": 1,
+              "NEAR_TP_STALL_CAPTURE": 1
+            },
+            "sl_hit_rate": 0.18181818181818182,
+            "tp_hit_rate": 0.6363636363636364,
+            "aee_close_rate": 0.18181818181818182
+          },
+          "trade_count": 11
+        },
+        "energy_transition.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "high_energy_trend.csv": {
+          "summary": {
+            "trade_count": 4,
+            "pips_mean": 2.6300000000003543,
+            "pph_mean": 291.1887218045311,
+            "win_rate": 1.0,
+            "avg_hold_sec": 141.25,
+            "core_exit_reason_counts": {
+              "TIME_DECAY_PROFIT_CAPTURE": 1,
+              "TP_HIT": 3
+            },
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.75,
+            "aee_close_rate": 0.25
+          },
+          "trade_count": 4
+        },
+        "low_energy_range.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "multi_whipsaw_sweep.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "panic_reversal.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "random_walk.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "slow_grind_break.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "spread_widening.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "trend_continuation.csv": {
+          "summary": {
+            "trade_count": 5,
+            "pips_mean": 2.5440000000000573,
+            "pph_mean": 239.99097744362126,
+            "win_rate": 1.0,
+            "avg_hold_sec": 158.0,
+            "core_exit_reason_counts": {
+              "TP_HIT": 4,
+              "TIME_DECAY_PROFIT_CAPTURE": 1
+            },
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.8,
+            "aee_close_rate": 0.2
+          },
+          "trade_count": 5
+        },
+        "universal_energy_morph.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "whipsaw_spike_fade.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        }
+      },
+      "per_speed": {
+        "FAST": {
+          "trade_count": 31,
+          "pips_mean": 1.2316129032262826,
+          "pph_mean": 125.94440243253915,
+          "win_rate": 0.8709677419354839,
+          "avg_hold_sec": 228.8709677419355,
+          "core_exit_reason_counts": {
+            "TP_HIT": 23,
+            "SL_HIT": 4,
+            "TIME_DECAY_PROFIT_CAPTURE": 2,
+            "NEAR_TP_STALL_CAPTURE": 2
+          },
+          "sl_hit_rate": 0.12903225806451613,
+          "tp_hit_rate": 0.7419354838709677,
+          "aee_close_rate": 0.12903225806451613
+        },
+        "MED": {
+          "trade_count": 4,
+          "pips_mean": 1.614999999999367,
+          "pph_mean": 20.971428571420045,
+          "win_rate": 1.0,
+          "avg_hold_sec": 281.25,
+          "core_exit_reason_counts": {
+            "TIME_DECAY_PROFIT_CAPTURE": 3,
+            "TP_HIT": 1
+          },
+          "sl_hit_rate": 0.0,
+          "tp_hit_rate": 0.25,
+          "aee_close_rate": 0.75
+        }
+      }
+    },
+    "SHORT": {
+      "trade_count": 15,
+      "pips_mean": -0.5400000000001034,
+      "pph_mean": -276.8795871422908,
+      "win_rate": 0.6,
+      "avg_hold_sec": 321.0,
+      "core_exit_reason_counts": {
+        "SL_HIT": 4,
+        "NEAR_TP_STALL_CAPTURE": 2,
+        "TP_HIT": 9
+      },
+      "sl_hit_rate": 0.26666666666666666,
+      "tp_hit_rate": 0.6,
+      "aee_close_rate": 0.13333333333333333,
+      "entry_funnel_counts": {
+        "WATCH": 116,
+        "PROMOTE": 15,
+        "ENTRY_ATTEMPT": 15,
+        "ORDER_FILLED": 15
+      },
+      "directional_opportunity_count": {
+        "LONG": 35,
+        "SHORT": 15
+      },
+      "per_scenario": {
+        "energy_depletion.csv": {
+          "summary": {
+            "trade_count": 3,
+            "pips_mean": -1.100000000000101,
+            "pph_mean": 7.934365477581607,
+            "win_rate": 0.3333333333333333,
+            "avg_hold_sec": 650.0,
+            "core_exit_reason_counts": {
+              "SL_HIT": 1,
+              "NEAR_TP_STALL_CAPTURE": 1,
+              "TP_HIT": 1
+            },
+            "sl_hit_rate": 0.3333333333333333,
+            "tp_hit_rate": 0.3333333333333333,
+            "aee_close_rate": 0.3333333333333333
+          },
+          "trade_count": 3
+        },
+        "energy_transition.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "high_energy_trend.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "low_energy_range.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "multi_whipsaw_sweep.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "panic_reversal.csv": {
+          "summary": {
+            "trade_count": 3,
+            "pips_mean": -1.1333333333333566,
+            "pph_mean": -726.7999999999741,
+            "win_rate": 0.6666666666666666,
+            "avg_hold_sec": 61.666666666666664,
+            "core_exit_reason_counts": {
+              "TP_HIT": 2,
+              "SL_HIT": 1
+            },
+            "sl_hit_rate": 0.3333333333333333,
+            "tp_hit_rate": 0.6666666666666666,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 3
+        },
+        "random_walk.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "slow_grind_break.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "spread_widening.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "trend_continuation.csv": {
+          "summary": {
+            "trade_count": 3,
+            "pips_mean": 1.7666666666663982,
+            "pph_mean": 53.33333333333088,
+            "win_rate": 1.0,
+            "avg_hold_sec": 181.66666666666666,
+            "core_exit_reason_counts": {
+              "TP_HIT": 3
+            },
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 1.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 3
+        },
+        "universal_energy_morph.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "whipsaw_spike_fade.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        }
+      },
+      "per_speed": {
+        "MED": {
+          "trade_count": 7,
+          "pips_mean": -0.5000000000000401,
+          "pph_mean": 24.51517040935752,
+          "win_rate": 0.42857142857142855,
+          "avg_hold_sec": 570.0,
+          "core_exit_reason_counts": {
+            "SL_HIT": 2,
+            "NEAR_TP_STALL_CAPTURE": 2,
+            "TP_HIT": 3
+          },
+          "sl_hit_rate": 0.2857142857142857,
+          "tp_hit_rate": 0.42857142857142855,
+          "aee_close_rate": 0.2857142857142857
+        },
+        "FAST": {
+          "trade_count": 8,
+          "pips_mean": -0.5750000000001587,
+          "pph_mean": -540.5999999999831,
+          "win_rate": 0.75,
+          "avg_hold_sec": 103.125,
+          "core_exit_reason_counts": {
+            "TP_HIT": 6,
+            "SL_HIT": 2
+          },
+          "sl_hit_rate": 0.25,
+          "tp_hit_rate": 0.75,
+          "aee_close_rate": 0.0
+        }
+      }
+    },
+    "BOTH": {
+      "trade_count": 50,
+      "pips_mean": 0.7308000000002136,
+      "pph_mean": -3.3006323487993643,
+      "win_rate": 0.8,
+      "avg_hold_sec": 260.7,
+      "core_exit_reason_counts": {
+        "TP_HIT": 33,
+        "SL_HIT": 8,
+        "NEAR_TP_STALL_CAPTURE": 4,
+        "TIME_DECAY_PROFIT_CAPTURE": 5
+      },
+      "sl_hit_rate": 0.16,
+      "tp_hit_rate": 0.66,
+      "aee_close_rate": 0.18,
+      "entry_funnel_counts": {
+        "WATCH": 116,
+        "PROMOTE": 50,
+        "ENTRY_ATTEMPT": 50,
+        "ORDER_FILLED": 50
+      },
+      "directional_opportunity_count": {
+        "LONG": 35,
+        "SHORT": 15
+      },
+      "per_scenario": {
+        "energy_depletion.csv": {
+          "summary": {
+            "trade_count": 14,
+            "pips_mean": 0.1528571428574464,
+            "pph_mean": 18.082275746626017,
+            "win_rate": 0.7142857142857143,
+            "avg_hold_sec": 364.2857142857143,
+            "core_exit_reason_counts": {
+              "TP_HIT": 8,
+              "SL_HIT": 3,
+              "NEAR_TP_STALL_CAPTURE": 2,
+              "TIME_DECAY_PROFIT_CAPTURE": 1
+            },
+            "sl_hit_rate": 0.21428571428571427,
+            "tp_hit_rate": 0.5714285714285714,
+            "aee_close_rate": 0.21428571428571427
+          },
+          "trade_count": 14
+        },
+        "energy_transition.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "high_energy_trend.csv": {
+          "summary": {
+            "trade_count": 4,
+            "pips_mean": 2.6300000000003543,
+            "pph_mean": 291.1887218045311,
+            "win_rate": 1.0,
+            "avg_hold_sec": 141.25,
+            "core_exit_reason_counts": {
+              "TIME_DECAY_PROFIT_CAPTURE": 1,
+              "TP_HIT": 3
+            },
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.75,
+            "aee_close_rate": 0.25
+          },
+          "trade_count": 4
+        },
+        "low_energy_range.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "multi_whipsaw_sweep.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "panic_reversal.csv": {
+          "summary": {
+            "trade_count": 3,
+            "pips_mean": -1.1333333333333566,
+            "pph_mean": -726.7999999999741,
+            "win_rate": 0.6666666666666666,
+            "avg_hold_sec": 61.666666666666664,
+            "core_exit_reason_counts": {
+              "TP_HIT": 2,
+              "SL_HIT": 1
+            },
+            "sl_hit_rate": 0.3333333333333333,
+            "tp_hit_rate": 0.6666666666666666,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 3
+        },
+        "random_walk.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "slow_grind_break.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "spread_widening.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "trend_continuation.csv": {
+          "summary": {
+            "trade_count": 8,
+            "pips_mean": 2.252499999999935,
+            "pph_mean": 169.99436090226237,
+            "win_rate": 1.0,
+            "avg_hold_sec": 166.875,
+            "core_exit_reason_counts": {
+              "TP_HIT": 7,
+              "TIME_DECAY_PROFIT_CAPTURE": 1
+            },
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.875,
+            "aee_close_rate": 0.125
+          },
+          "trade_count": 8
+        },
+        "universal_energy_morph.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        },
+        "whipsaw_spike_fade.csv": {
+          "summary": {
+            "trade_count": 0,
+            "pips_mean": 0.0,
+            "pph_mean": 0.0,
+            "win_rate": 0.0,
+            "avg_hold_sec": 0.0,
+            "core_exit_reason_counts": {},
+            "sl_hit_rate": 0.0,
+            "tp_hit_rate": 0.0,
+            "aee_close_rate": 0.0
+          },
+          "trade_count": 0
+        }
+      },
+      "per_speed": {
+        "FAST": {
+          "trade_count": 39,
+          "pips_mean": 0.8610256410259868,
+          "pph_mean": -10.782654476696178,
+          "win_rate": 0.8461538461538461,
+          "avg_hold_sec": 203.07692307692307,
+          "core_exit_reason_counts": {
+            "TP_HIT": 29,
+            "SL_HIT": 6,
+            "TIME_DECAY_PROFIT_CAPTURE": 2,
+            "NEAR_TP_STALL_CAPTURE": 2
+          },
+          "sl_hit_rate": 0.15384615384615385,
+          "tp_hit_rate": 0.7435897435897436,
+          "aee_close_rate": 0.10256410256410256
+        },
+        "MED": {
+          "trade_count": 11,
+          "pips_mean": 0.2690909090906534,
+          "pph_mean": 23.22653701374389,
+          "win_rate": 0.6363636363636364,
+          "avg_hold_sec": 465.0,
+          "core_exit_reason_counts": {
+            "SL_HIT": 2,
+            "NEAR_TP_STALL_CAPTURE": 2,
+            "TP_HIT": 4,
+            "TIME_DECAY_PROFIT_CAPTURE": 3
+          },
+          "sl_hit_rate": 0.18181818181818182,
+          "tp_hit_rate": 0.36363636363636365,
+          "aee_close_rate": 0.45454545454545453
+        }
+      }
+    }
+  }
+}

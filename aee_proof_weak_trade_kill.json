@@ -1,0 +1,75 @@
+{
+  "feature": "Weak-trade kill",
+  "trigger_marker": "AEE_WEAK_TRADE_KILL_TRIGGER",
+  "scenarios_tested": 3,
+  "pass_count": 3,
+  "fail_count": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "raw_examples": [
+    {
+      "scenario_id": "weak_kill_obvious",
+      "case_type": "obvious trigger case",
+      "expected": {
+        "triggered": true,
+        "exit_reason": "NEVER_GREEN_FAST_EXIT"
+      },
+      "actual": {
+        "triggered": true,
+        "exit_reason": "NEVER_GREEN_FAST_EXIT",
+        "decision_latency_ms": 0.0075,
+        "key_state_metrics_used": {
+          "current_pnl_pips": -4.1,
+          "peak_pnl_pips": 0.1,
+          "giveback_pips": 0.1,
+          "time_in_trade_sec": 170.0,
+          "phase": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "scenario_id": "weak_kill_borderline",
+      "case_type": "borderline trigger case",
+      "expected": {
+        "triggered": true,
+        "exit_reason": "NEVER_GREEN_STALL_EXIT"
+      },
+      "actual": {
+        "triggered": true,
+        "exit_reason": "NEVER_GREEN_STALL_EXIT",
+        "decision_latency_ms": 0.0026,
+        "key_state_metrics_used": {
+          "current_pnl_pips": -2.8,
+          "peak_pnl_pips": 0.1,
+          "giveback_pips": 0.2,
+          "time_in_trade_sec": 120.0,
+          "phase": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "scenario_id": "weak_kill_control",
+      "case_type": "should-not-trigger control case",
+      "expected": {
+        "triggered": false,
+        "exit_reason": "HOLD"
+      },
+      "actual": {
+        "triggered": false,
+        "exit_reason": "HOLD",
+        "decision_latency_ms": 0.0026,
+        "key_state_metrics_used": {
+          "current_pnl_pips": 1.8,
+          "peak_pnl_pips": 3.0,
+          "giveback_pips": 1.2,
+          "time_in_trade_sec": 80.0,
+          "phase": ""
+        }
+      },
+      "pass": true
+    }
+  ],
+  "summary_verdict": "PASS"
+}

@@ -1,0 +1,42 @@
+{
+  "protocol": "RCP",
+  "priority_order": [
+    "entry_structure",
+    "aee_structure",
+    "routing",
+    "context",
+    "calibration"
+  ],
+  "dependencies": {
+    "entry_structure": [],
+    "aee_structure": [
+      "entry_structure"
+    ],
+    "routing": [
+      "entry_structure"
+    ],
+    "context": [
+      "entry_structure",
+      "routing"
+    ],
+    "calibration": [
+      "entry_structure",
+      "aee_structure"
+    ]
+  },
+  "policy": {
+    "single_component_per_task": true,
+    "structure_before_tuning": true,
+    "deliverables_required": true,
+    "log_every_transition": true,
+    "one_active_task_only": true,
+    "baseline_replace_requires_promote": true,
+    "auto_advance_enabled": true,
+    "hard_mode_falsifiability_required": true,
+    "hard_mode_layer_metric_lock": true,
+    "hard_mode_single_cause_isolation": true,
+    "hard_mode_dead_path_kill_switch": true,
+    "hard_mode_primary_edge_protection": true,
+    "hard_mode_regression_dominance_fail": true
+  }
+}

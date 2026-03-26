@@ -1,0 +1,242 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T00:00:00Z",
+  "task_id": "MVP_PHASE34_MULTI_SESSION_THROUGHPUT_EXPANSION_PLAN",
+  "scope_lock": {
+    "baseline_session": "LONDON",
+    "baseline_pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "target_sessions": [
+      "ASIA",
+      "NEW_YORK",
+      "LONDON_NY_OVERLAP"
+    ],
+    "tuning": "NONE_UNTIL_SESSION_PROFILE_PASS",
+    "mode": "PARALLEL_SESSION_EXPANSION"
+  },
+  "baseline_reference": {
+    "entry_config": "entry_v23_policy_guarded_active.json",
+    "baseline_evidence": [
+      "control/mvp_phase5_full_loop_validation.json",
+      "control/mvp_phase29_shadow_soak_retrospective_and_live_gating_decision.json",
+      "control/mvp_phase30_net_layer_activation_handoff.json",
+      "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json"
+    ],
+    "baseline_contract_thresholds": {
+      "max_false_cut_rate": 0.1,
+      "max_weighted_relative_spread": 0.5,
+      "min_weighted_delta_pph": 0.0
+    }
+  },
+  "known_session_factors": {
+    "required_inputs": [
+      "median_spread_pips",
+      "median_spread_atr_ratio",
+      "candidate_volume_per_hour",
+      "accepted_trades_per_hour",
+      "realized_volatility_atr",
+      "micro_noise_rate",
+      "false_cut_rate_on_winners",
+      "weighted_intervention_relative_spread",
+      "weighted_delta_pph",
+      "incident_count"
+    ],
+    "normalization": {
+      "reference_session": "LONDON",
+      "delta_formula": "delta = (metric_session - metric_london) / max(abs(metric_london), epsilon)",
+      "epsilon": 1e-09
+    }
+  },
+  "deterministic_adjustment_model": {
+    "description": "Bounded additive deltas from London baseline. No free-form session tuning.",
+    "bounded_delta_rule": {
+      "formula": "theta_session = theta_london + clip(W * feature_delta, -delta_max, +delta_max)",
+      "global_delta_cap": 0.2
+    },
+    "adjustable_entry_fields": [
+      "entry_filters.micro_confirm.confirm_push_pips_major",
+      "entry_filters.micro_confirm.confirm_window_sec_major",
+      "entry_filters.micro_confirm.confirm_push_pips_wide",
+      "entry_filters.micro_confirm.confirm_window_sec_wide",
+      "entry_filters.min_release_quality_by_bar[bar=2].min_release_quality",
+      "entry_filters.max_noise_by_bar[bar=2].max_noise"
+    ],
+    "safety_constraints": [
+      "defensive.pre_sl_exit_enabled must remain true",
+      "defensive.panic_exit_enabled must remain true",
+      "entry_filters.include_entry_families unchanged until profile pass",
+      "family_execution_policy unchanged until profile pass",
+      "no branch_set changes in this phase"
+    ]
+  },
+  "session_priors": {
+    "ASIA": {
+      "expected_character": "thinner liquidity, higher effective friction, choppier microstructure",
+      "targeted_bias": [
+        "increase micro confirmation strictness",
+        "slightly increase confirmation windows",
+        "tighten noise tolerance"
+      ]
+    },
+    "NEW_YORK": {
+      "expected_character": "higher event risk and burst volatility",
+      "targeted_bias": [
+        "retain strict confirmation strength",
+        "avoid longer windows unless noise confirms",
+        "preserve aggressive loss-side exits"
+      ]
+    },
+    "LONDON_NY_OVERLAP": {
+      "expected_character": "highest opportunity density with highest burst/whipsaw risk",
+      "targeted_bias": [
+        "allow throughput expansion if spread gate remains healthy",
+        "require strongest false-cut protection",
+        "enforce strict incident gates"
+      ]
+    }
+  },
+  "pair_universe_rollout": {
+    "major_pairs": [
+      "EUR_USD",
+      "GBP_USD",
+      "USD_JPY",
+      "USD_CHF",
+      "AUD_USD",
+      "USD_CAD",
+      "NZD_USD"
+    ],
+    "minor_cohorts": {
+      "JPY_MINORS": [
+        "EUR_JPY",
+        "GBP_JPY",
+        "AUD_JPY",
+        "NZD_JPY"
+      ],
+      "CHF_CROSSES": [
+        "EUR_CHF",
+        "CHF_JPY",
+        "GBP_CHF"
+      ],
+      "COVERAGE_OPTIONAL": [
+        "EUR_GBP",
+        "AUD_CAD"
+      ]
+    }
+  },
+  "parallel_execution": {
+    "stage_1_fast_screen": {
+      "objective": "cheap fail-fast screen on majors by session",
+      "duration_per_lane_minutes": 45,
+      "lanes": [
+        {
+          "lane_id": "L1",
+          "pairs": [
+            "EUR_USD",
+            "GBP_USD"
+          ],
+          "sessions": [
+            "ASIA",
+            "NEW_YORK",
+            "LONDON_NY_OVERLAP"
+          ]
+        },
+        {
+          "lane_id": "L2",
+          "pairs": [
+            "USD_JPY",
+            "USD_CHF"
+          ],
+          "sessions": [
+            "ASIA",
+            "NEW_YORK",
+            "LONDON_NY_OVERLAP"
+          ]
+        },
+        {
+          "lane_id": "L3",
+          "pairs": [
+            "AUD_USD",
+            "USD_CAD",
+            "NZD_USD"
+          ],
+          "sessions": [
+            "ASIA",
+            "NEW_YORK",
+            "LONDON_NY_OVERLAP"
+          ]
+        }
+      ]
+    },
+    "stage_2_deep_validation": {
+      "objective": "deep validation on survivors only + selected minors",
+      "duration_per_lane_minutes": 120,
+      "entry_condition": "stage_1_fast_screen pass",
+      "minor_enable_condition": "major session profile additive and stable"
+    },
+    "stage_3_combined_stability": {
+      "objective": "multi-window combined stability proof",
+      "duration_hours": 6,
+      "entry_condition": "stage_2_deep_validation pass"
+    }
+  },
+  "hard_gates": {
+    "lane_kill_conditions": [
+      "weighted_delta_pph <= 0",
+      "false_cut_rate_on_winners > 0.1",
+      "weighted_intervention_relative_spread > 0.5",
+      "incident_count > 0"
+    ],
+    "promotion_conditions": [
+      "weighted_delta_pph > 0",
+      "false_cut_rate_on_winners <= 0.1",
+      "weighted_intervention_relative_spread <= 0.5",
+      "incident_count == 0",
+      "no_scope_lock_violations"
+    ],
+    "minor_additivity_rule": "minor cohorts are accepted only if combined weighted_delta_pph improves without violating any hard gate"
+  },
+  "deliverables": {
+    "required_artifacts": [
+      "control/mvp_phase34_session_factor_snapshot.json",
+      "control/mvp_phase34_stage1_lane_results.json",
+      "control/mvp_phase34_stage2_lane_results.json",
+      "control/mvp_phase34_stage3_combined_stability.json",
+      "control/mvp_phase34_pair_session_acceptance_matrix.json",
+      "control/mvp_phase34_release_recommendation.json"
+    ],
+    "minimum_fields_per_result": [
+      "pair",
+      "session",
+      "lane_id",
+      "weighted_delta_pph",
+      "false_cut_rate_on_winners",
+      "weighted_intervention_relative_spread",
+      "incident_count",
+      "verdict",
+      "reject_reason_if_any"
+    ]
+  },
+  "decision_policy": {
+    "verdict_values": [
+      "PROMOTE",
+      "HOLD",
+      "REJECT"
+    ],
+    "promote_requires": [
+      "all hard gates pass",
+      "additive throughput over baseline",
+      "no critical incident drift"
+    ],
+    "hold_requires": [
+      "borderline positive but unstable across windows"
+    ],
+    "reject_requires": [
+      "any hard gate failure"
+    ]
+  },
+  "next_recommended_task": "MVP_PHASE35_MULTI_SESSION_PARALLEL_EXECUTION",
+  "status": "READY"
+}

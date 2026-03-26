@@ -1,0 +1,62 @@
+{
+  "run_id": "AEE_MATRIX_MATRIX_SMOKE_20260326T031000Z_variant_a_reclaim_stall_only",
+  "slice": {
+    "slice_label": "",
+    "include_contexts": [],
+    "include_trade_ids_count": 0,
+    "max_trades": 60
+  },
+  "strategy_family": [
+    "EXPANSION_BREAKOUT",
+    "OTHER",
+    "RANGE_ESCAPE"
+  ],
+  "strategy_form_id": "entry_v23_policy_guarded_active",
+  "thresholds": {
+    "spread_pips": 0.8,
+    "slippage_pips_per_side": 0.15,
+    "commission_pips_roundtrip": 0.0,
+    "latency_penalty_pips": 0.0,
+    "economic_viability_mult": 1.1
+  },
+  "enabled_gates": {
+    "micro_confirm": true,
+    "displacement_rules": 3,
+    "progress_rules": 1,
+    "release_quality_rules": 1,
+    "noise_rules": 1
+  },
+  "disabled_gates": {
+    "raw_core_mode": false,
+    "excluded_contexts": [
+      "eur_chf__monday__asia",
+      "eur_chf__monday__london",
+      "eur_chf__monday__new_york",
+      "eur_chf__monday__sydney",
+      "eur_chf__wednesday__london",
+      "eur_gbp__monday__asia",
+      "eur_gbp__monday__london",
+      "eur_gbp__monday__new_york",
+      "eur_gbp__monday__sydney",
+      "eur_gbp__thursday__sydney",
+      "eur_usd__friday__asia",
+      "eur_usd__tuesday__new_york",
+      "usd_cad__monday__london"
+    ]
+  },
+  "aee_version": "v3",
+  "simulation_mode": "ACTIVE_POLICY_REPLAY",
+  "dataset_window_id": "EUR_USD_16_STREAM_FULL",
+  "pair_session_coverage": {
+    "pairs": [
+      "EUR_USD"
+    ],
+    "sessions": {
+      "asia": 1,
+      "new_york": 1
+    }
+  },
+  "code_version": "workspace-local",
+  "artifact_version": "run_aee_active_policy_evidencepack_v1",
+  "config_path": "/home/elic/Documents/phone signals/control/variant_runs/MATRIX_SMOKE_20260326T031000Z/configs/variant_a_reclaim_stall_only.json"
+}

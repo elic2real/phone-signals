@@ -1,0 +1,157 @@
+{
+  "proof_name": "forced_full_chain_handoff_proof",
+  "type": "forced_full_chain_handoff",
+  "scope": [
+    "entry_trigger",
+    "candidate_creation",
+    "priority_accept_reject",
+    "trade_open",
+    "aee_doctrine_action",
+    "trade_close_management_side_effect"
+  ],
+  "stages": [
+    {
+      "stage": "entry_trigger",
+      "passed": true,
+      "details": {
+        "input": {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "trigger_mode": "BREAK",
+          "reason": "tick_entry_cross",
+          "bid": 1.1,
+          "ask": 1.10008,
+          "spread_pips": 0.8
+        },
+        "triggered": true
+      }
+    },
+    {
+      "stage": "candidate_creation",
+      "passed": true,
+      "details": {
+        "candidate": {
+          "candidate_id": "cand-001",
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "entry_zone_price": 1.10005,
+          "risk_atr": 1.0
+        }
+      }
+    },
+    {
+      "stage": "priority_accept_reject",
+      "passed": true,
+      "details": {
+        "candidates_ranked": [
+          {
+            "candidate_id": "cand-001",
+            "score": 0.91
+          },
+          {
+            "candidate_id": "cand-002",
+            "score": 0.73
+          }
+        ],
+        "accepted": "cand-001",
+        "rejected": [
+          "cand-002"
+        ],
+        "reason": "top_priority"
+      }
+    },
+    {
+      "stage": "trade_open",
+      "passed": true,
+      "details": {
+        "trade_id": 990001,
+        "trade_key": "forced-chain-001",
+        "pair": "EUR_USD",
+        "direction": "LONG",
+        "leg_type": "RUNNER",
+        "event_kind": "TRADE_OPEN"
+      }
+    },
+    {
+      "stage": "aee_doctrine_action",
+      "passed": true,
+      "details": {
+        "priming_input": {
+          "trade_key": "forced-chain-001",
+          "mode": "RUNNER",
+          "now_s": 12.0,
+          "current_r": 0.2,
+          "mfe_r": 0.2,
+          "mae_r": -0.01,
+          "energy": 0.62,
+          "force_close": false
+        },
+        "priming_action": "HOLD",
+        "input_snapshot": {
+          "trade_key": "forced-chain-001",
+          "mode": "RUNNER",
+          "now_s": 44.0,
+          "current_r": 0.03,
+          "mfe_r": 0.2,
+          "mae_r": -0.01,
+          "energy": 0.34,
+          "force_close": false
+        },
+        "action_returned": "TIGHTEN",
+        "state": {
+          "went_green": true,
+          "partial_taken": false,
+          "tightened": true,
+          "best_r": 0.2,
+          "worst_r": -0.01,
+          "stall_s": 32.0,
+          "giveback_r": 0.17,
+          "energy": 0.34,
+          "current_r": 0.03
+        }
+      }
+    },
+    {
+      "stage": "trade_close_management_side_effect",
+      "passed": true,
+      "details": {
+        "input_snapshot": {
+          "trade_key": "forced-chain-001",
+          "mode": "RUNNER",
+          "now_s": 74.0,
+          "current_r": -0.08,
+          "mfe_r": 0.2,
+          "mae_r": -0.1,
+          "energy": 0.22,
+          "force_close": false
+        },
+        "action_returned": "CLOSE",
+        "state": {
+          "went_green": true,
+          "partial_taken": false,
+          "tightened": true,
+          "best_r": 0.2,
+          "worst_r": -0.1,
+          "stall_s": 62.0,
+          "giveback_r": 0.28,
+          "energy": 0.22,
+          "current_r": -0.08
+        },
+        "side_effect": {
+          "close_action": "CLOSE",
+          "db_mark_trade_closed": true,
+          "emit_trade_closed_event": true,
+          "management_effect": "trade_closed"
+        }
+      }
+    }
+  ],
+  "pass_fail": {
+    "all_stages_passed": true,
+    "failed_stages": []
+  },
+  "notes": [
+    "This is a forced-path handoff verification artifact.",
+    "It verifies chain compatibility and stage reachability, not production expectancy or complete simulator fidelity."
+  ]
+}

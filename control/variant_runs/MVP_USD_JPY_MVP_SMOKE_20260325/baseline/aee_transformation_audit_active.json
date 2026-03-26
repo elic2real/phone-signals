@@ -1,0 +1,53 @@
+{
+  "loss_compression": {
+    "avg_loss_after_aee": 0.0,
+    "avg_structural_sl_loss": 20.133333,
+    "loss_compression_rate": 1.0,
+    "pass": true
+  },
+  "failure_to_win_conversion": {
+    "structural_loser_count": 3,
+    "converted_winner_count": 3,
+    "failure_to_win_conversion_rate": 1.0,
+    "pass": true
+  },
+  "continuation_capture": {
+    "avg_realized_from_mfe": 0.93,
+    "avg_mfe_net": 12.49,
+    "continuation_capture_rate": 0.07446,
+    "pass": false
+  },
+  "giveback_ratio": {
+    "value": 0.92554,
+    "pass": false
+  },
+  "branch_role_audit": {
+    "role_map": {
+      "AEE_BAND_FAST_FAILURE_EXIT": "loss_compression",
+      "AEE_NEVER_GREEN_TIMEOUT": "failure_to_win_conversion",
+      "AEE_GIVEBACK_EXIT": "continuation_capture_and_profit_protection",
+      "AEE_CONTINUATION_FAILED_EXIT": "late_failure"
+    },
+    "branch_share": {
+      "AEE_V3_FAMILY_PROTECTION_EXIT": 0.5,
+      "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT": 0.4,
+      "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT": 0.1
+    }
+  },
+  "branch_overfire_flags": [
+    "HIGH_GIVEBACK_RATIO"
+  ],
+  "branch_overfire": {
+    "classified": [
+      {
+        "flag": "HIGH_GIVEBACK_RATIO",
+        "severity": "blocking"
+      }
+    ],
+    "blocking_flags": [
+      "HIGH_GIVEBACK_RATIO"
+    ],
+    "non_blocking_flags": [],
+    "has_blocking": true
+  }
+}

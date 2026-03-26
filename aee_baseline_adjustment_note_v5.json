@@ -1,0 +1,31 @@
+{
+  "name": "aee_baseline_adjustment_note_v5",
+  "based_on": "aee_band_baseline_floor_v4",
+  "intent": "replace weak-positive monetization with meaningful-positive gated profit harvesting",
+  "exact_change_count": 3,
+  "changes": [
+    {
+      "field": "band_width_r",
+      "from": 0.09,
+      "to": 0.10,
+      "why": "Require stronger positive movement before band-based profit handling."
+    },
+    {
+      "field": "fallback.drop_positive_bands",
+      "from": 2,
+      "to": 1,
+      "why": "Once meaningful positive is achieved, harvest fallback quickly on deterioration."
+    },
+    {
+      "field": "meaningful_positive.min_best_favorable_r",
+      "from": null,
+      "to": 0.20,
+      "why": "Arm profit-stall and fallback only after economically meaningful favorable excursion."
+    }
+  ],
+  "notes": [
+    "Near-entry timeout remains 12s.",
+    "Defensive layer unchanged.",
+    "Profit-side branch names changed to meaningful-gated variants."
+  ]
+}

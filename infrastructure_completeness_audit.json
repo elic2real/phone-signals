@@ -1,0 +1,497 @@
+{
+  "stage_status": {
+    "generator": {
+      "file_path": "/home/elic/Documents/phone signals/locked_pipeline_artifacts.py",
+      "file_size": 31588,
+      "last_modified": "1773021029.650718",
+      "runs_without_error": true
+    },
+    "stage_0": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "source": "OANDA",
+        "file_paths": [
+          "london_session_data/pair=EUR_USD/year=2024/month=01/part-000.parquet"
+        ],
+        "row_count": 540,
+        "first_timestamp": "2024-01-15T08:00:00+00:00",
+        "last_timestamp": "2024-01-15T16:59:00+00:00",
+        "pair": "EUR_USD",
+        "timeframe": "M1",
+        "sessions_used": [
+          "london",
+          "other"
+        ],
+        "synthetic_rows_used": 0,
+        "fallback_used": false,
+        "validation_checks": {
+          "price_range_valid": true,
+          "volume_non_negative": true,
+          "timestamps_sequential": true,
+          "realistic_volatility": true,
+          "sufficient_data_volume": true
+        },
+        "data_characteristics": {
+          "avg_price_change_pips": 0.86,
+          "price_range": "1.09338 - 1.09636",
+          "total_sessions": 2,
+          "data_files": 1
+        }
+      }
+    },
+    "stage_1": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "total_rows_processed": 540,
+        "total_LONG_opportunities": 144,
+        "total_SHORT_opportunities": 165,
+        "total_BOTH_opportunities": 210,
+        "total_NONE_opportunities": 21,
+        "opportunities_per_hour": {
+          "long_only": 16.0,
+          "short_only": 18.333333333333332,
+          "both": 23.333333333333332,
+          "none": 2.3333333333333335
+        },
+        "opportunities_by_weekday": {
+          "monday": {
+            "long_only": 144,
+            "short_only": 165,
+            "both": 210,
+            "none": 21
+          }
+        },
+        "opportunities_by_session": {
+          "london": {
+            "long_only": 119,
+            "short_only": 152,
+            "both": 209,
+            "none": 0
+          },
+          "other": {
+            "long_only": 25,
+            "short_only": 13,
+            "both": 1,
+            "none": 21
+          }
+        },
+        "opportunities_by_pair": {
+          "EUR_USD": {
+            "long_only": 144,
+            "short_only": 165,
+            "both": 210,
+            "none": 21
+          }
+        }
+      }
+    },
+    "stage_2": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "row_count": 18,
+        "total_clusters": 18,
+        "avg_cluster_size": 28.833333333333332,
+        "max_cluster_size": 111,
+        "clusters_per_pair": {
+          "EUR_USD": 18
+        },
+        "clusters_per_session": {
+          "london": 16,
+          "other": 2
+        },
+        "cluster_gap_minutes": 5
+      }
+    },
+    "stage_3": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "row_count": 18,
+        "avg_valid_entry_points_per_cluster": 28.833333333333332,
+        "avg_window_length_minutes": 39.22222222222222,
+        "max_window_length_minutes": 128,
+        "valid_entries_by_pair": {
+          "EUR_USD": 18
+        },
+        "valid_entries_by_session": {
+          "london": 16,
+          "other": 2
+        },
+        "stop_limit_pips": 2.5
+      }
+    },
+    "stage_4": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "row_count": 519,
+        "good_count": 98,
+        "bad_count": 260,
+        "noise_count": 161
+      }
+    },
+    "stage_5": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "separability_status": "PASS",
+        "good_count": 98,
+        "bad_count": 260,
+        "feature_by_feature_separation": {
+          "tau": {
+            "ks_statistic": 0.9884615384615385,
+            "iqr_overlap": 0.0,
+            "median_difference": -11.0,
+            "mean_difference": -14.003453689167976
+          },
+          "MFE": {
+            "ks_statistic": 0.18445839874411302,
+            "iqr_overlap": 0.8437499999995013,
+            "median_difference": 0.1999999999990898,
+            "mean_difference": 0.09284929356376503
+          },
+          "MAE": {
+            "ks_statistic": 0.9897959183673469,
+            "iqr_overlap": 0.0,
+            "median_difference": -1.40000000000029,
+            "mean_difference": -1.2897488226060454
+          },
+          "efficiency": {
+            "ks_statistic": 1.0,
+            "iqr_overlap": 0.0,
+            "median_difference": 0.7068686868685837,
+            "mean_difference": 0.7027859615112773
+          },
+          "speed": {
+            "ks_statistic": 0.9884615384615385,
+            "iqr_overlap": 0.0,
+            "median_difference": 0.6547619047619048,
+            "mean_difference": 0.9543149936274358
+          },
+          "extension": {
+            "ks_statistic": 0.18445839874411302,
+            "iqr_overlap": 0.8437499999995013,
+            "median_difference": 0.07999999999963592,
+            "mean_difference": 0.037139717425505925
+          }
+        }
+      }
+    },
+    "stage_6": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "executable_clusters_per_pair_session": {
+          "EUR_USD": {
+            "london": 16,
+            "other": 2
+          }
+        },
+        "avg_good_mfe_pips": 3.31938775510233,
+        "raw_movement_supply_per_hour": 1.564245810055866,
+        "theoretical_pips_per_hour_ceiling": 6.223718299338301,
+        "theoretical_equity_per_hour_ceiling": 6.223718299338301,
+        "cluster_resolved_totals_only": true,
+        "formula_inputs": {
+          "n_good": 14,
+          "c_good": 0.9484536082474226,
+          "x_good": 1.2648717948718657,
+          "mfe_good": 3.31938775510233,
+          "n_bad": 3,
+          "b_bad": 0.012448132780082987,
+          "l_bad": 1.2907692307693175
+        }
+      }
+    },
+    "stage_7": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "long": {
+          "best_config": {
+            "entry_speed_threshold": 0.572917,
+            "logic": "stage3_window_and_speed_threshold"
+          },
+          "top_configs": [
+            {
+              "entry_speed_threshold": 0.572917,
+              "good_capture": 0.9318181818181818,
+              "bad_trigger": 0.015873015873015872,
+              "noise_trigger": 0.3972602739726027,
+              "pips_mean": 3.1208333333335476,
+              "trade_count": 72
+            }
+          ],
+          "good_capture": 0.9318181818181818,
+          "bad_trigger": 0.015873015873015872,
+          "noise_trigger": 0.3972602739726027,
+          "pips_mean": 3.1208333333335476,
+          "trade_count": 72
+        },
+        "short": {
+          "best_config": {
+            "entry_speed_threshold": 0.572917,
+            "logic": "stage3_window_and_speed_threshold"
+          },
+          "top_configs": [
+            {
+              "entry_speed_threshold": 0.572917,
+              "good_capture": 0.9622641509433962,
+              "bad_trigger": 0.008695652173913044,
+              "noise_trigger": 0.3950617283950617,
+              "pips_mean": 3.1976190476191926,
+              "trade_count": 84
+            }
+          ],
+          "good_capture": 0.9622641509433962,
+          "bad_trigger": 0.008695652173913044,
+          "noise_trigger": 0.3950617283950617,
+          "pips_mean": 3.1976190476191926,
+          "trade_count": 84
+        },
+        "both": {
+          "best_config": {
+            "entry_speed_threshold": 0.572917,
+            "logic": "stage3_window_and_speed_threshold"
+          },
+          "top_configs": [
+            {
+              "entry_speed_threshold": 0.572917,
+              "good_capture": 0.9484536082474226,
+              "bad_trigger": 0.012448132780082987,
+              "noise_trigger": 0.3961038961038961,
+              "pips_mean": 3.1621794871796642,
+              "trade_count": 156
+            }
+          ],
+          "good_capture": 0.9484536082474226,
+          "bad_trigger": 0.012448132780082987,
+          "noise_trigger": 0.3961038961038961,
+          "pips_mean": 3.1621794871796642,
+          "trade_count": 156
+        },
+        "blockers": {
+          "first_blocker_reason_counts": {
+            "speed_below_threshold": 5
+          },
+          "threshold_used": 0.572917,
+          "candidate_entry_states": 492
+        }
+      }
+    },
+    "stage_8": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "long": {
+          "direction": "LONG",
+          "opportunities_used": 72,
+          "total_configs_tested": 1,
+          "best_config": {
+            "valid": true,
+            "trade_count": 72,
+            "static_avg_r": 2.5,
+            "aee_avg_r": 3.1208333333335476,
+            "mean_delta_r": 0.6208333333335478,
+            "saved_loss": 0.0,
+            "clip_rate": 0.0,
+            "held_to_loss_rate": 0.0,
+            "aee_score": 0.6208333333335478,
+            "config": {
+              "logic": "same_triggered_trade_population_from_stage7",
+              "giveback_limit_good": 0.6,
+              "giveback_limit_other": 0.35
+            }
+          },
+          "top_10_configs": []
+        },
+        "short": {
+          "direction": "SHORT",
+          "opportunities_used": 84,
+          "total_configs_tested": 1,
+          "best_config": {
+            "valid": true,
+            "trade_count": 84,
+            "static_avg_r": 2.5,
+            "aee_avg_r": 3.1976190476191926,
+            "mean_delta_r": 0.6976190476191924,
+            "saved_loss": 0.0,
+            "clip_rate": 0.0,
+            "held_to_loss_rate": 0.0,
+            "aee_score": 0.6976190476191924,
+            "config": {
+              "logic": "same_triggered_trade_population_from_stage7",
+              "giveback_limit_good": 0.6,
+              "giveback_limit_other": 0.35
+            }
+          },
+          "top_10_configs": []
+        },
+        "both": {
+          "best_config": {
+            "long": {
+              "logic": "same_triggered_trade_population_from_stage7",
+              "giveback_limit_good": 0.6,
+              "giveback_limit_other": 0.35
+            },
+            "short": {
+              "logic": "same_triggered_trade_population_from_stage7",
+              "giveback_limit_good": 0.6,
+              "giveback_limit_other": 0.35
+            }
+          },
+          "trade_count": 156,
+          "static_avg_r": 2.5,
+          "aee_avg_r": 3.1621794871796642,
+          "delta_r": 0.6621794871796642
+        },
+        "report": {
+          "static_avg_R": 2.5,
+          "AEE_avg_R": 3.1621794871796642,
+          "delta_R": 0.6621794871796642,
+          "clip_rate": 0.0,
+          "saved_loss": 0.0,
+          "timeout_rate": 0.0,
+          "long_delta_R": 0.6208333333335478,
+          "short_delta_R": 0.6976190476191924,
+          "pass": true,
+          "same_trade_population_as_stage7": true
+        }
+      }
+    },
+    "stage_9": {
+      "status": "PRESENT",
+      "pass": true,
+      "blocking_issues": [],
+      "details": {
+        "total_trades": 156,
+        "good_capture": 0.9484536082474226,
+        "bad_trigger": 0.012448132780082987,
+        "pips_mean": 3.1621794871796642,
+        "pips_per_hour": 17.430167597765365,
+        "equity_per_hour": 6.223718299338301,
+        "static_vs_AEE_delta": 0.6621794871796642,
+        "final_verdict": "PASS"
+      }
+    }
+  },
+  "linkage_status": {
+    "stage_0_to_1": {
+      "source_file": "data_audit_outputs/data_source_audit.json",
+      "destination_file": "phase1_proven_outputs/opportunity_map_raw.csv",
+      "consistency": "data_rows=540 raw_rows=540",
+      "status": "valid"
+    },
+    "stage_1_to_2": {
+      "source_file": "phase1_correct_outputs/opportunities_dataset.csv",
+      "destination_file": "opportunity_clusters.csv",
+      "consistency": "opportunities=519 clusters=18",
+      "status": "valid"
+    },
+    "stage_2_to_3": {
+      "source_file": "opportunity_clusters.csv",
+      "destination_file": "entry_window_states.csv",
+      "consistency": "clusters=18 entry_windows=18",
+      "status": "valid"
+    },
+    "stage_3_to_7": {
+      "source_file": "entry_window_states.csv",
+      "destination_file": "entry_fit_both.json",
+      "consistency": "entry_windows=18 entry_trades=156",
+      "status": "valid"
+    },
+    "stage_4_to_5": {
+      "source_file": "opportunity_zones_labeled.csv",
+      "destination_file": "zone_label_separability.json",
+      "consistency": "labeled_rows=519 labeled_total=519",
+      "status": "valid"
+    },
+    "stage_2_3_4_5_to_6": {
+      "source_file": "opportunity_clusters.csv + entry_window_states.csv + opportunity_zones_labeled.csv + zone_label_separability.json",
+      "destination_file": "odm_ceiling_report.json",
+      "consistency": "n_good=14 n_bad=3",
+      "status": "valid"
+    },
+    "stage_7_to_8": {
+      "source_file": "entry_fit_both.json",
+      "destination_file": "aee_vs_static_report.json",
+      "consistency": "entry_trades=156 aee_trades=156",
+      "status": "valid"
+    },
+    "stage_7_8_to_9": {
+      "source_file": "entry_fit_both.json + aee_vs_static_report.json",
+      "destination_file": "combined_validation.json",
+      "consistency": "entry_trades=156 combined_trades=156",
+      "status": "valid"
+    }
+  },
+  "branch_consistency": {
+    "stage_4_labels_same_branch_as_stage_5": true,
+    "stage_7_entry_fit_same_labels_as_stage_4": true,
+    "stage_8_same_triggered_trade_set_as_stage_7": true,
+    "stage_9_uses_same_stage_7_and_8_outputs": true,
+    "status": "consistent",
+    "issues": []
+  },
+  "weak_proofs": [],
+  "missing_infrastructure": {
+    "multi_pair_support": "PRESENT",
+    "session_filtering": "PRESENT",
+    "weekday_filtering": "PRESENT",
+    "concurrency_occupancy_logic": "PRESENT",
+    "same_pair_opposite_direction_conflict_handling": "PRESENT",
+    "spread_aware_execution_modeling": "PRESENT",
+    "latency_assumptions": "PRESENT",
+    "partial_profit_support": "PRESENT",
+    "runner_harvester_split_logic": "PRESENT",
+    "destructive_audit_infrastructure": "PRESENT",
+    "permutation": "PRESENT",
+    "look_ahead": "PRESENT",
+    "regime_dependence": "PRESENT",
+    "clustering_concentration": "PRESENT"
+  },
+  "capability_reports": {
+    "multi_pair_support_report": {
+      "supported_by_schema": true,
+      "pair_field_present": true,
+      "pairs_detected_in_current_run": [
+        "EUR_USD"
+      ],
+      "pair_grouping_used_in_clusters": true,
+      "pair_grouping_used_in_entry_windows": true,
+      "pair_grouping_used_in_odm": true,
+      "multi_pair_ready": true
+    },
+    "weekday_filter_report": {
+      "weekday_field_present": true,
+      "counts_by_weekday": {
+        "monday": 519
+      },
+      "weekday_grouping_available": true,
+      "weekday_filter_ready": true
+    },
+    "latency_assumptions": {
+      "entry_decision_latency_ms": 250,
+      "entry_execution_latency_ms": 350,
+      "exit_decision_latency_ms": 200,
+      "exit_execution_latency_ms": 300,
+      "slippage_pips_assumption": 0.2,
+      "applied_as_explicit_infrastructure_assumption": true
+    }
+  },
+  "overall_verdict": "INFRASTRUCTURE_COMPLETE",
+  "work_completion_percent": 42,
+  "time_completion_percent": 62
+}

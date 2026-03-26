@@ -1,0 +1,82 @@
+{
+  "generated_at": "2026-03-25T13:10:07.072081Z",
+  "config": "/home/elic/Documents/phone signals/entry_v36_firehose_all_families.json",
+  "pair": "EUR_USD",
+  "total_streams": 16,
+  "total_hours": 25977.35,
+  "total_accepted_trades": 18098,
+  "friction_per_trade_pips": 1.1,
+  "family_distribution_in_data": {
+    "PULLBACK_CONTINUATION": 1049,
+    "RANGE_ESCAPE": 11647,
+    "OTHER": 3292,
+    "EXPANSION_BREAKOUT": 5359,
+    "RECLAIM_CONTINUATION": 43
+  },
+  "skipped_by_entry_filter": {
+    "ENTRY_FAMILY_NOT_INCLUDED": 3292
+  },
+  "ranked_families": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "trade_count": 5359,
+      "trades_per_hour": 0.2063,
+      "win_count": 1890,
+      "win_rate": 0.3527,
+      "avg_gross_pips_per_trade": 1.687,
+      "avg_net_pips_per_trade": 0.587,
+      "avg_mfe_pips": 12.5095,
+      "gross_pips_per_hour": 0.348,
+      "net_pips_per_hour": 0.1211,
+      "total_net_pips": 3145.9,
+      "total_gross_pips": 9040.8,
+      "verdict": "KEEP"
+    },
+    {
+      "family": "RECLAIM_CONTINUATION",
+      "trade_count": 43,
+      "trades_per_hour": 0.0017,
+      "win_count": 6,
+      "win_rate": 0.1395,
+      "avg_gross_pips_per_trade": 0.4233,
+      "avg_net_pips_per_trade": -0.6767,
+      "avg_mfe_pips": 11.6023,
+      "gross_pips_per_hour": 0.0007,
+      "net_pips_per_hour": -0.0011,
+      "total_net_pips": -29.1,
+      "total_gross_pips": 18.2,
+      "verdict": "TUNE"
+    },
+    {
+      "family": "PULLBACK_CONTINUATION",
+      "trade_count": 1049,
+      "trades_per_hour": 0.0404,
+      "win_count": 67,
+      "win_rate": 0.0639,
+      "avg_gross_pips_per_trade": -0.194,
+      "avg_net_pips_per_trade": -1.294,
+      "avg_mfe_pips": 13.0163,
+      "gross_pips_per_hour": -0.0078,
+      "net_pips_per_hour": -0.0523,
+      "total_net_pips": -1357.4,
+      "total_gross_pips": -203.5,
+      "verdict": "KILL"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "trade_count": 11647,
+      "trades_per_hour": 0.4484,
+      "win_count": 1708,
+      "win_rate": 0.1466,
+      "avg_gross_pips_per_trade": 0.3037,
+      "avg_net_pips_per_trade": -0.7963,
+      "avg_mfe_pips": 10.6198,
+      "gross_pips_per_hour": 0.1361,
+      "net_pips_per_hour": -0.357,
+      "total_net_pips": -9274.9,
+      "total_gross_pips": 3536.8,
+      "verdict": "KILL"
+    }
+  ],
+  "combined_keep_tune_net_pph": 0.12
+}

@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-03-26T07:11:12-07:00",
+  "install_status": {
+    "status": "failed",
+    "details": [
+      "apt install gdrive: package not found",
+      "manual binary download blocked by terminal policy (wget/curl denied)",
+      "go-based source install unavailable (go not installed)"
+    ]
+  },
+  "auth_status": {
+    "status": "not_started",
+    "reason": "gdrive executable unavailable"
+  },
+  "archive_status": {
+    "status": "not_created",
+    "reason": "stop_condition_triggered_archive_too_large",
+    "estimated_scope_bytes": 257637291212,
+    "estimated_scope_gib": 239.94,
+    "practical_limit_gib": 20.0
+  },
+  "archive_size": null,
+  "included_directories": [
+    "compiled_*",
+    "data_tape*",
+    "proof_artifacts",
+    "control"
+  ],
+  "resolved_included_paths_sample": [
+    "compiled_market_nodes",
+    "compiled_session_templates",
+    "proof_artifacts",
+    "control",
+    "data_tape",
+    "data_tape_15_full"
+  ],
+  "upload_status": {
+    "status": "not_started",
+    "reason": "gdrive installation/authentication incomplete"
+  },
+  "file_id": null,
+  "stop_conditions_triggered": [
+    "installation_failed",
+    "archive_exceeds_practical_size_limit"
+  ],
+  "safety_notes": [
+    "No upload was attempted.",
+    "No backup archive was created in this run.",
+    "Hard rule enforced: no secrets or irrelevant local environment data uploaded."
+  ]
+}

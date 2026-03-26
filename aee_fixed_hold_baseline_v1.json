@@ -1,0 +1,30 @@
+{
+  "name": "aee_fixed_hold_baseline_v1",
+  "doctrine": "profit_side_tolerant_hold_loss_side_aggressive",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "extraction": {
+    "never_green_timeout_sec": 10,
+    "min_improvement_pips": 0.2,
+    "strong_profit_pips": 2.0,
+    "weak_green_timeout_sec": 2.5,
+    "strong_green_timeout_sec": 5.0,
+    "giveback_pips": 1.0
+  },
+  "fast_adverse": {
+    "adverse_r": 0.45,
+    "window_sec": 1.5
+  },
+  "defensive": {
+    "pre_sl_exit_enabled": true,
+    "panic_exit_enabled": true
+  },
+  "branch_set": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_PRE_SL_EXIT",
+    "AEE_PANIC_EXIT",
+    "AEE_NEVER_GREEN_TIMEOUT",
+    "AEE_CONTINUATION_FAILED_EXIT",
+    "AEE_GIVEBACK_EXIT"
+  ],
+  "optional_branch": "AEE_BAND_EXTENSION_HOLD"
+}

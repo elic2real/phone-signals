@@ -1,0 +1,22 @@
+{
+  "pair": "EUR_USD",
+  "session": "london",
+  "weekday": "monday",
+  "config": {
+    "confirm_disp_atr": 0.625,
+    "confirm_m1_closes": 1,
+    "confirm_sec": 60,
+    "base_max_dist_atr": 1.0,
+    "dist_vel_k": 1.0,
+    "logic": "speed_threshold_on_valid_entry_states"
+  },
+  "objective": {
+    "good_capture": 1.0,
+    "bad_trigger": 0.8,
+    "noise_trigger": 0.8,
+    "trade_count": 15,
+    "score": -0.20000000000000018,
+    "constraint_satisfied": false,
+    "bad_trigger_constraint": 0.15
+  }
+}

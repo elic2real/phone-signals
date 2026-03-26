@@ -1,0 +1,83 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T09:03:32.923967+00:00",
+  "task_id": "MVP_PHASE18_POLICY_PACKAGE_PROPOSAL_PAPER_ONLY",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "PAPER_ONLY_PACKAGE"
+  },
+  "dependency": {
+    "phase17_status": "PASS",
+    "phase17_path": "control/mvp_phase17_counterfactual_rerun_execution_with_mitigation_guards.json",
+    "phase0_template_path": "control/rcp_phase0_high_speed_foundation_template.json"
+  },
+  "policy_package": {
+    "candidate_package_id": "PKG_V3_M3_ANCHOR",
+    "source_variant_suffix": "V3",
+    "source_mode": "COUNTERFACTUAL_RERUN_EXECUTION_ONLY",
+    "policy_intent": "Adopt selective trial deactivation anchor mode to reduce false cuts while preserving positive net delta.",
+    "pair_bindings": {
+      "EUR_USD": {
+        "selected_variant": "P16-EUR_USD-V3",
+        "false_cut_rate_on_winners": 0.0,
+        "primary_positive_count": 3
+      },
+      "GBP_USD": {
+        "selected_variant": "P16-GBP_USD-V3",
+        "false_cut_rate_on_winners": 0.0,
+        "primary_positive_count": 3
+      }
+    },
+    "guardrails": {
+      "forbidden": [
+        "live production rollout without final paper approval",
+        "parameter tuning during packaging",
+        "scope widening beyond EUR_USD/GBP_USD LONDON"
+      ],
+      "must_hold": [
+        "false_cut_rate_on_winners <= 0.15 per pair",
+        "primary_positive_metrics >= 2 per pair"
+      ]
+    },
+    "release_stages": [
+      {
+        "stage": 1,
+        "name": "paper_lock",
+        "goal": "Freeze package behavior and acceptance metrics."
+      },
+      {
+        "stage": 2,
+        "name": "sandbox_shadow",
+        "goal": "Run shadow-only confirmation on fixed benchmark slices."
+      },
+      {
+        "stage": 3,
+        "name": "micro_live_guarded",
+        "goal": "Very small guarded promotion after explicit gate pass."
+      }
+    ],
+    "phase0_concept_adoption": {
+      "instrumentation_first": true,
+      "universal_analysis_required": true,
+      "parallel_variants_required": true,
+      "kill_rules_required": true,
+      "template_reference": "control/rcp_phase0_high_speed_foundation_template.json",
+      "template_task_id": "PHASE_0_FULL_INSTRUMENTED_BASELINE"
+    }
+  },
+  "pass_conditions": {
+    "phase17_dependency_passed": true,
+    "rerun_verdict_promote": true,
+    "promoted_variant_present": true,
+    "package_has_guardrails": true,
+    "phase0_concept_adoption_declared": true,
+    "paper_only_confirmed": true
+  },
+  "status": "PASS"
+}

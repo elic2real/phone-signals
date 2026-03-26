@@ -1,0 +1,25 @@
+# Monday Simulation Configuration - Frozen 2026-03-15
+# Purpose: Rigorous non-contaminated baseline for Monday Stage-6 Rebuild
+# Author: GitHub Copilot
+
+# --- Logic Parameters ---
+THRESHOLD = 0.72
+SLIPPAGE_R = -0.1          # Deduction per trade to simulate spread/slippage
+LOCKOUT_MINUTES = 20       # Concurrency lockout per node
+FIXED_RISK_PCT = 0.02      # 2% per trade
+ACCOUNT_START = 100.0      # USD
+RISK_CAP_USD = 2000.0      # Maximum risk per trade (liquidity limit)
+
+# --- Source Data ---
+# Pattern: compiled_market_nodes/*__monday__*
+# File: target_entry_stage/target_contextual_v2/target_entry_population.csv
+
+# --- Decision Columns (Normalized Mean) ---
+# 1. macro_dir_score
+# 2. micro_dir_score
+# 3. compression_score
+# 4. release_quality_score
+# 5. remaining_budget_score
+
+# --- Outcome Field ---
+# static_R (Used for PnL calculation AFTER entry decision)

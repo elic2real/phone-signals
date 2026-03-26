@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-03-24T01:28:48.768405Z",
+  "trade_count": 868,
+  "dataset_id": "D",
+  "histogram_r_bins": {
+    "R<=-1.0": 0,
+    "-1.0<R<=-0.4": 0,
+    "-0.4<R<=0": 76,
+    "0<R<=0.15": 249,
+    "0.15<R<=0.4": 301,
+    "0.4<R<=1.0": 137,
+    "R>1.0": 105
+  },
+  "reason_code_counts": {
+    "AEE_NEVER_GREEN_TIMEOUT": 696,
+    "AEE_CONTINUATION_FAILED_EXIT": 136,
+    "AEE_GIVEBACK_EXIT": 36
+  },
+  "entry_filter_counts": {
+    "ENTRY_CONTEXT_CUT": 16945,
+    "ENTRY_DISPLACEMENT_FILTER": 1891,
+    "ENTRY_NOISE_FILTER": 2,
+    "ENTRY_PROGRESS_FILTER": 1
+  },
+  "avg_hold_sec_by_reason": {
+    "AEE_NEVER_GREEN_TIMEOUT": 74.48275862068965,
+    "AEE_CONTINUATION_FAILED_EXIT": 241.76470588235293,
+    "AEE_GIVEBACK_EXIT": 245.0
+  },
+  "avg_best_favorable_r_by_reason": {
+    "AEE_NEVER_GREEN_TIMEOUT": 0.2746799548631445,
+    "AEE_CONTINUATION_FAILED_EXIT": 1.507667259211377,
+    "AEE_GIVEBACK_EXIT": 3.0742256817256814
+  },
+  "avg_giveback_r_before_exit_by_reason": {
+    "AEE_NEVER_GREEN_TIMEOUT": 0.05622924648786718,
+    "AEE_CONTINUATION_FAILED_EXIT": 0.16526521680933448,
+    "AEE_GIVEBACK_EXIT": 0.9073022348022347
+  },
+  "branch_close_share": {
+    "AEE_NEVER_GREEN_TIMEOUT": 0.8018433179723502,
+    "AEE_CONTINUATION_FAILED_EXIT": 0.15668202764976957,
+    "AEE_GIVEBACK_EXIT": 0.041474654377880185
+  }
+}

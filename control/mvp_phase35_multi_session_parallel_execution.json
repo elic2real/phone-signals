@@ -1,0 +1,41 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T16:46:42.774547+00:00",
+  "task_id": "MVP_PHASE35_MULTI_SESSION_PARALLEL_EXECUTION",
+  "dependency": {
+    "phase34_status": "READY",
+    "phase34_path": "control/mvp_phase34_multi_session_throughput_expansion_plan.json",
+    "phase5_path": "control/mvp_phase5_full_loop_validation.json",
+    "phase29_path": "control/mvp_phase29_shadow_soak_retrospective_and_live_gating_decision.json"
+  },
+  "scope_lock": {
+    "baseline_session": "LONDON",
+    "baseline_pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "target_sessions": [
+      "ASIA",
+      "NEW_YORK",
+      "LONDON_NY_OVERLAP"
+    ],
+    "tuning": "NONE_UNTIL_SESSION_PROFILE_PASS",
+    "mode": "PARALLEL_SESSION_EXPANSION"
+  },
+  "artifacts_written": [
+    "control/mvp_phase34_session_factor_snapshot.json",
+    "control/mvp_phase34_stage1_lane_results.json",
+    "control/mvp_phase34_stage2_lane_results.json",
+    "control/mvp_phase34_stage3_combined_stability.json",
+    "control/mvp_phase34_pair_session_acceptance_matrix.json",
+    "control/mvp_phase34_release_recommendation.json"
+  ],
+  "decision": {
+    "verdict": "PROMOTE",
+    "release_action": "PROMOTE_TO_STAGE2",
+    "reason": "All stage-1 lane hard gates passed under deterministic session priors."
+  },
+  "next_recommended_task": "MVP_PHASE36_MULTI_SESSION_DEEP_VALIDATION",
+  "status": "PASS"
+}

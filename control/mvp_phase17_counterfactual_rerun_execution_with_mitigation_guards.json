@@ -1,0 +1,331 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T08:55:39.902991+00:00",
+  "task_id": "MVP_PHASE17_COUNTERFACTUAL_RERUN_EXECUTION_WITH_MITIGATION_GUARDS",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "COUNTERFACTUAL_RERUN_EXECUTION_ONLY"
+  },
+  "dependency": {
+    "phase16_status": "PASS",
+    "phase16_path": "control/mvp_phase16_counterfactual_rerun_plan_with_mitigation_guards.json",
+    "phase13_status": "PASS",
+    "phase13_path": "control/mvp_phase13_counterfactual_simulation_plan_no_tuning.json",
+    "telemetry_paths": [
+      "control/mvp_phase9_runtime_eur_usd_telemetry.json",
+      "control/mvp_phase9_runtime_gbp_usd_telemetry.json"
+    ]
+  },
+  "gate_config": {
+    "max_false_cut_rate_on_winners": 0.15,
+    "required_primary_positive_metrics": 2
+  },
+  "results_by_pair": {
+    "EUR_USD": {
+      "trial_base_hit_counts": {
+        "P12-T1": 63,
+        "P12-T2": 58,
+        "P12-T3": 68
+      },
+      "variants": {
+        "P16-EUR_USD-V0": {
+          "variant_name": "control_replay",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 95,
+            "trigger_rate": 0.475,
+            "baseline_net_mean_pips": 0.6629999999999999,
+            "estimated_counterfactual_net_mean_pips": 3.6345,
+            "estimated_net_delta_mean_pips": 2.9715000000000003,
+            "estimated_saved_loss_total_pips": 594.3,
+            "estimated_saved_loss_mean_pips": 6.25578947368421,
+            "winners_count": 77,
+            "false_cut_winner_count": 29,
+            "false_cut_rate_on_winners": 0.37662337662337664,
+            "triggered_long_drawdown_count": 68,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": false
+            },
+            "primary_positive_count": 2,
+            "passes_pair_gate": false,
+            "active_guards": []
+          }
+        },
+        "P16-EUR_USD-V1": {
+          "variant_name": "m1_winner_confirmation_only",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 94,
+            "trigger_rate": 0.47,
+            "baseline_net_mean_pips": 0.6629999999999999,
+            "estimated_counterfactual_net_mean_pips": 3.564,
+            "estimated_net_delta_mean_pips": 2.9010000000000002,
+            "estimated_saved_loss_total_pips": 580.2,
+            "estimated_saved_loss_mean_pips": 6.172340425531916,
+            "winners_count": 77,
+            "false_cut_winner_count": 28,
+            "false_cut_rate_on_winners": 0.36363636363636365,
+            "triggered_long_drawdown_count": 68,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": false
+            },
+            "primary_positive_count": 2,
+            "passes_pair_gate": false,
+            "active_guards": [
+              "P15-EUR_USD-M1"
+            ]
+          }
+        },
+        "P16-EUR_USD-V2": {
+          "variant_name": "m1_plus_m2",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 83,
+            "trigger_rate": 0.415,
+            "baseline_net_mean_pips": 0.6629999999999999,
+            "estimated_counterfactual_net_mean_pips": 3.2395,
+            "estimated_net_delta_mean_pips": 2.5765000000000002,
+            "estimated_saved_loss_total_pips": 515.3,
+            "estimated_saved_loss_mean_pips": 6.208433734939758,
+            "winners_count": 77,
+            "false_cut_winner_count": 22,
+            "false_cut_rate_on_winners": 0.2857142857142857,
+            "triggered_long_drawdown_count": 68,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": false
+            },
+            "primary_positive_count": 2,
+            "passes_pair_gate": false,
+            "active_guards": [
+              "P15-EUR_USD-M1",
+              "P15-EUR_USD-M2"
+            ]
+          }
+        },
+        "P16-EUR_USD-V3": {
+          "variant_name": "m3_anchor_mode",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 58,
+            "trigger_rate": 0.29,
+            "baseline_net_mean_pips": 0.6629999999999999,
+            "estimated_counterfactual_net_mean_pips": 2.3945,
+            "estimated_net_delta_mean_pips": 1.7315,
+            "estimated_saved_loss_total_pips": 346.3,
+            "estimated_saved_loss_mean_pips": 5.970689655172414,
+            "winners_count": 77,
+            "false_cut_winner_count": 0,
+            "false_cut_rate_on_winners": 0.0,
+            "triggered_long_drawdown_count": 49,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": true
+            },
+            "primary_positive_count": 3,
+            "passes_pair_gate": true,
+            "active_guards": [
+              "P15-EUR_USD-M3"
+            ]
+          }
+        }
+      },
+      "selected_variant": {
+        "variant_id": "P16-EUR_USD-V3",
+        "variant_name": "m3_anchor_mode",
+        "selection_reason": "highest_net_delta_among_gate_pass_variants",
+        "passes_pair_gate": true
+      }
+    },
+    "GBP_USD": {
+      "trial_base_hit_counts": {
+        "P12-T1": 61,
+        "P12-T2": 30,
+        "P12-T3": 70
+      },
+      "variants": {
+        "P16-GBP_USD-V0": {
+          "variant_name": "control_replay",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 97,
+            "trigger_rate": 0.485,
+            "baseline_net_mean_pips": 1.376,
+            "estimated_counterfactual_net_mean_pips": 5.6635,
+            "estimated_net_delta_mean_pips": 4.2875,
+            "estimated_saved_loss_total_pips": 857.5,
+            "estimated_saved_loss_mean_pips": 8.84020618556701,
+            "winners_count": 104,
+            "false_cut_winner_count": 48,
+            "false_cut_rate_on_winners": 0.46153846153846156,
+            "triggered_long_drawdown_count": 70,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": false
+            },
+            "primary_positive_count": 2,
+            "passes_pair_gate": false,
+            "active_guards": []
+          }
+        },
+        "P16-GBP_USD-V1": {
+          "variant_name": "m1_winner_confirmation_only",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 90,
+            "trigger_rate": 0.45,
+            "baseline_net_mean_pips": 1.376,
+            "estimated_counterfactual_net_mean_pips": 5.152,
+            "estimated_net_delta_mean_pips": 3.7760000000000002,
+            "estimated_saved_loss_total_pips": 755.2,
+            "estimated_saved_loss_mean_pips": 8.391111111111112,
+            "winners_count": 104,
+            "false_cut_winner_count": 41,
+            "false_cut_rate_on_winners": 0.3942307692307692,
+            "triggered_long_drawdown_count": 70,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": false
+            },
+            "primary_positive_count": 2,
+            "passes_pair_gate": false,
+            "active_guards": [
+              "P15-GBP_USD-M1"
+            ]
+          }
+        },
+        "P16-GBP_USD-V2": {
+          "variant_name": "m1_plus_m2",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 79,
+            "trigger_rate": 0.395,
+            "baseline_net_mean_pips": 1.376,
+            "estimated_counterfactual_net_mean_pips": 4.682,
+            "estimated_net_delta_mean_pips": 3.3060000000000005,
+            "estimated_saved_loss_total_pips": 661.2,
+            "estimated_saved_loss_mean_pips": 8.369620253164557,
+            "winners_count": 104,
+            "false_cut_winner_count": 35,
+            "false_cut_rate_on_winners": 0.33653846153846156,
+            "triggered_long_drawdown_count": 70,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": false
+            },
+            "primary_positive_count": 2,
+            "passes_pair_gate": false,
+            "active_guards": [
+              "P15-GBP_USD-M1",
+              "P15-GBP_USD-M2"
+            ]
+          }
+        },
+        "P16-GBP_USD-V3": {
+          "variant_name": "m3_anchor_mode",
+          "summary": {
+            "sample_count": 200,
+            "triggered_count": 30,
+            "trigger_rate": 0.15,
+            "baseline_net_mean_pips": 1.376,
+            "estimated_counterfactual_net_mean_pips": 2.4659999999999997,
+            "estimated_net_delta_mean_pips": 1.0899999999999999,
+            "estimated_saved_loss_total_pips": 218.0,
+            "estimated_saved_loss_mean_pips": 7.266666666666667,
+            "winners_count": 104,
+            "false_cut_winner_count": 0,
+            "false_cut_rate_on_winners": 0.0,
+            "triggered_long_drawdown_count": 30,
+            "primary_metric_signals": {
+              "peak_to_close_loss_distribution_delta_positive": true,
+              "drawdown_duration_bucket_shift_positive": true,
+              "false_cut_rate_within_limit": true
+            },
+            "primary_positive_count": 3,
+            "passes_pair_gate": true,
+            "active_guards": [
+              "P15-GBP_USD-M3"
+            ]
+          }
+        }
+      },
+      "selected_variant": {
+        "variant_id": "P16-GBP_USD-V3",
+        "variant_name": "m3_anchor_mode",
+        "selection_reason": "highest_net_delta_among_gate_pass_variants",
+        "passes_pair_gate": true
+      }
+    }
+  },
+  "cross_pair_variant_gate": {
+    "V0": {
+      "pair_gate_pass": {
+        "EUR_USD": false,
+        "GBP_USD": false
+      },
+      "cross_pair_pass": false,
+      "combined_net_delta_mean_pips": 7.259
+    },
+    "V1": {
+      "pair_gate_pass": {
+        "EUR_USD": false,
+        "GBP_USD": false
+      },
+      "cross_pair_pass": false,
+      "combined_net_delta_mean_pips": 6.6770000000000005
+    },
+    "V2": {
+      "pair_gate_pass": {
+        "EUR_USD": false,
+        "GBP_USD": false
+      },
+      "cross_pair_pass": false,
+      "combined_net_delta_mean_pips": 5.8825
+    },
+    "V3": {
+      "pair_gate_pass": {
+        "EUR_USD": true,
+        "GBP_USD": true
+      },
+      "cross_pair_pass": true,
+      "combined_net_delta_mean_pips": 2.8215
+    }
+  },
+  "promotion_decision": {
+    "rerun_verdict": "PROMOTE",
+    "overall_pass": true,
+    "why": "At least one mitigation-guarded variant passes pair gates across both pairs.",
+    "promoted_variant_suffix": "V3",
+    "promoted_variant_summary": {
+      "pair_gate_pass": {
+        "EUR_USD": true,
+        "GBP_USD": true
+      },
+      "cross_pair_pass": true,
+      "combined_net_delta_mean_pips": 2.8215
+    }
+  },
+  "pass_conditions": {
+    "phase16_dependency_passed": true,
+    "phase13_dependency_passed": true,
+    "rerun_executed_for_all_pairs": true,
+    "cross_pair_gate_evaluated": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

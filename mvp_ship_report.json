@@ -1,0 +1,155 @@
+{
+  "mode": "mvp_ship_now_practice",
+  "generated_ts": 1774039240.7337835,
+  "windows": {
+    "smoke": {
+      "name": "mvp_smoke",
+      "requested_sec": 180,
+      "start_ts": 1774038432.9483633,
+      "end_ts": 1774038627.176492,
+      "elapsed_sec": 194.22812867164612,
+      "return_code": 0,
+      "timeout_hit": false,
+      "log_file": "logs/mvp_smoke_run.log"
+    },
+    "bounded": {
+      "name": "mvp_bounded",
+      "requested_sec": 600,
+      "start_ts": 1774038627.2327778,
+      "end_ts": 1774039240.6541011,
+      "elapsed_sec": 613.421323299408,
+      "return_code": 0,
+      "timeout_hit": false,
+      "log_file": "logs/mvp_bounded_run.log"
+    }
+  },
+  "metrics": {
+    "smoke": {
+      "entries": 3,
+      "fills": 1,
+      "aee_exits": 0,
+      "pre_sl_exits": 0,
+      "realized_closes": 0,
+      "realized_pnl": 0.0,
+      "adopt_open_trade_events": 5,
+      "inventory_violations": 0,
+      "error_events": 0,
+      "top_kinds": [
+        [
+          "ENTRY_FAMILY_DECISION",
+          420
+        ],
+        [
+          "AEE_HANDOFF_TRACE",
+          154
+        ],
+        [
+          "AEE_STRATEGY_OVERRIDE_DECISION",
+          148
+        ],
+        [
+          "AEE_PERIODIC_DECISION",
+          148
+        ],
+        [
+          "ENTRY_PATH_SKIP_REASON",
+          57
+        ],
+        [
+          "SESSION_HANDSHAKE",
+          9
+        ],
+        [
+          "SIZE_TRACE",
+          8
+        ],
+        [
+          "NO_THROTTLE_MODE_BYPASS",
+          5
+        ],
+        [
+          "STATE_TRANSITION",
+          4
+        ],
+        [
+          "ENTRY_TRACE",
+          3
+        ],
+        [
+          "ENTRY_EVAL",
+          3
+        ],
+        [
+          "ENTRY_GATE_EVAL",
+          3
+        ]
+      ]
+    },
+    "bounded": {
+      "entries": 2,
+      "fills": 1,
+      "aee_exits": 0,
+      "pre_sl_exits": 0,
+      "realized_closes": 0,
+      "realized_pnl": 0.0,
+      "adopt_open_trade_events": 5,
+      "inventory_violations": 0,
+      "error_events": 0,
+      "top_kinds": [
+        [
+          "ENTRY_FAMILY_DECISION",
+          1533
+        ],
+        [
+          "AEE_HANDOFF_TRACE",
+          427
+        ],
+        [
+          "AEE_STRATEGY_OVERRIDE_DECISION",
+          421
+        ],
+        [
+          "AEE_PERIODIC_DECISION",
+          421
+        ],
+        [
+          "ENTRY_PATH_SKIP_REASON",
+          217
+        ],
+        [
+          "SIZE_TRACE",
+          8
+        ],
+        [
+          "STATE_TRANSITION",
+          7
+        ],
+        [
+          "SESSION_HANDSHAKE",
+          6
+        ],
+        [
+          "NO_THROTTLE_MODE_BYPASS",
+          4
+        ],
+        [
+          "FALLBACK_USED",
+          2
+        ],
+        [
+          "STRATEGY_POLICY_DECISION",
+          2
+        ],
+        [
+          "ENTRY_TRACE",
+          2
+        ]
+      ]
+    }
+  },
+  "verdicts": {
+    "runtime_stability": "PASS",
+    "inventory_compliance": "PASS",
+    "restart_open_trade_continuity": "PASS"
+  }
+}

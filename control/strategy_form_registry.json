@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "policy": "At least 3 structurally different forms per concept before local refinement.",
+  "forms": [
+    {
+      "concept_id": "BREAKOUT",
+      "required_form_count": 3,
+      "form_classes": [
+        "release_acceleration",
+        "compression_break",
+        "structure_escape"
+      ]
+    },
+    {
+      "concept_id": "PULLBACK",
+      "required_form_count": 3,
+      "form_classes": [
+        "shallow_retrace_resume",
+        "deep_retrace_resume",
+        "failed_break_recover"
+      ]
+    },
+    {
+      "concept_id": "RECLAIM",
+      "required_form_count": 3,
+      "form_classes": [
+        "level_reclaim",
+        "momentum_reclaim",
+        "failed_break_reclaim"
+      ]
+    },
+    {
+      "concept_id": "RANGE_ESCAPE",
+      "required_form_count": 3,
+      "form_classes": [
+        "compression_release",
+        "fakeout_then_escape",
+        "late_escape_continuation"
+      ]
+    }
+  ]
+}

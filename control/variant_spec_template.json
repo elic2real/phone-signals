@@ -1,0 +1,22 @@
+{
+  "variants": [
+    {
+      "name": "variant_a_reclaim_stall_only",
+      "hypothesis": "Reduce fake runners by tightening reclaim-stall handling only",
+      "kill_metric": "fake_runner_count",
+      "overrides": {}
+    },
+    {
+      "name": "variant_b_fake_runner_demotion",
+      "hypothesis": "Reduce fake runners via stronger non-runner demotion path",
+      "kill_metric": "fake_runner_count",
+      "overrides": {}
+    },
+    {
+      "name": "variant_c_failed_progress_harvest",
+      "hypothesis": "Reduce overholds through post-reclaim failed-progress harvest",
+      "kill_metric": "overheld_winner_count",
+      "overrides": {}
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T18:49:25.838330+00:00",
+  "task_id": "MVP_PHASE36_MULTI_SESSION_DEEP_VALIDATION",
+  "dependency": {
+    "phase34_status": "READY",
+    "phase35_status": "PASS",
+    "stage1_status": "PASS"
+  },
+  "estimation_mode": "DETERMINISTIC_MODELLED_UNTIL_REPLAY",
+  "summary": {
+    "row_count": 28,
+    "all_rows_pass": true,
+    "session_count": 4,
+    "pairs_count": 7
+  },
+  "session_totals": [
+    {
+      "session": "LONDON",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.632951,
+      "mean_win_rate_est": 0.570667,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.178916
+    },
+    {
+      "session": "ASIA",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.332487,
+      "mean_win_rate_est": 0.557481,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.075695
+    },
+    {
+      "session": "NEW_YORK",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.59185,
+      "mean_win_rate_est": 0.575425,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.178561
+    },
+    {
+      "session": "LONDON_NY_OVERLAP",
+      "pair_count": 7,
+      "pass_count": 7,
+      "total_trades_per_hour_est": 0.74967,
+      "mean_win_rate_est": 0.588457,
+      "total_expected_equity_pct_per_hour_at_2pct_risk": 0.265254
+    }
+  ],
+  "next_recommended_task": "MVP_PHASE37_MULTI_WINDOW_COMBINED_STABILITY",
+  "status": "PASS"
+}

@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-03-23T21:41:24.611335Z",
+  "source": {
+    "state_streams_used": 24,
+    "state_stream_cap": 24,
+    "artifact_files_used": 9
+  },
+  "path_behavior_frequencies": {
+    "trades_total": 39939,
+    "never_escape_near_entry_pct": 0.0,
+    "enter_profit_then_stall_pct": 0.34995868699767146,
+    "higher_band_then_fallback_pct": 0.7333183104233957,
+    "fail_fast_against_trade_pct": 0.24822854853651818
+  },
+  "hold_time_common_ranges_sec": {
+    "never_green_failure_mean": 0.0,
+    "green_stall_mean": 5823.168061815841,
+    "peak_to_fallback_mean": 2755.2205681507785,
+    "fast_adverse_mean": 98.81783336695582
+  },
+  "most_common_losing_path_shapes": [
+    "never_escape_near_entry",
+    "fail_fast_against_trade",
+    "higher_band_then_fallback"
+  ],
+  "most_common_small_win_path_shapes": [
+    "enter_profit_then_stall_with_low_giveback",
+    "profit_band_touch_then_quick_lock"
+  ],
+  "most_common_medium_win_path_shapes": [
+    "higher_band_then_controlled_fallback_exit",
+    "profit_band_dwell_then_fallback_exit"
+  ],
+  "exit_reason_correlation": {
+    "positive_extraction_top_reasons": [
+      [
+        "AEE_BAND_FORCED_MONETIZE",
+        118200
+      ],
+      [
+        "AEE_BAND_PROB_LOCK_EXIT",
+        83512
+      ],
+      [
+        "AEE_BAND_FAST_FAILURE_EXIT",
+        13193
+      ],
+      [
+        "STATIC_TIMEOUT",
+        6211
+      ],
+      [
+        "AEE_BAND_STALL_RECLASS_EXIT",
+        1364
+      ],
+      [
+        "AEE_BAND_EARLY_PROFIT_LOCK",
+        335
+      ],
+      [
+        "AEE_PROFIT_STALL_HARVEST",
+        190
+      ]
+    ],
+    "negative_extraction_top_reasons": [
+      [
+        "AEE_BAND_FORCED_MONETIZE",
+        165543
+      ],
+      [
+        "AEE_BAND_PROB_LOCK_EXIT",
+        158490
+      ],
+      [
+        "AEE_BAND_FAST_FAILURE_EXIT",
+        22772
+      ],
+      [
+        "AEE_BAND_EARLY_PROFIT_LOCK",
+        16775
+      ],
+      [
+        "AEE_BAND_STALL_RECLASS_EXIT",
+        12281
+      ],
+      [
+        "STATIC_TIMEOUT",
+        10907
+      ],
+      [
+        "AEE_PROFIT_STALL_HARVEST",
+        715
+      ]
+    ]
+  },
+  "failed_family_learning": {
+    "known_bad_tags": [
+      "non_promotable_under_current_seed_population",
+      "non_promotable_after_pair_scoped_validation",
+      "non_promotable_after_crossnode_and_pairscope"
+    ],
+    "avoid_patterns": [
+      "lock-window-only monetization gains",
+      "high avg_R with negative pips_per_hour delta",
+      "branch patterns dominated by recycle exits without net extraction gain"
+    ]
+  }
+}

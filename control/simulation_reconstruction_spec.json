@@ -1,0 +1,76 @@
+{
+  "task_id": "TASK-013",
+  "protocol_version": "RCP_V2",
+  "title": "Simulation reconstruction spec",
+  "status": "SPEC_READY",
+  "blocking_evidence": {
+    "breakout_bias_score": 0.1575,
+    "simulator_bias_finding": "SIMULATOR_BIASED_TOWARD_BREAKOUT",
+    "reclaim_representable_rate": 0.0,
+    "suspicious_fill_rate": 0.0637,
+    "regime_concentration_ratio_top": 0.6609
+  },
+  "objective": "Remove false-negative pressure against multi-stage strategies by reconstructing simulation truth anchors, sequence preservation, and pricing realism before further strategy or AEE refinement.",
+  "reconstruction_modules": [
+    {
+      "module": "truth_anchor_layer",
+      "problem": "The system measures profitability but not extraction efficiency.",
+      "requirements": [
+        "compute total_available_pips per trade and per family",
+        "compute entry_only_capture, realized_capture, and extraction_efficiency",
+        "classify efficiency bands as broken, weak, viable, or strong",
+        "publish available_vs_extracted movement in every benchmark run"
+      ],
+      "expected_effect": "Distinguish weak market from weak system and stop hiding low-extraction failures behind small positive PnL."
+    },
+    {
+      "module": "intrabar_path_model",
+      "problem": "Current sequence encoding does not represent reclaim behavior despite long paths and high path complexity.",
+      "requirements": [
+        "preserve ordered micro-swings inside each trade path",
+        "encode non-monotonic progress transitions rather than only aggregate progress_ratio summaries",
+        "retain adverse-to-recovery transitions required for pullback and reclaim forms",
+        "support explicit multi-stage state reconstruction: impulse, failure, reclaim, continuation"
+      ],
+      "expected_effect": "Increase reclaim representability from 0 toward non-zero and reduce breakout-only survivorship bias."
+    },
+    {
+      "module": "pricing_realism_layer",
+      "problem": "Bar-1 gains are occasionally too optimistic and spread application is inconsistent.",
+      "requirements": [
+        "define side-aware entry and exit price formation",
+        "apply spread consistently at entry, exit, and evaluation layers",
+        "track bid/ask or explicit side-aware proxy fields in derived streams",
+        "publish fill mismatch diagnostics whenever bar-1 gain exceeds allowed tolerance"
+      ],
+      "expected_effect": "Reduce suspicious_fill_rate below 0.05 and increase pricing consistency score."
+    },
+    {
+      "module": "sample_balance_layer",
+      "problem": "The current evaluation set is concentrated in compressed and Q4-heavy conditions.",
+      "requirements": [
+        "rebalance benchmark windows by regime and quarter",
+        "require benchmark output to show regime-weighted and raw views",
+        "separate structural failure from concentration failure in adjudication"
+      ],
+      "expected_effect": "Prevent one regime bucket from dominating comparative form ranking."
+    }
+  ],
+  "priority_order": [
+    "truth_anchor_layer",
+    "intrabar_path_model",
+    "pricing_realism_layer",
+    "sample_balance_layer"
+  ],
+  "gating_rules": [
+    "Do not tune strategy thresholds while simulation reconstruction is incomplete.",
+    "Do not conclude concept failure until truth anchor and sequence preservation are live.",
+    "Do not refine AEE family logic using simulator outputs that still fail pricing realism checks."
+  ],
+  "success_conditions": [
+    "Every benchmark run reports total_available_pips, entry_only_capture, realized_capture, and extraction_efficiency.",
+    "Reclaim representability is measurable and non-zero.",
+    "Suspicious fill rate is reduced below doctrine threshold.",
+    "Benchmark matrix can compare breakout and multi-stage forms on balanced samples."
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "run_id": "AEE_RUN_20260326T065156Z",
+  "detector_logic_path": [
+    {
+      "name": "EXPANSION_BREAKOUT",
+      "count": 473
+    },
+    {
+      "name": "RANGE_ESCAPE",
+      "count": 379
+    },
+    {
+      "name": "OTHER",
+      "count": 41
+    }
+  ],
+  "gating_path": {
+    "top_block_reasons": [
+      {
+        "name": "ENTRY_SESSION_NOT_INCLUDED",
+        "count": 16008
+      },
+      {
+        "name": "ENTRY_MICRO_CONFIRM_FILTER",
+        "count": 2532
+      },
+      {
+        "name": "ENTRY_DISPLACEMENT_FILTER",
+        "count": 440
+      },
+      {
+        "name": "ENTRY_FAMILY_NOT_INCLUDED",
+        "count": 199
+      },
+      {
+        "name": "ENTRY_NOISE_FILTER",
+        "count": 13
+      }
+    ],
+    "filter_config": {
+      "include_families": [
+        "EXPANSION_BREAKOUT",
+        "OTHER",
+        "RANGE_ESCAPE"
+      ],
+      "exclude_families": [],
+      "exclude_contexts": [
+        "eur_chf__monday__asia",
+        "eur_chf__monday__london",
+        "eur_chf__monday__new_york",
+        "eur_chf__monday__sydney",
+        "eur_chf__wednesday__london",
+        "eur_gbp__monday__asia",
+        "eur_gbp__monday__london",
+        "eur_gbp__monday__new_york",
+        "eur_gbp__monday__sydney",
+        "eur_gbp__thursday__sydney",
+        "eur_usd__friday__asia",
+        "eur_usd__tuesday__new_york",
+        "usd_cad__monday__london"
+      ]
+    }
+  },
+  "exit_logic_path": [
+    {
+      "name": "AEE_GIVEBACK_EXIT",
+      "count": 511
+    },
+    {
+      "name": "AEE_BAND_FAST_FAILURE_EXIT",
+      "count": 368
+    },
+    {
+      "name": "AEE_CONTINUATION_FAILED_EXIT",
+      "count": 12
+    },
+    {
+      "name": "AEE_NEVER_GREEN_TIMEOUT",
+      "count": 2
+    }
+  ],
+  "state_transitions_used": [
+    {
+      "name": "UNKNOWN",
+      "count": 893
+    }
+  ],
+  "overrides_triggered": [
+    {
+      "name": "raw_core_mode",
+      "enabled": false,
+      "effect": "disables non-core entry gates when true"
+    }
+  ]
+}

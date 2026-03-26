@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "dataset": "scenarios/golden/v1.0/*.csv",
+    "horizon_min": 100,
+    "tp_pips": 3.0,
+    "sl_pips": 3.0
+  },
+  "label_counts": {
+    "long": {
+      "GOOD": 7,
+      "BAD": 1126,
+      "NOISE": 2
+    },
+    "short": {
+      "GOOD": 2,
+      "BAD": 1131,
+      "NOISE": 2
+    }
+  },
+  "total_rows": 1135,
+  "leakage_audit": {
+    "label_components": [
+      "outcome_tp_before_sl",
+      "early_impulse_ratio",
+      "path_efficiency",
+      "early_mae",
+      "breakout_strength",
+      "noise_half_tp_half_sl_rule"
+    ],
+    "uses_full_horizon_for_quality_filters": false,
+    "uses_early_window_only_for_quality": true,
+    "uses_pre_entry_range_only_for_breakout_strength": true,
+    "note": "Outcome TP/SL to horizon determines exploitability; impulse-quality filters use early window only."
+  }
+}

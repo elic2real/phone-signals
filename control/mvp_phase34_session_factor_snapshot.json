@@ -1,0 +1,81 @@
+{
+  "task_id": "MVP_PHASE35_MULTI_SESSION_PARALLEL_EXECUTION",
+  "generated_at": "2026-03-26T16:46:42.774456+00:00",
+  "reference_session": "LONDON",
+  "baseline_metrics": {
+    "weighted_net_pph_keep_tune": 0.09064852951689407,
+    "false_cut_rate_on_winners": 0.07692307692307693,
+    "weighted_intervention_relative_spread": 0.4250786788545134
+  },
+  "rows": [
+    {
+      "session": "ASIA",
+      "factors": {
+        "spread_mult": 1.12,
+        "volume_mult": 0.72,
+        "noise_mult": 1.18,
+        "vol_mult": 0.85
+      },
+      "feature_delta_vs_london": {
+        "spread_delta": 0.12,
+        "volume_delta": -0.28,
+        "noise_delta": 0.18,
+        "vol_delta": -0.15
+      },
+      "bounded_adjustments": {
+        "entry_filters.micro_confirm.confirm_push_pips_major_delta": 0.12,
+        "entry_filters.micro_confirm.confirm_window_sec_major_delta": 0.1125,
+        "entry_filters.micro_confirm.confirm_push_pips_wide_delta": 0.096,
+        "entry_filters.micro_confirm.confirm_window_sec_wide_delta": 0.105,
+        "entry_filters.min_release_quality_by_bar[bar=2].min_release_quality_delta": 0.063,
+        "entry_filters.max_noise_by_bar[bar=2].max_noise_delta": -0.063
+      }
+    },
+    {
+      "session": "NEW_YORK",
+      "factors": {
+        "spread_mult": 1.05,
+        "volume_mult": 1.08,
+        "noise_mult": 1.1,
+        "vol_mult": 1.15
+      },
+      "feature_delta_vs_london": {
+        "spread_delta": 0.05,
+        "volume_delta": 0.08,
+        "noise_delta": 0.1,
+        "vol_delta": 0.15
+      },
+      "bounded_adjustments": {
+        "entry_filters.micro_confirm.confirm_push_pips_major_delta": 0.0625,
+        "entry_filters.micro_confirm.confirm_window_sec_major_delta": 0.0275,
+        "entry_filters.micro_confirm.confirm_push_pips_wide_delta": 0.05,
+        "entry_filters.micro_confirm.confirm_window_sec_wide_delta": 0.035,
+        "entry_filters.min_release_quality_by_bar[bar=2].min_release_quality_delta": 0.035,
+        "entry_filters.max_noise_by_bar[bar=2].max_noise_delta": -0.035
+      }
+    },
+    {
+      "session": "LONDON_NY_OVERLAP",
+      "factors": {
+        "spread_mult": 0.98,
+        "volume_mult": 1.3,
+        "noise_mult": 1.12,
+        "vol_mult": 1.28
+      },
+      "feature_delta_vs_london": {
+        "spread_delta": -0.02,
+        "volume_delta": 0.3,
+        "noise_delta": 0.12,
+        "vol_delta": 0.28
+      },
+      "bounded_adjustments": {
+        "entry_filters.micro_confirm.confirm_push_pips_major_delta": 0.055,
+        "entry_filters.micro_confirm.confirm_window_sec_major_delta": 0.018,
+        "entry_filters.micro_confirm.confirm_push_pips_wide_delta": 0.044,
+        "entry_filters.micro_confirm.confirm_window_sec_wide_delta": 0.032,
+        "entry_filters.min_release_quality_by_bar[bar=2].min_release_quality_delta": 0.042,
+        "entry_filters.max_noise_by_bar[bar=2].max_noise_delta": -0.042
+      }
+    }
+  ]
+}

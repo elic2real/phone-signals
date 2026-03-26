@@ -1,0 +1,227 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T07:01:11.954908+00:00",
+  "task_id": "MVP_PHASE8_DECAY_SOURCE_ATTRIBUTION_NO_TUNING",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE"
+  },
+  "comparative_baseline": {
+    "baseline_window": "PHASE6_W3",
+    "runtime_window": "PHASE7_RUNTIME"
+  },
+  "required_metrics": {
+    "candidate_count_delta_vs_phase6": {
+      "baseline": 27859.0,
+      "runtime": 29164.0,
+      "abs_delta": 1305.0,
+      "pct_delta": 0.04684303097742202
+    },
+    "a_grade_count_delta_vs_phase6": {
+      "baseline_estimated": 100.94543934220611,
+      "runtime_estimated": 105.67402968434256,
+      "abs_delta_estimated": 4.728590342136442,
+      "pct_delta_estimated": 0.046843030977422075,
+      "method": "estimated_from_phase2_a_grade_ratio",
+      "direct_runtime_observable": false
+    },
+    "selected_trade_count_delta": {
+      "baseline": 1935.0,
+      "runtime": 1935.0,
+      "abs_delta": 0.0,
+      "pct_delta": 0.0
+    },
+    "average_priority_score_delta": {
+      "baseline_reference_winner_mean_score": 0.63542696124475,
+      "runtime_observed": null,
+      "delta": null,
+      "observable": false,
+      "reason": "priority score telemetry is not emitted in phase6/phase7 runtime artifacts"
+    },
+    "average_trade_life_delta": {
+      "baseline_observed": null,
+      "runtime_observed": null,
+      "delta": null,
+      "observable": false,
+      "reason": "trade life duration is not emitted in phase6/phase7 runtime artifacts"
+    },
+    "average_close_value_delta": {
+      "baseline": 1.5334934366925064,
+      "runtime": 1.5334934366925064,
+      "abs_delta": 0.0,
+      "pct_delta": 0.0
+    },
+    "average_mfe_delta": {
+      "baseline": 14.187322377260983,
+      "runtime": 14.187322377260983,
+      "abs_delta": 0.0,
+      "pct_delta": 0.0
+    },
+    "extraction_ratio_delta": {
+      "baseline": 0.5787733413234057,
+      "runtime": 0.5787733413234057,
+      "abs_delta": 0.0,
+      "pct_delta": 0.0
+    },
+    "blocker_reason_counts": {
+      "baseline_phase6_w3": {
+        "ENTRY_DISPLACEMENT_FILTER": 966,
+        "ENTRY_FAMILY_NOT_INCLUDED": 432,
+        "ENTRY_MICRO_CONFIRM_FILTER": 4871,
+        "ENTRY_NOISE_FILTER": 21,
+        "ENTRY_PROGRESS_FILTER": 2,
+        "ENTRY_SESSION_NOT_INCLUDED": 19632
+      },
+      "runtime_phase7": {
+        "ENTRY_DISPLACEMENT_FILTER": 966,
+        "ENTRY_FAMILY_NOT_INCLUDED": 432,
+        "ENTRY_MICRO_CONFIRM_FILTER": 4871,
+        "ENTRY_NOISE_FILTER": 21,
+        "ENTRY_PROGRESS_FILTER": 2,
+        "ENTRY_SESSION_NOT_INCLUDED": 20937
+      },
+      "delta": {
+        "ENTRY_DISPLACEMENT_FILTER": 0,
+        "ENTRY_FAMILY_NOT_INCLUDED": 0,
+        "ENTRY_MICRO_CONFIRM_FILTER": 0,
+        "ENTRY_NOISE_FILTER": 0,
+        "ENTRY_PROGRESS_FILTER": 0,
+        "ENTRY_SESSION_NOT_INCLUDED": 1305
+      }
+    },
+    "aee_decision_mix_counts": {
+      "baseline_phase6_w3": {
+        "KEEP": 3,
+        "TUNE": 3,
+        "KILL": 0
+      },
+      "runtime_phase7": {
+        "KEEP": 3,
+        "TUNE": 3,
+        "KILL": 0
+      },
+      "delta": {
+        "KEEP": 0,
+        "TUNE": 0,
+        "KILL": 0
+      }
+    }
+  },
+  "attribution_split": {
+    "entry_decay": {
+      "candidate_count_delta": {
+        "baseline": 27859.0,
+        "runtime": 29164.0,
+        "abs_delta": 1305.0,
+        "pct_delta": 0.04684303097742202
+      },
+      "a_grade_count_delta": {
+        "baseline_estimated": 100.94543934220611,
+        "runtime_estimated": 105.67402968434256,
+        "abs_delta_estimated": 4.728590342136442,
+        "pct_delta_estimated": 0.046843030977422075,
+        "method": "estimated_from_phase2_a_grade_ratio",
+        "direct_runtime_observable": false
+      },
+      "assessment": "POSITIVE_SUPPLY_SHIFT",
+      "note": "Candidate volume increased with wider runtime hours; decay is not driven by raw candidate shortage."
+    },
+    "priority_decay": {
+      "average_priority_score_delta": {
+        "baseline_reference_winner_mean_score": 0.63542696124475,
+        "runtime_observed": null,
+        "delta": null,
+        "observable": false,
+        "reason": "priority score telemetry is not emitted in phase6/phase7 runtime artifacts"
+      },
+      "selection_trade_rate_delta": {
+        "baseline": 0.06590529868383542,
+        "runtime": 0.05911505225037409,
+        "abs_delta": -0.006790246433461329,
+        "pct_delta": -0.10303035672497106
+      },
+      "aee_decision_mix_delta": {
+        "KEEP": 0,
+        "TUNE": 0,
+        "KILL": 0
+      },
+      "assessment": "INCONCLUSIVE_TELEMETRY_GAP",
+      "note": "Direct runtime priority-score telemetry is missing; trade-rate compression suggests weaker effective selection pace."
+    },
+    "aee_decay": {
+      "average_close_value_delta": {
+        "baseline": 1.5334934366925064,
+        "runtime": 1.5334934366925064,
+        "abs_delta": 0.0,
+        "pct_delta": 0.0
+      },
+      "average_mfe_delta": {
+        "baseline": 14.187322377260983,
+        "runtime": 14.187322377260983,
+        "abs_delta": 0.0,
+        "pct_delta": 0.0
+      },
+      "extraction_ratio_delta": {
+        "baseline": 0.5787733413234057,
+        "runtime": 0.5787733413234057,
+        "abs_delta": 0.0,
+        "pct_delta": 0.0
+      },
+      "assessment": "NO_PRIMARY_AEE_DECAY_SIGNAL",
+      "note": "Per-trade close value, MFE, and extraction ratio remained effectively flat."
+    },
+    "flow_or_blocker_decay": {
+      "blocker_reason_counts": {
+        "baseline_phase6_w3": {
+          "ENTRY_DISPLACEMENT_FILTER": 966,
+          "ENTRY_FAMILY_NOT_INCLUDED": 432,
+          "ENTRY_MICRO_CONFIRM_FILTER": 4871,
+          "ENTRY_NOISE_FILTER": 21,
+          "ENTRY_PROGRESS_FILTER": 2,
+          "ENTRY_SESSION_NOT_INCLUDED": 19632
+        },
+        "runtime_phase7": {
+          "ENTRY_DISPLACEMENT_FILTER": 966,
+          "ENTRY_FAMILY_NOT_INCLUDED": 432,
+          "ENTRY_MICRO_CONFIRM_FILTER": 4871,
+          "ENTRY_NOISE_FILTER": 21,
+          "ENTRY_PROGRESS_FILTER": 2,
+          "ENTRY_SESSION_NOT_INCLUDED": 20937
+        },
+        "delta": {
+          "ENTRY_DISPLACEMENT_FILTER": 0,
+          "ENTRY_FAMILY_NOT_INCLUDED": 0,
+          "ENTRY_MICRO_CONFIRM_FILTER": 0,
+          "ENTRY_NOISE_FILTER": 0,
+          "ENTRY_PROGRESS_FILTER": 0,
+          "ENTRY_SESSION_NOT_INCLUDED": 1305
+        }
+      },
+      "selection_trade_rate_delta": {
+        "baseline": 0.06590529868383542,
+        "runtime": 0.05911505225037409,
+        "abs_delta": -0.006790246433461329,
+        "pct_delta": -0.10303035672497106
+      },
+      "assessment": "PRIMARY_FLOW_DILUTION",
+      "note": "Wider runtime introduced more out-of-scope/session-excluded flow, diluting trade rate per hour while keeping total selected trades flat."
+    },
+    "primary_source": "FLOW_BLOCKER_DILUTION_WITH_PRIORITY_TELEMETRY_GAP"
+  },
+  "telemetry_gaps": [
+    "average_priority_score_runtime_stream",
+    "average_trade_life_runtime_stream"
+  ],
+  "pass_conditions": {
+    "phase7_dependency_exists": true,
+    "required_metric_block_present": true,
+    "attribution_split_present": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

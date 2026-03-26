@@ -1,0 +1,160 @@
+{
+  "generated_at": "2026-03-25T19:05:00Z",
+  "ranking_policy": {
+    "score_formula": "(expected_leverage * evidence_strength) - collateral_risk + retest_readiness",
+    "scale": "1-10 per factor",
+    "notes": "Higher score means earlier intervention priority"
+  },
+  "rows": [
+    {
+      "rank": 1,
+      "variable": "AEE_V3_FAMILY_HARD_GIVEBACK_EXIT",
+      "layer": "AEE_INTERACTION",
+      "expected_leverage": 10,
+      "evidence_strength": 10,
+      "collateral_risk": 5,
+      "retest_readiness": 10,
+      "priority_score": 105,
+      "status": "primary_bottleneck",
+      "why_now": "Dominant giveback overfire leaks continuation capture in breakout/range contexts"
+    },
+    {
+      "rank": 2,
+      "variable": "entry_only_vs_realized_gap_metric",
+      "layer": "AEE_INTERACTION",
+      "expected_leverage": 10,
+      "evidence_strength": 9,
+      "collateral_risk": 2,
+      "retest_readiness": 10,
+      "priority_score": 98,
+      "status": "proven_binding",
+      "why_now": "Primary success/failure signature for AEE interventions"
+    },
+    {
+      "rank": 3,
+      "variable": "AEE_V3_FAMILY_FAST_FAILURE_EXIT",
+      "layer": "AEE_INTERACTION",
+      "expected_leverage": 9,
+      "evidence_strength": 10,
+      "collateral_risk": 6,
+      "retest_readiness": 9,
+      "priority_score": 93,
+      "status": "secondary_bottleneck",
+      "why_now": "Secondary damage branch after giveback; tune only after giveback correction"
+    },
+    {
+      "rank": 4,
+      "variable": "AEE_V3_FAMILY_NEVER_GREEN_TIMEOUT",
+      "layer": "AEE_INTERACTION",
+      "expected_leverage": 9,
+      "evidence_strength": 8,
+      "collateral_risk": 5,
+      "retest_readiness": 9,
+      "priority_score": 76,
+      "status": "suspect",
+      "why_now": "Secondary reinforcing branch in breakout early-life exits"
+    },
+    {
+      "rank": 5,
+      "variable": "sequence_preservation_mode",
+      "layer": "SIMULATION",
+      "expected_leverage": 8,
+      "evidence_strength": 9,
+      "collateral_risk": 4,
+      "retest_readiness": 7,
+      "priority_score": 75,
+      "status": "proven_binding",
+      "why_now": "Critical for reclaim validity and ranking trust"
+    },
+    {
+      "rank": 6,
+      "variable": "total_available_pips_anchor",
+      "layer": "EXPANSION",
+      "expected_leverage": 7,
+      "evidence_strength": 8,
+      "collateral_risk": 1,
+      "retest_readiness": 9,
+      "priority_score": 64,
+      "status": "proven_binding",
+      "why_now": "Needed for extraction-efficiency based adjudication"
+    },
+    {
+      "rank": 7,
+      "variable": "balanced_window_mode",
+      "layer": "SIMULATION",
+      "expected_leverage": 7,
+      "evidence_strength": 8,
+      "collateral_risk": 3,
+      "retest_readiness": 8,
+      "priority_score": 61,
+      "status": "proven_binding",
+      "why_now": "Prevents regime concentration from distorting conclusions"
+    },
+    {
+      "rank": 8,
+      "variable": "aee_version_switch_v2_vs_v3",
+      "layer": "AEE_INTERACTION",
+      "expected_leverage": 5,
+      "evidence_strength": 9,
+      "collateral_risk": 2,
+      "retest_readiness": 10,
+      "priority_score": 53,
+      "status": "proven_binding",
+      "why_now": "Ablation control variable for every AEE test"
+    },
+    {
+      "rank": 9,
+      "variable": "pricing_realism_mode",
+      "layer": "SIMULATION",
+      "expected_leverage": 6,
+      "evidence_strength": 7,
+      "collateral_risk": 3,
+      "retest_readiness": 7,
+      "priority_score": 46,
+      "status": "suspect",
+      "why_now": "Integrity variable; moderate direct leverage"
+    },
+    {
+      "rank": 10,
+      "variable": "raw_vs_filtered_delta",
+      "layer": "FILTERING",
+      "expected_leverage": 4,
+      "evidence_strength": 7,
+      "collateral_risk": 2,
+      "retest_readiness": 8,
+      "priority_score": 34,
+      "status": "proven_binding",
+      "why_now": "Guardrail, not immediate bottleneck"
+    },
+    {
+      "rank": 11,
+      "variable": "include_families_policy",
+      "layer": "FILTERING",
+      "expected_leverage": 3,
+      "evidence_strength": 6,
+      "collateral_risk": 4,
+      "retest_readiness": 6,
+      "priority_score": 20,
+      "status": "proven_nonbinding",
+      "why_now": "Not the current high-leverage fix path"
+    },
+    {
+      "rank": 12,
+      "variable": "confirm_push_pips_major",
+      "layer": "CONCEPT_FORM",
+      "expected_leverage": 2,
+      "evidence_strength": 5,
+      "collateral_risk": 5,
+      "retest_readiness": 5,
+      "priority_score": 10,
+      "status": "suspect",
+      "why_now": "Entry threshold micro-tuning is currently lower value than exit modeling"
+    }
+  ],
+  "updated_at": "2026-03-26T02:54:02.938415Z",
+  "last_run_bottleneck_update": {
+    "run_id": "AEE_MATRIX_MATRIX_FAKE_RUNNER_SLICE_20260326T033000Z_baseline"
+  }
+}im_stall_only"
+  }
+}

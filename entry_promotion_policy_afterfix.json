@@ -1,0 +1,113 @@
+{
+  "generated_at": "2026-03-25T01:53:01.815121Z",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "selected_default_policy": "GUARDED_KEEP_LOW_CONFIDENCE",
+  "candidate_policies": {
+    "STRICT_KEEP_ACTIVE_ONLY": {
+      "active_entry_types": [
+        "EXPANSION_BREAKOUT"
+      ],
+      "inactive_entry_types": [
+        "OTHER",
+        "PULLBACK_CONTINUATION",
+        "RANGE_ESCAPE",
+        "RECLAIM_CONTINUATION"
+      ],
+      "why": "maximize confidence discipline and reduce low-visibility exposure"
+    },
+    "GUARDED_KEEP_LOW_CONFIDENCE": {
+      "active_entry_types": [
+        "EXPANSION_BREAKOUT",
+        "OTHER",
+        "RANGE_ESCAPE"
+      ],
+      "guarded_entry_types": [
+        "OTHER",
+        "RANGE_ESCAPE"
+      ],
+      "exploratory_only_entry_types": [
+        "PULLBACK_CONTINUATION",
+        "RECLAIM_CONTINUATION"
+      ],
+      "why": "preserve replay-proven families while enforcing stronger monitoring on lower-confidence families"
+    }
+  },
+  "family_status": [
+    {
+      "entry_type": "EXPANSION_BREAKOUT",
+      "replay_net_extraction_per_hour": 0.13361062784633065,
+      "replay_trade_count": 2889,
+      "confidence_grade": "HIGH",
+      "recommended_action": "KEEP_ACTIVE",
+      "strict_policy_state": "ACTIVE",
+      "guarded_policy_state": "ACTIVE"
+    },
+    {
+      "entry_type": "RANGE_ESCAPE",
+      "replay_net_extraction_per_hour": 0.06204660684298451,
+      "replay_trade_count": 2021,
+      "confidence_grade": "LOW",
+      "recommended_action": "KEEP_GUARDED",
+      "strict_policy_state": "INACTIVE",
+      "guarded_policy_state": "ACTIVE_MONITORED"
+    },
+    {
+      "entry_type": "OTHER",
+      "replay_net_extraction_per_hour": 0.005083210188994507,
+      "replay_trade_count": 152,
+      "confidence_grade": "LOW",
+      "recommended_action": "KEEP_GUARDED",
+      "strict_policy_state": "INACTIVE",
+      "guarded_policy_state": "ACTIVE_MONITORED"
+    },
+    {
+      "entry_type": "PULLBACK_CONTINUATION",
+      "replay_net_extraction_per_hour": 0.0007114881826784541,
+      "replay_trade_count": 12,
+      "confidence_grade": "LOW",
+      "recommended_action": "ATTRIBUTION_PRIORITY_HIGH",
+      "strict_policy_state": "INACTIVE",
+      "guarded_policy_state": "INACTIVE"
+    },
+    {
+      "entry_type": "RECLAIM_CONTINUATION",
+      "replay_net_extraction_per_hour": 0.00022171019856835682,
+      "replay_trade_count": 18,
+      "confidence_grade": "LOW",
+      "recommended_action": "ATTRIBUTION_PRIORITY_HIGH",
+      "strict_policy_state": "INACTIVE",
+      "guarded_policy_state": "INACTIVE"
+    }
+  ],
+  "activation_summary": {
+    "keep_active": [
+      "EXPANSION_BREAKOUT"
+    ],
+    "keep_guarded": [
+      "OTHER",
+      "RANGE_ESCAPE"
+    ],
+    "attribution_priority_high": [
+      "PULLBACK_CONTINUATION",
+      "RECLAIM_CONTINUATION"
+    ],
+    "split_by_context": []
+  },
+  "observability_gates": {
+    "replay_primary_gate": {
+      "minimum_net_extraction_per_hour": 0.0,
+      "minimum_replay_trade_count": 80,
+      "note": "replay-domain net extraction per hour remains primary gate"
+    },
+    "runtime_secondary_gate": {
+      "minimum_runtime_attempt_count_for_confidence": 100,
+      "minimum_runtime_filled_transition_count_for_visibility": 1,
+      "note": "runtime-domain is corroborative and must not replace replay ranking"
+    }
+  },
+  "notes": [
+    "strict policy activates only KEEP_ACTIVE families",
+    "guarded policy activates KEEP_ACTIVE + KEEP_GUARDED families with monitoring gates",
+    "ATTRIBUTION_PRIORITY_HIGH families stay out of activation until attribution depth improves"
+  ]
+}

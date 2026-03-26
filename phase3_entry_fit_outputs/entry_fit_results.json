@@ -1,0 +1,220 @@
+{
+  "phase": "entry_fitter",
+  "timestamp": "2026-03-08T06:43:37.363529",
+  "input_files": {
+    "opportunities_csv": "phase2_quantile_outputs/opportunity_ranked.csv",
+    "data_root": "london_session_data",
+    "pair": "EUR_USD"
+  },
+  "analysis_summary": {
+    "total_opportunities": 519,
+    "group_counts": {
+      "GOOD": 98,
+      "BAD": 161,
+      "NOISE": 260
+    }
+  },
+  "statistical_analysis": {
+    "pre_start_price": {
+      "anova_f_stat": 0.7417372370105604,
+      "anova_p_value": 0.47679290335118096,
+      "significant": "False",
+      "eta_squared": 0.0028667088848178864,
+      "means": {
+        "GOOD": 1.0724758163265307,
+        "BAD": 1.0879908074534161,
+        "NOISE": 1.0863771153846153
+      },
+      "medians": {
+        "GOOD": 1.09484,
+        "BAD": 1.0947,
+        "NOISE": 1.0947
+      }
+    },
+    "pre_end_price": {
+      "anova_f_stat": 0.7447209955578585,
+      "anova_p_value": 0.47537646304263326,
+      "significant": "False",
+      "eta_squared": 0.0028782074961468925,
+      "means": {
+        "GOOD": 1.0724089795918368,
+        "BAD": 1.0879475776397516,
+        "NOISE": 1.086345
+      },
+      "medians": {
+        "GOOD": 1.09467,
+        "BAD": 1.09468,
+        "NOISE": 1.09484
+      }
+    },
+    "pre_range_pips": {
+      "anova_f_stat": 1.2240163604895498,
+      "anova_p_value": 0.2948991068539203,
+      "significant": "False",
+      "eta_squared": 0.004721847835222843,
+      "means": {
+        "GOOD": 7.368367346938809,
+        "BAD": 7.755900621118029,
+        "NOISE": 7.940769230769405
+      },
+      "medians": {
+        "GOOD": 7.399999999999629,
+        "BAD": 6.899999999998574,
+        "NOISE": 7.050000000000667
+      }
+    },
+    "pre_trend_pips": {
+      "anova_f_stat": 0.15133921050528795,
+      "anova_p_value": 0.8595942175728106,
+      "significant": "False",
+      "eta_squared": 0.0005862422057081826,
+      "means": {
+        "GOOD": -0.6683673469387132,
+        "BAD": -0.4322981366460227,
+        "NOISE": -0.321153846153798
+      },
+      "medians": {
+        "GOOD": 0.0,
+        "BAD": 0.4999999999988347,
+        "NOISE": 0.05000000000032756
+      }
+    },
+    "pre_volatility": {
+      "anova_f_stat": 3.4569012294080546,
+      "anova_p_value": 0.03225936767993529,
+      "significant": "True",
+      "eta_squared": 0.013221686683936073,
+      "means": {
+        "GOOD": 0.91125381186962,
+        "BAD": 0.8910365481247003,
+        "NOISE": 0.847203043364707
+      },
+      "medians": {
+        "GOOD": 0.9120689655175123,
+        "BAD": 0.8896551724139554,
+        "NOISE": 0.83448275862095
+      }
+    },
+    "pre_range_ratio": {
+      "anova_f_stat": 1.2240163604895495,
+      "anova_p_value": 0.2948991068539203,
+      "significant": "False",
+      "eta_squared": 0.004721847835222843,
+      "means": {
+        "GOOD": 2.9473469387755236,
+        "BAD": 3.1023602484472113,
+        "NOISE": 3.1763076923077618
+      },
+      "medians": {
+        "GOOD": 2.9599999999998516,
+        "BAD": 2.7599999999994296,
+        "NOISE": 2.8200000000002667
+      }
+    },
+    "hour_of_day": {
+      "anova_f_stat": 0.5748092101574527,
+      "anova_p_value": 0.5631721985920459,
+      "significant": "False",
+      "eta_squared": 0.002222989980784529,
+      "means": {
+        "GOOD": 11.60204081632653,
+        "BAD": 11.944099378881987,
+        "NOISE": 11.707692307692307
+      },
+      "medians": {
+        "GOOD": 12.0,
+        "BAD": 12,
+        "NOISE": 12.0
+      }
+    },
+    "weekday_encoded": {
+      "anova_f_stat": NaN,
+      "anova_p_value": NaN,
+      "significant": false,
+      "eta_squared": 0,
+      "means": {
+        "GOOD": 0,
+        "BAD": 0,
+        "NOISE": 0
+      },
+      "medians": {
+        "GOOD": 0.0,
+        "BAD": 0,
+        "NOISE": 0.0
+      }
+    },
+    "is_london_session": {
+      "anova_f_stat": 0.22330057922216573,
+      "anova_p_value": 0.7999516417649082,
+      "significant": "False",
+      "eta_squared": 0.0008647576679613305,
+      "means": {
+        "GOOD": 0.9285714285714286,
+        "BAD": 0.9192546583850931,
+        "NOISE": 0.9076923076923077
+      },
+      "medians": {
+        "GOOD": 1.0,
+        "BAD": 1,
+        "NOISE": 1.0
+      }
+    },
+    "recent_velocity": {
+      "anova_f_stat": 3.0116348025898882,
+      "anova_p_value": 0.05007702332447514,
+      "significant": "False",
+      "eta_squared": 0.01153831630864911,
+      "means": {
+        "GOOD": -0.11785714285711062,
+        "BAD": 0.054192546583847374,
+        "NOISE": -0.016730769230776356
+      },
+      "medians": {
+        "GOOD": -0.14999999999987246,
+        "BAD": 0.0,
+        "NOISE": 0.0
+      }
+    },
+    "recent_acceleration": {
+      "anova_f_stat": 0.9631889218947919,
+      "anova_p_value": 0.38235894987173646,
+      "significant": "False",
+      "eta_squared": 0.0037194047768128796,
+      "means": {
+        "GOOD": -0.06938775510205734,
+        "BAD": 0.00973084886126924,
+        "NOISE": 0.014230769230782753
+      },
+      "medians": {
+        "GOOD": -0.06666666666710341,
+        "BAD": 0.0,
+        "NOISE": 0.0
+      }
+    }
+  },
+  "optimization_results": {
+    "significant_features": [
+      "pre_volatility"
+    ],
+    "optimized_thresholds": {
+      "pre_volatility": {
+        "threshold": 0.9379310344825482,
+        "direction": "above",
+        "good_capture_rate": 0.47959183673469385,
+        "avoid_trigger_rate": 0.3087885985748218,
+        "score": 0.17080323815987203
+      }
+    },
+    "entry_score": {
+      "good_capture_rate": 0.47959183673469385,
+      "bad_trigger_rate": 0.40372670807453415,
+      "noise_trigger_rate": 0.25,
+      "overall_score": -0.1741348713398403
+    },
+    "recommendations": [
+      "Found 1 optimized entry thresholds",
+      "Entry logic: AND combination of all thresholds",
+      "pre_volatility: above 0.938"
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-03-23T18:36:40.759317Z",
+  "branches": {
+    "AEE_BAND_EARLY_PROFIT_LOCK": {
+      "implemented": true,
+      "replay_proven": "pass",
+      "runtime_proven": "fail",
+      "current_thresholds": {
+        "min_net_r": 0.02,
+        "min_best_r": 0.05,
+        "min_giveback_r": 0.01
+      },
+      "trigger_count": 0,
+      "average_realized_r": 0.0,
+      "average_hold_time_sec": 0.0,
+      "current_status": "REPLAY_PROVEN"
+    },
+    "AEE_BAND_PROFIT_STALL_EXIT": {
+      "implemented": true,
+      "replay_proven": "fail",
+      "runtime_proven": "fail",
+      "current_thresholds": {
+        "min_best_r": 0.05,
+        "min_green_age_sec": 1.0,
+        "min_time_since_peak_sec": 1.0
+      },
+      "trigger_count": 0,
+      "average_realized_r": 0.0,
+      "average_hold_time_sec": 0.0,
+      "current_status": "BUILT"
+    },
+    "AEE_BAND_GIVEBACK_EXIT": {
+      "implemented": true,
+      "replay_proven": "fail",
+      "runtime_proven": "fail",
+      "current_thresholds": {
+        "min_best_r": 0.07,
+        "min_giveback_r": 0.02,
+        "min_giveback_frac": 0.2
+      },
+      "trigger_count": 0,
+      "average_realized_r": 0.0,
+      "average_hold_time_sec": 0.0,
+      "current_status": "BUILT"
+    },
+    "AEE_BAND_EXTENSION_HOLD": {
+      "implemented": true,
+      "replay_proven": "fail",
+      "runtime_proven": "fail",
+      "current_thresholds": {
+        "min_net_r": 0.06,
+        "min_vel_r_per_sec": 0.003,
+        "max_giveback_frac": 0.3
+      },
+      "trigger_count": 0,
+      "average_realized_r": 0.0,
+      "average_hold_time_sec": 0.0,
+      "current_status": "BUILT"
+    },
+    "AEE_BAND_EXTENSION_DECAY_EXIT": {
+      "implemented": true,
+      "replay_proven": "fail",
+      "runtime_proven": "fail",
+      "current_thresholds": {
+        "min_best_r": 0.1,
+        "max_vel_r_per_sec": 0.0015,
+        "min_giveback_frac": 0.25
+      },
+      "trigger_count": 0,
+      "average_realized_r": 0.0,
+      "average_hold_time_sec": 0.0,
+      "current_status": "BUILT"
+    }
+  }
+}

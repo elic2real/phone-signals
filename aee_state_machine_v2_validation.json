@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-03-25T15:52:07.088606Z",
+  "task_id": "TASK-005",
+  "module": "aee_state_machine_v2.py",
+  "spec": "aee_state_machine_v2_spec.json",
+  "cases": [
+    {
+      "id": "A1_protect_to_build",
+      "state": "PROTECT",
+      "next_state": "BUILD",
+      "action": "HOLD",
+      "reason": "protect_to_build",
+      "expected_next_state": "BUILD",
+      "expected_action": "HOLD",
+      "pass": true
+    },
+    {
+      "id": "A2_build_to_harvest",
+      "state": "BUILD",
+      "next_state": "HARVEST",
+      "action": "PARTIAL_EXIT",
+      "reason": "build_to_harvest",
+      "expected_next_state": "HARVEST",
+      "expected_action": "PARTIAL_EXIT",
+      "pass": true
+    },
+    {
+      "id": "A3_harvest_to_runner",
+      "state": "HARVEST",
+      "next_state": "RUNNER",
+      "action": "HOLD",
+      "reason": "harvest_to_runner",
+      "expected_next_state": "RUNNER",
+      "expected_action": "HOLD",
+      "pass": true
+    },
+    {
+      "id": "A4_runner_to_harvest",
+      "state": "RUNNER",
+      "next_state": "HARVEST",
+      "action": "PARTIAL_EXIT",
+      "reason": "runner_stall_back_to_harvest",
+      "expected_next_state": "HARVEST",
+      "expected_action": "PARTIAL_EXIT",
+      "pass": true
+    },
+    {
+      "id": "A5_panic_forced",
+      "state": "BUILD",
+      "next_state": "PANIC",
+      "action": "FULL_EXIT",
+      "reason": "panic_trigger",
+      "expected_next_state": "PANIC",
+      "expected_action": "FULL_EXIT",
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "conclusion": "PROMOTE_CANDIDATE"
+}

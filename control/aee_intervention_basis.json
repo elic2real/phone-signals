@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-03-25T20:30:00Z",
+  "economic_objective": "maximize retained pips per hour after entry",
+  "green_tier_definition": {
+    "micro_green_min_pips": 0.0,
+    "bankable_green_min_pips": 2.0,
+    "runner_green_min_pips": 5.0
+  },
+  "state_framework": [
+    "NEGATIVE_UNPROVEN",
+    "GREEN_UNPROTECTED",
+    "GREEN_PROTECTED",
+    "RUNNER_ELIGIBLE",
+    "TIME_INEFFICIENT"
+  ],
+  "module_order": [
+    "protect_bankable_green_fast",
+    "kill_dead_trades_early",
+    "extend_only_proven_trades",
+    "apply_universal_time_pruning"
+  ],
+  "source_runs_used": [
+    "control/run_summary_active.json",
+    "control/aee_baseline_ab_comparison_active.json",
+    "control/aee_transformation_audit_active.json",
+    "control/auto_adjudication_active.json"
+  ],
+  "source_logs_used": [
+    "control/trade_evidence_sample_active.json",
+    "control/logic_trace_summary_active.json"
+  ],
+  "dominant_damaging_branches": [
+    {
+      "branch": "AEE_GIVEBACK_EXIT",
+      "role": "primary",
+      "evidence": "dominant share with blocking overfire flags"
+    },
+    {
+      "branch": "AEE_BAND_FAST_FAILURE_EXIT",
+      "role": "secondary",
+      "evidence": "secondary share and residual early-life damage"
+    }
+  ],
+  "affected_families": [
+    "EXPANSION_BREAKOUT",
+    "RANGE_ESCAPE"
+  ],
+  "affected_subclusters": [
+    "post-expansion continuation hold",
+    "early continuation pullback"
+  ],
+  "evidence_samples": {
+    "entry_only_vs_realized_gap": "large persistent gap in active summary",
+    "mfe_vs_realized": "high MFE with low realized capture",
+    "baseline_ab": "candidate underperforms minimal_protective_only and no_aee_loose",
+    "green_loss_audit": "bankable-green losers must collapse first; dead time must shrink"
+  },
+  "proposed_variable_or_transition": {
+    "intervention_class": "AEE_INTERACTION",
+    "variable": "bankable-green protection and dead-trade pruning transitions",
+    "scope": "BREAKOUT + RANGE_ESCAPE bankable-green protection plus dead-trade pruning"
+  },
+  "expected_signature": {
+    "realized_pph": "+20% to +80%",
+    "gap": "-15% to -40%",
+    "extraction_efficiency": "+0.05 to +0.25 absolute",
+    "bankable_green_loss_red_rate": "near_zero",
+    "giveback_ratio": "down",
+    "fast_failure_exit_share": "down",
+    "trades_per_hour": "up",
+    "avg_loser_hold_sec": "down",
+    "avg_weak_winner_hold_sec": "down",
+    "baseline_amplifier_gate_pass": true
+  },
+  "success_criteria": {
+    "realized_pph_change_pct_range": [0.20, 0.80],
+    "gap_change_pct_range": [-0.40, -0.15],
+    "efficiency_abs_change_range": [0.05, 0.25],
+    "bankable_green_loss_red_rate_target_max": 0.05,
+    "giveback_ratio_change_pct_range": [-0.30, -0.10],
+    "trades_per_hour_direction": "up",
+    "avg_loser_hold_sec_direction": "down",
+    "avg_weak_winner_hold_sec_direction": "down",
+    "hard_amplifier_gate_pass": true
+  }
+}

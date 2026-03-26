@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-03-26T03:15:53.626485Z",
+  "run_id": "AEE_MATRIX_MVP_USD_JPY_MVP_SMOKE_20260325B_variant_c_failed_progress_harvest",
+  "config": "/home/elic/Documents/phone signals/control/variant_runs/MVP_USD_JPY_MVP_SMOKE_20260325B/configs/variant_c_failed_progress_harvest.json",
+  "pair": "USD_JPY",
+  "total_streams": 4,
+  "total_hours": 1689.45,
+  "total_accepted_trades": 10,
+  "friction_per_trade_pips": 1.1,
+  "family_distribution_in_data": {
+    "EXPANSION_BREAKOUT": 10
+  },
+  "skipped_by_entry_filter": {},
+  "ranked_families": [
+    {
+      "family": "BREAKOUT__clean_expansion",
+      "trade_count": 10,
+      "trades_per_hour": 0.0059,
+      "win_count": 10,
+      "win_rate": 1.0,
+      "avg_gross_pips_per_trade": 2.03,
+      "avg_net_pips_per_trade": 0.93,
+      "avg_mfe_pips": 13.59,
+      "avg_mae_pips": -8.74,
+      "avg_hold_sec": 318.0,
+      "avg_entry_only_pips": 12.49,
+      "entry_only_vs_realized_gap_pips": 11.56,
+      "gross_pips_per_hour": 0.012,
+      "net_pips_per_hour": 0.0055,
+      "total_net_pips": 9.3,
+      "total_gross_pips": 20.3,
+      "verdict": "TUNE"
+    }
+  ],
+  "combined_keep_tune_net_pph": 0.0055
+}

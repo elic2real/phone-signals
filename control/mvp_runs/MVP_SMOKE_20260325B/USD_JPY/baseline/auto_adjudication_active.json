@@ -1,0 +1,112 @@
+{
+  "verdict": "REJECT",
+  "reason": "primary edge below protection floor",
+  "gates": {
+    "loss_compression_rate_pass": true,
+    "failure_to_win_conversion_rate_pass": true,
+    "continuation_capture_rate_pass": false,
+    "giveback_ratio_pass": false,
+    "blocking_overfire_absent_pass": false,
+    "baseline_amplifier_gate_pass": false,
+    "performance_core_rule_pass": false,
+    "promotion_gate_pass": false
+  },
+  "baseline_gate": {
+    "gates": {
+      "beats_static_tp_sl_pph": true,
+      "beats_static_tp_sl_avg_pips_per_trade": true,
+      "beats_minimal_protective_only_pph": true,
+      "beats_minimal_protective_only_avg_pips_per_trade": true,
+      "beats_no_aee_loose_pph": false,
+      "beats_no_aee_loose_avg_pips_per_trade": false
+    },
+    "all_pass": false,
+    "hard_amplifier_gate_pass": false,
+    "hard_reject_condition": "if candidate fails minimal_protective_only OR no_aee_loose (pph or avg pips/trade), force REJECT"
+  },
+  "performance_signature": {
+    "has_prior_reference": true,
+    "immediate_signature": {
+      "expected_range": {
+        "realized_pph_change_pct": [
+          0.2,
+          0.8
+        ],
+        "gap_change_pct": [
+          -0.4,
+          -0.15
+        ],
+        "efficiency_abs_change": [
+          0.05,
+          0.25
+        ]
+      },
+      "realized_pph_change_pct": 0.0,
+      "gap_change_pct": 0.0,
+      "efficiency_abs_change": 0.162433,
+      "pass": false
+    },
+    "global_expectation": {
+      "realized_pph_change_pct": 0.0,
+      "gap_change_pct": 0.0,
+      "efficiency_abs_change": 0.162433,
+      "pass": false
+    },
+    "bankable_green_protection": {
+      "bankable_green_loss_red_rate": 0.217391,
+      "prior_bankable_green_loss_red_rate": null,
+      "bankable_green_loss_red_rate_change_pct": null,
+      "near_elimination_target_max": 0.05,
+      "pass": false
+    },
+    "throughput_signature": {
+      "trades_per_hour_change_pct": null,
+      "avg_loser_hold_sec_change_pct": null,
+      "avg_weak_winner_hold_sec_change_pct": null,
+      "pass": false
+    },
+    "baseline_flip_signature": {
+      "hard_amplifier_gate_pass": false,
+      "pass": false
+    },
+    "gap_reduction_signature": {
+      "gap_change_pct": null,
+      "min_expected_reduction_pct": -0.15,
+      "pass": false
+    },
+    "giveback_fix_signature": {
+      "giveback_ratio_change_pct": 0.0,
+      "giveback_exit_share_change_pct": null,
+      "continuation_capture_change_pct": 0.0,
+      "breakout_pph_change_pct": 0.0,
+      "pass": false
+    },
+    "continuation_signature": {
+      "continuation_capture_change_pct": 0.0,
+      "pass": false
+    },
+    "loss_compression_stability": {
+      "loss_compression_rate": 0.914435,
+      "pass": true
+    },
+    "core_rule_all_four": {
+      "pass": false
+    },
+    "auto_reject_patterns": [
+      "BANKABLE_GREEN_PROTECTION_FAILED",
+      "GAP_NOT_MATERIALLY_REDUCED",
+      "BASELINE_STILL_BETTER",
+      "THROUGHPUT_STALLED"
+    ]
+  },
+  "blocking_overfire_flags": [
+    "HIGH_GIVEBACK_RATIO"
+  ],
+  "auto_reject_patterns": [
+    "BANKABLE_GREEN_PROTECTION_FAILED",
+    "GAP_NOT_MATERIALLY_REDUCED",
+    "BASELINE_STILL_BETTER",
+    "THROUGHPUT_STALLED"
+  ],
+  "is_structurally_healthy": false
+}

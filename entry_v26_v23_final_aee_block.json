@@ -1,0 +1,103 @@
+{
+  "name": "entry_v26_v23_final_aee_block",
+  "doctrine": "profit_side_tolerant_hold_loss_side_aggressive",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "extraction": {
+    "never_green_timeout_sec": 1.5,
+    "never_green_min_life_pips": 0.3,
+    "min_lock_profit_pips": 0.8,
+    "min_improvement_pips": 0.2,
+    "weak_green_cap_pips": 1.0,
+    "weak_green_timeout_sec": 1.5,
+    "promotion_profit_pips": 1.2,
+    "non_promoted_stall_sec": 1.5,
+    "promoted_stall_sec": 3.0,
+    "promoted_soft_giveback_pips": 0.7,
+    "promoted_hard_giveback_pips": 1.0,
+    "open_spread_pips": 0.6,
+    "expected_exit_spread_pips": 0.6
+  },
+  "fast_adverse": {
+    "adverse_r": 0.45,
+    "window_sec": 1.5
+  },
+  "defensive": {
+    "pre_sl_exit_enabled": true,
+    "panic_exit_enabled": true
+  },
+  "branch_set": [
+    "AEE_BAND_FAST_FAILURE_EXIT",
+    "AEE_PRE_SL_EXIT",
+    "AEE_PANIC_EXIT",
+    "AEE_NEVER_GREEN_TIMEOUT",
+    "AEE_WEAK_GREEN_TIMEOUT",
+    "AEE_CONTINUATION_FAILED_EXIT",
+    "AEE_GIVEBACK_EXIT"
+  ],
+  "optional_branch": "AEE_BAND_EXTENSION_HOLD",
+  "entry_filters": {
+    "exclude_contexts": [
+      "EUR_GBP__thursday__sydney",
+      "EUR_GBP__monday__asia",
+      "EUR_GBP__monday__sydney",
+      "EUR_CHF__monday__asia",
+      "EUR_GBP__monday__london",
+      "EUR_CHF__wednesday__london",
+      "EUR_CHF__monday__london",
+      "EUR_CHF__monday__sydney",
+      "EUR_GBP__monday__new_york",
+      "EUR_CHF__monday__new_york",
+      "EUR_USD__tuesday__new_york",
+      "EUR_USD__friday__asia",
+      "USD_CAD__monday__london"
+    ],
+    "micro_confirm": {
+      "enabled": true,
+      "major_pairs": [
+        "EUR_USD",
+        "GBP_USD",
+        "USD_JPY",
+        "USD_CHF",
+        "USD_CAD",
+        "AUD_USD",
+        "NZD_USD"
+      ],
+      "confirm_push_pips_major": 0.6,
+      "confirm_window_sec_major": 2.0,
+      "confirm_push_pips_wide": 0.8,
+      "confirm_window_sec_wide": 2.5
+    },
+    "min_profit_now_pips_by_bar": [
+      {
+        "bar": 1,
+        "min_pips": 0.0
+      },
+      {
+        "bar": 2,
+        "min_pips": 0.3
+      },
+      {
+        "bar": 3,
+        "min_pips": 0.6
+      }
+    ],
+    "min_progress_ratio_by_bar": [
+      {
+        "bar": 3,
+        "min_ratio": 0.08
+      }
+    ],
+    "min_release_quality_by_bar": [
+      {
+        "bar": 2,
+        "min_release_quality": 0.08
+      }
+    ],
+    "max_noise_by_bar": [
+      {
+        "bar": 2,
+        "max_noise": 0.72
+      }
+    ]
+  }
+}

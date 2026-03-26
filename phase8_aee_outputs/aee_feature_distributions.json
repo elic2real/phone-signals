@@ -1,0 +1,144 @@
+{
+  "aee_distributions": {
+    "max_giveback_pips": {
+      "good": {
+        "count": 519,
+        "min": 0.0,
+        "max": 4.799999999998139,
+        "median": 1.1999999999989797,
+        "p5": 0.0,
+        "p95": 3.4999999999987264
+      },
+      "bad": {
+        "count": 0,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "p5": 0,
+        "p95": 0
+      }
+    },
+    "giveback_ratio": {
+      "good": {
+        "count": 519,
+        "min": 0.0,
+        "max": 1.599999999999556,
+        "median": 0.37500000000011563,
+        "p5": 0.0,
+        "p95": 1.051868131868487
+      },
+      "bad": {
+        "count": 0,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "p5": 0,
+        "p95": 0
+      }
+    },
+    "stall_duration_bars": {
+      "good": {
+        "count": 519,
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0,
+        "p5": 0.0,
+        "p95": 0.0
+      },
+      "bad": {
+        "count": 0,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "p5": 0,
+        "p95": 0
+      }
+    },
+    "extension_ratio": {
+      "good": {
+        "count": 519,
+        "min": 0.0,
+        "max": 2.560000000000784,
+        "median": 1.1999999999998678,
+        "p5": 1.000000000000334,
+        "p95": 1.840000000000508
+      },
+      "bad": {
+        "count": 0,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "p5": 0,
+        "p95": 0
+      }
+    },
+    "velocity_decay": {
+      "good": {
+        "count": 519,
+        "min": 0.0,
+        "max": 20.051282051288094,
+        "median": 1.7111111111104202,
+        "p5": 0.5388888888887783,
+        "p95": 9.315686274510668
+      },
+      "bad": {
+        "count": 0,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "p5": 0,
+        "p95": 0
+      }
+    },
+    "final_profit_pips": {
+      "good": {
+        "count": 519,
+        "min": 0.0,
+        "max": 6.40000000000196,
+        "median": 2.9999999999996696,
+        "p5": 2.500000000000835,
+        "p95": 4.60000000000127
+      },
+      "bad": {
+        "count": 0,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "p5": 0,
+        "p95": 0
+      }
+    }
+  },
+  "derived_boundaries": {
+    "max_giveback_limit": {
+      "value": 4.799999999998139,
+      "derived_from": "max_giveback_pips GOOD distribution",
+      "boundary_type": "max",
+      "dataset_percentile": "100%"
+    },
+    "giveback_ratio_limit": {
+      "value": 1.599999999999556,
+      "derived_from": "giveback_ratio GOOD distribution",
+      "boundary_type": "max",
+      "dataset_percentile": "100%"
+    },
+    "stall_duration_limit": {
+      "value": 0.0,
+      "derived_from": "stall_duration_bars GOOD distribution",
+      "boundary_type": "max",
+      "dataset_percentile": "100%"
+    },
+    "extension_min": {
+      "value": 0.0,
+      "derived_from": "extension_ratio GOOD distribution",
+      "boundary_type": "min",
+      "dataset_percentile": "0%"
+    },
+    "velocity_decay_limit": {
+      "value": 0.0,
+      "derived_from": "velocity_decay GOOD distribution",
+      "boundary_type": "min",
+      "dataset_percentile": "0%"
+    }
+  }
+}

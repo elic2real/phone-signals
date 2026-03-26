@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-03-25T17:09:39.806371Z",
+  "task_id": "TASK-011",
+  "section": "D_SEQUENCE_FIDELITY",
+  "scope": "audit_only_no_changes",
+  "metrics": {
+    "avg_bars_per_trade": 96.0,
+    "sequence_resolution_score": 1.0,
+    "overall_pullback_representable_rate": 0.5606,
+    "overall_reclaim_representable_rate": 0.0,
+    "sequence_fidelity_score": 0.6402,
+    "per_family": [
+      {
+        "family": "EXPANSION_BREAKOUT",
+        "trade_count": 4791,
+        "pullback_pattern_representable_rate": 0.3254,
+        "reclaim_pattern_representable_rate": 0.0
+      },
+      {
+        "family": "RECLAIM_CONTINUATION",
+        "trade_count": 43,
+        "pullback_pattern_representable_rate": 0.3721,
+        "reclaim_pattern_representable_rate": 0.0
+      },
+      {
+        "family": "PULLBACK_CONTINUATION",
+        "trade_count": 1049,
+        "pullback_pattern_representable_rate": 0.5853,
+        "reclaim_pattern_representable_rate": 0.0
+      },
+      {
+        "family": "RANGE_ESCAPE",
+        "trade_count": 11931,
+        "pullback_pattern_representable_rate": 0.5751,
+        "reclaim_pattern_representable_rate": 0.0
+      },
+      {
+        "family": "OTHER",
+        "trade_count": 3576,
+        "pullback_pattern_representable_rate": 0.8224,
+        "reclaim_pattern_representable_rate": 0.0
+      }
+    ]
+  },
+  "interpretation": {
+    "pullback_pattern_representable_rate": "fraction of trades with early adverse P&L observable (bars 2-5), required for pullback strategy evaluation",
+    "reclaim_pattern_representable_rate": "fraction of trades where progress_ratio shows non-monotonic dips for reclaim detection",
+    "sequence_resolution_score": "normalised bar count; 20 bars = 1.0"
+  },
+  "finding": "SEQUENCE_FIDELITY_ADEQUATE"
+}

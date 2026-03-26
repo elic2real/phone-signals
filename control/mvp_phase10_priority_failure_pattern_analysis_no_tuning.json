@@ -1,0 +1,769 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T07:44:25.396918+00:00",
+  "task_id": "MVP_PHASE10_PRIORITY_FAILURE_PATTERN_ANALYSIS_NO_TUNING",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE"
+  },
+  "dependency": {
+    "phase9_status": "PASS",
+    "phase9_path": "control/mvp_phase9_priority_and_trade_life_telemetry_closure_no_tuning.json"
+  },
+  "pair_analyses": {
+    "EUR_USD": {
+      "pair": "EUR_USD",
+      "rank_vs_selection_table": [
+        {
+          "rank": 1,
+          "cycles_seen": 300,
+          "selected_count": 24,
+          "selection_rate": 0.08
+        },
+        {
+          "rank": 2,
+          "cycles_seen": 197,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        },
+        {
+          "rank": 3,
+          "cycles_seen": 24,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        },
+        {
+          "rank": 4,
+          "cycles_seen": 13,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        },
+        {
+          "rank": 5,
+          "cycles_seen": 2,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        }
+      ],
+      "rank_vs_outcome_table": [
+        {
+          "rank": 1,
+          "sample_count": 12,
+          "trade_life_seconds": {
+            "count": 12,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 12,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 12,
+            "mean": 710.0,
+            "median": 120.0,
+            "p75": 1140.0,
+            "p90": 1620.0,
+            "max": 3540.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 12,
+            "mean": 2055.0,
+            "median": 1710.0,
+            "p75": 3900.0,
+            "p90": 4140.0,
+            "max": 4680.0
+          }
+        }
+      ],
+      "selected_vs_rejected_comparison": {
+        "sample_sizes": {
+          "selected_candidates": 24,
+          "rejected_candidates": 536,
+          "selected_with_lifecycle_join": 12
+        },
+        "priority_score": {
+          "selected_mean": 0.6675225,
+          "selected_median": 0.6848449999999999,
+          "rejected_mean": 0.6169734067164179,
+          "rejected_median": 0.6224244999999999,
+          "selected_minus_rejected_mean": 0.05054909328358215
+        },
+        "selected_minus_best_rejected": {
+          "count": 19,
+          "mean": 0.0,
+          "median": 0.0,
+          "negative_cases": 0
+        }
+      },
+      "trade_life_distribution_by_rank_grade": {
+        "A": {
+          "sample_count": 6,
+          "trade_life_seconds": {
+            "count": 6,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 6,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 6,
+            "mean": 100.0,
+            "median": 30.0,
+            "p75": 60.0,
+            "p90": 180.0,
+            "max": 360.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 6,
+            "mean": 2520.0,
+            "median": 2790.0,
+            "p75": 4140.0,
+            "p90": 4440.0,
+            "max": 4680.0
+          }
+        },
+        "B": {
+          "sample_count": 4,
+          "trade_life_seconds": {
+            "count": 4,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 4,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 4,
+            "mean": 1290.0,
+            "median": 810.0,
+            "p75": 1620.0,
+            "p90": 1620.0,
+            "max": 3540.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 4,
+            "mean": 1875.0,
+            "median": 1740.0,
+            "p75": 3180.0,
+            "p90": 3180.0,
+            "max": 3900.0
+          }
+        },
+        "C": {
+          "sample_count": 2,
+          "trade_life_seconds": {
+            "count": 2,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 2,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 2,
+            "mean": 1380.0,
+            "median": 1380.0,
+            "p75": 1140.0,
+            "p90": 1140.0,
+            "max": 1620.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 2,
+            "mean": 1020.0,
+            "median": 1020.0,
+            "p75": 60.0,
+            "p90": 60.0,
+            "max": 1980.0
+          }
+        }
+      },
+      "time_to_first_profit_distribution_by_rank_grade": {
+        "A": {
+          "count": 6,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "B": {
+          "count": 4,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "C": {
+          "count": 2,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        }
+      },
+      "drawdown_time_distribution_by_rank_grade": {
+        "A": {
+          "count": 6,
+          "mean": 100.0,
+          "median": 30.0,
+          "p75": 60.0,
+          "p90": 180.0,
+          "max": 360.0
+        },
+        "B": {
+          "count": 4,
+          "mean": 1290.0,
+          "median": 810.0,
+          "p75": 1620.0,
+          "p90": 1620.0,
+          "max": 3540.0
+        },
+        "C": {
+          "count": 2,
+          "mean": 1380.0,
+          "median": 1380.0,
+          "p75": 1140.0,
+          "p90": 1140.0,
+          "max": 1620.0
+        }
+      },
+      "peak_to_close_delay_distribution_by_rank_grade": {
+        "A": {
+          "count": 6,
+          "mean": 2520.0,
+          "median": 2790.0,
+          "p75": 4140.0,
+          "p90": 4440.0,
+          "max": 4680.0
+        },
+        "B": {
+          "count": 4,
+          "mean": 1875.0,
+          "median": 1740.0,
+          "p75": 3180.0,
+          "p90": 3180.0,
+          "max": 3900.0
+        },
+        "C": {
+          "count": 2,
+          "mean": 1020.0,
+          "median": 1020.0,
+          "p75": 60.0,
+          "p90": 60.0,
+          "max": 1980.0
+        }
+      },
+      "failure_archetypes": [
+        {
+          "name": "long_peak_to_close_delay",
+          "count": 3,
+          "rate_over_selected_with_lifecycle": 0.25,
+          "description": "Selected trades with long delay from peak to close above p75."
+        },
+        {
+          "name": "prolonged_drawdown_selected",
+          "count": 3,
+          "rate_over_selected_with_lifecycle": 0.25,
+          "description": "Selected trades spending longer than p75 time in drawdown."
+        },
+        {
+          "name": "high_rank_slow_recycler",
+          "count": 0,
+          "rate_over_selected_with_lifecycle": 0.0,
+          "description": "Rank<=2 selected trades with trade_life above pair p75."
+        },
+        {
+          "name": "selected_below_rejected_score",
+          "count": 0,
+          "rate_over_selected_cycles": 0.0,
+          "description": "Selected candidate had lower priority_score than best rejected candidate in same cycle."
+        },
+        {
+          "name": "slow_time_to_first_profit",
+          "count": 0,
+          "rate_over_selected_with_lifecycle": 0.0,
+          "description": "Selected trades with time_to_first_profit above p75."
+        }
+      ],
+      "diagnostic_quantiles": {
+        "trade_life_p75": 5940.0,
+        "time_in_drawdown_p75": 1140.0,
+        "time_from_peak_to_close_p75": 3900.0,
+        "time_to_first_profit_p75": 0.0
+      }
+    },
+    "GBP_USD": {
+      "pair": "GBP_USD",
+      "rank_vs_selection_table": [
+        {
+          "rank": 1,
+          "cycles_seen": 300,
+          "selected_count": 33,
+          "selection_rate": 0.11
+        },
+        {
+          "rank": 2,
+          "cycles_seen": 182,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        },
+        {
+          "rank": 3,
+          "cycles_seen": 11,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        },
+        {
+          "rank": 4,
+          "cycles_seen": 5,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        },
+        {
+          "rank": 5,
+          "cycles_seen": 4,
+          "selected_count": 0,
+          "selection_rate": 0.0
+        }
+      ],
+      "rank_vs_outcome_table": [
+        {
+          "rank": 1,
+          "sample_count": 22,
+          "trade_life_seconds": {
+            "count": 22,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 22,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 22,
+            "mean": 1843.6363636363637,
+            "median": 1440.0,
+            "p75": 2760.0,
+            "p90": 4020.0,
+            "max": 4500.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 22,
+            "mean": 1592.7272727272727,
+            "median": 1050.0,
+            "p75": 2520.0,
+            "p90": 3120.0,
+            "max": 4740.0
+          }
+        }
+      ],
+      "selected_vs_rejected_comparison": {
+        "sample_sizes": {
+          "selected_candidates": 33,
+          "rejected_candidates": 506,
+          "selected_with_lifecycle_join": 22
+        },
+        "priority_score": {
+          "selected_mean": 0.6718538787878787,
+          "selected_median": 0.683785,
+          "rejected_mean": 0.6124681146245059,
+          "rejected_median": 0.612931,
+          "selected_minus_rejected_mean": 0.05938576416337282
+        },
+        "selected_minus_best_rejected": {
+          "count": 26,
+          "mean": 0.0023728076923076923,
+          "median": 0.0,
+          "negative_cases": 0
+        }
+      },
+      "trade_life_distribution_by_rank_grade": {
+        "A": {
+          "sample_count": 9,
+          "trade_life_seconds": {
+            "count": 9,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 9,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 9,
+            "mean": 1633.3333333333333,
+            "median": 1200.0,
+            "p75": 2340.0,
+            "p90": 3300.0,
+            "max": 4500.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 9,
+            "mean": 2246.6666666666665,
+            "median": 2160.0,
+            "p75": 3960.0,
+            "p90": 4140.0,
+            "max": 4740.0
+          }
+        },
+        "B": {
+          "sample_count": 8,
+          "trade_life_seconds": {
+            "count": 8,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 8,
+            "mean": 1440.0,
+            "median": 450.0,
+            "p75": 2460.0,
+            "p90": 4020.0,
+            "max": 4080.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 8,
+            "mean": 1297.5,
+            "median": 870.0,
+            "p75": 1920.0,
+            "p90": 2700.0,
+            "max": 3120.0
+          }
+        },
+        "C": {
+          "sample_count": 4,
+          "trade_life_seconds": {
+            "count": 4,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 4,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 4,
+            "mean": 2460.0,
+            "median": 2730.0,
+            "p75": 2760.0,
+            "p90": 2760.0,
+            "max": 3060.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 4,
+            "mean": 480.0,
+            "median": 150.0,
+            "p75": 180.0,
+            "p90": 180.0,
+            "max": 1560.0
+          }
+        },
+        "D": {
+          "sample_count": 1,
+          "trade_life_seconds": {
+            "count": 1,
+            "mean": 5940.0,
+            "median": 5940.0,
+            "p75": 5940.0,
+            "p90": 5940.0,
+            "max": 5940.0
+          },
+          "time_to_first_profit_seconds": {
+            "count": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "max": 0.0
+          },
+          "time_in_drawdown_seconds": {
+            "count": 1,
+            "mean": 4500.0,
+            "median": 4500.0,
+            "p75": 4500.0,
+            "p90": 4500.0,
+            "max": 4500.0
+          },
+          "time_from_peak_to_close_seconds": {
+            "count": 1,
+            "mean": 2520.0,
+            "median": 2520.0,
+            "p75": 2520.0,
+            "p90": 2520.0,
+            "max": 2520.0
+          }
+        }
+      },
+      "time_to_first_profit_distribution_by_rank_grade": {
+        "A": {
+          "count": 9,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "B": {
+          "count": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "C": {
+          "count": 4,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        },
+        "D": {
+          "count": 1,
+          "mean": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p90": 0.0,
+          "max": 0.0
+        }
+      },
+      "drawdown_time_distribution_by_rank_grade": {
+        "A": {
+          "count": 9,
+          "mean": 1633.3333333333333,
+          "median": 1200.0,
+          "p75": 2340.0,
+          "p90": 3300.0,
+          "max": 4500.0
+        },
+        "B": {
+          "count": 8,
+          "mean": 1440.0,
+          "median": 450.0,
+          "p75": 2460.0,
+          "p90": 4020.0,
+          "max": 4080.0
+        },
+        "C": {
+          "count": 4,
+          "mean": 2460.0,
+          "median": 2730.0,
+          "p75": 2760.0,
+          "p90": 2760.0,
+          "max": 3060.0
+        },
+        "D": {
+          "count": 1,
+          "mean": 4500.0,
+          "median": 4500.0,
+          "p75": 4500.0,
+          "p90": 4500.0,
+          "max": 4500.0
+        }
+      },
+      "peak_to_close_delay_distribution_by_rank_grade": {
+        "A": {
+          "count": 9,
+          "mean": 2246.6666666666665,
+          "median": 2160.0,
+          "p75": 3960.0,
+          "p90": 4140.0,
+          "max": 4740.0
+        },
+        "B": {
+          "count": 8,
+          "mean": 1297.5,
+          "median": 870.0,
+          "p75": 1920.0,
+          "p90": 2700.0,
+          "max": 3120.0
+        },
+        "C": {
+          "count": 4,
+          "mean": 480.0,
+          "median": 150.0,
+          "p75": 180.0,
+          "p90": 180.0,
+          "max": 1560.0
+        },
+        "D": {
+          "count": 1,
+          "mean": 2520.0,
+          "median": 2520.0,
+          "p75": 2520.0,
+          "p90": 2520.0,
+          "max": 2520.0
+        }
+      },
+      "failure_archetypes": [
+        {
+          "name": "long_peak_to_close_delay",
+          "count": 6,
+          "rate_over_selected_with_lifecycle": 0.2727272727272727,
+          "description": "Selected trades with long delay from peak to close above p75."
+        },
+        {
+          "name": "prolonged_drawdown_selected",
+          "count": 6,
+          "rate_over_selected_with_lifecycle": 0.2727272727272727,
+          "description": "Selected trades spending longer than p75 time in drawdown."
+        },
+        {
+          "name": "high_rank_slow_recycler",
+          "count": 0,
+          "rate_over_selected_with_lifecycle": 0.0,
+          "description": "Rank<=2 selected trades with trade_life above pair p75."
+        },
+        {
+          "name": "selected_below_rejected_score",
+          "count": 0,
+          "rate_over_selected_cycles": 0.0,
+          "description": "Selected candidate had lower priority_score than best rejected candidate in same cycle."
+        },
+        {
+          "name": "slow_time_to_first_profit",
+          "count": 0,
+          "rate_over_selected_with_lifecycle": 0.0,
+          "description": "Selected trades with time_to_first_profit above p75."
+        }
+      ],
+      "diagnostic_quantiles": {
+        "trade_life_p75": 5940.0,
+        "time_in_drawdown_p75": 2760.0,
+        "time_from_peak_to_close_p75": 2520.0,
+        "time_to_first_profit_p75": 0.0
+      }
+    }
+  },
+  "combined_failure_archetypes": [
+    {
+      "name": "long_peak_to_close_delay",
+      "count": 9,
+      "description": "Selected trades with long delay from peak to close above p75."
+    },
+    {
+      "name": "prolonged_drawdown_selected",
+      "count": 9,
+      "description": "Selected trades spending longer than p75 time in drawdown."
+    },
+    {
+      "name": "high_rank_slow_recycler",
+      "count": 0,
+      "description": "Rank<=2 selected trades with trade_life above pair p75."
+    },
+    {
+      "name": "selected_below_rejected_score",
+      "count": 0,
+      "description": "Selected candidate had lower priority_score than best rejected candidate in same cycle."
+    },
+    {
+      "name": "slow_time_to_first_profit",
+      "count": 0,
+      "description": "Selected trades with time_to_first_profit above p75."
+    }
+  ],
+  "top_selection_leaks": [
+    {
+      "name": "long_peak_to_close_delay",
+      "count": 9,
+      "description": "Selected trades with long delay from peak to close above p75."
+    },
+    {
+      "name": "prolonged_drawdown_selected",
+      "count": 9,
+      "description": "Selected trades spending longer than p75 time in drawdown."
+    },
+    {
+      "name": "high_rank_slow_recycler",
+      "count": 0,
+      "description": "Rank<=2 selected trades with trade_life above pair p75."
+    }
+  ],
+  "non_tuning_diagnosis_recommendations": [
+    "Inspect exit timing delay after peak for selected trades by rank grade to identify over-hold patterns without changing thresholds.",
+    "Segment prolonged-drawdown selected trades by grade and rank to isolate whether specific rank bands absorb excessive adverse time.",
+    "Analyze high-rank but slow-recycling cohorts by context/day and check whether ranking overweights persistence over velocity."
+  ],
+  "pass_conditions": {
+    "phase9_dependency_passed": true,
+    "rank_vs_outcome_tables_present": true,
+    "selected_vs_rejected_comparisons_present": true,
+    "distribution_blocks_present": true,
+    "top_archetypes_present": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-03-25T01:53:01.815091Z",
+  "objective": "maximize_net_realized_extraction_per_hour",
+  "families": [
+    {
+      "entry_type": "EXPANSION_BREAKOUT",
+      "replay_trade_count": 2889,
+      "replay_net_extraction_per_hour": 0.13361062784633065,
+      "replay_verdict": "KEEP",
+      "runtime_attempt_count": 16346,
+      "runtime_filled_transition_count": 10,
+      "confidence_grade": "HIGH",
+      "recommended_action": "KEEP_ACTIVE"
+    },
+    {
+      "entry_type": "RANGE_ESCAPE",
+      "replay_trade_count": 2021,
+      "replay_net_extraction_per_hour": 0.06204660684298451,
+      "replay_verdict": "KEEP",
+      "runtime_attempt_count": 0,
+      "runtime_filled_transition_count": 0,
+      "confidence_grade": "LOW",
+      "recommended_action": "KEEP_GUARDED"
+    },
+    {
+      "entry_type": "OTHER",
+      "replay_trade_count": 152,
+      "replay_net_extraction_per_hour": 0.005083210188994507,
+      "replay_verdict": "KEEP",
+      "runtime_attempt_count": 12,
+      "runtime_filled_transition_count": 2,
+      "confidence_grade": "LOW",
+      "recommended_action": "KEEP_GUARDED"
+    },
+    {
+      "entry_type": "PULLBACK_CONTINUATION",
+      "replay_trade_count": 12,
+      "replay_net_extraction_per_hour": 0.0007114881826784541,
+      "replay_verdict": "NEEDS_MORE_ATTRIBUTION",
+      "runtime_attempt_count": 1004,
+      "runtime_filled_transition_count": 0,
+      "confidence_grade": "LOW",
+      "recommended_action": "ATTRIBUTION_PRIORITY_HIGH"
+    },
+    {
+      "entry_type": "RECLAIM_CONTINUATION",
+      "replay_trade_count": 18,
+      "replay_net_extraction_per_hour": 0.00022171019856835682,
+      "replay_verdict": "NEEDS_MORE_ATTRIBUTION",
+      "runtime_attempt_count": 1466,
+      "runtime_filled_transition_count": 5,
+      "confidence_grade": "LOW",
+      "recommended_action": "ATTRIBUTION_PRIORITY_HIGH"
+    }
+  ],
+  "summary": {
+    "confidence_grade_counts": {
+      "HIGH": 1,
+      "LOW": 4
+    },
+    "recommended_action_counts": {
+      "KEEP_ACTIVE": 1,
+      "KEEP_GUARDED": 2,
+      "ATTRIBUTION_PRIORITY_HIGH": 2
+    },
+    "notes": [
+      "replay-domain realized net extraction per hour is primary ranking source",
+      "runtime-domain attempts/fills are corroboration, not a per-trade substitution",
+      "low replay count with meaningful runtime attempts should be prioritized for attribution passes"
+    ]
+  }
+}

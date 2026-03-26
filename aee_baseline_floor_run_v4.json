@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-03-23T22:06:28.279139Z",
+  "config": "/home/elic/Documents/phone signals/aee_band_baseline_floor_v4.json",
+  "streams_used": 24,
+  "trade_count": 38609,
+  "window_duration_hr": 39488.28333333333,
+  "realized_pips_per_hour": 0.1801445745299133,
+  "realized_r_per_hour": 0.07267657919161298,
+  "realized_usd_per_hour": 0.14411565962393066,
+  "close_cycle_capture_rate": 0.9777330575271905,
+  "capital_recycling_rate": 0.9777330575271905,
+  "avg_hold_sec": 137.27162060659433,
+  "avg_realized_r": 0.07433171930937996,
+  "sl_hit_rate": 0.13672977803102904,
+  "deep_loss_frequency": 0.03729700328938849,
+  "pre_sl_save_rate": 0.012717242093812324,
+  "reason_counts": {
+    "AEE_BAND_NEVER_GREEN_TIMEOUT": 19381,
+    "AEE_BAND_FALLBACK_EXIT": 10983,
+    "AEE_BAND_FAST_FAILURE_EXIT": 4204,
+    "AEE_BAND_PROFIT_STALL_EXIT": 2955,
+    "AEE_PANIC_EXIT": 584,
+    "AEE_PRE_SL_EXIT": 491,
+    "AEE_BAND_EXTENSION_HOLD": 11
+  },
+  "giveback_avoided_estimate_r": 0.27824053384499553,
+  "baseline_delta": {
+    "delta_realized_pips_per_hour": -1.0357983823893755,
+    "delta_realized_r_per_hour": -0.24101140505012625,
+    "delta_avg_hold_sec": -1012.413167914217
+  },
+  "verdict": "BASELINE_REJECTED",
+  "gate_checks": {
+    "extraction_ok": false,
+    "distribution_ok": true,
+    "throughput_ok": true,
+    "defensive_ok": true,
+    "profit_branch_fire_ok": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "direction": "LONG",
+  "tp_pips": 5.0,
+  "sl_pips": 5.0,
+  "trade_population": 1,
+  "static_avg_R": 1.0,
+  "AEE_avg_R": 1.2400000000001299,
+  "delta_R": 0.2400000000001299,
+  "avg_static_pips": 5.0,
+  "avg_aee_pips": 6.200000000000649,
+  "pips_per_hour": 0.688888888888961,
+  "runner_contribution_pips": 1.2000000000006494,
+  "harvester_contribution_pips": 5.0,
+  "panic_contribution_rate": 0.0,
+  "decay_contribution_rate": 0.0,
+  "extraction_efficiency": 1.2400000000001299,
+  "verdict": "PASS",
+  "sl_tp_baseline": {
+    "static_take_profit_pips": 5.0,
+    "static_stop_loss_pips": 5.0,
+    "aee_harvest_trigger_pips": 5.0,
+    "aee_panic_trigger_pips": -5.0,
+    "aee_giveback_trigger_pips": 1.2
+  },
+  "trade_population_rows": [
+    {
+      "cluster_id": "EUR_USD_LONG_0005",
+      "timestamp": "2024-01-15T12:30:00.000000000Z",
+      "direction": "LONG",
+      "static_pips": 5.0,
+      "static_r": 1.0,
+      "static_reason": "TP_HIT",
+      "aee_pips": 6.200000000000649,
+      "aee_r": 1.2400000000001299,
+      "aee_reason": "TIMEOUT",
+      "runner_pips": 1.2000000000006494,
+      "harvester_pips": 5.0
+    }
+  ]
+}

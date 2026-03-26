@@ -1,0 +1,544 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T09:46:08.206812+00:00",
+  "task_id": "MVP_PHASE23_GUARDED_PARALLEL_RERUN_WITH_TIERED_KILL_GATES",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "session": "LONDON",
+    "tuning": "NONE",
+    "mode": "GUARDED_PARALLEL_RERUN"
+  },
+  "dependency": {
+    "phase22_status": "PASS",
+    "phase22_path": "control/mvp_phase22_kill_gate_guard_redesign_paper_only.json",
+    "phase21_status": "PASS",
+    "phase21_path": "control/mvp_phase21_parallel_variant_execution_with_micro_slice_kill_gates.json"
+  },
+  "gate_config": {
+    "tier1": {
+      "max_false_cut_rate_on_winners": 0.15,
+      "tail_loss_tolerance_pips": 0.25
+    },
+    "tier2": {
+      "drawdown_efficiency_tolerance_seconds": 120.0,
+      "rank_outcome_non_degrade_floor": -0.01
+    },
+    "slice_balance": {
+      "minimum_archetype_coverage": 3,
+      "weighted_archetype_scoring": true
+    }
+  },
+  "results_by_pair": {
+    "EUR_USD": {
+      "micro_slice_count": 195,
+      "variants": {
+        "V0": {
+          "sample_count": 195,
+          "triggered_count": 77,
+          "trigger_rate": 0.39487179487179486,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 2.786153846153846,
+          "estimated_net_delta_mean_pips": 2.156923076923077,
+          "false_cut_rate_on_winners": 0.33783783783783783,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": false,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 2.0448979591836736,
+              "RANGE_ESCAPE": 2.2600000000000002,
+              "OTHER": 2.341666666666667
+            },
+            "weighted_delta": 2.1687823129251704
+          },
+          "tail_loss_p90": {
+            "baseline": 0.6000000000000001,
+            "counterfactual": 0.5000000000000001,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1596.0,
+            "counterfactual_proxy": 1248.077922077922,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.37948717948717947,
+            "counterfactual": 0.6461538461538462
+          },
+          "passes_tier1": false,
+          "passes_tier2": true,
+          "passes_tiered_gates": false
+        },
+        "V1": {
+          "sample_count": 195,
+          "triggered_count": 72,
+          "trigger_rate": 0.36923076923076925,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 2.5738461538461537,
+          "estimated_net_delta_mean_pips": 1.9446153846153846,
+          "false_cut_rate_on_winners": 0.2702702702702703,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": false,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 1.7959183673469385,
+              "RANGE_ESCAPE": 2.06,
+              "OTHER": 2.341666666666667
+            },
+            "weighted_delta": 1.9842925170068026
+          },
+          "tail_loss_p90": {
+            "baseline": 0.6000000000000001,
+            "counterfactual": 0.5000000000000001,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1596.0,
+            "counterfactual_proxy": 1226.25,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.37948717948717947,
+            "counterfactual": 0.6461538461538462
+          },
+          "passes_tier1": false,
+          "passes_tier2": true,
+          "passes_tiered_gates": false
+        },
+        "V2": {
+          "sample_count": 195,
+          "triggered_count": 70,
+          "trigger_rate": 0.358974358974359,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 2.497948717948718,
+          "estimated_net_delta_mean_pips": 1.8687179487179488,
+          "false_cut_rate_on_winners": 0.25675675675675674,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": false,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 1.6448979591836737,
+              "RANGE_ESCAPE": 2.06,
+              "OTHER": 2.341666666666667
+            },
+            "weighted_delta": 1.9087823129251702
+          },
+          "tail_loss_p90": {
+            "baseline": 0.6000000000000001,
+            "counterfactual": 0.5000000000000001,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1596.0,
+            "counterfactual_proxy": 1217.7428571428572,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.37948717948717947,
+            "counterfactual": 0.6410256410256411
+          },
+          "passes_tier1": false,
+          "passes_tier2": true,
+          "passes_tiered_gates": false
+        },
+        "V3": {
+          "sample_count": 195,
+          "triggered_count": 36,
+          "trigger_rate": 0.18461538461538463,
+          "baseline_net_mean_pips": 0.6292307692307691,
+          "estimated_counterfactual_net_mean_pips": 1.3897435897435897,
+          "estimated_net_delta_mean_pips": 0.7605128205128205,
+          "false_cut_rate_on_winners": 0.0,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": true,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 0.6377551020408164,
+              "RANGE_ESCAPE": 0.9411764705882353,
+              "OTHER": 0.48333333333333345
+            },
+            "weighted_delta": 0.6978971588635455
+          },
+          "tail_loss_p90": {
+            "baseline": 0.6000000000000001,
+            "counterfactual": 0.5000000000000001,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1596.0,
+            "counterfactual_proxy": 1146.0,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.37948717948717947,
+            "counterfactual": 0.5641025641025641
+          },
+          "passes_tier1": true,
+          "passes_tier2": true,
+          "passes_tiered_gates": true
+        }
+      },
+      "selected_variant": {
+        "variant": "V3",
+        "reason": "highest_weighted_delta_among_tiered_gate_survivors",
+        "survivor_count": 1
+      }
+    },
+    "GBP_USD": {
+      "micro_slice_count": 199,
+      "variants": {
+        "V0": {
+          "sample_count": 199,
+          "triggered_count": 89,
+          "trigger_rate": 0.4472361809045226,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 5.182914572864322,
+          "estimated_net_delta_mean_pips": 3.8035175879396985,
+          "false_cut_rate_on_winners": 0.4077669902912621,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": false,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 3.7624999999999997,
+              "RANGE_ESCAPE": 3.8522727272727275,
+              "OTHER": 3.8000000000000003
+            },
+            "weighted_delta": 3.796931818181818
+          },
+          "tail_loss_p90": {
+            "baseline": 0.7000000000000001,
+            "counterfactual": 0.40000000000000013,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1570.854271356784,
+            "counterfactual_proxy": 1273.6183163006042,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.5175879396984925,
+            "counterfactual": 0.7537688442211056
+          },
+          "passes_tier1": false,
+          "passes_tier2": true,
+          "passes_tiered_gates": false
+        },
+        "V1": {
+          "sample_count": 199,
+          "triggered_count": 78,
+          "trigger_rate": 0.39195979899497485,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 4.434673366834171,
+          "estimated_net_delta_mean_pips": 3.055276381909548,
+          "false_cut_rate_on_winners": 0.30097087378640774,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": false,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 2.978846153846154,
+              "RANGE_ESCAPE": 3.086363636363636,
+              "OTHER": 3.8000000000000003
+            },
+            "weighted_delta": 3.1753321678321678
+          },
+          "tail_loss_p90": {
+            "baseline": 0.7000000000000001,
+            "counterfactual": 0.40000000000000013,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1570.854271356784,
+            "counterfactual_proxy": 1241.0081175106302,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.5175879396984925,
+            "counterfactual": 0.7537688442211056
+          },
+          "passes_tier1": false,
+          "passes_tier2": true,
+          "passes_tiered_gates": false
+        },
+        "V2": {
+          "sample_count": 199,
+          "triggered_count": 72,
+          "trigger_rate": 0.36180904522613067,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 4.163819095477387,
+          "estimated_net_delta_mean_pips": 2.784422110552764,
+          "false_cut_rate_on_winners": 0.2815533980582524,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": false,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 2.803846153846154,
+              "RANGE_ESCAPE": 2.680681818181818,
+              "OTHER": 3.8000000000000003
+            },
+            "weighted_delta": 2.9661276223776225
+          },
+          "tail_loss_p90": {
+            "baseline": 0.7000000000000001,
+            "counterfactual": 0.40000000000000013,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1570.854271356784,
+            "counterfactual_proxy": 1220.6876046901173,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.5175879396984925,
+            "counterfactual": 0.7336683417085427
+          },
+          "passes_tier1": false,
+          "passes_tier2": true,
+          "passes_tiered_gates": false
+        },
+        "V3": {
+          "sample_count": 199,
+          "triggered_count": 30,
+          "trigger_rate": 0.1507537688442211,
+          "baseline_net_mean_pips": 1.379396984924623,
+          "estimated_counterfactual_net_mean_pips": 2.4748743718592965,
+          "estimated_net_delta_mean_pips": 1.0954773869346734,
+          "false_cut_rate_on_winners": 0.0,
+          "max_false_cut_rate_allowed": 0.15,
+          "tier1_hard_risk_gate": {
+            "false_cut_rate_on_winners": true,
+            "tail_loss_not_worse_than_baseline": true
+          },
+          "tier2_efficiency_gate": {
+            "net_delta_mean_positive": true,
+            "drawdown_efficiency_not_regressed_beyond_tolerance": true,
+            "rank_outcome_signal_non_degrading": true
+          },
+          "slice_balance": {
+            "minimum_archetype_coverage": 3,
+            "minimum_required": 3,
+            "passes_minimum_coverage": true,
+            "weighted_archetype_scoring": true
+          },
+          "weighted_delta_by_family": {
+            "weights": {
+              "EXPANSION_BREAKOUT": 0.5,
+              "RANGE_ESCAPE": 0.3,
+              "OTHER": 0.2
+            },
+            "family_deltas": {
+              "EXPANSION_BREAKOUT": 1.1326923076923077,
+              "RANGE_ESCAPE": 0.9375,
+              "OTHER": 2.528571428571429
+            },
+            "weighted_delta": 1.3533104395604396
+          },
+          "tail_loss_p90": {
+            "baseline": 0.7000000000000001,
+            "counterfactual": 0.5000000000000001,
+            "tolerance": 0.25
+          },
+          "drawdown_mean_seconds": {
+            "baseline": 1570.854271356784,
+            "counterfactual_proxy": 1170.254271356784,
+            "tolerance": 120.0
+          },
+          "win_rate": {
+            "baseline": 0.5175879396984925,
+            "counterfactual": 0.6683417085427136
+          },
+          "passes_tier1": true,
+          "passes_tier2": true,
+          "passes_tiered_gates": true
+        }
+      },
+      "selected_variant": {
+        "variant": "V3",
+        "reason": "highest_weighted_delta_among_tiered_gate_survivors",
+        "survivor_count": 1
+      }
+    }
+  },
+  "cross_pair_tiered_variant_gate": {
+    "V0": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_weighted_delta": 5.965714131106989
+    },
+    "V1": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_weighted_delta": 5.15962468483897
+    },
+    "V2": {
+      "eur_survives": false,
+      "gbp_survives": false,
+      "cross_survives": false,
+      "combined_weighted_delta": 4.874909935302792
+    },
+    "V3": {
+      "eur_survives": true,
+      "gbp_survives": true,
+      "cross_survives": true,
+      "combined_weighted_delta": 2.0512075984239853
+    }
+  },
+  "decision": {
+    "verdict": "PROMOTE",
+    "overall_pass": true,
+    "reason": "At least one variant survived tiered gates across both pairs under guarded rerun.",
+    "promoted_variant": "V3",
+    "promoted_variant_summary": {
+      "eur_survives": true,
+      "gbp_survives": true,
+      "cross_survives": true,
+      "combined_weighted_delta": 2.0512075984239853
+    }
+  },
+  "pass_conditions": {
+    "phase22_dependency_passed": true,
+    "phase21_dependency_passed": true,
+    "phase23_entry_gate_ready": true,
+    "parallel_variants_executed": true,
+    "tiered_kill_gates_evaluated": true,
+    "no_tuning_applied": true
+  },
+  "status": "PASS"
+}
