@@ -248,15 +248,26 @@ def test_notifications():
     # E1: Backend selection gated
     log_test("E1_backend_gated", True, "NOTIFY_ENABLE_SEND environment variable controls backend")
     
-    # E2: Payload correctness
+    # E2: Payload correctness (validate ENTRY_ENTER notification payload block only)
     try:
-        import phone_bot
-        import inspect
-        source = inspect.getsource(phone_bot)
-        if '"sl_price"' not in source and '"tp_price"' not in source:
-            log_test("E2_payload_correct", True, "Uses sl1/tp1 not sl_price/tp_price")
+        bot_path = Path("phone_bot.py")
+        source = bot_path.read_text(encoding="utf-8")
+        marker = 'kind="ENTRY_ENTER"'
+        idx = source.find(marker)
+        if idx < 0:
+            log_test("E2_payload_correct", False, "ENTRY_ENTER notification block not found")
         else:
-            log_test("E2_payload_correct", False, "Found old field names")
+            # Restrict checks to the local notification block to avoid false negatives from
+            # unrelated sizing or broker API fields that legitimately use sl_price/tp_price.
+            block = source[max(0, idx - 700): idx + 1200]
+            has_compact_keys = ('"sl":' in block) and ('"tp":' in block)
+            has_legacy_keys = ('"sl_price"' in block) or ('"tp_price"' in block)
+            if has_compact_keys and not has_legacy_keys:
+                log_test("E2_payload_correct", True, "ENTRY_ENTER payload uses sl/tp keys")
+            elif has_legacy_keys:
+                log_test("E2_payload_correct", False, "ENTRY_ENTER payload still contains sl_price/tp_price")
+            else:
+                log_test("E2_payload_correct", False, "ENTRY_ENTER payload missing sl/tp fields")
     except Exception as e:
         log_test("E2_payload_correct", False, str(e))
     
@@ -382,10 +393,14 @@ def generate_final_report():
     Path("proof_artifacts").mkdir(exist_ok=True)
     
     # Save report
+    Path("control").mkdir(exist_ok=True)
     with open("proof_artifacts/final_qa_report.json", "w") as f:
+        json.dump(report, f, indent=2)
+    with open("control/final_qa_report.json", "w") as f:
         json.dump(report, f, indent=2)
     
     print(f"\nDetailed report saved to: proof_artifacts/final_qa_report.json")
+    print(f"Detailed report saved to: control/final_qa_report.json")
     
     return app_ready
 

@@ -1,0 +1,44 @@
+{
+  "pairs_active": [
+    "EUR_USD"
+  ],
+  "pairs_count": 1,
+  "majors_present": [
+    "EUR_USD"
+  ],
+  "majors_missing": [
+    "AUD_USD",
+    "GBP_USD",
+    "NZD_USD",
+    "USD_CAD",
+    "USD_CHF",
+    "USD_JPY"
+  ],
+  "minors_present": [],
+  "minors_missing": [
+    "AUD_CAD",
+    "AUD_JPY",
+    "CHF_JPY",
+    "EUR_CHF",
+    "EUR_GBP",
+    "EUR_JPY",
+    "GBP_JPY",
+    "NZD_JPY"
+  ],
+  "allow_entries": true,
+  "suppress_continuation_entries": true,
+  "no_throttle_mode": true,
+  "enforce_entry_inventory_scope": true,
+  "entry_inventory_allowed_pairs_count": 3,
+  "notify_preflight": {
+    "desktop": {
+      "bin": "notify-send",
+      "found": true
+    },
+    "termux": {
+      "bin": "termux-notification",
+      "found": false
+    },
+    "ok": true
+  }
+}
