@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-03-26T08:09:12-07:00",
+  "objective": "Split production source repository from continuity/state repository",
+  "production_repository": "https://github.com/elic2real/phone-signals.git",
+  "continuity_repository": "https://github.com/elic2real/phonesignalstate.git",
+  "production_branch_used": "publish/clean-backup-20260326",
+  "continuity_branch_used": "main",
+  "continuity_coverage_status": {
+    "status": "complete_for_required_state",
+    "evidence": {
+      "control_files_copied": 1193,
+      "required_state_matches": 89,
+      "continuity_commits": [
+        "86186e5 Initialize continuity state repo with control artifacts",
+        "5a0806e Add key experiment outputs preserved from production cleanup",
+        "b0018f8 Add full sim_results continuity snapshot before production cleanup"
+      ]
+    },
+    "required_present": [
+      "control/mvp_phase*.json",
+      "control/adjudication.json",
+      "control/validation_result.json",
+      "control/preflight_report.json",
+      "control/run_summary*.json",
+      "control/system_state.json",
+      "control/task_queue.json"
+    ],
+    "preserved_key_outputs": [
+      "key_outputs/sim_results/**",
+      "key_outputs/test_with_active_tune.json"
+    ]
+  },
+  "production_cleanup": {
+    "tracked_large_files_before_count": 5,
+    "tracked_large_files_after_count": 0,
+    "tracked_removals_from_index": [
+      "sim_results/** (48 files)",
+      "test_with_active_tune.json"
+    ],
+    "tracked_target_residue": [
+      "data_tape_build.py (retained as source script)"
+    ],
+    "files_removed_from_tracking_only": true,
+    "local_files_verified_present": true
+  },
+  "gitignore_hardening": {
+    "status": "updated",
+    "added_or_confirmed_patterns": [
+      ".venv/",
+      "__pycache__/",
+      "pycache/",
+      "*.pyc",
+      ".DS_Store",
+      ".idea/",
+      ".vscode/",
+      "logs/",
+      "runs/",
+      "artifacts/",
+      "proof_artifacts/",
+      "compiled_*",
+      "compiled_*/",
+      "data_tape*/",
+      "*.db",
+      ".sqlite",
+      "*.sqlite",
+      "*.log",
+      "*.parquet",
+      "*.zip",
+      "*.jsonl",
+      ".env",
+      ".env.*",
+      "sim_results/",
+      "test_with_active_tune.json"
+    ]
+  },
+  "repo_size": {
+    "production_git_size_before": "9.7G",
+    "production_git_size_after": "9.7G",
+    "note": "No history rewrite performed in this task; index cleanup only."
+  },
+  "risks_and_gaps": [
+    "Production default branch is master, but cleanup was performed on publish/clean-backup-20260326 due existing local modifications blocking direct branch switch.",
+    "Git object store contains existing historical garbage warnings (tmp_obj_*), unrelated to this split cleanup.",
+    "If master must be updated immediately, cherry-pick/merge this cleanup commit into master after reconciling local modified files."
+  ]
+}
