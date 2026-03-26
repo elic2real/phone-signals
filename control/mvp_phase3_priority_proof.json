@@ -1,0 +1,309 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T03:42:30.409478+00:00",
+  "task_id": "MVP_PHASE3_PRIORITY_PROOF",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "sessions": [
+      "LONDON"
+    ]
+  },
+  "allocation_rule_under_test": {
+    "name": "timestamp_top1_by_composite_score",
+    "description": "At each timestamp, highest composite_score candidate is selected as winner.",
+    "tuning_changed": false
+  },
+  "priority_pressure": {
+    "total_candidates": 14351,
+    "total_timestamps": 5238,
+    "timestamps_with_competition_ge_2": 4229,
+    "competition_rate": 0.8073692248949981,
+    "peak_pool_size": 12,
+    "avg_pool_size": 2.7397861779305077,
+    "p90_pool_size": 4.0
+  },
+  "selection_impact": {
+    "winners": 5238,
+    "displaced_candidates": 9113,
+    "displacement_rate": 0.6350080133788586,
+    "winner_mean_score": 0.63542696124475,
+    "pool_mean_score": 0.6223580680510069,
+    "winner_minus_pool_mean": 0.013068893193743047,
+    "winner_edge_over_pool_mean_avg": 0.015162262100383917
+  },
+  "a_grade_priority_pressure": {
+    "a_grade_threshold": 0.8,
+    "a_grade_total": 52,
+    "a_grade_winners": 30,
+    "a_grade_displaced": 22,
+    "a_grade_displacement_rate": 0.4230769230769231
+  },
+  "throughput_compression": {
+    "avg_candidates_per_hour": 130.46363636363637,
+    "avg_winners_per_hour": 47.61818181818182,
+    "compression_ratio_candidates_to_winners": 2.739786177930508
+  },
+  "sample_top_competition_windows": [
+    {
+      "timestamp": "2026-01-05T15:14:00+00:00",
+      "pool_size": 12,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.7421249999999999
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.7421249999999999
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.6823438
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-22T12:54:00+00:00",
+      "pool_size": 12,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6460503999999999
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6460503999999999
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6460503999999999
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-01-26T14:06:00+00:00",
+      "pool_size": 12,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6815596
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6815596
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6815596
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-15T12:05:00+00:00",
+      "pool_size": 11,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.6835134
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.6835134
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.6835134
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-29T14:23:00+00:00",
+      "pool_size": 11,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6183712
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6183712
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6183712
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-01-26T14:17:00+00:00",
+      "pool_size": 11,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.7600735999999999
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.7600735999999999
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.6989398
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-01-12T08:00:00+00:00",
+      "pool_size": 11,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.749713
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.749713
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.749713
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-01-12T08:40:00+00:00",
+      "pool_size": 11,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.707265
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.707265
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.707265
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-01-05T15:04:00+00:00",
+      "pool_size": 10,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.7499469999999999
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.7499469999999999
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.667861
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-01-05T14:58:00+00:00",
+      "pool_size": 10,
+      "pairs": [
+        "EUR_USD",
+        "GBP_USD"
+      ],
+      "top_3": [
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.7171876
+        },
+        {
+          "pair": "EUR_USD",
+          "direction": "LONG",
+          "composite_score": 0.7171876
+        },
+        {
+          "pair": "GBP_USD",
+          "direction": "LONG",
+          "composite_score": 0.647195
+        }
+      ]
+    }
+  ],
+  "pass_conditions": {
+    "competition_exists": true,
+    "displacement_exists": true,
+    "ranking_adds_value": true,
+    "a_grade_queue_pressure_exists": true
+  },
+  "status": "PASS"
+}

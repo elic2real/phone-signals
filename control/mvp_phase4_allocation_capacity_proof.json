@@ -1,0 +1,94 @@
+{
+  "protocol": "RCP",
+  "protocol_version": "RCP_V2",
+  "generated_at": "2026-03-26T03:45:42.321514+00:00",
+  "task_id": "MVP_PHASE4_ALLOCATION_CAPACITY_PROOF",
+  "scope_lock": {
+    "pairs": [
+      "EUR_USD",
+      "GBP_USD"
+    ],
+    "sessions": [
+      "LONDON"
+    ]
+  },
+  "allocation_model": {
+    "ranking_key": "composite_score_desc",
+    "capacity_levels_tested": [
+      1,
+      2,
+      3
+    ],
+    "tuning_changed": false
+  },
+  "baseline_pool": {
+    "total_candidates": 14351,
+    "total_timestamps": 5238,
+    "avg_pool_size": 2.7397861779305077,
+    "peak_pool_size": 12,
+    "a_grade_total": 52
+  },
+  "capacity_scenarios": [
+    {
+      "capacity_per_timestamp": 1,
+      "accepted_candidates": 5238,
+      "rejected_candidates": 9113,
+      "rejection_rate": 0.6350080133788586,
+      "binding_timestamps": 4229,
+      "binding_rate": 0.8073692248949981,
+      "a_grade_total": 52,
+      "a_grade_accepted": 30,
+      "a_grade_rejected": 22,
+      "a_grade_rejection_rate": 0.4230769230769231,
+      "accepted_avg_score": 0.63542696124475,
+      "rejected_avg_score": 0.6148462867990783,
+      "avg_candidates_per_hour": 130.46363636363637,
+      "avg_accepted_per_hour": 47.61818181818182
+    },
+    {
+      "capacity_per_timestamp": 2,
+      "accepted_candidates": 9467,
+      "rejected_candidates": 4884,
+      "rejection_rate": 0.3403247160476622,
+      "binding_timestamps": 2373,
+      "binding_rate": 0.45303550973654066,
+      "a_grade_total": 52,
+      "a_grade_accepted": 49,
+      "a_grade_rejected": 3,
+      "a_grade_rejection_rate": 0.057692307692307696,
+      "accepted_avg_score": 0.6325479868596177,
+      "rejected_avg_score": 0.6026062332104832,
+      "avg_candidates_per_hour": 130.46363636363637,
+      "avg_accepted_per_hour": 86.06363636363636
+    },
+    {
+      "capacity_per_timestamp": 3,
+      "accepted_candidates": 11840,
+      "rejected_candidates": 2511,
+      "rejection_rate": 0.17497038533900078,
+      "binding_timestamps": 1570,
+      "binding_rate": 0.2997327224131348,
+      "a_grade_total": 52,
+      "a_grade_accepted": 51,
+      "a_grade_rejected": 1,
+      "a_grade_rejection_rate": 0.019230769230769232,
+      "accepted_avg_score": 0.6254581708952702,
+      "rejected_avg_score": 0.6077402991636798,
+      "avg_candidates_per_hour": 130.46363636363637,
+      "avg_accepted_per_hour": 107.63636363636364
+    }
+  ],
+  "incremental_relief": {
+    "accepted_gain_1_to_2": 4229,
+    "accepted_gain_2_to_3": 2373,
+    "a_grade_gain_1_to_2": 19,
+    "a_grade_gain_2_to_3": 2
+  },
+  "pass_conditions": {
+    "finite_capacity_binds_at_cap1": true,
+    "candidate_blocking_exists_at_cap1": true,
+    "a_grade_blocking_exists_at_cap1": true,
+    "additional_capacity_relieves_pressure": true
+  },
+  "status": "PASS"
+}

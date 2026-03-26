@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-03-26T03:57:30.176196Z",
+  "config": "/home/elic/Documents/phone signals/entry_v23_policy_guarded_active.json",
+  "pair": "GBP_USD",
+  "total_streams": 10,
+  "total_hours": 6755.43,
+  "total_accepted_trades": 1042,
+  "friction_per_trade_pips": 1.1,
+  "family_distribution_in_data": {
+    "RANGE_ESCAPE": 4103,
+    "PULLBACK_CONTINUATION": 438,
+    "OTHER": 1240,
+    "EXPANSION_BREAKOUT": 1976,
+    "RECLAIM_CONTINUATION": 17
+  },
+  "skipped_by_entry_filter": {
+    "ENTRY_SESSION_NOT_INCLUDED": 3624,
+    "ENTRY_MICRO_CONFIRM_FILTER": 2339,
+    "ENTRY_DISPLACEMENT_FILTER": 526,
+    "ENTRY_FAMILY_NOT_INCLUDED": 233,
+    "ENTRY_NOISE_FILTER": 8,
+    "ENTRY_PROGRESS_FILTER": 2
+  },
+  "ranked_families": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "trade_count": 565,
+      "trades_per_hour": 0.0836,
+      "win_count": 394,
+      "win_rate": 0.6973,
+      "avg_gross_pips_per_trade": 2.9457,
+      "avg_net_pips_per_trade": 1.8457,
+      "avg_mfe_pips": 15.3598,
+      "gross_pips_per_hour": 0.2464,
+      "net_pips_per_hour": 0.1544,
+      "total_net_pips": 1042.8,
+      "total_gross_pips": 1664.3,
+      "verdict": "KEEP"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "trade_count": 428,
+      "trades_per_hour": 0.0634,
+      "win_count": 262,
+      "win_rate": 0.6121,
+      "avg_gross_pips_per_trade": 2.6923,
+      "avg_net_pips_per_trade": 1.5923,
+      "avg_mfe_pips": 16.3037,
+      "gross_pips_per_hour": 0.1706,
+      "net_pips_per_hour": 0.1009,
+      "total_net_pips": 681.5,
+      "total_gross_pips": 1152.3,
+      "verdict": "KEEP"
+    },
+    {
+      "family": "OTHER",
+      "trade_count": 49,
+      "trades_per_hour": 0.0073,
+      "win_count": 33,
+      "win_rate": 0.6735,
+      "avg_gross_pips_per_trade": 3.2327,
+      "avg_net_pips_per_trade": 2.1327,
+      "avg_mfe_pips": 13.3776,
+      "gross_pips_per_hour": 0.0234,
+      "net_pips_per_hour": 0.0155,
+      "total_net_pips": 104.5,
+      "total_gross_pips": 158.4,
+      "verdict": "TUNE"
+    }
+  ],
+  "combined_keep_tune_net_pph": 0.2708
+}

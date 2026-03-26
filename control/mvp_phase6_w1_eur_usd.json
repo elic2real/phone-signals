@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-03-26T03:52:59.686099Z",
+  "config": "/home/elic/Documents/phone signals/entry_v23_policy_guarded_active.json",
+  "pair": "EUR_USD",
+  "total_streams": 6,
+  "total_hours": 9282.4,
+  "total_accepted_trades": 893,
+  "friction_per_trade_pips": 1.1,
+  "family_distribution_in_data": {
+    "PULLBACK_CONTINUATION": 387,
+    "RANGE_ESCAPE": 4138,
+    "OTHER": 1188,
+    "EXPANSION_BREAKOUT": 1857,
+    "RECLAIM_CONTINUATION": 13
+  },
+  "skipped_by_entry_filter": {
+    "ENTRY_SESSION_NOT_INCLUDED": 3506,
+    "ENTRY_MICRO_CONFIRM_FILTER": 2532,
+    "ENTRY_DISPLACEMENT_FILTER": 440,
+    "ENTRY_FAMILY_NOT_INCLUDED": 199,
+    "ENTRY_NOISE_FILTER": 13
+  },
+  "ranked_families": [
+    {
+      "family": "EXPANSION_BREAKOUT",
+      "trade_count": 473,
+      "trades_per_hour": 0.051,
+      "win_count": 282,
+      "win_rate": 0.5962,
+      "avg_gross_pips_per_trade": 2.7044,
+      "avg_net_pips_per_trade": 1.6044,
+      "avg_mfe_pips": 12.1896,
+      "gross_pips_per_hour": 0.1378,
+      "net_pips_per_hour": 0.0818,
+      "total_net_pips": 758.9,
+      "total_gross_pips": 1279.2,
+      "verdict": "KEEP"
+    },
+    {
+      "family": "RANGE_ESCAPE",
+      "trade_count": 379,
+      "trades_per_hour": 0.0408,
+      "win_count": 196,
+      "win_rate": 0.5172,
+      "avg_gross_pips_per_trade": 2.0314,
+      "avg_net_pips_per_trade": 0.9314,
+      "avg_mfe_pips": 12.6441,
+      "gross_pips_per_hour": 0.0829,
+      "net_pips_per_hour": 0.038,
+      "total_net_pips": 353.0,
+      "total_gross_pips": 769.9,
+      "verdict": "KEEP"
+    },
+    {
+      "family": "OTHER",
+      "trade_count": 41,
+      "trades_per_hour": 0.0044,
+      "win_count": 25,
+      "win_rate": 0.6098,
+      "avg_gross_pips_per_trade": 1.7488,
+      "avg_net_pips_per_trade": 0.6488,
+      "avg_mfe_pips": 14.2171,
+      "gross_pips_per_hour": 0.0077,
+      "net_pips_per_hour": 0.0029,
+      "total_net_pips": 26.6,
+      "total_gross_pips": 71.7,
+      "verdict": "TUNE"
+    }
+  ],
+  "combined_keep_tune_net_pph": 0.1227
+}
