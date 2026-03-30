@@ -39,6 +39,11 @@ class TestAEEReplayHarnessAdapter(unittest.TestCase):
         self.assertIn("time_in_trade_sec", result)
         self.assertIn("max_giveback_r", result)
         self.assertIn("locked_profit_pips", result)
+        self.assertIn("baseline_1to1_money_result_pips", result)
+        self.assertIn("baseline_protective_money_result_pips", result)
+        self.assertIn("delta_vs_1to1_baseline_pips", result)
+        self.assertIn("delta_vs_protective_baseline_pips", result)
+        self.assertIn("state_transitions", result)
 
     def test_report_groups_by_reason_and_transition(self) -> None:
         trade_a = {
@@ -119,6 +124,22 @@ class TestAEEReplayHarnessAdapter(unittest.TestCase):
 
         self.assertEqual(result["policy_name"], "panic_soften")
         self.assertEqual(result["packets"][0]["meta"]["policy_name"], "panic_soften")
+
+    def test_replay_fallback_identity_and_timestamps_are_deterministic(self) -> None:
+        trade = {
+            "target_distance": 2.0,
+            "rows": [
+                {"bar_index": 1, "profit_now": 0.2, "velocity_now": 0.03, "progress_ratio": 0.10},
+                {"bar_index": 2, "profit_now": 0.4, "velocity_now": 0.05, "progress_ratio": 0.20},
+            ],
+        }
+
+        r1 = replay_trade_path(trade)
+        r2 = replay_trade_path(trade)
+
+        self.assertEqual(r1["trade_id"], r2["trade_id"])
+        self.assertEqual(r1["packets"][0]["timestamp"], "1970-01-01T00:00:00Z")
+        self.assertEqual(r1["packets"][1]["timestamp"], "1970-01-01T00:01:00Z")
 
 
 if __name__ == "__main__":

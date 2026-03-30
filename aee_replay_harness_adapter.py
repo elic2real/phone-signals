@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections import defaultdict
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +31,71 @@ def _to_bool(v: Any) -> bool:
         return v
     s = str(v).strip().lower()
     return s in {"1", "true", "yes", "y", "on"}
+
+
+def _stable_trade_id(trade: dict[str, Any], rows: list[dict[str, Any]]) -> str:
+    explicit = str(trade.get("trade_id") or "").strip()
+    if explicit:
+        return explicit
+    fingerprint_src = {
+        "rows": rows,
+        "target_distance": trade.get("target_distance"),
+        "baseline_final_pips": trade.get("baseline_final_pips"),
+        "meta": trade.get("meta"),
+    }
+    fingerprint = json.dumps(fingerprint_src, sort_keys=True, separators=(",", ":"))
+    digest = hashlib.sha256(fingerprint.encode("utf-8")).hexdigest()[:12]
+    return f"trade_{digest}"
+
+
+def _deterministic_timestamp(idx: int, row: dict[str, Any]) -> str:
+    ts = str(row.get("timestamp", "")).strip()
+    if ts:
+        return ts
+    base = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(minutes=max(0, idx - 1))
+    return base.isoformat().replace("+00:00", "Z")
+
+
+def _run_simple_protective_baseline(rows: list[dict[str, Any]], target_distance: float) -> dict[str, Any]:
+    peak_pips = -1e9
+    locked_profit_pips = 0.0
+    final_pips = _safe_float(rows[-1].get("profit_now", rows[-1].get("pips", 0.0)), 0.0)
+    final_reason = "protective_end_of_path"
+    final_time_in_trade_sec = len(rows) * 60
+
+    for idx, row in enumerate(rows, start=1):
+        pips = _safe_float(row.get("profit_now", row.get("pips", 0.0)), 0.0)
+        velocity_now = _safe_float(row.get("velocity_now", 0.0), 0.0)
+        progress_r = _safe_float(row.get("progress_ratio", pips / max(0.1, target_distance)), 0.0)
+
+        if pips > peak_pips:
+            peak_pips = pips
+        locked_profit_pips = max(locked_profit_pips, max(0.0, peak_pips * 0.40))
+
+        giveback_r = max(0.0, (peak_pips - pips) / max(0.1, target_distance))
+        panic_trigger = _to_bool(row.get("panic_trigger", False)) or (progress_r <= -0.80 and velocity_now <= -0.10)
+
+        if panic_trigger:
+            final_pips = pips
+            final_reason = "protective_panic_exit"
+            final_time_in_trade_sec = idx * 60
+            break
+        if giveback_r >= 0.70:
+            final_pips = max(pips, locked_profit_pips)
+            final_reason = "protective_giveback_exit"
+            final_time_in_trade_sec = idx * 60
+            break
+        if idx == len(rows):
+            final_pips = max(pips, locked_profit_pips)
+            final_reason = "protective_end_of_path"
+            final_time_in_trade_sec = idx * 60
+
+    return {
+        "final_money_result_pips": final_pips,
+        "final_reason_code": final_reason,
+        "time_in_trade_sec": final_time_in_trade_sec,
+        "locked_profit_pips": locked_profit_pips,
+    }
 
 
 def _build_context(
@@ -80,11 +147,15 @@ def replay_trade_path(
     if not rows:
         raise ValueError("trade rows are required")
 
-    trade_id = str(trade.get("trade_id") or f"trade_{id(trade)}")
+    trade_id = _stable_trade_id(trade, rows)
     meta = dict(trade.get("meta") or {})
     meta.setdefault("policy_name", str(policy_name))
     target_distance = max(0.1, _safe_float(trade.get("target_distance", rows[0].get("target_distance", 1.0)), 1.0))
-    baseline_final_pips = _safe_float(trade.get("baseline_final_pips", rows[-1].get("static_pips", rows[-1].get("profit_now", 0.0))), 0.0)
+    baseline_1to1_final_pips = _safe_float(
+        trade.get("baseline_final_pips", rows[-1].get("static_pips", rows[-1].get("profit_now", 0.0))),
+        0.0,
+    )
+    protective_baseline = _run_simple_protective_baseline(rows, target_distance)
 
     state: AEEState = initial_state
     packets: list[dict[str, Any]] = []
@@ -113,7 +184,7 @@ def replay_trade_path(
             bars_since_improvement=bars_since_improvement,
             policy_overrides=policy_overrides,
         )
-        timestamp = str(row.get("timestamp", "")) or None
+        timestamp = _deterministic_timestamp(idx, row)
         packet = transition_aee_state_with_packet(
             state,
             ctx,
@@ -149,15 +220,24 @@ def replay_trade_path(
             final_transition = transition_key
             final_time_in_trade_sec = _safe_int(packet.get("bar_index", idx), idx) * 60
 
+    state_transitions = [f"{p['state_before']}->{p['state_after']}" for p in packets]
+    baseline_protective_final_pips = _safe_float(protective_baseline.get("final_money_result_pips", 0.0), 0.0)
+
     return {
         "trade_id": trade_id,
         "packet_count": len(packets),
         "packets": packets,
+        "state_transitions": state_transitions,
         "final_reason_code": final_reason_code,
         "final_state_transition": final_transition,
         "final_money_result_pips": final_aee_pips,
-        "baseline_money_result_pips": baseline_final_pips,
-        "delta_vs_baseline_pips": final_aee_pips - baseline_final_pips,
+        "baseline_money_result_pips": baseline_1to1_final_pips,
+        "baseline_1to1_money_result_pips": baseline_1to1_final_pips,
+        "baseline_protective_money_result_pips": baseline_protective_final_pips,
+        "delta_vs_baseline_pips": final_aee_pips - baseline_1to1_final_pips,
+        "delta_vs_1to1_baseline_pips": final_aee_pips - baseline_1to1_final_pips,
+        "delta_vs_protective_baseline_pips": final_aee_pips - baseline_protective_final_pips,
+        "baseline_protective_reason_code": str(protective_baseline.get("final_reason_code", "protective_unknown")),
         "time_in_trade_sec": final_time_in_trade_sec,
         "max_giveback_r": max_giveback_r,
         "max_giveback_pips": max_giveback_pips,
@@ -174,8 +254,10 @@ def _aggregate_bucket(trades: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "count": len(trades),
         "avg_final_money_result_pips": _avg([_safe_float(t.get("final_money_result_pips", 0.0), 0.0) for t in trades]),
-        "avg_baseline_money_result_pips": _avg([_safe_float(t.get("baseline_money_result_pips", 0.0), 0.0) for t in trades]),
-        "avg_delta_vs_baseline_pips": _avg([_safe_float(t.get("delta_vs_baseline_pips", 0.0), 0.0) for t in trades]),
+        "avg_baseline_1to1_money_result_pips": _avg([_safe_float(t.get("baseline_1to1_money_result_pips", t.get("baseline_money_result_pips", 0.0)), 0.0) for t in trades]),
+        "avg_baseline_protective_money_result_pips": _avg([_safe_float(t.get("baseline_protective_money_result_pips", 0.0), 0.0) for t in trades]),
+        "avg_delta_vs_1to1_baseline_pips": _avg([_safe_float(t.get("delta_vs_1to1_baseline_pips", t.get("delta_vs_baseline_pips", 0.0)), 0.0) for t in trades]),
+        "avg_delta_vs_protective_baseline_pips": _avg([_safe_float(t.get("delta_vs_protective_baseline_pips", 0.0), 0.0) for t in trades]),
         "avg_time_in_trade_sec": _avg([_safe_float(t.get("time_in_trade_sec", 0.0), 0.0) for t in trades]),
         "avg_max_giveback_r": _avg([_safe_float(t.get("max_giveback_r", 0.0), 0.0) for t in trades]),
         "avg_locked_profit_pips": _avg([_safe_float(t.get("locked_profit_pips", 0.0), 0.0) for t in trades]),
