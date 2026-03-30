@@ -1,5 +1,8 @@
 from dataclasses import dataclass
+from typing import Any
 from typing import Literal
+
+from aee_trade_state_packet import build_trade_state_packet
 
 AEEState = Literal["PROTECT", "BUILD", "HARVEST", "RUNNER", "PANIC", "CLOSED"]
 AEEAction = Literal["HOLD", "TIGHTEN", "PARTIAL_EXIT", "FULL_EXIT"]
@@ -59,3 +62,31 @@ def transition_aee_state(current_state: AEEState, ctx: AEEContext) -> Transition
         return TransitionResult("RUNNER", "HOLD", "runner_continue")
 
     return TransitionResult("PANIC", "FULL_EXIT", "unknown_state_fallback")
+
+
+def transition_aee_state_with_packet(
+    current_state: AEEState,
+    ctx: AEEContext,
+    *,
+    trade_id: str,
+    bar_index: int,
+    timestamp: str | None = None,
+    meta: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    transition = transition_aee_state(current_state, ctx)
+    return build_trade_state_packet(
+        trade_id=trade_id,
+        bar_index=bar_index,
+        state_before=current_state,
+        state_after=transition.next_state,
+        action=transition.action,
+        reason_code=transition.reason,
+        progress_r=ctx.progress_r,
+        unrealized_pips=ctx.unrealized_pips,
+        giveback_r=ctx.giveback_r,
+        continuation_score=ctx.continuation_score,
+        stall_score=ctx.stall_score,
+        panic_trigger=ctx.panic_trigger,
+        timestamp=timestamp,
+        meta=meta,
+    )
