@@ -331,3 +331,103 @@ Clean distinction:
 - Codespaces: discover truth
 - Local: verify truth survives reality
 
+## RCP_LOCAL_RUNTIME_EXECUTION — LOCKED
+
+### Purpose
+
+Local is not for research. Local is for:
+- live/demo execution
+- validation of real behavior
+- end-to-end runtime correctness
+
+Codespaces discovers truth. Local proves it works in reality.
+
+### Core objective
+
+Make the bot:
+1. run continuously
+2. execute trades correctly
+3. expose all AEE decisions visibly
+4. accept promoted AEE logic immediately
+
+No replay work, no theory loops, no kernel experimentation in Local.
+
+### Required tasks
+
+1. **Sync branch state**
+   - `git checkout publish/clean-backup-20260326`
+   - `git pull origin publish/clean-backup-20260326`
+
+2. **Run bot on demo**
+   - bot starts cleanly, scans, evaluates, submits, manages, and remains stable
+   - fix execution errors, API issues, stale pricing issues, and loop stalls
+
+3. **Harvester/runner separation**
+   - separate trade IDs
+   - independent state, stop logic, and AEE decisions per leg
+   - no shared identity / hidden coupling
+
+4. **Stop logic verification (critical)**
+   - initial SL remains structure-based
+   - SL moves only on AEE decisions
+   - SL never regresses randomly
+   - locking and trailing behavior are observable and monotonic
+
+5. **AEE visibility (mandatory)**
+   - log/notify per trade: trade ID, leg type, objective, action, SL movement, reason code
+   - if it is not visible, it is not debuggable
+
+6. **Notification chain**
+   - entry
+   - get-ready / enter (if used)
+   - AEE decision updates
+   - SL move updates
+   - close with reason
+
+7. **Stability safeguards**
+   - extended runtime without stalls/freezes/silent failure
+   - add watchdog/timers/tracking/fill-confirmation logging as needed
+
+8. **Promotion readiness**
+   - Local must accept new AEE logic from Codespaces without runtime breakage
+   - maintain clean AEE module separation, avoid hardcoded legacy overrides
+
+### Forbidden in Local
+
+Do not do locally:
+- AEE research logic changes
+- replay harness runs
+- batch experiments
+- kernel search tooling
+- architecture redesign
+
+### Work loop
+
+1. pull latest branch
+2. run bot
+3. observe runtime behavior
+4. fix runtime issues
+5. verify visibility and correctness
+6. repeat
+
+### Success conditions
+
+Local runtime execution is complete when:
+- bot runs continuously on demo
+- trades execute/manage correctly
+- harvester/runner separation is real
+- SL behavior is correct and observable
+- AEE decisions are visible in real time
+- runtime is stable and ready for AEE v1 integration
+
+### Stop conditions
+
+Stop only if:
+1. all success conditions are met
+2. a hard runtime blocker occurs
+3. integration of new AEE logic is required
+
+### Final rule
+
+Local is not for thinking. Local is for making sure the machine actually works.
+
