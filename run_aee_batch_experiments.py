@@ -52,17 +52,109 @@ def _aggregate_breakdown(rows: list[dict[str, Any]], key: str) -> dict[str, dict
     return out
 
 
+def _aggregate_breakdown_for_metric(rows: list[dict[str, Any]], key: str, metric_key: str) -> dict[str, dict[str, Any]]:
+    buckets: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        buckets[str(row.get(key, "UNKNOWN"))].append(row)
+
+    out: dict[str, dict[str, Any]] = {}
+    for name, b in sorted(buckets.items()):
+        vals = [_safe_float(x.get(metric_key, 0.0), 0.0) for x in b]
+        out[name] = {
+            "count": len(b),
+            f"total_{metric_key}": sum(vals),
+            f"avg_{metric_key}": (sum(vals) / len(vals)) if vals else 0.0,
+        }
+    return out
+
+
 def _default_config() -> dict[str, Any]:
     return {
         "kernel_candidates": [
-            {"kernel_id": "kernel_baseline", "policy": {}},
-            {"kernel_id": "kernel_progress_entry", "policy": {"protect_progress_r": 0.20}},
-            {"kernel_id": "kernel_build_guard", "policy": {"build_safety_giveback_r": 0.85}},
+            {
+                "kernel_id": "kernel_baseline",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "STATE_MACHINE_DEFAULTS",
+                        "definition": "Unmodified replay kernel thresholds and transitions.",
+                    }
+                ],
+                "policy": {},
+            },
+            {
+                "kernel_id": "kernel_progress_entry",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "PROGRESS_GATE",
+                        "definition": "Earlier protect-to-build promotion via lower progress threshold.",
+                    }
+                ],
+                "policy": {"protect_progress_r": 0.20},
+            },
+            {
+                "kernel_id": "kernel_build_guard",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "PNL_GIVEBACK_GUARD",
+                        "definition": "Tighter build-stage giveback protection.",
+                    }
+                ],
+                "policy": {"build_safety_giveback_r": 0.85},
+            },
             {
                 "kernel_id": "kernel_harvest_early",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "PROFIT_LOCK_EARLY",
+                        "definition": "Earlier build-to-harvest transition to lock profit sooner.",
+                    }
+                ],
                 "policy": {
                     "build_to_harvest_unrealized_pips": 2.5,
                     "build_to_harvest_progress_r": 0.45,
+                },
+            },
+            {
+                "kernel_id": "kernel_time_pnl_composite",
+                "kernel_type": "composite",
+                "components": [
+                    {
+                        "component_id": "TIME_TIGHTEN",
+                        "definition": "Lower stall tolerance in runner and harvest states.",
+                    },
+                    {
+                        "component_id": "PNL_GIVEBACK_GUARD",
+                        "definition": "Tighter giveback protection across build and harvest states.",
+                    }
+                ],
+                "policy": {
+                    "harvest_to_runner_max_stall_score": 0.25,
+                    "runner_stall_score": 0.55,
+                    "build_safety_giveback_r": 0.82,
+                    "harvest_giveback_r": 0.62,
+                },
+            },
+            {
+                "kernel_id": "kernel_progress_pnl_composite",
+                "kernel_type": "composite",
+                "components": [
+                    {
+                        "component_id": "PROGRESS_GATE",
+                        "definition": "Earlier protect-to-build promotion via lower progress threshold.",
+                    },
+                    {
+                        "component_id": "PROFIT_LOCK_EARLY",
+                        "definition": "Earlier build-to-harvest transition to protect green trades.",
+                    }
+                ],
+                "policy": {
+                    "protect_progress_r": 0.20,
+                    "build_to_harvest_unrealized_pips": 2.4,
+                    "build_to_harvest_progress_r": 0.42,
                 },
             },
         ],
@@ -111,15 +203,17 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
     cfg = _default_config()
     trades = _load_trades(trades_path)
 
-    baseline_rows: dict[str, dict[str, Any]] = {}
+    current_rows: dict[str, dict[str, Any]] = {}
     for tr in trades:
         row = replay_trade_path(tr, policy_name="baseline", policy_overrides={})
         row["scenario_id"] = classify_scenario(row)
-        baseline_rows[str(row.get("trade_id"))] = row
+        current_rows[str(row.get("trade_id"))] = row
 
     experiments: list[dict[str, Any]] = []
     for kernel in cfg["kernel_candidates"]:
         kernel_id = str(kernel["kernel_id"])
+        kernel_type = str(kernel.get("kernel_type", "pure"))
+        components = list(kernel.get("components") or [])
         kernel_policy = dict(kernel.get("policy") or {})
         for param_set in cfg["parameter_sets"]:
             param_id = str(param_set["param_id"])
@@ -131,8 +225,8 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                 experiment_id = f"{kernel_id}__{param_id}__{stop_id}"
                 trade_rows: list[dict[str, Any]] = []
                 for tr in trades:
-                    baseline = baseline_rows.get(str(tr.get("trade_id")), {})
-                    scenario_id = str(baseline.get("scenario_id", classify_scenario(baseline if baseline else {})))
+                    current = current_rows.get(str(tr.get("trade_id")), {})
+                    scenario_id = str(current.get("scenario_id", classify_scenario(current if current else {})))
                     scenario_policy = dict((cfg.get("scenario_overrides") or {}).get(scenario_id, {}))
                     policy = _merge_policy(kernel_policy, params, stop_overrides, scenario_policy)
 
@@ -143,14 +237,19 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                     )
                     out["scenario_id"] = scenario_id
                     out["kernel_id"] = kernel_id
+                    out["kernel_type"] = kernel_type
+                    out["components"] = components
+                    out["parameter_set_id"] = param_id
                     out["parameters"] = params
                     out["stop_logic_variant"] = stop_id
                     out["experiment_id"] = experiment_id
-                    out["delta_vs_baseline_kernel_pips"] = _safe_float(out.get("final_money_result_pips", 0.0), 0.0) - _safe_float(baseline.get("final_money_result_pips", 0.0), 0.0)
+                    out["delta_vs_current_pips"] = _safe_float(out.get("final_money_result_pips", 0.0), 0.0) - _safe_float(current.get("final_money_result_pips", 0.0), 0.0)
                     trade_rows.append(out)
 
                 deltas = [_safe_float(x.get("delta_vs_baseline_pips", 0.0), 0.0) for x in trade_rows]
+                current_deltas = [_safe_float(x.get("delta_vs_current_pips", 0.0), 0.0) for x in trade_rows]
                 scenario_breakdown = _aggregate_breakdown(trade_rows, "scenario_id")
+                scenario_breakdown_vs_current = _aggregate_breakdown_for_metric(trade_rows, "scenario_id", "delta_vs_current_pips")
                 reason_breakdown = _aggregate_breakdown(trade_rows, "final_reason_code")
                 transition_breakdown = _aggregate_breakdown(trade_rows, "final_state_transition")
 
@@ -165,14 +264,22 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                     {
                         "experiment_id": experiment_id,
                         "kernel_id": kernel_id,
+                        "kernel_type": kernel_type,
+                        "components": components,
+                        "component_definitions": {str(c.get("component_id", "UNKNOWN")): str(c.get("definition", "")) for c in components},
+                        "parameter_set_id": param_id,
                         "parameters": params,
                         "stop_logic_variant": stop_id,
                         "total_delta_vs_baseline_pips": sum(deltas),
                         "avg_delta_vs_baseline_pips": (sum(deltas) / len(deltas)) if deltas else 0.0,
+                        "total_delta_vs_current_pips": sum(current_deltas),
+                        "avg_delta_vs_current_pips": (sum(current_deltas) / len(current_deltas)) if current_deltas else 0.0,
                         "win_count": sum(1 for d in deltas if d > 1e-9),
                         "loss_count": sum(1 for d in deltas if d < -1e-9),
                         "flat_count": len(deltas) - sum(1 for d in deltas if abs(d) > 1e-9),
+                        "pure_or_composite": kernel_type,
                         "per_scenario_delta": scenario_breakdown,
+                        "per_scenario_delta_vs_current": scenario_breakdown_vs_current,
                         "reason_code_breakdown": reason_breakdown,
                         "transition_breakdown": transition_breakdown,
                         "regressions": {
@@ -186,6 +293,7 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                                 "final_result": _safe_float(r.get("final_money_result_pips", 0.0), 0.0),
                                 "baseline_result": _safe_float(r.get("baseline_money_result_pips", 0.0), 0.0),
                                 "delta": _safe_float(r.get("delta_vs_baseline_pips", 0.0), 0.0),
+                                "delta_vs_current": _safe_float(r.get("delta_vs_current_pips", 0.0), 0.0),
                                 "reason_code": str(r.get("final_reason_code", "UNKNOWN")),
                                 "state_transition": str(r.get("final_state_transition", "UNKNOWN->UNKNOWN")),
                                 "giveback": _safe_float(r.get("max_giveback_r", 0.0), 0.0),
@@ -211,6 +319,7 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
         "experiment_engine": {
             "input_slice": str(trades_path),
             "trade_count": len(trades),
+            "current_policy_name": "baseline",
             "kernel_candidate_count": len(cfg["kernel_candidates"]),
             "parameter_set_count": len(cfg["parameter_sets"]),
             "stop_variant_count": len(cfg["stop_logic_variants"]),

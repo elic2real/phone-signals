@@ -52,13 +52,20 @@ class TestRunAEEBatchExperiments(unittest.TestCase):
             first = report["ranked_experiments"][0]
             self.assertIn("experiment_id", first)
             self.assertIn("kernel_id", first)
+            self.assertIn("kernel_type", first)
+            self.assertIn("components", first)
+            self.assertIn("component_definitions", first)
+            self.assertIn("parameter_set_id", first)
             self.assertIn("parameters", first)
             self.assertIn("total_delta_vs_baseline_pips", first)
+            self.assertIn("total_delta_vs_current_pips", first)
             self.assertIn("per_scenario_delta", first)
+            self.assertIn("per_scenario_delta_vs_current", first)
             self.assertIn("reason_code_breakdown", first)
             self.assertIn("transition_breakdown", first)
             self.assertIn("regressions", first)
             self.assertIn("per_trade", first)
+            self.assertIn("delta_vs_current", first["per_trade"][0])
 
 
 if __name__ == "__main__":

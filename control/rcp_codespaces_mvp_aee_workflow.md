@@ -11,11 +11,13 @@ PURPOSE
 
 Codespaces is used for:
 
-- clean architecture work
 - AEE development
-- replay / simulation
-- repo-wide search and reuse
-- structured testing
+- replay harness
+- batch experiments
+- kernel testing
+- scenario testing
+- baseline comparison
+- report generation
 
 Codespaces is not used for:
 
@@ -49,20 +51,54 @@ RULES
 
 PRIMARY OBJECTIVE
 
-Build AEE correctly and fast.
+Build and prove AEE logic using replay + baseline comparison.
+
+CURRENT FOCUS
+
+- replay harness adapter
+- baseline comparison output
+- deterministic test spine
+- batch kernel testing
+- scenario evaluation
+- identify first winning kernel
 
 SCOPE (ALLOWED WORK)
 
 AEE CORE
 
-- global kernel implementation
+- global kernel candidates
 - scenario classification layer
 - scenario playbooks
 - stop/SL logic:
   - lock profit
   - trailing
   - protected squeeze
-- harvester vs runner separation
+
+KERNEL DISCOVERY
+
+Codespaces owns kernel discovery, including expansion of kernel definitions and controlled combination of kernels, provided experiments remain attributable and comparable against baseline.
+
+Allowed discovery work:
+
+- pure kernel discovery
+- kernel definition refinement
+- controlled composite discovery
+
+Examples of allowed kernel dimensions:
+
+- time
+- pnl
+- progress
+- state-transition
+- path-quality
+- opportunity-cost
+
+Examples of allowed composite discovery:
+
+- time + pnl
+- progress + pnl
+- time + state-transition
+- pnl + opportunity-cost
 
 AEE INFRASTRUCTURE
 
@@ -70,6 +106,24 @@ AEE INFRASTRUCTURE
 - AEE replay harness
 - baseline comparison engine
 - decision logging + reason codes
+
+BATCH EXPERIMENT ENGINE
+
+Every experiment must preserve attribution and emit:
+
+- experiment_id
+- kernel_id
+- kernel_type
+- component definitions
+- parameter_set_id
+- parameters
+- stop logic variant
+- total delta vs baseline
+- total delta vs current
+- per-scenario results
+- reason-code breakdown
+- transition breakdown
+- regressions
 
 ENTRY SUPPORT (LIMITED)
 
@@ -105,12 +159,11 @@ DEVELOPMENT ORDER
 
 1. Search repo for reusable components
 2. Define/lock trade-state packet
-3. Implement global kernel
-4. Add scenario classification
-5. Implement scenario playbooks
-6. Add stop/SL logic
-7. Build replay harness
-8. Compare vs baselines
+3. Ensure replay spine is stable
+4. Add batch experiment runner
+5. Run many candidates
+6. Rank results
+7. Identify best-performing kernel
 
 AUDIT GATES (MANDATORY)
 
@@ -128,11 +181,10 @@ Before coding, verify:
 - Is this universal or scenario-specific?
 
 4. Objective
-- Does this increase money?
-- Or optimize a proxy?
+- Does this improve money vs baseline?
 
-5. Infrastructure
-- Can this be tested in replay?
+5. Attribution
+- Can results be traced to this change?
 
 If any gate fails: STOP and redesign.
 
@@ -145,15 +197,38 @@ Every AEE change must:
 - be comparable vs baseline
 - be push-ready to GitHub
 
+Per trade reporting must include:
+
+- trade_id
+- final result
+- baseline result
+- delta
+- reason_code
+- state transition
+- giveback
+- time in trade
+- locked profit
+
+Aggregate reporting must include:
+
+- total delta
+- average delta
+- win/loss counts
+
+Scenario reporting must include:
+
+- delta per scenario
+- reason concentration
+- transition concentration
+
 SUCCESS CONDITION
 
 Codespaces work is successful when:
 
-- AEE logic is modular
-- replay harness exists
-- kernel can be tested fast
-- decisions are explainable
-- improvements are measurable vs baseline
+- a ranked list of kernel candidates is produced
+- candidates outperform baseline on the fixed replay slice
+- attribution remains clear
+- no major regressions are hidden
 
 FINAL RULE
 
