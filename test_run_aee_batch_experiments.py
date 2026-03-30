@@ -58,14 +58,20 @@ class TestRunAEEBatchExperiments(unittest.TestCase):
             self.assertIn("parameter_set_id", first)
             self.assertIn("parameters", first)
             self.assertIn("total_delta_vs_baseline_pips", first)
+            self.assertIn("total_delta_vs_1to1_baseline_pips", first)
+            self.assertIn("total_delta_vs_protective_baseline_pips", first)
             self.assertIn("total_delta_vs_current_pips", first)
             self.assertIn("per_scenario_delta", first)
             self.assertIn("per_scenario_delta_vs_current", first)
+            self.assertIn("per_scenario_delta_vs_1to1_baseline", first)
+            self.assertIn("per_scenario_delta_vs_protective_baseline", first)
             self.assertIn("reason_code_breakdown", first)
             self.assertIn("transition_breakdown", first)
             self.assertIn("regressions", first)
             self.assertIn("per_trade", first)
             self.assertIn("delta_vs_current", first["per_trade"][0])
+            self.assertIn("baseline_1to1_result", first["per_trade"][0])
+            self.assertIn("baseline_protective_result", first["per_trade"][0])
 
 
 if __name__ == "__main__":

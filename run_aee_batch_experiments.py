@@ -201,6 +201,11 @@ def _default_config() -> dict[str, Any]:
 
 def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, Any]:
     cfg = _default_config()
+    return run_batch_experiments_with_config(trades_path=trades_path, report_out=report_out, config=cfg)
+
+
+def run_batch_experiments_with_config(*, trades_path: Path, report_out: Path, config: dict[str, Any]) -> dict[str, Any]:
+    cfg = dict(config or {})
     trades = _load_trades(trades_path)
 
     current_rows: dict[str, dict[str, Any]] = {}
@@ -248,8 +253,12 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
 
                 deltas = [_safe_float(x.get("delta_vs_baseline_pips", 0.0), 0.0) for x in trade_rows]
                 current_deltas = [_safe_float(x.get("delta_vs_current_pips", 0.0), 0.0) for x in trade_rows]
+                baseline_1to1_deltas = [_safe_float(x.get("delta_vs_1to1_baseline_pips", x.get("delta_vs_baseline_pips", 0.0)), 0.0) for x in trade_rows]
+                baseline_protective_deltas = [_safe_float(x.get("delta_vs_protective_baseline_pips", 0.0), 0.0) for x in trade_rows]
                 scenario_breakdown = _aggregate_breakdown(trade_rows, "scenario_id")
                 scenario_breakdown_vs_current = _aggregate_breakdown_for_metric(trade_rows, "scenario_id", "delta_vs_current_pips")
+                scenario_breakdown_vs_1to1 = _aggregate_breakdown_for_metric(trade_rows, "scenario_id", "delta_vs_1to1_baseline_pips")
+                scenario_breakdown_vs_protective = _aggregate_breakdown_for_metric(trade_rows, "scenario_id", "delta_vs_protective_baseline_pips")
                 reason_breakdown = _aggregate_breakdown(trade_rows, "final_reason_code")
                 transition_breakdown = _aggregate_breakdown(trade_rows, "final_state_transition")
 
@@ -270,8 +279,13 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                         "parameter_set_id": param_id,
                         "parameters": params,
                         "stop_logic_variant": stop_id,
+                        "effective_policy": policy,
                         "total_delta_vs_baseline_pips": sum(deltas),
                         "avg_delta_vs_baseline_pips": (sum(deltas) / len(deltas)) if deltas else 0.0,
+                        "total_delta_vs_1to1_baseline_pips": sum(baseline_1to1_deltas),
+                        "avg_delta_vs_1to1_baseline_pips": (sum(baseline_1to1_deltas) / len(baseline_1to1_deltas)) if baseline_1to1_deltas else 0.0,
+                        "total_delta_vs_protective_baseline_pips": sum(baseline_protective_deltas),
+                        "avg_delta_vs_protective_baseline_pips": (sum(baseline_protective_deltas) / len(baseline_protective_deltas)) if baseline_protective_deltas else 0.0,
                         "total_delta_vs_current_pips": sum(current_deltas),
                         "avg_delta_vs_current_pips": (sum(current_deltas) / len(current_deltas)) if current_deltas else 0.0,
                         "win_count": sum(1 for d in deltas if d > 1e-9),
@@ -280,6 +294,8 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                         "pure_or_composite": kernel_type,
                         "per_scenario_delta": scenario_breakdown,
                         "per_scenario_delta_vs_current": scenario_breakdown_vs_current,
+                        "per_scenario_delta_vs_1to1_baseline": scenario_breakdown_vs_1to1,
+                        "per_scenario_delta_vs_protective_baseline": scenario_breakdown_vs_protective,
                         "reason_code_breakdown": reason_breakdown,
                         "transition_breakdown": transition_breakdown,
                         "regressions": {
@@ -292,7 +308,11 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
                                 "trade_id": str(r.get("trade_id", "")),
                                 "final_result": _safe_float(r.get("final_money_result_pips", 0.0), 0.0),
                                 "baseline_result": _safe_float(r.get("baseline_money_result_pips", 0.0), 0.0),
+                                "baseline_1to1_result": _safe_float(r.get("baseline_1to1_money_result_pips", r.get("baseline_money_result_pips", 0.0)), 0.0),
+                                "baseline_protective_result": _safe_float(r.get("baseline_protective_money_result_pips", 0.0), 0.0),
                                 "delta": _safe_float(r.get("delta_vs_baseline_pips", 0.0), 0.0),
+                                "delta_vs_1to1_baseline": _safe_float(r.get("delta_vs_1to1_baseline_pips", r.get("delta_vs_baseline_pips", 0.0)), 0.0),
+                                "delta_vs_protective_baseline": _safe_float(r.get("delta_vs_protective_baseline_pips", 0.0), 0.0),
                                 "delta_vs_current": _safe_float(r.get("delta_vs_current_pips", 0.0), 0.0),
                                 "reason_code": str(r.get("final_reason_code", "UNKNOWN")),
                                 "state_transition": str(r.get("final_state_transition", "UNKNOWN->UNKNOWN")),
@@ -310,6 +330,7 @@ def run_batch_experiments(*, trades_path: Path, report_out: Path) -> dict[str, A
         experiments,
         key=lambda e: (
             -_safe_float(e.get("total_delta_vs_baseline_pips", 0.0), 0.0),
+            -_safe_float(e.get("total_delta_vs_current_pips", 0.0), 0.0),
             1 if bool((e.get("regressions") or {}).get("has_major_regression", False)) else 0,
             len((e.get("regressions") or {}).get("regressed_scenarios", [])),
         ),
@@ -340,11 +361,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Run batch AEE kernel experiments on fixed replay slice.")
     ap.add_argument("--input", default="control/aee_kernel_benchmark_slice.json")
     ap.add_argument("--report-out", default="control/aee_batch_experiment_report.json")
+    ap.add_argument("--config", default="", help="Optional JSON config path overriding default candidate grid")
     args = ap.parse_args()
 
-    summary = run_batch_experiments(
+    cfg = _default_config()
+    if args.config:
+        cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+
+    summary = run_batch_experiments_with_config(
         trades_path=Path(args.input),
         report_out=Path(args.report_out),
+        config=cfg,
     )
     print(json.dumps(summary, indent=2))
     return 0
