@@ -109,6 +109,7 @@ def _replay_combo(
     kernels: list[str] = combo["kernels"]
     fusion: str = combo["fusion"]
     weights: dict[str, float] | None = combo.get("weights")
+    fusion_config: dict[str, float] | None = combo.get("fusion_config")
 
     target_distance = max(0.1, _safe_float(trade.get("target_distance", 1.0), 1.0))
     baseline_1to1 = _safe_float(trade.get("baseline_final_pips", 0.0), 0.0)
@@ -161,7 +162,13 @@ def _replay_combo(
             last_action=last_action,
         )
 
-        result = score_kernels_and_fuse(ctx, kernels, fusion, weights)
+        result = score_kernels_and_fuse(
+            ctx,
+            kernels,
+            fusion,
+            weights,
+            fusion_config=fusion_config,
+        )
         regime = result["regime"]
         regime_counts[regime] += 1
 
@@ -380,6 +387,8 @@ def run_kernel_combination_sweep(
         summary["fusion"] = combo["fusion"]
         if combo.get("weights"):
             summary["weights"] = combo["weights"]
+        if combo.get("fusion_config"):
+            summary["fusion_config"] = combo["fusion_config"]
 
         all_combo_summaries.append(summary)
         per_combo_trades[cid] = trade_results

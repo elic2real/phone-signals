@@ -270,3 +270,59 @@ def test_kernel_scores_in_output_exclude_confidence():
     for kid, scores in r["kernel_scores"].items():
         assert "confidence" not in scores, f"kernel_scores should not contain 'confidence' key for {kid}"
         assert set(scores.keys()) == set(ACTIONS)
+
+
+def test_tfirst_veto_preserves_runner_hold_extend():
+    """In productive runner state, T HOLD/EXTEND must veto early CLOSE from others."""
+    ctx = _ctx(
+        continuation_proxy_r=0.90,
+        productivity_rate=0.03,
+        time_unproductive_ratio=0.05,
+        giveback_from_peak_r=0.05,
+        open_pnl_r=0.80,
+    )
+    r = score_kernels_and_fuse(
+        ctx,
+        ["T", "P", "PnL"],
+        "tfirst_asymmetric",
+        fusion_config={
+            "veto_cp_min": 0.55,
+            "veto_prod_min": 0.002,
+            "veto_upr_max": 0.25,
+            "veto_giveback_max": 0.20,
+            "veto_pnl_min": 0.20,
+        },
+    )
+    assert r["veto_applied"] is True
+    assert r["attribution"]["T"] == 1.0
+    assert r["best_action"] in {"HOLD", "EXTEND"}
+
+
+def test_tfirst_hard_degradation_breaks_veto():
+    """Hard degradation should allow intervention and disable veto lock."""
+    ctx = _ctx(
+        continuation_proxy_r=0.10,
+        productivity_rate=-0.01,
+        time_unproductive_ratio=0.75,
+        giveback_from_peak_r=0.55,
+        open_pnl_r=0.10,
+        inefficiency_cost_r=0.60,
+    )
+    r = score_kernels_and_fuse(
+        ctx,
+        ["T", "P", "PnL"],
+        "tfirst_asymmetric",
+        fusion_config={
+            "hard_giveback_min": 0.42,
+            "hard_cp_max": 0.22,
+            "hard_prod_max": -0.001,
+            "hard_ineff_min": 0.40,
+        },
+    )
+    assert r["veto_applied"] is False
+    assert r["degradation_flags"]["hard"] is True
+
+
+def test_tfirst_requires_t_kernel():
+    with pytest.raises(ValueError, match="requires 'T' kernel"):
+        score_kernels_and_fuse(_ctx(), ["P", "PnL"], "tfirst_asymmetric")

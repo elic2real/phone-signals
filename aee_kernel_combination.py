@@ -213,6 +213,128 @@ def fuse_confidence_weighted(
     return fuse_weighted_sum(kernel_scores, weights)
 
 
+def fuse_tfirst_asymmetric(
+    kernel_scores: dict[str, dict[str, float]],
+    ctx: AEEContext,
+    config: dict[str, float] | None = None,
+) -> tuple[dict[str, float], dict[str, float], str, bool, dict[str, bool]]:
+    """T-first asymmetric fusion with runner-preserving veto.
+
+    Rules:
+      1) T is anchor and default controller.
+      2) P/PnL can only contribute when degradation is explicit.
+      3) If T says HOLD/EXTEND in productive runner state, veto CLOSE from others
+         unless hard degradation is true.
+    """
+    cfg = config or {}
+
+    # Productive-runner veto gate.
+    veto_cp_min = float(cfg.get("veto_cp_min", 0.55))
+    veto_prod_min = float(cfg.get("veto_prod_min", 0.002))
+    veto_upr_max = float(cfg.get("veto_upr_max", 0.28))
+    veto_giveback_max = float(cfg.get("veto_giveback_max", 0.22))
+    veto_pnl_min = float(cfg.get("veto_pnl_min", 0.20))
+
+    # Hard degradation (can break veto and allow close-biased intervention).
+    hard_giveback_min = float(cfg.get("hard_giveback_min", 0.42))
+    hard_cp_max = float(cfg.get("hard_cp_max", 0.22))
+    hard_prod_max = float(cfg.get("hard_prod_max", -0.001))
+    hard_ineff_min = float(cfg.get("hard_ineff_min", 0.40))
+    floor_breach_tolerance_r = float(cfg.get("floor_breach_tolerance_r", 0.05))
+
+    # Weak degradation (allows gentle intervention).
+    weak_cp_max = float(cfg.get("weak_cp_max", 0.42))
+    weak_upr_min = float(cfg.get("weak_upr_min", 0.35))
+    weak_prod_max = float(cfg.get("weak_prod_max", 0.0))
+    weak_ineff_min = float(cfg.get("weak_ineff_min", 0.22))
+    weak_stall_min = float(cfg.get("weak_stall_min", 0.45))
+
+    # Intervention weights.
+    weak_w_t = float(cfg.get("weak_w_t", 0.80))
+    weak_w_p = float(cfg.get("weak_w_p", 0.15))
+    weak_w_q = float(cfg.get("weak_w_q", 0.05))
+    hard_w_t = float(cfg.get("hard_w_t", 0.30))
+    hard_w_p = float(cfg.get("hard_w_p", 0.15))
+    hard_w_q = float(cfg.get("hard_w_q", 0.55))
+
+    # Resolve available kernels; T is mandatory for this fusion mode.
+    if "T" not in kernel_scores:
+        raise ValueError("fusion_mode='tfirst_asymmetric' requires 'T' kernel")
+    t_scores = kernel_scores["T"]
+    p_scores = kernel_scores.get("P", {a: 0.0 for a in ACTIONS} | {"confidence": 0.0})
+    q_scores = kernel_scores.get("PnL", {a: 0.0 for a in ACTIONS} | {"confidence": 0.0})
+
+    t_best = max(ACTIONS, key=lambda a: t_scores[a])
+
+    floor_breach = (
+        ctx.locked_floor_r > 0.0
+        and ctx.open_pnl_r < (ctx.locked_floor_r - floor_breach_tolerance_r)
+    )
+    hard_degradation = (
+        ctx.panic_trigger
+        or floor_breach
+        or ctx.giveback_from_peak_r >= hard_giveback_min
+        or (ctx.continuation_proxy_r <= hard_cp_max and ctx.productivity_rate <= hard_prod_max)
+        or ctx.inefficiency_cost_r >= hard_ineff_min
+    )
+    weak_degradation = (
+        ctx.continuation_proxy_r <= weak_cp_max
+        or ctx.time_unproductive_ratio >= weak_upr_min
+        or ctx.productivity_rate <= weak_prod_max
+        or ctx.inefficiency_cost_r >= weak_ineff_min
+        or ctx.stall_score >= weak_stall_min
+    )
+    productive_runner = (
+        ctx.continuation_proxy_r >= veto_cp_min
+        and ctx.productivity_rate >= veto_prod_min
+        and ctx.time_unproductive_ratio <= veto_upr_max
+        and ctx.giveback_from_peak_r <= veto_giveback_max
+        and ctx.open_pnl_r >= veto_pnl_min
+    )
+
+    degradation_flags = {
+        "hard": bool(hard_degradation),
+        "weak": bool(weak_degradation),
+        "productive_runner": bool(productive_runner),
+        "floor_breach": bool(floor_breach),
+    }
+
+    # 1) Veto path: T owns productive runners unless hard degradation.
+    if productive_runner and (t_best in {"HOLD", "EXTEND"}) and not hard_degradation:
+        fused = {a: t_scores[a] for a in ACTIONS}
+        attribution = {k: (1.0 if k == "T" else 0.0) for k in kernel_scores}
+        return fused, attribution, "trend", True, degradation_flags
+
+    # 2) Hard degradation: allow close-biased intervention (PnL heavier).
+    if hard_degradation:
+        wk = {
+            "T": max(0.0, hard_w_t),
+            "P": max(0.0, hard_w_p) if "P" in kernel_scores else 0.0,
+            "PnL": max(0.0, hard_w_q) if "PnL" in kernel_scores else 0.0,
+        }
+        fused = {a: wk["T"] * t_scores[a] + wk["P"] * p_scores[a] + wk["PnL"] * q_scores[a] for a in ACTIONS}
+        total = sum(wk.values()) or 1.0
+        attribution = {k: (wk.get(k, 0.0) / total) for k in kernel_scores}
+        return fused, attribution, "reversal", False, degradation_flags
+
+    # 3) Weak degradation: gentle intervention while keeping T dominant.
+    if weak_degradation:
+        wk = {
+            "T": max(0.0, weak_w_t),
+            "P": max(0.0, weak_w_p) if "P" in kernel_scores else 0.0,
+            "PnL": max(0.0, weak_w_q) if "PnL" in kernel_scores else 0.0,
+        }
+        fused = {a: wk["T"] * t_scores[a] + wk["P"] * p_scores[a] + wk["PnL"] * q_scores[a] for a in ACTIONS}
+        total = sum(wk.values()) or 1.0
+        attribution = {k: (wk.get(k, 0.0) / total) for k in kernel_scores}
+        return fused, attribution, "stall", False, degradation_flags
+
+    # 4) Default: pure T control.
+    fused = {a: t_scores[a] for a in ACTIONS}
+    attribution = {k: (1.0 if k == "T" else 0.0) for k in kernel_scores}
+    return fused, attribution, "neutral", False, degradation_flags
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Main entry point
 # ─────────────────────────────────────────────────────────────────────────────
@@ -222,6 +344,7 @@ def score_kernels_and_fuse(
     kernel_ids: list[str],
     fusion_mode: str,
     weights: dict[str, float] | None = None,
+    fusion_config: dict[str, float] | None = None,
 ) -> dict[str, Any]:
     """Compute parallel kernel scores and fuse into a single action decision.
 
@@ -229,8 +352,9 @@ def score_kernels_and_fuse(
     ----------
     ctx          : AEEContext built from the current replay bar.
     kernel_ids   : List of kernel identifiers, e.g. ["P", "T", "PnL"].
-    fusion_mode  : One of "weighted_sum", "gated", "confidence_weighted".
+    fusion_mode  : One of "weighted_sum", "gated", "confidence_weighted", "tfirst_asymmetric".
     weights      : Weight per kernel for weighted_sum mode. Defaults to equal.
+    fusion_config: Thresholds/weights for fusion-specific behavior.
 
     Returns
     -------
@@ -252,10 +376,18 @@ def score_kernels_and_fuse(
 
     regime = detect_regime(ctx)
 
+    veto_applied = False
+    degradation_flags: dict[str, bool] | None = None
     if fusion_mode == "gated":
         fused, attribution, regime = fuse_gated(kernel_scores, ctx)
     elif fusion_mode == "confidence_weighted":
         fused, attribution = fuse_confidence_weighted(kernel_scores)
+    elif fusion_mode == "tfirst_asymmetric":
+        fused, attribution, regime, veto_applied, degradation_flags = fuse_tfirst_asymmetric(
+            kernel_scores,
+            ctx,
+            fusion_config,
+        )
     else:  # weighted_sum (default)
         w = weights if weights else {k: 1.0 for k in kernel_ids}
         fused, attribution = fuse_weighted_sum(kernel_scores, w)
@@ -274,6 +406,8 @@ def score_kernels_and_fuse(
         "confidence_gap": confidence_gap,
         "attribution": attribution,
         "regime": regime,
+        "veto_applied": veto_applied,
+        "degradation_flags": degradation_flags,
         # Strip confidence key from per-kernel scores for clean output.
         "kernel_scores": {k: {a: s[a] for a in ACTIONS} for k, s in kernel_scores.items()},
         "kernel_confidences": {k: s.get("confidence", 0.0) for k, s in kernel_scores.items()},
