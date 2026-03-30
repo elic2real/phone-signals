@@ -1,0 +1,3544 @@
+{
+  "summary": {
+    "count": 20,
+    "avg_final_money_result_pips": -0.6050000000000777,
+    "avg_baseline_money_result_pips": 0.0,
+    "avg_delta_vs_baseline_pips": -0.6050000000000777,
+    "avg_time_in_trade_sec": 354.0,
+    "avg_max_giveback_r": 1.3299999999999792,
+    "avg_locked_profit_pips": 0.0
+  },
+  "by_reason_code": {
+    "build_safety_breach": {
+      "count": 12,
+      "avg_final_money_result_pips": 0.22499999999999373,
+      "avg_baseline_money_result_pips": 1.0,
+      "avg_delta_vs_baseline_pips": -0.7750000000000062,
+      "avg_time_in_trade_sec": 480.0,
+      "avg_max_giveback_r": 1.2999999999998815,
+      "avg_locked_profit_pips": 0.0
+    },
+    "panic_trigger": {
+      "count": 8,
+      "avg_final_money_result_pips": -1.8500000000001848,
+      "avg_baseline_money_result_pips": -1.5,
+      "avg_delta_vs_baseline_pips": -0.35000000000018483,
+      "avg_time_in_trade_sec": 165.0,
+      "avg_max_giveback_r": 1.3750000000001261,
+      "avg_locked_profit_pips": 0.0
+    }
+  },
+  "by_state_transition": {
+    "BUILD->PANIC": {
+      "count": 14,
+      "avg_final_money_result_pips": -0.10714285714292464,
+      "avg_baseline_money_result_pips": 0.6428571428571429,
+      "avg_delta_vs_baseline_pips": -0.7500000000000675,
+      "avg_time_in_trade_sec": 441.42857142857144,
+      "avg_max_giveback_r": 1.3809523809523347,
+      "avg_locked_profit_pips": 0.0
+    },
+    "PROTECT->PANIC": {
+      "count": 6,
+      "avg_final_money_result_pips": -1.766666666666768,
+      "avg_baseline_money_result_pips": -1.5,
+      "avg_delta_vs_baseline_pips": -0.26666666666676814,
+      "avg_time_in_trade_sec": 150.0,
+      "avg_max_giveback_r": 1.2111111111111506,
+      "avg_locked_profit_pips": 0.0
+    }
+  },
+  "trade_results": [
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+      "packet_count": 6,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.324617Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.324691Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 1.3333333333331865,
+            "unrealized_pips": 1.9999999999997797,
+            "giveback_r": 0.0,
+            "continuation_score": 0.899999999999956,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.324727Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.9333333333335266,
+            "unrealized_pips": 1.40000000000029,
+            "giveback_r": 0.3999999999996599,
+            "continuation_score": 0.38000000000010203,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.324762Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.266666666666083,
+            "unrealized_pips": 1.8999999999991246,
+            "giveback_r": 0.06666666666710341,
+            "continuation_score": 0.5999999999997669,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.324784Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.7333333333336967,
+            "unrealized_pips": 1.100000000000545,
+            "giveback_r": 0.5999999999994898,
+            "continuation_score": 0.3400000000002841,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.324805Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": -0.19999999999982995,
+            "unrealized_pips": -0.2999999999997449,
+            "giveback_r": 1.5333333333330164,
+            "continuation_score": 0.21999999999994202,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -0.2999999999997449,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.799999999999745,
+      "time_in_trade_sec": 360,
+      "max_giveback_r": 1.5333333333330164,
+      "max_giveback_pips": 2.2999999999995246,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:05:00.000000000Z",
+      "packet_count": 3,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:05:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.324843Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:05:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.324864Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.5333333333323864,
+            "unrealized_pips": -0.7999999999985796,
+            "giveback_r": 0.5333333333323864,
+            "continuation_score": 0.3400000000002841,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:05:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.324884Z",
+          "state_before": "PROTECT",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -1.466666666665913,
+            "unrealized_pips": -2.1999999999988695,
+            "giveback_r": 1.466666666665913,
+            "continuation_score": 0.21999999999994202,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "PROTECT->PANIC",
+      "final_money_result_pips": -2.1999999999988695,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": -0.6999999999988695,
+      "time_in_trade_sec": 180,
+      "max_giveback_r": 1.466666666665913,
+      "max_giveback_pips": 2.1999999999988695,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
+      "packet_count": 5,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.324915Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.324936Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 1.40000000000029,
+            "unrealized_pips": 2.100000000000435,
+            "giveback_r": 0.0,
+            "continuation_score": 0.920000000000087,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.324958Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.40000000000029,
+            "unrealized_pips": 2.100000000000435,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.16666666666666666,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.324979Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 2.3333333333338167,
+            "unrealized_pips": 3.5000000000007248,
+            "giveback_r": 0.0,
+            "continuation_score": 0.780000000000058,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.324998Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.9333333333335266,
+            "unrealized_pips": 1.40000000000029,
+            "giveback_r": 1.40000000000029,
+            "continuation_score": 0.07999999999991303,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 1.40000000000029,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -0.0999999999997101,
+      "time_in_trade_sec": 300,
+      "max_giveback_r": 1.40000000000029,
+      "max_giveback_pips": 2.100000000000435,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:11:00.000000000Z",
+      "packet_count": 2,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:11:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325025Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:11:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325044Z",
+          "state_before": "PROTECT",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -1.40000000000029,
+            "unrealized_pips": -2.100000000000435,
+            "giveback_r": 1.40000000000029,
+            "continuation_score": 0.07999999999991303,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "PROTECT->PANIC",
+      "final_money_result_pips": -2.100000000000435,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": -0.6000000000004349,
+      "time_in_trade_sec": 120,
+      "max_giveback_r": 1.40000000000029,
+      "max_giveback_pips": 2.100000000000435,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:14:00.000000000Z",
+      "packet_count": 3,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:14:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325076Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:14:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325097Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.26666666666693334,
+            "unrealized_pips": 0.40000000000040004,
+            "giveback_r": 0.0,
+            "continuation_score": 0.58000000000008,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:14:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325111Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -1.9333333333341567,
+            "unrealized_pips": -2.900000000001235,
+            "giveback_r": 2.20000000000109,
+            "continuation_score": 0.0,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -2.900000000001235,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": -1.400000000001235,
+      "time_in_trade_sec": 180,
+      "max_giveback_r": 2.20000000000109,
+      "max_giveback_pips": 3.300000000001635,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+      "packet_count": 12,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325129Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325140Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.13333333333420683,
+            "unrealized_pips": -0.20000000000131024,
+            "giveback_r": 0.13333333333420683,
+            "continuation_score": 0.45999999999973795,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325151Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.540000000000262,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325162Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.40000000000114017,
+            "unrealized_pips": -0.6000000000017103,
+            "giveback_r": 0.40000000000114017,
+            "continuation_score": 0.37999999999965794,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325173Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.3333333333325565,
+            "unrealized_pips": 0.4999999999988347,
+            "giveback_r": 0.0,
+            "continuation_score": 0.720000000000109,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.325184Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": -0.26666666666693334,
+            "unrealized_pips": -0.40000000000040004,
+            "giveback_r": 0.5999999999994898,
+            "continuation_score": 0.32000000000015305,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.325194Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.19999999999982995,
+            "unrealized_pips": 0.2999999999997449,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.640000000000029,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 8,
+          "timestamp": "2026-03-30T13:54:06.325206Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.7333333333328464,
+            "unrealized_pips": 2.5999999999992696,
+            "giveback_r": 0.0,
+            "continuation_score": 0.9599999999999049,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 9,
+          "timestamp": "2026-03-30T13:54:06.325217Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.6000000000001198,
+            "unrealized_pips": 2.4000000000001798,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.46000000000018204,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 10,
+          "timestamp": "2026-03-30T13:54:06.325227Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.6000000000001198,
+            "unrealized_pips": 2.4000000000001798,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.5,
+            "stall_score": 0.3333333333333333,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 11,
+          "timestamp": "2026-03-30T13:54:06.325238Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.3333333333331865,
+            "unrealized_pips": 1.9999999999997797,
+            "giveback_r": 0.3999999999996599,
+            "continuation_score": 0.41999999999992,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
+          "bar_index": 12,
+          "timestamp": "2026-03-30T13:54:06.325249Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.3999999999996599,
+            "unrealized_pips": 0.5999999999994898,
+            "giveback_r": 1.3333333333331865,
+            "continuation_score": 0.21999999999994202,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 0.5999999999994898,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -0.9000000000005102,
+      "time_in_trade_sec": 720,
+      "max_giveback_r": 1.3333333333331865,
+      "max_giveback_pips": 1.9999999999997797,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+      "packet_count": 9,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325295Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325311Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.7333333333336967,
+            "unrealized_pips": 1.100000000000545,
+            "giveback_r": 0.0,
+            "continuation_score": 0.720000000000109,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325323Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.13333333333420683,
+            "unrealized_pips": 0.20000000000131024,
+            "giveback_r": 0.5999999999994898,
+            "continuation_score": 0.32000000000015305,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325334Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.6000000000009701,
+            "unrealized_pips": 0.9000000000014552,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.640000000000029,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325344Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 2.1333333333339866,
+            "unrealized_pips": 3.20000000000098,
+            "giveback_r": 0.0,
+            "continuation_score": 0.9599999999999049,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.325355Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 2.00000000000126,
+            "unrealized_pips": 3.00000000000189,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.46000000000018204,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.325366Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 2.00000000000126,
+            "unrealized_pips": 3.00000000000189,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.5,
+            "stall_score": 0.3333333333333333,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 8,
+          "timestamp": "2026-03-30T13:54:06.325376Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.7333333333343266,
+            "unrealized_pips": 2.60000000000149,
+            "giveback_r": 0.3999999999996599,
+            "continuation_score": 0.41999999999992,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
+          "bar_index": 9,
+          "timestamp": "2026-03-30T13:54:06.325386Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.8000000000008001,
+            "unrealized_pips": 1.2000000000012,
+            "giveback_r": 1.3333333333331865,
+            "continuation_score": 0.21999999999994202,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 1.2000000000012,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -0.2999999999987999,
+      "time_in_trade_sec": 540,
+      "max_giveback_r": 1.3333333333331865,
+      "max_giveback_pips": 1.9999999999997797,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+      "packet_count": 6,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325402Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325414Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 1.5333333333330164,
+            "unrealized_pips": 2.2999999999995246,
+            "giveback_r": 0.0,
+            "continuation_score": 0.9599999999999049,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325425Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.40000000000029,
+            "unrealized_pips": 2.100000000000435,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.46000000000018204,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325437Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.40000000000029,
+            "unrealized_pips": 2.100000000000435,
+            "giveback_r": 0.13333333333272654,
+            "continuation_score": 0.5,
+            "stall_score": 0.3333333333333333,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325447Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.1333333333333566,
+            "unrealized_pips": 1.7000000000000348,
+            "giveback_r": 0.3999999999996599,
+            "continuation_score": 0.41999999999992,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.325457Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.19999999999982995,
+            "unrealized_pips": 0.2999999999997449,
+            "giveback_r": 1.3333333333331865,
+            "continuation_score": 0.21999999999994202,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_001",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 0.2999999999997449,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.200000000000255,
+      "time_in_trade_sec": 360,
+      "max_giveback_r": 1.3333333333331865,
+      "max_giveback_pips": 1.9999999999997797,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+      "packet_count": 10,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325474Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325485Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.06666666666710341,
+            "unrealized_pips": 0.10000000000065512,
+            "giveback_r": 0.0,
+            "continuation_score": 0.520000000000131,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325495Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.06666666666710341,
+            "continuation_score": 0.479999999999869,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325506Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.06666666666710341,
+            "unrealized_pips": 0.10000000000065512,
+            "giveback_r": 0.0,
+            "continuation_score": 0.520000000000131,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325516Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.2666666666654531,
+            "unrealized_pips": -0.3999999999981796,
+            "giveback_r": 0.3333333333325565,
+            "continuation_score": 0.40000000000023306,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.325526Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.06666666666710341,
+            "unrealized_pips": 0.10000000000065512,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5999999999997669,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.325537Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.7333333333336967,
+            "unrealized_pips": 1.100000000000545,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 8,
+          "timestamp": "2026-03-30T13:54:06.325547Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.40000000000029,
+            "unrealized_pips": 2.100000000000435,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 9,
+          "timestamp": "2026-03-30T13:54:06.325558Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.1333333333333566,
+            "unrealized_pips": 1.7000000000000348,
+            "giveback_r": 0.26666666666693334,
+            "continuation_score": 0.41999999999992,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
+          "bar_index": 10,
+          "timestamp": "2026-03-30T13:54:06.325569Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": -0.13333333333272654,
+            "unrealized_pips": -0.1999999999990898,
+            "giveback_r": 1.5333333333330164,
+            "continuation_score": 0.12000000000017508,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -0.1999999999990898,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.6999999999990898,
+      "time_in_trade_sec": 600,
+      "max_giveback_r": 1.5333333333330164,
+      "max_giveback_pips": 2.2999999999995246,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+      "packet_count": 7,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325584Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325596Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.3333333333325565,
+            "unrealized_pips": -0.4999999999988347,
+            "giveback_r": 0.3333333333325565,
+            "continuation_score": 0.40000000000023306,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325607Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5999999999997669,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325618Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.6666666666665932,
+            "unrealized_pips": 0.9999999999998899,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325628Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.3333333333331865,
+            "unrealized_pips": 1.9999999999997797,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.325638Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.0666666666662532,
+            "unrealized_pips": 1.5999999999993797,
+            "giveback_r": 0.26666666666693334,
+            "continuation_score": 0.41999999999992,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.325649Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": -0.19999999999982995,
+            "unrealized_pips": -0.2999999999997449,
+            "giveback_r": 1.5333333333330164,
+            "continuation_score": 0.12000000000017508,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -0.2999999999997449,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.799999999999745,
+      "time_in_trade_sec": 420,
+      "max_giveback_r": 1.5333333333330164,
+      "max_giveback_pips": 2.2999999999995246,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_002::2024-01-15T08:38:00.000000000Z",
+      "packet_count": 4,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:38:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325664Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:38:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325675Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.6666666666665932,
+            "unrealized_pips": 0.9999999999998899,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:38:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325685Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.3999999999996599,
+            "unrealized_pips": 0.5999999999994898,
+            "giveback_r": 0.26666666666693334,
+            "continuation_score": 0.41999999999992,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:38:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325696Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -0.8666666666664232,
+            "unrealized_pips": -1.2999999999996348,
+            "giveback_r": 1.5333333333330164,
+            "continuation_score": 0.12000000000017508,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -1.2999999999996348,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": 0.20000000000036522,
+      "time_in_trade_sec": 240,
+      "max_giveback_r": 1.5333333333330164,
+      "max_giveback_pips": 2.2999999999995246,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
+      "packet_count": 5,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325711Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325722Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.5333333333338667,
+            "unrealized_pips": 0.8000000000008001,
+            "giveback_r": 0.0,
+            "continuation_score": 0.66000000000016,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325733Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.0666666666662532,
+            "unrealized_pips": 1.5999999999993797,
+            "giveback_r": 0.0,
+            "continuation_score": 0.6599999999997159,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325743Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.266666666666083,
+            "unrealized_pips": 1.8999999999991246,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325753Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.13333333333272654,
+            "unrealized_pips": 0.1999999999990898,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.15999999999999304,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 0.1999999999990898,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.3000000000009102,
+      "time_in_trade_sec": 300,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_002::2024-01-15T08:44:00.000000000Z",
+      "packet_count": 2,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:44:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325768Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:44:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325779Z",
+          "state_before": "PROTECT",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -1.1333333333333566,
+            "unrealized_pips": -1.7000000000000348,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.15999999999999304,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "PROTECT->PANIC",
+      "final_money_result_pips": -1.7000000000000348,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": -0.20000000000003482,
+      "time_in_trade_sec": 120,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_002::2024-01-15T08:47:00.000000000Z",
+      "packet_count": 2,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:47:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325794Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_002::2024-01-15T08:47:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325809Z",
+          "state_before": "PROTECT",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -1.00000000000063,
+            "unrealized_pips": -1.500000000000945,
+            "giveback_r": 1.00000000000063,
+            "continuation_score": 0.199999999999811,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_002",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "PROTECT->PANIC",
+      "final_money_result_pips": -1.500000000000945,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": -9.450218385609332e-13,
+      "time_in_trade_sec": 120,
+      "max_giveback_r": 1.00000000000063,
+      "max_giveback_pips": 1.500000000000945,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+      "packet_count": 12,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325824Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325834Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.19999999999982995,
+            "unrealized_pips": 0.2999999999997449,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325845Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.5333333333338667,
+            "unrealized_pips": 0.8000000000008001,
+            "giveback_r": 0.0,
+            "continuation_score": 0.600000000000211,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325855Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.5333333333338667,
+            "unrealized_pips": 0.8000000000008001,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.16666666666666666,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325865Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.20000000000046,
+            "unrealized_pips": 1.80000000000069,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.325875Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.8666666666664232,
+            "unrealized_pips": 1.2999999999996348,
+            "giveback_r": 0.33333333333403675,
+            "continuation_score": 0.39999999999978897,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.325886Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.3999999999996599,
+            "unrealized_pips": 0.5999999999994898,
+            "giveback_r": 0.8000000000008001,
+            "continuation_score": 0.359999999999971,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 8,
+          "timestamp": "2026-03-30T13:54:06.325896Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.7999999999993198,
+            "unrealized_pips": 1.1999999999989797,
+            "giveback_r": 0.40000000000114017,
+            "continuation_score": 0.619999999999898,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 9,
+          "timestamp": "2026-03-30T13:54:06.325906Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.9333333333335266,
+            "unrealized_pips": 1.40000000000029,
+            "giveback_r": 0.26666666666693334,
+            "continuation_score": 0.540000000000262,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 10,
+          "timestamp": "2026-03-30T13:54:06.325916Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.1333333333333566,
+            "unrealized_pips": 1.7000000000000348,
+            "giveback_r": 0.06666666666710341,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 11,
+          "timestamp": "2026-03-30T13:54:06.325926Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.3333333333331865,
+            "unrealized_pips": 1.9999999999997797,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
+          "bar_index": 12,
+          "timestamp": "2026-03-30T13:54:06.325935Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.19999999999982995,
+            "unrealized_pips": 0.2999999999997449,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.15999999999999304,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 0.2999999999997449,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.200000000000255,
+      "time_in_trade_sec": 720,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+      "packet_count": 9,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.325950Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.325961Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.6666666666665932,
+            "unrealized_pips": 0.9999999999998899,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.325973Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.3333333333325565,
+            "unrealized_pips": 0.4999999999988347,
+            "giveback_r": 0.33333333333403675,
+            "continuation_score": 0.39999999999978897,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.325983Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": -0.13333333333420683,
+            "unrealized_pips": -0.20000000000131024,
+            "giveback_r": 0.8000000000008001,
+            "continuation_score": 0.359999999999971,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.325994Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.2666666666654531,
+            "unrealized_pips": 0.3999999999981796,
+            "giveback_r": 0.40000000000114017,
+            "continuation_score": 0.619999999999898,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.326004Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.3999999999996599,
+            "unrealized_pips": 0.5999999999994898,
+            "giveback_r": 0.26666666666693334,
+            "continuation_score": 0.540000000000262,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.326014Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.5999999999994898,
+            "unrealized_pips": 0.8999999999992347,
+            "giveback_r": 0.06666666666710341,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 8,
+          "timestamp": "2026-03-30T13:54:06.326024Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.7999999999993198,
+            "unrealized_pips": 1.1999999999989797,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
+          "bar_index": 9,
+          "timestamp": "2026-03-30T13:54:06.326034Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": -0.33333333333403675,
+            "unrealized_pips": -0.5000000000010552,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.15999999999999304,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -0.5000000000010552,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": 0.9999999999989448,
+      "time_in_trade_sec": 540,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+      "packet_count": 6,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.326049Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.326059Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.3999999999996599,
+            "unrealized_pips": 0.5999999999994898,
+            "giveback_r": 0.0,
+            "continuation_score": 0.619999999999898,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.326069Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.5333333333338667,
+            "unrealized_pips": 0.8000000000008001,
+            "giveback_r": 0.0,
+            "continuation_score": 0.540000000000262,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.326080Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.7333333333336967,
+            "unrealized_pips": 1.100000000000545,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.326090Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.9333333333335266,
+            "unrealized_pips": 1.40000000000029,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.326100Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": -0.19999999999982995,
+            "unrealized_pips": -0.2999999999997449,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.15999999999999304,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": -0.2999999999997449,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": 1.200000000000255,
+      "time_in_trade_sec": 360,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_003::2024-01-15T09:11:00.000000000Z",
+      "packet_count": 3,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:11:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.326115Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:11:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.326125Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.19999999999982995,
+            "unrealized_pips": 0.2999999999997449,
+            "giveback_r": 0.0,
+            "continuation_score": 0.559999999999949,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:11:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.326136Z",
+          "state_before": "PROTECT",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -0.9333333333335266,
+            "unrealized_pips": -1.40000000000029,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.15999999999999304,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "PROTECT->PANIC",
+      "final_money_result_pips": -1.40000000000029,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": 0.0999999999997101,
+      "time_in_trade_sec": 180,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_003::2024-01-15T09:14:00.000000000Z",
+      "packet_count": 3,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:14:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.326152Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:14:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.326162Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.4666666666667633,
+            "unrealized_pips": -0.700000000000145,
+            "giveback_r": 0.4666666666667633,
+            "continuation_score": 0.359999999999971,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:14:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.326173Z",
+          "state_before": "PROTECT",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "panic_trigger",
+          "context": {
+            "progress_r": -1.1333333333333566,
+            "unrealized_pips": -1.7000000000000348,
+            "giveback_r": 1.1333333333333566,
+            "continuation_score": 0.300000000000022,
+            "stall_score": 0.1,
+            "panic_trigger": 1.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "SL_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "panic_trigger",
+      "final_state_transition": "PROTECT->PANIC",
+      "final_money_result_pips": -1.7000000000000348,
+      "baseline_money_result_pips": -1.5,
+      "delta_vs_baseline_pips": -0.20000000000003482,
+      "time_in_trade_sec": 180,
+      "max_giveback_r": 1.1333333333333566,
+      "max_giveback_pips": 1.7000000000000348,
+      "locked_profit_pips": 0.0
+    },
+    {
+      "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+      "packet_count": 9,
+      "packets": [
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 1,
+          "timestamp": "2026-03-30T13:54:06.326187Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": 0.0,
+            "unrealized_pips": 0.0,
+            "giveback_r": 0.0,
+            "continuation_score": 0.5,
+            "stall_score": 0.0,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 2,
+          "timestamp": "2026-03-30T13:54:06.326197Z",
+          "state_before": "PROTECT",
+          "state_after": "PROTECT",
+          "action": "TIGHTEN",
+          "reason_code": "protect_risk_control",
+          "context": {
+            "progress_r": -0.33333333333403675,
+            "unrealized_pips": -0.5000000000010552,
+            "giveback_r": 0.33333333333403675,
+            "continuation_score": 0.39999999999978897,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 3,
+          "timestamp": "2026-03-30T13:54:06.326208Z",
+          "state_before": "PROTECT",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "protect_to_build",
+          "context": {
+            "progress_r": 0.3333333333325565,
+            "unrealized_pips": 0.4999999999988347,
+            "giveback_r": 0.0,
+            "continuation_score": 0.699999999999978,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 4,
+          "timestamp": "2026-03-30T13:54:06.326218Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.13333333333272654,
+            "unrealized_pips": 0.1999999999990898,
+            "giveback_r": 0.19999999999982995,
+            "continuation_score": 0.440000000000051,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 5,
+          "timestamp": "2026-03-30T13:54:06.326229Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.266666666666083,
+            "unrealized_pips": 1.8999999999991246,
+            "giveback_r": 0.0,
+            "continuation_score": 0.840000000000007,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 6,
+          "timestamp": "2026-03-30T13:54:06.326239Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 1.1999999999989797,
+            "unrealized_pips": 1.7999999999984695,
+            "giveback_r": 0.06666666666710341,
+            "continuation_score": 0.479999999999869,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 7,
+          "timestamp": "2026-03-30T13:54:06.326250Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.8666666666664232,
+            "unrealized_pips": 1.2999999999996348,
+            "giveback_r": 0.3999999999996599,
+            "continuation_score": 0.40000000000023306,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 8,
+          "timestamp": "2026-03-30T13:54:06.326273Z",
+          "state_before": "BUILD",
+          "state_after": "BUILD",
+          "action": "HOLD",
+          "reason_code": "build_continue",
+          "context": {
+            "progress_r": 0.7333333333322164,
+            "unrealized_pips": 1.0999999999983245,
+            "giveback_r": 0.5333333333338667,
+            "continuation_score": 0.45999999999973795,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        },
+        {
+          "schema_version": "AEE_TRADE_STATE_PACKET_V1",
+          "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
+          "bar_index": 9,
+          "timestamp": "2026-03-30T13:54:06.326285Z",
+          "state_before": "BUILD",
+          "state_after": "PANIC",
+          "action": "FULL_EXIT",
+          "reason_code": "build_safety_breach",
+          "context": {
+            "progress_r": 0.19999999999982995,
+            "unrealized_pips": 0.2999999999997449,
+            "giveback_r": 1.0666666666662532,
+            "continuation_score": 0.3400000000002841,
+            "stall_score": 0.1,
+            "panic_trigger": 0.0
+          },
+          "meta": {
+            "mode": "harvester",
+            "side": "long",
+            "distance_bucket": "1.5",
+            "cluster_id": "LONG_1.5_003",
+            "session": "london",
+            "weekday": "monday",
+            "static_reason": "TP_HIT"
+          }
+        }
+      ],
+      "final_reason_code": "build_safety_breach",
+      "final_state_transition": "BUILD->PANIC",
+      "final_money_result_pips": 0.2999999999997449,
+      "baseline_money_result_pips": 1.5,
+      "delta_vs_baseline_pips": -1.200000000000255,
+      "time_in_trade_sec": 540,
+      "max_giveback_r": 1.0666666666662532,
+      "max_giveback_pips": 1.5999999999993797,
+      "locked_profit_pips": 0.0
+    }
+  ],
+  "kernel_benchmark": {
+    "source": "entry_metric_ceiling_report_unified.json",
+    "benchmark_trade_count": 20,
+    "benchmark_slice_path": "control/aee_kernel_benchmark_slice.json"
+  }
+}
