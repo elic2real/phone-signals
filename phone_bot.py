@@ -6365,6 +6365,8 @@ def _proof_force_decision_tick(pair: str, st: Any, bid: float, ask: float) -> No
             tp2_atr=0.50,
             sl_atr=0.30,
             reason="proof_force_decision_tick",
+            entry_family="EXPANSION_BREAKOUT",
+            trade_type="RUNNER",
         )
         log_runtime(
             "info",
@@ -6388,6 +6390,23 @@ def _proof_force_decision_tick(pair: str, st: Any, bid: float, ask: float) -> No
                 "disp_atr": 0.0,
             },
         )
+        mid = (float(bid) + float(ask)) * 0.5 if (is_valid_price(bid) and is_valid_price(ask)) else float("nan")
+        if math.isfinite(mid):
+            atr_seed = float(getattr(st, "atr_exec", 0.0) or 0.0)
+            if not (math.isfinite(atr_seed) and atr_seed > 0.0):
+                atr_seed = max(abs(mid) * 0.0005, tick_size(pair) * 10.0)
+            box_half = max(atr_seed * 0.25, tick_size(pair) * 5.0)
+            _arm_tick_entry(
+                st,
+                sig,
+                entry_px=float(mid),
+                box_hi=float(mid + box_half),
+                box_lo=float(mid - box_half),
+                atr=float(atr_seed),
+                now=now_ts(),
+            )
+            if str(getattr(st, "state", "")).upper() in ("WATCH", "SKIP", "GET_READY"):
+                _transition_state(st, "ARM_TICK_ENTRY", pair, reason="proof_force_decision_tick")
     except Exception as e:
         log_runtime("error", "PROOF_FORCE_DECISION_TICK_FAIL", pair=pair, error=str(e))
 
@@ -6655,6 +6674,15 @@ def _entry_trigger_for_setup(setup_id: int) -> str:
     if setup_id in (4, 5):
         return "RECLAIM"
     return "RESUME"
+
+
+def _infer_signal_trade_type(setup_id: int, setup_name: str) -> str:
+    name_u = str(setup_name or "").upper()
+    if name_u.endswith("_RUN") or "RUNNER" in name_u:
+        return "RUNNER"
+    if int(setup_id or 0) in (1, 2, 6, 7):
+        return "RUNNER"
+    return "HARVESTER"
 
 
 def _arm_tick_entry(st: PairState, sig: "SignalDef", entry_px: float, box_hi: float, box_lo: float, atr: float, now: float) -> None:
@@ -7940,6 +7968,48 @@ def _build_signals_pc1(pair: str, st: PairState, c_exec: List[dict]) -> List[Sig
             ),
         )
 
+    if _PROOF_MODE and _PROOF_FORCE_DECISION_TICKS:
+        forced_direction = _continuation_direction()
+        if forced_direction not in ("LONG", "SHORT"):
+            try:
+                m_norm_forced = float(getattr(st, "m_norm", 0.0) or 0.0)
+            except Exception:
+                m_norm_forced = 0.0
+            if math.isfinite(m_norm_forced) and abs(m_norm_forced) > 1e-12:
+                forced_direction = "LONG" if m_norm_forced > 0.0 else "SHORT"
+            else:
+                try:
+                    wr_forced = float(getattr(st, "wr", 0.0) or 0.0)
+                except Exception:
+                    wr_forced = 0.0
+                if math.isfinite(wr_forced) and abs(wr_forced) > 1e-12:
+                    forced_direction = "LONG" if wr_forced > 0.0 else "SHORT"
+        if forced_direction in ("LONG", "SHORT"):
+            _emit_decision(
+                setup_name="VOL_REIGNITE",
+                family="BIAS_ALIGNMENT_CONTINUATION",
+                trade_type="RUNNER",
+                direction=forced_direction,
+                z_lo=zone_low,
+                z_hi=zone_high,
+                freshness=0.0,
+                allowed=True,
+                reason="proof_force_decision_tick",
+            )
+            out.append(
+                _make_signal(
+                    setup_id=6,
+                    setup_name="VOL_REIGNITE",
+                    family="BIAS_ALIGNMENT_CONTINUATION",
+                    trade_type="RUNNER",
+                    direction=forced_direction,
+                    z_lo=zone_low,
+                    z_hi=zone_high,
+                    reason="proof_force_decision_tick",
+                )
+            )
+            return out
+
     def _emit_allowed_or_blocked_by_family(
         *,
         setup_id: int,
@@ -8409,6 +8479,10 @@ def build_signals(pair: str, st: PairState, c_exec: List[dict], tf_data: Optiona
                 else:
                     tp_anchor = base_anchor
         sig.trigger_mode = _entry_trigger_for_setup(sig.setup_id)
+        if not str(getattr(sig, "entry_family", "") or "").strip():
+            sig.entry_family = _canonical_entry_family(sig.setup_name)
+        if not str(getattr(sig, "trade_type", "") or "").strip():
+            sig.trade_type = _infer_signal_trade_type(sig.setup_id, sig.setup_name)
         sig.entry_zone_price = zone
         sig.invalid_level = invalid
         sig.tp_anchor_price = tp_anchor
@@ -9378,7 +9452,8 @@ def calc_units(
     spread_mult = 1.0
     if spread_pips > 0:
         if spread_pips > 5.0:  # Very wide spread
-            return CalcUnitsResult(0, "spread_too_high", {"spread_pips": spread_pips})
+            if not (_PROOF_MODE and _PROOF_FORCE_DECISION_TICKS):
+                return CalcUnitsResult(0, "spread_too_high", {"spread_pips": spread_pips})
 
     # Use simple mechanical sizing model
     if sl_price is None:
@@ -21223,7 +21298,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     actionable_states = actionable_states + ("WATCH",)
                 force_watch_eval = False
                 if st.state not in actionable_states:
-                    if _SMOKE_MODE and _SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH and st.state == "WATCH" and SIGNAL_SPRINT_OVERRIDE:
+                    if _SMOKE_MODE and _SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH and st.state in ("WATCH", "SKIP") and SIGNAL_SPRINT_OVERRIDE:
                         force_watch_eval = True
                         log_runtime("info", "SMOKE_FORCE_ENTRY_EVAL_FROM_WATCH_ACTIVE", pair=pair, state=st.state)
                     else:
@@ -21239,7 +21314,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 sig = sigs[0] if sigs else None
                 if sig is None and st.state == "ARM_TICK_ENTRY":
                     sig = _sig_from_entry_arm(st.entry_arm)
-                if sig is None and SIGNAL_SPRINT_OVERRIDE and (st.state in ("WATCH", "GET_READY", "ARM_TICK_ENTRY", "ENTER") or force_watch_eval):
+                if sig is None and SIGNAL_SPRINT_OVERRIDE and (st.state in ("WATCH", "SKIP", "GET_READY", "ARM_TICK_ENTRY", "ENTER") or force_watch_eval):
                     direction = None
                     try:
                         m_norm_fb = float(getattr(st, "m_norm", float("nan")) or float("nan"))
@@ -21289,6 +21364,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         tp2_atr=sp_fb["tp2_atr"],
                         sl_atr=sp_fb["sl_atr"],
                         reason="sprint_exec_fallback",
+                        entry_family="EXPANSION_BREAKOUT",
+                        trade_type="RUNNER",
                     )
                 if sig is None:
                     # Allow GET_READY to persist through a few weak scans so near-entry
@@ -21435,6 +21512,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         or arm_sig.get("setup_id") != sig.setup_id
                         or arm_sig.get("direction") != sig.direction
                     ):
+                        if st.state == "SKIP":
+                            _transition_state(st, "WATCH", pair)
+                        if st.state in ("SKIP", "WATCH"):
+                            _transition_state(st, "GET_READY", pair)
                         entry_px = ask if sig.direction == "LONG" else bid
                         _arm_tick_entry(st, sig, entry_px, st.box_hi, st.box_lo, st.atr_exec, now_ts())
                         _transition_state(st, "ARM_TICK_ENTRY", pair)
@@ -22071,7 +22152,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 if sig_trade_type == "HARVESTER":
                     split_main, split_run = 1.0, 0.0
                 elif sig_trade_type == "RUNNER":
-                    split_main, split_run = 1.0, 0.0
+                    split_main, split_run = 0.0, 1.0
                 units_main = int(abs(units_total) * split_main)
                 units_run = abs(units_total) - units_main
                 trade_id_run = None
@@ -22116,20 +22197,23 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     broker_min_units = 1
                 else:
                     broker_min_units = int(float(meta.get("minimumTradeSize", 1)))
-                units_main = _make_unique_units(units_main, existing_set, broker_min_units, max_units=orig_main * 1.5)
-                # Don't reject for duplicate sizes - just use what we get
-                if units_main == 0:
-                    _reject("units_zero_after_adjustment", {"original_units": units_main})
-                    continue
-                existing_set.add(abs(units_main))
+                if orig_main > 0:
+                    units_main = _make_unique_units(units_main, existing_set, broker_min_units, max_units=orig_main * 1.5)
+                    if units_main == 0:
+                        _reject("units_zero_after_adjustment", {"original_units": orig_main})
+                        continue
+                    existing_set.add(abs(units_main))
+                else:
+                    units_main = 0
 
-                if units_run != 0:
+                if orig_run > 0:
                     units_run = _make_unique_units(units_run, existing_set, broker_min_units, max_units=orig_run * 1.5)
-                    # Don't reject for duplicate sizes - just use what we get
                     if units_run == 0:
-                        _reject("units_run_zero_after_adjustment", {"original_units": units_run})
+                        _reject("units_run_zero_after_adjustment", {"original_units": orig_run})
                         continue
                     existing_set.add(abs(units_run))
+                else:
+                    units_run = 0
 
                 # Final guard: ensure MAIN and RUN are different sizes
                 if units_run != 0 and abs(units_run) == abs(units_main):
@@ -22154,6 +22238,16 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                 short_setup = sig.setup_name[:13]
                 cid1 = f"{BOT_ID}:{pair}:{short_setup}:MAIN:{ts_ms}"
                 cid2 = f"{BOT_ID}:{pair}:{short_setup}:RUN:{ts_ms}"
+                main_leg_enabled = (units_main != 0)
+                run_leg_enabled = (units_run != 0)
+                trade_id_main = None
+                trade_id_run = None
+                tid1 = None
+                tid2 = None
+
+                if not main_leg_enabled and not run_leg_enabled:
+                    _reject("units_zero_no_enabled_legs", extra={"units_main": units_main, "units_run": units_run})
+                    continue
 
                 state_from = st.state
                 _transition_state(st, "ENTER", pair)
@@ -22162,96 +22256,123 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                     _reject("db_error_pre_order")
                     continue
 
-                log_trade_attempt(
-                    pair=pair,
-                    sig=sig,
-                    st=st,
-                    speed_class=speed_class,
-                    decision="PLACE",
-                    reason="order_attempt",
-                    leg="MAIN",
-                    state_from=state_from,
-                    state_to=st.state,
-                    extra={**exit_meta, **spread_meta, "entry_trigger": entry_trigger},
-                    bar_complete=bar_complete,
-                    bar_age_ms=bar_age_ms,
-                )
-
-                db_call(
-                    "record_order_attempt_main",
-                    db.record_order,
-                    client_id=cid1,
-                    pair=pair,
-                    setup=sig.setup_name,
-                    leg="MAIN",
-                    units=units_main,
-                    sl=sl1,
-                    tp=tp1,
-                    oanda_order_id="",
-                    oanda_transaction_id="",
-                    status="ATTEMPT",
-                    raw=order_meta,
-                )
-                if not db_ok:
-                    _reject("db_error_order_attempt")
-                    continue
-
-                # Log detailed order information before placing
-                log(
-                    f"{EMOJI_INFO} ORDER_PLACE_MAIN {pair_tag(pair, sig.direction)}",
-                    {
-                        "units": units_main,
-                        "entry_price": price_for_units,
-                        "stop_loss": sl1,
-                        "take_profit": tp1,
-                        "client_id": cid1,
-                        "margin_required": round(abs(units_main) / (50 if pair in LEVERAGE_50 else LEV_DEFAULT) / max(price_for_units, 1e-9), 2),
-                        "risk_usd": round(abs(units_main) * abs(price_for_units - sl1) / (50 if pair in LEVERAGE_50 else LEV_DEFAULT), 2),
-                        "setup": sig.setup_name,
-                        "speed_class": speed_class,
-                    }
-                )
-
-                allowed, block_reason = can_enter(pair, st.spread_pips, now_ts(), sig)
-                if not allowed:
-                    _reject(block_reason, extra={"phase": "pre_place", "spread_pips": st.spread_pips})
-                    continue
-
-                # HARD GATE: Block actual orders in dry-run mode
-                if DRY_RUN_ONLY:
-                    log(f"{EMOJI_INFO} DRY_RUN_ORDER_BLOCKED {pair_tag(pair, sig.direction)}",
-                        {"units": units_main, "client_id": cid1, "reason": "DRY_RUN_ONLY=true"})
-                    _reject("dry_run_only", extra={"DRY_RUN_ONLY": DRY_RUN_ONLY})
-                    continue
-
-                # Place MAIN leg order through choke point
-                entry_id = f"{pair}:{sig.setup_name}:{sig.direction}:{int(now_ts())}"
-                resp1 = _place_order_with_guards(
-                    pair=pair,
-                    units=units_main,
-                    order_type="MARKET",
-                    stop_loss=csl1,
-                    take_profit=tp0_1,
-                    client_id=cid1,
-                    reason="main_entry",
-                    entry_id=entry_id
-                )
-                ok1, oid1, txid1, status1 = _order_confirmed(resp1)
-                if not ok1:
-                    _note_order_reject(
-                        pair,
-                        status1,
-                        resp1,
+                if main_leg_enabled:
+                    log_trade_attempt(
+                        pair=pair,
+                        sig=sig,
+                        st=st,
+                        speed_class=speed_class,
+                        decision="PLACE",
+                        reason="order_attempt",
                         leg="MAIN",
-                        entry_id=entry_id,
+                        state_from=state_from,
+                        state_to=st.state,
+                        extra={**exit_meta, **spread_meta, "entry_trigger": entry_trigger},
+                        bar_complete=bar_complete,
+                        bar_age_ms=bar_age_ms,
+                    )
+
+                    db_call(
+                        "record_order_attempt_main",
+                        db.record_order,
+                        client_id=cid1,
+                        pair=pair,
+                        setup=sig.setup_name,
+                        leg="MAIN",
                         units=units_main,
-                        price=price_for_units,
                         sl=sl1,
                         tp=tp1,
+                        oanda_order_id="",
+                        oanda_transaction_id="",
+                        status="ATTEMPT",
+                        raw=order_meta,
                     )
-                    _reject(f"order_main_{status1}", extra={"resp": resp1})
+                    if not db_ok:
+                        _reject("db_error_order_attempt")
+                        continue
+
+                    # Log detailed order information before placing
+                    log(
+                        f"{EMOJI_INFO} ORDER_PLACE_MAIN {pair_tag(pair, sig.direction)}",
+                        {
+                            "units": units_main,
+                            "entry_price": price_for_units,
+                            "stop_loss": sl1,
+                            "take_profit": tp1,
+                            "client_id": cid1,
+                            "margin_required": round(abs(units_main) / (50 if pair in LEVERAGE_50 else LEV_DEFAULT) / max(price_for_units, 1e-9), 2),
+                            "risk_usd": round(abs(units_main) * abs(price_for_units - sl1) / (50 if pair in LEVERAGE_50 else LEV_DEFAULT), 2),
+                            "setup": sig.setup_name,
+                            "speed_class": speed_class,
+                        }
+                    )
+
+                    allowed, block_reason = can_enter(pair, st.spread_pips, now_ts(), sig)
+                    if not allowed:
+                        _reject(block_reason, extra={"phase": "pre_place", "spread_pips": st.spread_pips})
+                        continue
+
+                    # HARD GATE: Block actual orders in dry-run mode
+                    if DRY_RUN_ONLY:
+                        log(f"{EMOJI_INFO} DRY_RUN_ORDER_BLOCKED {pair_tag(pair, sig.direction)}",
+                            {"units": units_main, "client_id": cid1, "reason": "DRY_RUN_ONLY=true"})
+                        _reject("dry_run_only", extra={"DRY_RUN_ONLY": DRY_RUN_ONLY})
+                        continue
+
+                    # Place MAIN leg order through choke point
+                    entry_id = f"{pair}:{sig.setup_name}:{sig.direction}:{int(now_ts())}"
+                    resp1 = _place_order_with_guards(
+                        pair=pair,
+                        units=units_main,
+                        order_type="MARKET",
+                        stop_loss=csl1,
+                        take_profit=tp0_1,
+                        client_id=cid1,
+                        reason="main_entry",
+                        entry_id=entry_id
+                    )
+                    ok1, oid1, txid1, status1 = _order_confirmed(resp1)
+                    if not ok1:
+                        _note_order_reject(
+                            pair,
+                            status1,
+                            resp1,
+                            leg="MAIN",
+                            entry_id=entry_id,
+                            units=units_main,
+                            price=price_for_units,
+                            sl=sl1,
+                            tp=tp1,
+                        )
+                        _reject(f"order_main_{status1}", extra={"resp": resp1})
+                        db_call(
+                            "record_order_fail_main",
+                            db.record_order,
+                            client_id=cid1,
+                            pair=pair,
+                            setup=sig.setup_name,
+                            leg="MAIN",
+                            units=units_main,
+                            sl=sl1,
+                            tp=tp1,
+                            oanda_order_id=oid1,
+                            oanda_transaction_id=txid1,
+                            status=f"FAILED_{status1}",
+                            raw={**(resp1 if isinstance(resp1, dict) else {}), **order_meta},
+                        )
+                        continue
+                    # Transition to ENTER state with alert
+                    _transition_state(
+                        st, "ENTER", pair,
+                        strategy=sig.setup_name,
+                        direction=sig.direction,
+                        reason="market_order_placed",
+                        metadata={"order_id": oid1, "units": units_main}
+                    )
+                    # Clear reject cooldown on success
+                    ORDER_REJECT_BLOCK.pop(pair, None)
                     db_call(
-                        "record_order_fail_main",
+                        "record_order_main",
                         db.record_order,
                         client_id=cid1,
                         pair=pair,
@@ -22262,119 +22383,93 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         tp=tp1,
                         oanda_order_id=oid1,
                         oanda_transaction_id=txid1,
-                        status=f"FAILED_{status1}",
+                        status=status1,
                         raw={**(resp1 if isinstance(resp1, dict) else {}), **order_meta},
                     )
-                    continue
-                # Transition to ENTER state with alert
-                _transition_state(
-                    st, "ENTER", pair,
-                    strategy=sig.setup_name,
-                    direction=sig.direction,
-                    reason="market_order_placed",
-                    metadata={"order_id": oid1, "units": units_main}
-                )
-                # Clear reject cooldown on success
-                ORDER_REJECT_BLOCK.pop(pair, None)
-                db_call(
-                    "record_order_main",
-                    db.record_order,
-                    client_id=cid1,
-                    pair=pair,
-                    setup=sig.setup_name,
-                    leg="MAIN",
-                    units=units_main,
-                    sl=sl1,
-                    tp=tp1,
-                    oanda_order_id=oid1,
-                    oanda_transaction_id=txid1,
-                    status=status1,
-                    raw={**(resp1 if isinstance(resp1, dict) else {}), **order_meta},
-                )
                 ttl_main = sp["ttl_main"]
                 ttl_run = sp["ttl_run"]
                 pg_t_main = int(ttl_main * sp["pg_t_frac"])
                 pg_t_run = int(ttl_run * sp["pg_t_frac"])
                 pg_atr_val = sp["pg_atr"]
 
-                tid1 = _extract_trade_id_from_fill(resp1)
-                # Verify we got a valid trade ID BEFORE recording in DB
-                if not tid1:
-                    log(f"{EMOJI_ERR} NO_TRADE_ID {pair_tag(pair, sig.direction)}",
-                        {"setup": sig.setup_name, "response": resp1})
-                    _reject("no_trade_id")
-                    continue
+                if main_leg_enabled:
+                    tid1 = _extract_trade_id_from_fill(resp1)
+                    # Verify we got a valid trade ID BEFORE recording in DB
+                    if not tid1:
+                        log(f"{EMOJI_ERR} NO_TRADE_ID {pair_tag(pair, sig.direction)}",
+                            {"setup": sig.setup_name, "response": resp1})
+                        _reject("no_trade_id")
+                        continue
 
-                # SOP v2.1: Post-fill CSL -> structural SL upgrade with health gate
-                try:
-                    last_price_ts = None
+                    # SOP v2.1: Post-fill CSL -> structural SL upgrade with health gate
                     try:
-                        last_price_ts = enhanced_market_hub.resilience_controller.last_update.get(pair)
-                    except Exception:
                         last_price_ts = None
-                    health = _health_snapshot(now=now_ts(), last_price_ts=last_price_ts, net_fail_count=net_fail_count)
-                    _post_fill_upgrade_sl_or_panic(
-                        o=get_oanda(),
-                        pair=pair,
-                        direction=sig.direction,
-                        trade_id=str(tid1),
-                        csl_price=float(csl1),
-                        structural_sl=float(sl1),
-                        health=health,
-                        db_trade_id=None,
-                        leg="MAIN",
-                    )
-                except Exception as e:
-                    log_runtime("warning", "POST_FILL_SL_UPGRADE_EXCEPTION", pair=pair, error=str(e))
-                if isinstance(resp1, dict) and resp1.get("_sl_add_failed"):
-                    try:
-                        sl_retry_state[int(tid1)] = {
-                            "pair": pair,
-                            "direction": sig.direction,
-                            "sl": sl1,
-                            "next_ts": now_ts() + SL_RETRY_BASE_SEC,
-                            "fail_count": 0,
-                        }
-                    except Exception:
-                        pass
+                        try:
+                            last_price_ts = enhanced_market_hub.resilience_controller.last_update.get(pair)
+                        except Exception:
+                            last_price_ts = None
+                        health = _health_snapshot(now=now_ts(), last_price_ts=last_price_ts, net_fail_count=net_fail_count)
+                        _post_fill_upgrade_sl_or_panic(
+                            o=get_oanda(),
+                            pair=pair,
+                            direction=sig.direction,
+                            trade_id=str(tid1),
+                            csl_price=float(csl1),
+                            structural_sl=float(sl1),
+                            health=health,
+                            db_trade_id=None,
+                            leg="MAIN",
+                        )
+                    except Exception as e:
+                        log_runtime("warning", "POST_FILL_SL_UPGRADE_EXCEPTION", pair=pair, error=str(e))
+                    if isinstance(resp1, dict) and resp1.get("_sl_add_failed"):
+                        try:
+                            sl_retry_state[int(tid1)] = {
+                                "pair": pair,
+                                "direction": sig.direction,
+                                "sl": sl1,
+                                "next_ts": now_ts() + SL_RETRY_BASE_SEC,
+                                "fail_count": 0,
+                            }
+                        except Exception:
+                            pass
 
-                trade_note_main = sig.reason
-                conf_score_main = confidence_score(
-                    m_norm=st.m_norm,
-                    spread_pips=st.spread_pips,
-                    speed_class=speed_class,
-                    disp_atr=disp_atr,
-                )
-                conf_grade_main = confidence_grade(conf_score_main)
-                trade_note_main = append_confidence_note(
-                    trade_note_main,
-                    conf_score=conf_score_main,
-                    conf_grade=conf_grade_main,
-                    m_norm=st.m_norm,
-                    spread_pips=st.spread_pips,
-                    speed_class=speed_class,
-                )
-                state_key_for_note = str(_TUNE_CTX.get("state_key_core_str", "")).strip()
-                if state_key_for_note:
-                    trade_note_main = f"{trade_note_main} sk:{state_key_for_note}"
-                trade_id_main = db_call(
-                    "add_trade_main",
-                    db.record_trade,
-                    pair=pair,
-                    setup=sig.setup_name,
-                    direction=sig.direction,
-                    mode=st.mode,
-                    units=units_main,
-                    entry=entry1,
-                    atr_entry=st.atr_exec,
-                    ttl_sec=ttl_main,
-                    pg_t=pg_t_main,
-                    pg_atr=pg_atr_val,
-                    note=trade_note_main,
-                    parent_entry_id=parent_entry_id,
-                    oanda_trade_id=tid1,
-                )
-                if trade_id_main:
+                    trade_note_main = sig.reason
+                    conf_score_main = confidence_score(
+                        m_norm=st.m_norm,
+                        spread_pips=st.spread_pips,
+                        speed_class=speed_class,
+                        disp_atr=disp_atr,
+                    )
+                    conf_grade_main = confidence_grade(conf_score_main)
+                    trade_note_main = append_confidence_note(
+                        trade_note_main,
+                        conf_score=conf_score_main,
+                        conf_grade=conf_grade_main,
+                        m_norm=st.m_norm,
+                        spread_pips=st.spread_pips,
+                        speed_class=speed_class,
+                    )
+                    state_key_for_note = str(_TUNE_CTX.get("state_key_core_str", "")).strip()
+                    if state_key_for_note:
+                        trade_note_main = f"{trade_note_main} sk:{state_key_for_note}"
+                    trade_id_main = db_call(
+                        "add_trade_main",
+                        db.record_trade,
+                        pair=pair,
+                        setup=sig.setup_name,
+                        direction=sig.direction,
+                        mode=st.mode,
+                        units=units_main,
+                        entry=entry1,
+                        atr_entry=st.atr_exec,
+                        ttl_sec=ttl_main,
+                        pg_t=pg_t_main,
+                        pg_atr=pg_atr_val,
+                        note=trade_note_main,
+                        parent_entry_id=parent_entry_id,
+                        oanda_trade_id=tid1,
+                    )
                     target_profile_main = str(
                         getattr(sig, "target_profile", "")
                         or _compute_target_profile(
@@ -22558,7 +22653,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                         },
                     )
 
-                if units_run != 0:
+                if run_leg_enabled:
                     log_trade_attempt(
                         pair=pair,
                         sig=sig,
@@ -22633,7 +22728,7 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                             status2,
                             resp2,
                             leg="RUN",
-                            entry_id=entry_id,
+                            entry_id=entry_id_run,
                             units=units_run,
                             price=price_for_units,
                             sl=sl2,
@@ -22893,8 +22988,8 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 },
                             )
 
-                if units_run != 0:
-                    dual_status = "DUAL_LEG_ENTERED" if (trade_id_main and 'trade_id_run' in locals() and trade_id_run) else "DUAL_LEG_PARTIAL"
+                if run_leg_enabled:
+                    dual_status = "DUAL_LEG_ENTERED" if (trade_id_main and trade_id_run) else "DUAL_LEG_PARTIAL"
                     emit_trade_kind(
                         dual_status,
                         {
@@ -22907,10 +23002,10 @@ def main(*, run_for_sec: Optional[float] = None, dry_run: Optional[bool] = None)
                                 entry_group_id=parent_entry_id,
                             ),
                             "harvester_trade_id": trade_id_main,
-                            "runner_trade_id": trade_id_run if 'trade_id_run' in locals() else None,
+                            "runner_trade_id": trade_id_run,
                         },
                     )
-                    if not ('trade_id_run' in locals() and trade_id_run):
+                    if not trade_id_run:
                         emit_trade_kind(
                             "SINGLE_LEG_MODE",
                             {

@@ -206,7 +206,7 @@ def tz_0_6_secret_redaction(proof_dir: Path) -> bool:
     # For now, we just check that we can log a token; redaction will be implemented later
     test_token = "fake_token_abc123def456"
     _log_runtime("info", "TEST_REDACTION", token=test_token)
-    log_content = (BASE_DIR / "logs" / "runtime.log").read_text()
+    log_content = (BASE_DIR / "logs" / "runtime.log").read_text(encoding="utf-8", errors="replace")
     # Simple pass: token appears in log (we’ll implement redaction later)
     redacted_ok = test_token in log_content
     report = {
