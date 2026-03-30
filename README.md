@@ -160,3 +160,139 @@ Stop and report immediately when any of the following occurs:
 - Required proof cannot be produced.
 - Remote sync/push cannot be completed.
 
+## RCP_LOCAL_VS_CODE — execution split
+
+### Workspaces
+
+**LOCAL**
+- Environment: your PC / Termux / live runtime
+- Folder: `phone-signals-publish-clean`
+- Branch: `publish/clean-backup-20260326`
+
+**CODESPACES**
+- Environment: GitHub Codespaces
+- Same repo + branch
+- Clean, reproducible environment
+
+### Core principle
+
+- LOCAL = RUN + OBSERVE
+- CODESPACES = BUILD + PROVE
+
+### Local responsibilities (non-negotiable)
+
+1. **Live bot runtime**
+   - start/stop bot
+   - monitor uptime
+   - ensure loop stability
+
+2. **Execution layer**
+   - broker / webhook / API behavior
+   - order placement validation
+   - SL/TP execution correctness
+
+3. **Stop / SL real behavior**
+   - verify SL moves correctly
+   - verify trailing behaves correctly
+   - verify locked profit behaves as expected
+
+4. **Notifications**
+   - Must show: entry trigger, strategy ID, trade ID (harvester / runner), AEE decision,
+     SL movement, close reason
+
+5. **Demo operation**
+   - run demo account
+   - ensure trades execute, AEE manages live trades, and system does not crash
+
+6. **Final validation**
+   - before promotion, verify live behavior matches expected AEE logic
+
+### Codespaces responsibilities (non-negotiable)
+
+1. **AEE development**
+   - global kernel
+   - scenario classification
+   - scenario playbooks
+   - stop/lock/trailing logic
+
+2. **Replay / simulation**
+   - build and run replay harness
+   - test AEE on fixed trade paths
+   - compare vs baseline
+
+3. **Architecture work**
+   - modularize AEE
+   - enforce separate trade IDs (harvester/runner), clean interfaces, reusable components
+
+4. **Repo discovery**
+   - search for existing AEE code, replay tools, logging systems
+   - reuse before building new
+
+5. **Reporting**
+   - output performance vs baseline, scenario behavior, and decision logs
+
+### Shared rules
+
+**Git flow**
+
+At start:
+
+```bash
+git checkout publish/clean-backup-20260326
+git pull origin publish/clean-backup-20260326
+```
+
+At end:
+
+```bash
+git add .
+git commit -m "<task_id>: <what changed>"
+git push origin publish/clean-backup-20260326
+```
+
+**Sync rule**
+- GitHub is the single source of truth.
+- Always pull before work.
+- Always push after task completion.
+
+### What must not happen
+
+**Do not do in LOCAL**
+- heavy replay simulations
+- large batch testing
+- architecture refactors
+
+**Do not do in CODESPACES**
+- live bot execution
+- broker debugging
+- notification tuning
+
+### Workflow loop
+
+1. Codespaces: build or modify AEE / architecture
+2. Push to GitHub
+3. Local: pull changes, run bot, observe behavior
+4. Push findings / fixes
+5. Repeat
+
+### Decision rule
+
+If task requires:
+- real-time behavior → LOCAL
+- structural change → CODESPACES
+- heavy testing → CODESPACES
+
+### Success condition
+
+System is correct when:
+- AEE logic is built and tested in Codespaces
+- behavior matches expectation in Local
+- both environments stay in sync via GitHub
+
+### Final rule
+
+Never build blind:
+- Codespaces proves logic
+- Local proves reality
+- both are required
+
