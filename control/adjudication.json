@@ -1,35 +1,10 @@
 {
-  "protocol": "RCP",
-  "stage": 5,
-  "generated_at": "2026-03-26T13:30:00Z",
-  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
-  "verdict": "PROMOTE",
-  "why": "Net-layer micro-live execution and incident audit passed with zero critical incidents under hard guardrails.",
-  "evidence": [
-    "run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
-    "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json",
-    "control/mvp_phase31_net_layer_micro_live_execution_plan.json",
-    "control/validation_result.json"
-  ],
-  "key_findings": {
-    "phase32_execution": {
-      "wave_count": 3,
-      "total_duration_minutes": 360,
-      "max_false_cut_observed": 0.07692307692307693,
-      "max_weighted_relative_spread_observed": 0.4250786788545134,
-      "min_weighted_delta_pph_observed": 0.07721467801644938,
-      "hard_stop_trigger_count": 0,
-      "incident_count": 0,
-      "release_action": "READY_FOR_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
-      "live_promotion_allowed": false,
-      "scope_lock_preserved": true
-    },
-    "phase32_mode": "NET_LAYER_MICRO_LIVE_EXECUTION_AND_AUDIT"
+  "task_id": "",
+  "timestamp_utc": "",
+  "decision": {
+    "status": "hold",
+    "reason": ""
   },
-  "next_recommended_task": "MVP_PHASE33_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
-  "do_not_try_next": [
-    "full live promotion before phase33 final go/no-go review",
-    "weakening false-cut guard thresholds",
-    "scope widening beyond EUR_USD/GBP_USD LONDON lock"
-  ]
+  "next_steps": [],
+  "violations": []
 }

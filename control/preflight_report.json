@@ -1,53 +1,32 @@
 {
-  "protocol": "RCP",
-  "protocol_version": "RCP_V2",
-  "stage": 2,
-  "generated_at": "2026-03-26T13:29:10Z",
-  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
-  "component": "mvp_net_layer_micro_live_execution_and_incident_audit",
-  "intervention_class": "SURGICAL_BEHAVIOR_CHANGE_NET_LAYER_EXECUTION_AUDIT",
-  "research_layer": "PHASE0_INTERVENTION_ACTION_LOOP",
-  "champion_reference": [
-    "entry_v23_policy_guarded_active.json",
-    "control/mvp_phase31_net_layer_micro_live_execution_plan.json",
-    "control/mvp_phase29_shadow_soak_retrospective_and_live_gating_decision.json"
-  ],
-  "expected_signature": {
-    "pairs": [
-      "EUR_USD",
-      "GBP_USD"
-    ],
-    "sessions": [
-      "LONDON"
-    ],
-    "required_metrics": [
-      "micro_live_wave_execution_results",
-      "incident_audit_summary",
-      "contract_threshold_enforcement",
-      "full_live_promotion_block_enforced"
-    ]
+  "task_id": "",
+  "timestamp_utc": "",
+  "objective": "",
+  "scope": {
+    "allowed_paths": [],
+    "forbidden_paths": []
   },
-  "files_planned_to_modify": [
-    "run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
-    "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json",
-    "control/preflight_report.json",
-    "control/validation_result.json",
-    "control/adjudication.json"
-  ],
-  "validation_commands": [
-    "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
-    "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py"
-  ],
-  "success_criteria": [
-    "Micro-live execution waves complete under contract thresholds",
-    "Incident audit shows zero critical incidents and zero hard-stop events",
-    "Scope lock and no-tuning constraints remain preserved",
-    "Full live promotion remains blocked pending final go/no-go"
-  ],
-  "constraints_respected": [
-    "no AEE tuning",
-    "no priority tuning",
-    "no architecture expansion",
-    "no production behavior changes"
-  ]
+  "audit_classification": {
+    "primary": "",
+    "secondary": [],
+    "risk_areas": []
+  },
+  "audit_gates": {
+    "abstraction_check": "pending",
+    "kernel_check": "pending",
+    "scenario_check": "pending",
+    "objective_check": "pending",
+    "interaction_check": "pending",
+    "infrastructure_check": "pending",
+    "economic_reality_check": "pending",
+    "go_decision": "pending"
+  },
+  "validation_plan": {
+    "commands": [],
+    "expected_outputs": []
+  },
+  "git_context": {
+    "workspace": "..\\phone-signals-publish-clean",
+    "branch": "publish/clean-backup-20260326"
+  }
 }

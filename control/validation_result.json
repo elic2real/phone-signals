@@ -1,39 +1,14 @@
 {
-  "protocol": "RCP",
-  "protocol_version": "RCP_V2",
-  "stage": 4,
-  "generated_at": "2026-03-26T13:29:40Z",
-  "task_id": "MVP_PHASE32_NET_LAYER_MICRO_LIVE_EXECUTION_AND_INCIDENT_AUDIT",
-  "commands_run": [
-    {
-      "command": "'/home/elic/Documents/phone signals/.venv/bin/python' -m py_compile run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
-      "returncode": 0,
-      "pass": true
-    },
-    {
-      "command": "'/home/elic/Documents/phone signals/.venv/bin/python' run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
-      "returncode": 0,
-      "pass": true,
-      "note": "Executed net-layer micro-live waves and incident audit under Phase31 contract thresholds"
-    }
-  ],
-  "artifacts_produced": [
-    "run_mvp_phase32_net_layer_micro_live_execution_and_incident_audit.py",
-    "control/mvp_phase32_net_layer_micro_live_execution_and_incident_audit.json"
-  ],
-  "metrics_summary": {
-    "wave_count": 3,
-    "total_duration_minutes": 360,
-    "max_false_cut_observed": 0.07692307692307693,
-    "max_weighted_relative_spread_observed": 0.4250786788545134,
-    "min_weighted_delta_pph_observed": 0.07721467801644938,
-    "hard_stop_trigger_count": 0,
-    "incident_count": 0,
-    "release_action": "READY_FOR_NET_LAYER_FINAL_GO_NO_GO_REVIEW",
-    "live_promotion_allowed": false,
-    "overall_pass": true
+  "task_id": "",
+  "timestamp_utc": "",
+  "commands_run": [],
+  "results": {
+    "passed": false,
+    "checks": []
   },
-  "status": "PASS",
-  "success_criteria_met": true,
-  "failures": []
+  "evidence": {
+    "artifacts": [],
+    "logs": []
+  },
+  "errors": []
 }
