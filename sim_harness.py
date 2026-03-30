@@ -14,14 +14,24 @@ Includes:
 
 import argparse
 import csv
+import importlib.util
 import json
 import os
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import phone_bot as phone_bot
+try:
+    import phone_bot as phone_bot
+except Exception:
+    _fallback = Path(__file__).resolve().parent / "github_repo" / "phone_bot.py"
+    spec = importlib.util.spec_from_file_location("phone_bot_fallback", _fallback)
+    if spec is None or spec.loader is None:
+        raise
+    phone_bot = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(phone_bot)
 
 
 @dataclass
@@ -142,6 +152,8 @@ class SimEnvironment:
             now = now_ts_val if now_ts_val is not None else self._current_ts
             spread_pips = phone_bot.to_pips(pair, ask - bid)
             speed_class = phone_bot.speed_class_from_setup_name(str(trade.get("setup", "")))
+            if not hasattr(phone_bot, "final_exit_decision"):
+                return None
             arbiter_result = phone_bot.final_exit_decision(trade, pair, direction, bid, ask, mid, now, spread_pips, speed_class)
             return arbiter_result["reason"] if arbiter_result and arbiter_result.get("reason") else None
         phone_bot.check_aee_exits = arbiter_exit
