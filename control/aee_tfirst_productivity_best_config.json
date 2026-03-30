@@ -1,0 +1,32 @@
+{
+  "family": "truth_family_tfirst",
+  "anchor": "pure_T",
+  "best_combo_id": "tfirst_Pr_strict",
+  "best_total_delta_vs_1to1": -36.7,
+  "best_total_delta_vs_protective": -84.36,
+  "best_total_delta_vs_current": 58.9,
+  "improvement_vs_pure_T_total_pips": 8.4,
+  "fusion": "tfirst_asymmetric",
+  "kernels": ["T", "Pr"],
+  "fusion_config": {
+    "veto_cp_min": 0.55,
+    "veto_prod_min": 0.002,
+    "veto_upr_max": 0.28,
+    "veto_giveback_max": 0.22,
+    "veto_pnl_min": 0.2,
+    "hard_giveback_min": 0.46,
+    "hard_cp_max": 0.12,
+    "hard_prod_max": -0.01,
+    "hard_ineff_min": 0.55,
+    "weak_cp_max": 0.05,
+    "weak_upr_min": 0.95,
+    "weak_prod_max": -0.02,
+    "weak_ineff_min": 0.9,
+    "weak_stall_min": 0.9,
+    "weak_w_t": 1.0,
+    "weak_w_intervention": 0.0,
+    "hard_w_t": 0.7,
+    "hard_w_intervention": 0.3
+  },
+  "notes": "Local plateau reached around this configuration in focused refinement sweep."
+}

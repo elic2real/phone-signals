@@ -9,6 +9,10 @@ from aee_kernel_combination import (
     score_kernel_progress,
     score_kernel_time,
     score_kernel_pnl,
+    score_kernel_floor,
+    score_kernel_degradation,
+    score_kernel_productivity,
+    score_kernel_regime,
     fuse_weighted_sum,
     fuse_gated,
     fuse_confidence_weighted,
@@ -115,10 +119,42 @@ def test_pnl_kernel_floor_breach_close():
 
 
 def test_all_kernels_return_required_fields():
-    for fn in (score_kernel_progress, score_kernel_time, score_kernel_pnl):
+    for fn in (
+        score_kernel_progress,
+        score_kernel_time,
+        score_kernel_pnl,
+        score_kernel_floor,
+        score_kernel_degradation,
+        score_kernel_productivity,
+        score_kernel_regime,
+    ):
         s = fn(ORIGIN)
         for key in (*ACTIONS, "confidence"):
             assert key in s, f"Missing key {key} in {fn.__name__}"
+
+
+def test_floor_kernel_prefers_close_on_breach():
+    ctx = _ctx(locked_floor_r=0.8, open_pnl_r=0.4, giveback_from_peak_r=0.5)
+    s = score_kernel_floor(ctx)
+    assert s["CLOSE"] == max(s[a] for a in ACTIONS)
+
+
+def test_degradation_kernel_close_on_weakening():
+    ctx = _ctx(continuation_proxy_r=0.1, giveback_from_peak_r=0.7, productivity_rate=-0.01, stall_score=0.8)
+    s = score_kernel_degradation(ctx)
+    assert s["CLOSE"] >= s["HOLD"]
+
+
+def test_productivity_kernel_extend_when_productive():
+    ctx = _ctx(productivity_rate=0.06, time_unproductive_ratio=0.05, continuation_proxy_r=0.8)
+    s = score_kernel_productivity(ctx)
+    assert s["EXTEND"] >= s["CLOSE"]
+
+
+def test_regime_kernel_trend_biases_extend():
+    ctx = _ctx(continuation_score=0.8, progress_r=0.7, continuation_proxy_r=0.8)
+    s = score_kernel_regime(ctx)
+    assert s["EXTEND"] > s["CLOSE"]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -321,6 +357,31 @@ def test_tfirst_hard_degradation_breaks_veto():
     )
     assert r["veto_applied"] is False
     assert r["degradation_flags"]["hard"] is True
+
+
+def test_tfirst_supports_non_p_non_pnl_intervention_kernel():
+    ctx = _ctx(
+        continuation_proxy_r=0.2,
+        productivity_rate=-0.01,
+        giveback_from_peak_r=0.5,
+        time_unproductive_ratio=0.6,
+        inefficiency_cost_r=0.5,
+    )
+    r = score_kernels_and_fuse(
+        ctx,
+        ["T", "D"],
+        "tfirst_asymmetric",
+        fusion_config={
+            "hard_giveback_min": 0.4,
+            "hard_cp_max": 0.25,
+            "hard_w_t": 0.25,
+            "hard_w_intervention": 0.75,
+            "weak_w_t": 0.85,
+            "weak_w_intervention": 0.15,
+        },
+    )
+    assert "D" in r["attribution"]
+    assert r["attribution"]["D"] > 0.0
 
 
 def test_tfirst_requires_t_kernel():

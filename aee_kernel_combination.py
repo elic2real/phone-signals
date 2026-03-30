@@ -135,6 +135,119 @@ def score_kernel_pnl(ctx: AEEContext) -> dict[str, float]:
             "confidence": confidence}
 
 
+def score_kernel_floor(ctx: AEEContext) -> dict[str, float]:
+    """Floor/safety kernel: explicit safety-state scoring.
+
+    Captures locked-floor economics distinct from open PnL:
+      - floor level itself (safety built)
+      - breach risk (pnl relative to floor)
+      - leak pressure above floor (giveback while floor exists)
+    """
+    lf = ctx.locked_floor_r
+    pnl = ctx.open_pnl_r
+    gb = ctx.giveback_from_peak_r
+
+    floor_buffer = pnl - lf
+    breach_risk = max(0.0, lf - pnl)
+    leak_pressure = max(0.0, gb - 0.10) * (1.0 + lf)
+
+    v_close = breach_risk * 2.20 + leak_pressure * 0.90
+    v_tighten = lf * 1.10 + leak_pressure * 0.60 - max(0.0, floor_buffer) * 0.15
+    v_hold = 0.20 + max(0.0, floor_buffer) * 0.60 + lf * 0.30 - leak_pressure * 0.40
+    v_extend = 0.10 + max(0.0, floor_buffer) * 0.50 - leak_pressure * 0.55 - breach_risk * 1.00
+
+    confidence = min(1.5, max(lf, breach_risk + leak_pressure * 0.5))
+    return {"CLOSE": v_close, "HOLD": v_hold, "TIGHTEN": v_tighten, "EXTEND": v_extend,
+            "confidence": confidence}
+
+
+def score_kernel_degradation(ctx: AEEContext) -> dict[str, float]:
+    """Degradation kernel: continuation weakening and leak acceleration.
+
+    Designed as non-T intervention family:
+      CLOSE   when continuation decays + leak rises + productivity weakens
+      TIGHTEN for medium degradation
+    """
+    cp = ctx.continuation_proxy_r
+    gb = ctx.giveback_from_peak_r
+    upr = ctx.time_unproductive_ratio
+    prod = ctx.productivity_rate
+    ineff = ctx.inefficiency_cost_r
+    stall = ctx.stall_score
+
+    continuation_weak = max(0.0, 0.50 - cp)
+    leak = gb
+    failed_push = max(0.0, -prod)
+    stall_density = max(stall, upr)
+
+    deg = 0.35 * continuation_weak + 0.30 * leak + 0.20 * failed_push + 0.15 * stall_density
+
+    v_close = 1.40 * deg + 0.80 * ineff + 0.35 * leak
+    v_tighten = 0.95 * deg + 0.45 * leak - 0.15 * max(0.0, cp - 0.4)
+    v_hold = 0.20 + 0.35 * max(0.0, cp - 0.35) - 0.55 * deg
+    v_extend = 0.10 + 0.45 * max(0.0, cp - 0.45) - 0.75 * deg
+
+    confidence = min(1.5, max(deg, leak, continuation_weak))
+    return {"CLOSE": v_close, "HOLD": v_hold, "TIGHTEN": v_tighten, "EXTEND": v_extend,
+            "confidence": confidence}
+
+
+def score_kernel_productivity(ctx: AEEContext) -> dict[str, float]:
+    """Productivity kernel: economic output per unit time state.
+
+    Distinguishes dead capital from productive continuation.
+    """
+    prod = ctx.productivity_rate
+    upr = ctx.time_unproductive_ratio
+    t = ctx.t_norm
+    cp = ctx.continuation_proxy_r
+    ineff = ctx.inefficiency_cost_r
+
+    productive = max(0.0, prod)
+    dead_capital = max(0.0, -prod) + upr * 0.6 + ineff * 0.5
+
+    v_extend = 0.20 + 0.95 * productive + 0.35 * max(0.0, cp - 0.4) - 0.55 * dead_capital
+    v_hold = 0.20 + 0.55 * productive + 0.20 * cp - 0.35 * dead_capital
+    v_tighten = 0.45 * dead_capital + 0.15 * t - 0.20 * productive
+    v_close = 0.85 * dead_capital + 0.40 * t - 0.25 * productive
+
+    confidence = min(1.5, max(productive * 8.0, dead_capital))
+    return {"CLOSE": v_close, "HOLD": v_hold, "TIGHTEN": v_tighten, "EXTEND": v_extend,
+            "confidence": confidence}
+
+
+def score_kernel_regime(ctx: AEEContext) -> dict[str, float]:
+    """Path-shape/regime kernel: smooth continuation vs chop/reversal onset."""
+    regime = detect_regime(ctx)
+    cp = ctx.continuation_proxy_r
+    gb = ctx.giveback_from_peak_r
+
+    if regime == "trend":
+        v_extend = 0.90 + 0.60 * max(0.0, cp - 0.35)
+        v_hold = 0.55 + 0.25 * cp
+        v_tighten = 0.15
+        v_close = -0.30 + 0.40 * gb
+    elif regime == "stall":
+        v_extend = -0.10
+        v_hold = 0.25
+        v_tighten = 0.70 + 0.35 * gb
+        v_close = 0.45 + 0.45 * gb
+    elif regime == "reversal":
+        v_extend = -0.40
+        v_hold = -0.10
+        v_tighten = 0.70 + 0.45 * gb
+        v_close = 0.95 + 0.70 * gb
+    else:  # neutral
+        v_extend = 0.20 + 0.25 * cp
+        v_hold = 0.30
+        v_tighten = 0.25 + 0.20 * gb
+        v_close = 0.15 + 0.35 * gb
+
+    confidence = min(1.5, 0.5 + abs(v_close - v_hold) * 0.5)
+    return {"CLOSE": v_close, "HOLD": v_hold, "TIGHTEN": v_tighten, "EXTEND": v_extend,
+            "confidence": confidence}
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Fusion functions
 # ─────────────────────────────────────────────────────────────────────────────
@@ -143,6 +256,10 @@ _KERNEL_FNS = {
     "P": score_kernel_progress,
     "T": score_kernel_time,
     "PnL": score_kernel_pnl,
+    "F": score_kernel_floor,
+    "D": score_kernel_degradation,
+    "Pr": score_kernel_productivity,
+    "R": score_kernel_regime,
 }
 
 
@@ -220,9 +337,9 @@ def fuse_tfirst_asymmetric(
 ) -> tuple[dict[str, float], dict[str, float], str, bool, dict[str, bool]]:
     """T-first asymmetric fusion with runner-preserving veto.
 
-    Rules:
+        Rules:
       1) T is anchor and default controller.
-      2) P/PnL can only contribute when degradation is explicit.
+            2) Non-T kernels can only contribute when degradation is explicit.
       3) If T says HOLD/EXTEND in productive runner state, veto CLOSE from others
          unless hard degradation is true.
     """
@@ -251,18 +368,35 @@ def fuse_tfirst_asymmetric(
 
     # Intervention weights.
     weak_w_t = float(cfg.get("weak_w_t", 0.80))
-    weak_w_p = float(cfg.get("weak_w_p", 0.15))
-    weak_w_q = float(cfg.get("weak_w_q", 0.05))
+    weak_w_intervention = float(cfg.get("weak_w_intervention", 0.20))
     hard_w_t = float(cfg.get("hard_w_t", 0.30))
-    hard_w_p = float(cfg.get("hard_w_p", 0.15))
-    hard_w_q = float(cfg.get("hard_w_q", 0.55))
+    hard_w_intervention = float(cfg.get("hard_w_intervention", 0.70))
+
+    # Back-compat: allow older split weight keys.
+    if "weak_w_p" in cfg or "weak_w_q" in cfg:
+        weak_w_intervention = max(0.0, float(cfg.get("weak_w_p", 0.0)) + float(cfg.get("weak_w_q", 0.0)))
+    if "hard_w_p" in cfg or "hard_w_q" in cfg:
+        hard_w_intervention = max(0.0, float(cfg.get("hard_w_p", 0.0)) + float(cfg.get("hard_w_q", 0.0)))
 
     # Resolve available kernels; T is mandatory for this fusion mode.
     if "T" not in kernel_scores:
         raise ValueError("fusion_mode='tfirst_asymmetric' requires 'T' kernel")
     t_scores = kernel_scores["T"]
-    p_scores = kernel_scores.get("P", {a: 0.0 for a in ACTIONS} | {"confidence": 0.0})
-    q_scores = kernel_scores.get("PnL", {a: 0.0 for a in ACTIONS} | {"confidence": 0.0})
+    intervention_ids = [k for k in kernel_scores.keys() if k != "T"]
+
+    def _intervention_scores() -> dict[str, float]:
+        if not intervention_ids:
+            return {a: 0.0 for a in ACTIONS}
+        out = {a: 0.0 for a in ACTIONS}
+        for kid in intervention_ids:
+            for a in ACTIONS:
+                out[a] += kernel_scores[kid][a]
+        n = float(len(intervention_ids))
+        for a in ACTIONS:
+            out[a] /= n
+        return out
+
+    i_scores = _intervention_scores()
 
     t_best = max(ACTIONS, key=lambda a: t_scores[a])
 
@@ -307,26 +441,24 @@ def fuse_tfirst_asymmetric(
 
     # 2) Hard degradation: allow close-biased intervention (PnL heavier).
     if hard_degradation:
-        wk = {
-            "T": max(0.0, hard_w_t),
-            "P": max(0.0, hard_w_p) if "P" in kernel_scores else 0.0,
-            "PnL": max(0.0, hard_w_q) if "PnL" in kernel_scores else 0.0,
-        }
-        fused = {a: wk["T"] * t_scores[a] + wk["P"] * p_scores[a] + wk["PnL"] * q_scores[a] for a in ACTIONS}
-        total = sum(wk.values()) or 1.0
-        attribution = {k: (wk.get(k, 0.0) / total) for k in kernel_scores}
+        w_t = max(0.0, hard_w_t)
+        w_i = max(0.0, hard_w_intervention) if intervention_ids else 0.0
+        fused = {a: w_t * t_scores[a] + w_i * i_scores[a] for a in ACTIONS}
+        total = (w_t + w_i) or 1.0
+        attribution = {"T": w_t / total}
+        for kid in intervention_ids:
+            attribution[kid] = (w_i / total) / max(1.0, float(len(intervention_ids)))
         return fused, attribution, "reversal", False, degradation_flags
 
     # 3) Weak degradation: gentle intervention while keeping T dominant.
     if weak_degradation:
-        wk = {
-            "T": max(0.0, weak_w_t),
-            "P": max(0.0, weak_w_p) if "P" in kernel_scores else 0.0,
-            "PnL": max(0.0, weak_w_q) if "PnL" in kernel_scores else 0.0,
-        }
-        fused = {a: wk["T"] * t_scores[a] + wk["P"] * p_scores[a] + wk["PnL"] * q_scores[a] for a in ACTIONS}
-        total = sum(wk.values()) or 1.0
-        attribution = {k: (wk.get(k, 0.0) / total) for k in kernel_scores}
+        w_t = max(0.0, weak_w_t)
+        w_i = max(0.0, weak_w_intervention) if intervention_ids else 0.0
+        fused = {a: w_t * t_scores[a] + w_i * i_scores[a] for a in ACTIONS}
+        total = (w_t + w_i) or 1.0
+        attribution = {"T": w_t / total}
+        for kid in intervention_ids:
+            attribution[kid] = (w_i / total) / max(1.0, float(len(intervention_ids)))
         return fused, attribution, "stall", False, degradation_flags
 
     # 4) Default: pure T control.
