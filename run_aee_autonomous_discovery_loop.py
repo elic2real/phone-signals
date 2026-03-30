@@ -41,22 +41,37 @@ def _score(exp: dict[str, Any]) -> tuple[float, float, float, int, int]:
 
 
 def _clamp_policy_value(key: str, value: float) -> float:
+    # Integer-valued params: clamp to reasonable integer range.
+    if "dwell" in key or "confirm" in key:
+        return float(min(8, max(1, round(value))))
     if "_r" in key or "score" in key:
-        return min(2.0, max(-2.0, value))
+        return min(2.0, max(0.01, value))
+    if "weight" in key:
+        return min(5.0, max(0.1, value))
     if "velocity" in key:
         return min(1.0, max(-1.0, value))
     if "pips" in key:
         return min(20.0, max(-20.0, value))
+    if "bonus" in key or "penalty" in key:
+        return min(1.0, max(0.0, value))
     return value
 
 
 def _mutation_step(key: str) -> float:
-    if "_r" in key or "score" in key:
+    if "dwell" in key or "confirm" in key:
+        return 1.0
+    if "_r" in key:
         return 0.05
+    if "score" in key:
+        return 0.05
+    if "weight" in key:
+        return 0.3
     if "velocity" in key:
         return 0.05
     if "pips" in key:
         return 0.2
+    if "bonus" in key or "penalty" in key:
+        return 0.05
     return 0.1
 
 
@@ -73,19 +88,19 @@ def _build_iteration_config(
 ) -> dict[str, Any]:
     kernel_candidates: list[dict[str, Any]] = [
         {
-            "kernel_id": f"iter{iteration:02d}_baseline",
+            "kernel_id": f"iter{iteration:02d}_v1_defaults",
             "kernel_type": "pure",
             "components": [
                 {
-                    "component_id": "STATE_MACHINE_DEFAULTS",
-                    "definition": "Unmodified replay kernel thresholds and transitions.",
+                    "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                    "definition": "v1 engine at default parameters — discovery iteration anchor.",
                 }
             ],
-            "policy": {},
+            "policy": {"enable_objective_v1": 1.0},
         }
     ]
 
-    seen = {_policy_signature({})}
+    seen = {_policy_signature({"enable_objective_v1": 1.0}), _policy_signature({})}
 
     # Keep a few best kernels from previous round, then mutate around them.
     sources = previous_ranked[:3] if previous_ranked else list(base_cfg.get("kernel_candidates") or [])[:3]
@@ -95,6 +110,8 @@ def _build_iteration_config(
             break
 
         source_policy = dict(src.get("effective_policy") or src.get("policy") or {})
+        # Every mutated candidate must run the v1 engine.
+        source_policy["enable_objective_v1"] = 1.0
         source_kernel_type = str(src.get("kernel_type", "pure"))
         source_components = list(src.get("components") or [])
         sig = _policy_signature(source_policy)
@@ -109,7 +126,21 @@ def _build_iteration_config(
             )
             seen.add(sig)
 
+        # Mutate only the meaningful v1 parameters; skip enable_objective_v1 itself.
+        _v1_mutable_keys = {
+            "release_giveback_trigger_r", "floor_giveback_trigger_r",
+            "continuation_proxy_enter_r", "release_continuation_max_r",
+            "release_inefficiency_min_r", "inefficiency_weight",
+            "min_action_dwell", "action_switch_confidence_gap",
+            "objective_min_dwell", "objective_confirm_bars",
+            "release_close_bonus_r", "floor_tighten_bonus_r",
+            "continuation_extend_bonus_r", "floor_productivity_min",
+        }
         for k, v in sorted(source_policy.items()):
+            if k == "enable_objective_v1":
+                continue
+            if k not in _v1_mutable_keys:
+                continue
             if len(kernel_candidates) >= max_candidates:
                 break
             f = _safe_float(v, 0.0)

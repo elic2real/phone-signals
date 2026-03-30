@@ -98,12 +98,91 @@ def _run_simple_protective_baseline(rows: list[dict[str, Any]], target_distance:
     }
 
 
+def _ground_truth_outcomes(
+    rows: list[dict[str, Any]],
+    idx: int,
+    *,
+    target_distance: float,
+    locked_floor_pips: float,
+    objective_state: str = "MAXIMIZE_CONTINUATION",
+) -> dict[str, Any]:
+    here = rows[idx]
+    now_pips = _safe_float(here.get("profit_now", here.get("pips", 0.0)), 0.0)
+    future = rows[idx:]
+    future_pips = [_safe_float(x.get("profit_now", x.get("pips", 0.0)), 0.0) for x in future]
+
+    # v1 multi-horizon contract: immediate, short-horizon, and end-of-path outcomes.
+    h1 = future_pips[min(1, len(future_pips) - 1)]
+    h3 = future_pips[min(3, len(future_pips) - 1)]
+    hend = future_pips[-1]
+
+    close_now = now_pips
+    hold_now = h1
+    tighten_now = max(locked_floor_pips, h3)
+    extend_now = max(future_pips)
+
+    outcomes = {
+        "CLOSE": close_now,
+        "HOLD": hold_now,
+        "TIGHTEN": tighten_now,
+        "EXTEND": extend_now,
+    }
+    # Unconditional best: best across all possible actions over the full path.
+    best_action = max(outcomes.items(), key=lambda kv: kv[1])[0]
+
+    # Objective-conditioned best: uses the horizon appropriate for current objective.
+    # MAXIMIZE_CONTINUATION: longer horizon (h3) — we're riding the trade.
+    # MAXIMIZE_FLOOR / RELEASE_CAPITAL: nearest horizon (h1) — we're protecting floor.
+    _horizon_map: dict[str, str] = {
+        "MAXIMIZE_CONTINUATION": "h3",
+        "MAXIMIZE_FLOOR": "h1",
+        "RELEASE_CAPITAL": "h1",
+    }
+    conditioned_horizon_key = _horizon_map.get(str(objective_state), "h3")
+    horizon_value = {"h1": h1, "h3": h3, "hend": hend}[conditioned_horizon_key]
+    conditioned_outcomes = {
+        "CLOSE": close_now,
+        "HOLD": horizon_value,
+        "TIGHTEN": max(locked_floor_pips, horizon_value),
+        "EXTEND": extend_now if objective_state == "MAXIMIZE_CONTINUATION" else horizon_value,
+    }
+    conditioned_best_action = max(conditioned_outcomes.items(), key=lambda kv: kv[1])[0]
+
+    return {
+        "best_action": best_action,
+        "conditioned_best_action": conditioned_best_action,
+        "conditioned_horizon_key": conditioned_horizon_key,
+        "outcomes_pips": outcomes,
+        "conditioned_outcomes_pips": conditioned_outcomes,
+        "horizons_pips": {
+            "h1": h1,
+            "h3": h3,
+            "hend": hend,
+        },
+        "objective_conditioned_horizon": {
+            "MAXIMIZE_CONTINUATION": "h3",
+            "MAXIMIZE_FLOOR": "h1",
+            "RELEASE_CAPITAL": "h1",
+        },
+        "target_distance": target_distance,
+    }
+
+
 def _build_context(
     row: dict[str, Any],
     *,
+    idx: int,
+    total_rows: int,
     target_distance: float,
     peak_pips: float,
+    locked_floor_pips: float,
     bars_since_improvement: int,
+    objective_state: str,
+    objective_dwell_bars: int,
+    objective_confirm_count: int,
+    objective_pending_target: str,
+    action_dwell_bars: int,
+    last_action: str,
     policy_overrides: dict[str, float] | None = None,
 ) -> AEEContext:
     unrealized_pips = _safe_float(row.get("profit_now", row.get("pips", 0.0)), 0.0)
@@ -126,6 +205,25 @@ def _build_context(
         panic_trigger = True
 
     giveback_r = max(0.0, (peak_pips - unrealized_pips) / max(0.1, target_distance))
+    t_norm = min(1.0, max(0.0, idx / max(1.0, float(total_rows))))
+    time_unproductive_ratio = min(1.0, max(0.0, bars_since_improvement / max(1.0, float(idx))))
+    time_since_last_progress = float(bars_since_improvement)
+    productivity_rate = progress_r / max(1.0, float(idx))
+
+    inefficiency_weight = _safe_float((policy_overrides or {}).get("inefficiency_weight", 1.0), 1.0)
+    inefficiency_cost_r = inefficiency_weight * t_norm * time_unproductive_ratio
+    locked_floor_r = max(0.0, locked_floor_pips / max(0.1, target_distance))
+    # Continuation proxy: penalise giveback from peak so proxy degrades as trade retreats.
+    # Range declared: [0, 2R].
+    giveback_proxy_weight = _safe_float((policy_overrides or {}).get("giveback_proxy_weight", 0.50), 0.50)
+    continuation_proxy_r = max(
+        0.0,
+        min(
+            2.0,
+            progress_r + (velocity_now * 0.75) - (time_unproductive_ratio * 0.35) - (giveback_r * giveback_proxy_weight),
+        ),
+    )
+
     return AEEContext(
         progress_r=progress_r,
         unrealized_pips=unrealized_pips,
@@ -133,6 +231,21 @@ def _build_context(
         continuation_score=continuation_score,
         stall_score=stall_score,
         panic_trigger=panic_trigger,
+        open_pnl_r=progress_r,
+        locked_floor_r=locked_floor_r,
+        giveback_from_peak_r=giveback_r,
+        inefficiency_cost_r=inefficiency_cost_r,
+        continuation_proxy_r=continuation_proxy_r,
+        t_norm=t_norm,
+        time_unproductive_ratio=time_unproductive_ratio,
+        time_since_last_progress=time_since_last_progress,
+        productivity_rate=productivity_rate,
+        objective_state=str((policy_overrides or {}).get("objective_init_state", objective_state)),
+        objective_dwell_bars=max(0, int(objective_dwell_bars)),
+        objective_confirm_count=max(0, int(objective_confirm_count)),
+        objective_pending_target=str(objective_pending_target or ""),
+        action_dwell_bars=max(0, int(action_dwell_bars)),
+        last_action=str(last_action or "HOLD"),
     )
 
 
@@ -161,6 +274,12 @@ def replay_trade_path(
     packets: list[dict[str, Any]] = []
     peak_pips = -1e9
     bars_since_improvement = 0
+    objective_state = str((policy_overrides or {}).get("objective_init_state", "MAXIMIZE_CONTINUATION"))
+    objective_dwell_bars = 0
+    objective_confirm_count = 0
+    objective_pending_target = ""
+    action_dwell_bars = 0
+    last_action = "HOLD"
     max_giveback_r = 0.0
     max_giveback_pips = 0.0
     final_aee_pips = _safe_float(rows[-1].get("profit_now", 0.0), 0.0)
@@ -168,6 +287,13 @@ def replay_trade_path(
     final_transition = f"{state}->{state}"
     final_time_in_trade_sec = 0
     final_locked_profit_pips = 0.0
+    ground_truth_trace: list[dict[str, Any]] = []
+
+    if policy_overrides is None:
+        policy_overrides = {}
+    if "enable_objective_v1" not in policy_overrides:
+        policy_overrides = dict(policy_overrides)
+        policy_overrides["enable_objective_v1"] = 1.0
 
     for idx, row in enumerate(rows, start=1):
         pips = _safe_float(row.get("profit_now", row.get("pips", 0.0)), 0.0)
@@ -177,11 +303,28 @@ def replay_trade_path(
         else:
             bars_since_improvement += 1
 
+        # Target-lock floor: once pips reach or exceed the 1:1 target distance, lock in
+        # target_distance as the floor — this matches the 1:1 baseline's guaranteed exit.
+        if pips >= target_distance:
+            final_locked_profit_pips = max(final_locked_profit_pips, target_distance)
+
+        if state in {"HARVEST", "RUNNER"}:
+            final_locked_profit_pips = max(final_locked_profit_pips, max(0.0, peak_pips * 0.40))
+
         ctx = _build_context(
             row,
+            idx=idx,
+            total_rows=len(rows),
             target_distance=target_distance,
             peak_pips=peak_pips,
+            locked_floor_pips=final_locked_profit_pips,
             bars_since_improvement=bars_since_improvement,
+            objective_state=objective_state,
+            objective_dwell_bars=objective_dwell_bars,
+            objective_confirm_count=objective_confirm_count,
+            objective_pending_target=objective_pending_target,
+            action_dwell_bars=action_dwell_bars,
+            last_action=last_action,
             policy_overrides=policy_overrides,
         )
         timestamp = _deterministic_timestamp(idx, row)
@@ -193,6 +336,34 @@ def replay_trade_path(
             timestamp=timestamp,
             meta=meta,
             policy=policy_overrides,
+        )
+        packet_meta = packet.get("meta") or {}
+        objective_state = str(packet_meta.get("objective_state_after", objective_state))
+        objective_dwell_bars = _safe_int(packet_meta.get("objective_dwell_bars", objective_dwell_bars), objective_dwell_bars)
+        objective_confirm_count = _safe_int(packet_meta.get("objective_confirm_count", objective_confirm_count), objective_confirm_count)
+        objective_pending_target = str(packet_meta.get("objective_pending_target", objective_pending_target))
+        action_dwell_bars = _safe_int(packet_meta.get("action_dwell_bars", action_dwell_bars), action_dwell_bars)
+        last_action = str(packet_meta.get("selected_internal_action", last_action))
+
+        gt = _ground_truth_outcomes(
+            rows, idx - 1,
+            target_distance=target_distance,
+            locked_floor_pips=final_locked_profit_pips,
+            objective_state=objective_state,
+        )
+        packet_meta["ground_truth"] = gt
+        packet["meta"] = packet_meta
+        ground_truth_trace.append(
+            {
+                "bar_index": _safe_int(packet.get("bar_index", idx), idx),
+                "objective_state": objective_state,
+                "selected_action": last_action,
+                "ground_truth_best_action": str(gt.get("best_action", "HOLD")),
+                "ground_truth_conditioned_best_action": str(gt.get("conditioned_best_action", "HOLD")),
+                "conditioned_horizon_key": str(gt.get("conditioned_horizon_key", "h3")),
+                "ground_truth_outcomes_pips": dict(gt.get("outcomes_pips") or {}),
+                "ground_truth_conditioned_outcomes_pips": dict(gt.get("conditioned_outcomes_pips") or {}),
+            }
         )
         packets.append(packet)
 
@@ -223,6 +394,38 @@ def replay_trade_path(
     state_transitions = [f"{p['state_before']}->{p['state_after']}" for p in packets]
     baseline_protective_final_pips = _safe_float(protective_baseline.get("final_money_result_pips", 0.0), 0.0)
 
+    # Unconditional alignment: selected action == horizon-agnostic best action.
+    alignment_hits = sum(
+        1
+        for x in ground_truth_trace
+        if str(x.get("selected_action", "")) == str(x.get("ground_truth_best_action", ""))
+    )
+    alignment_rate = (alignment_hits / len(ground_truth_trace)) if ground_truth_trace else 0.0
+
+    # Objective-conditioned alignment: selected action == conditioned best action.
+    conditioned_alignment_hits = sum(
+        1
+        for x in ground_truth_trace
+        if str(x.get("selected_action", "")) == str(x.get("ground_truth_conditioned_best_action", ""))
+    )
+    conditioned_alignment_rate = (
+        conditioned_alignment_hits / len(ground_truth_trace)
+    ) if ground_truth_trace else 0.0
+
+    # Per-objective alignment breakdown.
+    obj_buckets: dict[str, list[bool]] = {}
+    for step in ground_truth_trace:
+        obj = str(step.get("objective_state", "MAXIMIZE_CONTINUATION"))
+        hit = str(step.get("selected_action", "")) == str(step.get("ground_truth_conditioned_best_action", ""))
+        obj_buckets.setdefault(obj, []).append(hit)
+    alignment_by_objective: dict[str, dict[str, float]] = {
+        obj: {
+            "bars": len(hits),
+            "alignment_rate": sum(hits) / len(hits) if hits else 0.0,
+        }
+        for obj, hits in sorted(obj_buckets.items())
+    }
+
     return {
         "trade_id": trade_id,
         "packet_count": len(packets),
@@ -243,6 +446,12 @@ def replay_trade_path(
         "max_giveback_pips": max_giveback_pips,
         "locked_profit_pips": final_locked_profit_pips,
         "policy_name": str(policy_name),
+        "engine_version": "AEE_DISCOVERY_V1",
+        "objective_state_final": objective_state,
+        "ground_truth_trace": ground_truth_trace,
+        "ground_truth_alignment_rate": alignment_rate,
+        "ground_truth_conditioned_alignment_rate": conditioned_alignment_rate,
+        "ground_truth_alignment_by_objective": alignment_by_objective,
     }
 
 

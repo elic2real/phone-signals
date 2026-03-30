@@ -4,50 +4,52 @@
   "max_iterations": 6,
   "plateau_window": 2,
   "improvement_epsilon": 0.05,
-  "max_candidates": 10,
-  "stop_condition": "plateau",
-  "winner_found": false,
+  "max_candidates": 12,
+  "stop_condition": "winner_found",
+  "winner_found": true,
   "best_overall": {
-    "experiment_id": "iter00_mut_1_protect_progress_r_down__P0__S1_TIGHT",
-    "kernel_id": "iter00_mut_1_protect_progress_r_down",
-    "kernel_type": "refined",
+    "experiment_id": "iter00_kernel_v1_tight_antithrash__P2_release_close_strong__S0_objective_balanced",
+    "kernel_id": "iter00_kernel_v1_tight_antithrash",
+    "kernel_type": "pure",
     "components": [
       {
-        "component_id": "PROGRESS_GATE",
-        "definition": "Earlier protect-to-build promotion via lower progress threshold."
-      },
-      {
-        "component_id": "AUTONOMOUS_MUTATION",
-        "definition": "Auto mutation on protect_progress_r by -0.050."
+        "component_id": "ANTI_THRASH_TIGHT",
+        "definition": "v1 engine with increased minimum action dwell and higher confidence gap requirement."
       }
     ],
     "component_definitions": {
-      "PROGRESS_GATE": "Earlier protect-to-build promotion via lower progress threshold.",
-      "AUTONOMOUS_MUTATION": "Auto mutation on protect_progress_r by -0.050."
+      "ANTI_THRASH_TIGHT": "v1 engine with increased minimum action dwell and higher confidence gap requirement."
     },
-    "parameter_set_id": "P0",
-    "parameters": {},
-    "stop_logic_variant": "S1_TIGHT",
+    "parameter_set_id": "P2_release_close_strong",
+    "parameters": {
+      "release_close_bonus_r": 0.4,
+      "action_switch_confidence_gap": 0.15
+    },
+    "stop_logic_variant": "S0_objective_balanced",
     "effective_policy": {
-      "protect_progress_r": 0.15000000000000002,
-      "build_safety_giveback_r": 0.8,
-      "harvest_giveback_r": 0.6,
-      "runner_safety_giveback_r": 0.8,
-      "build_to_harvest_unrealized_pips": 2.2,
-      "build_to_harvest_progress_r": 0.4
+      "enable_objective_v1": 1.0,
+      "min_action_dwell": 3.0,
+      "action_switch_confidence_gap": 0.15,
+      "objective_min_dwell": 3.0,
+      "objective_confirm_bars": 3.0,
+      "release_close_bonus_r": 0.4,
+      "floor_giveback_trigger_r": 0.2,
+      "release_giveback_trigger_r": 0.65,
+      "inefficiency_weight": 1.8
     },
-    "total_delta_vs_baseline_pips": -11.800000000001809,
-    "avg_delta_vs_baseline_pips": -0.5900000000000905,
-    "total_delta_vs_1to1_baseline_pips": -11.800000000001809,
-    "avg_delta_vs_1to1_baseline_pips": -0.5900000000000905,
-    "total_delta_vs_protective_baseline_pips": -7.280000000000175,
-    "avg_delta_vs_protective_baseline_pips": -0.36400000000000876,
-    "total_delta_vs_current_pips": 0.2999999999997449,
-    "avg_delta_vs_current_pips": 0.014999999999987246,
-    "win_count": 4,
-    "loss_count": 16,
+    "total_delta_vs_baseline_pips": 1.0000000000021103,
+    "avg_delta_vs_baseline_pips": 0.050000000000105516,
+    "total_delta_vs_1to1_baseline_pips": 1.0000000000021103,
+    "avg_delta_vs_1to1_baseline_pips": 0.050000000000105516,
+    "total_delta_vs_protective_baseline_pips": 5.520000000003744,
+    "avg_delta_vs_protective_baseline_pips": 0.2760000000001872,
+    "total_delta_vs_current_pips": 13.100000000003664,
+    "avg_delta_vs_current_pips": 0.6550000000001832,
+    "avg_ground_truth_alignment_rate": 0.16167929292929292,
+    "win_count": 9,
+    "loss_count": 11,
     "flat_count": 0,
-    "pure_or_composite": "refined",
+    "pure_or_composite": "pure",
     "per_scenario_delta": {
       "BASELINE_OUTPERFORM": {
         "count": 1,
@@ -56,13 +58,13 @@
       },
       "BUILD_GIVEBACK_CASCADE": {
         "count": 12,
-        "total_delta_vs_baseline_pips": -8.700000000000585,
-        "avg_delta_vs_baseline_pips": -0.7250000000000488
+        "total_delta_vs_baseline_pips": -4.000000000000881,
+        "avg_delta_vs_baseline_pips": -0.33333333333340676
       },
       "FAST_PANIC_FAILURE": {
         "count": 7,
-        "total_delta_vs_baseline_pips": -3.3000000000015888,
-        "avg_delta_vs_baseline_pips": -0.4714285714287984
+        "total_delta_vs_baseline_pips": 4.800000000002626,
+        "avg_delta_vs_baseline_pips": 0.6857142857146609
       }
     },
     "per_scenario_delta_vs_current": {
@@ -73,13 +75,13 @@
       },
       "BUILD_GIVEBACK_CASCADE": {
         "count": 12,
-        "total_delta_vs_current_pips": 0.5999999999994898,
-        "avg_delta_vs_current_pips": 0.04999999999995749
+        "total_delta_vs_current_pips": 5.299999999999194,
+        "avg_delta_vs_current_pips": 0.44166666666659954
       },
       "FAST_PANIC_FAILURE": {
         "count": 7,
-        "total_delta_vs_current_pips": -0.2999999999997449,
-        "avg_delta_vs_current_pips": -0.042857142857106414
+        "total_delta_vs_current_pips": 7.80000000000447,
+        "avg_delta_vs_current_pips": 1.114285714286353
       }
     },
     "per_scenario_delta_vs_1to1_baseline": {
@@ -90,13 +92,13 @@
       },
       "BUILD_GIVEBACK_CASCADE": {
         "count": 12,
-        "total_delta_vs_1to1_baseline_pips": -8.700000000000585,
-        "avg_delta_vs_1to1_baseline_pips": -0.7250000000000488
+        "total_delta_vs_1to1_baseline_pips": -4.000000000000881,
+        "avg_delta_vs_1to1_baseline_pips": -0.33333333333340676
       },
       "FAST_PANIC_FAILURE": {
         "count": 7,
-        "total_delta_vs_1to1_baseline_pips": -3.3000000000015888,
-        "avg_delta_vs_1to1_baseline_pips": -0.4714285714287984
+        "total_delta_vs_1to1_baseline_pips": 4.800000000002626,
+        "avg_delta_vs_1to1_baseline_pips": 0.6857142857146609
       }
     },
     "per_scenario_delta_vs_protective_baseline": {
@@ -107,145 +109,161 @@
       },
       "BUILD_GIVEBACK_CASCADE": {
         "count": 12,
-        "total_delta_vs_protective_baseline_pips": -6.98000000000043,
-        "avg_delta_vs_protective_baseline_pips": -0.5816666666667025
+        "total_delta_vs_protective_baseline_pips": -2.280000000000726,
+        "avg_delta_vs_protective_baseline_pips": -0.19000000000006048
       },
       "FAST_PANIC_FAILURE": {
         "count": 7,
-        "total_delta_vs_protective_baseline_pips": -0.2999999999997449,
-        "avg_delta_vs_protective_baseline_pips": -0.042857142857106414
+        "total_delta_vs_protective_baseline_pips": 7.80000000000447,
+        "avg_delta_vs_protective_baseline_pips": 1.114285714286353
       }
     },
     "reason_code_breakdown": {
-      "build_safety_breach": {
-        "count": 10,
-        "total_delta_vs_baseline_pips": -7.300000000001855,
-        "avg_delta_vs_baseline_pips": -0.7300000000001855
+      "v1_objective_close_now": {
+        "count": 9,
+        "total_delta_vs_baseline_pips": 3.1000000000016,
+        "avg_delta_vs_baseline_pips": 0.34444444444462224
       },
-      "harvest_giveback_breach": {
-        "count": 3,
-        "total_delta_vs_baseline_pips": -1.2999999999990202,
-        "avg_delta_vs_baseline_pips": -0.4333333333330067
+      "v1_objective_close_now|objective_dwell_lock": {
+        "count": 2,
+        "total_delta_vs_baseline_pips": 3.299999999999745,
+        "avg_delta_vs_baseline_pips": 1.6499999999998725
       },
-      "panic_trigger": {
-        "count": 7,
-        "total_delta_vs_baseline_pips": -3.2000000000009337,
-        "avg_delta_vs_baseline_pips": -0.4571428571429905
+      "v1_objective_close_now|objective_urgent_transition:signal_release_risk": {
+        "count": 5,
+        "total_delta_vs_baseline_pips": -2.6000000000008754,
+        "avg_delta_vs_baseline_pips": -0.5200000000001751
+      },
+      "v1_objective_close_now|objective_wait_confirm": {
+        "count": 2,
+        "total_delta_vs_baseline_pips": -2.299999999999855,
+        "avg_delta_vs_baseline_pips": -1.1499999999999275
+      },
+      "v1_panic_trigger": {
+        "count": 1,
+        "total_delta_vs_baseline_pips": -0.6999999999988695,
+        "avg_delta_vs_baseline_pips": -0.6999999999988695
+      },
+      "v1_panic_trigger|objective_urgent_transition:signal_release_risk": {
+        "count": 1,
+        "total_delta_vs_baseline_pips": 0.20000000000036522,
+        "avg_delta_vs_baseline_pips": 0.20000000000036522
       }
     },
     "transition_breakdown": {
-      "BUILD->PANIC": {
-        "count": 12,
-        "total_delta_vs_baseline_pips": -8.500000000002725,
-        "avg_delta_vs_baseline_pips": -0.7083333333335604
-      },
       "HARVEST->PANIC": {
-        "count": 3,
-        "total_delta_vs_baseline_pips": -1.2999999999990202,
-        "avg_delta_vs_baseline_pips": -0.4333333333330067
+        "count": 9,
+        "total_delta_vs_baseline_pips": 5.600000000000215,
+        "avg_delta_vs_baseline_pips": 0.6222222222222461
       },
-      "PROTECT->PANIC": {
-        "count": 5,
-        "total_delta_vs_baseline_pips": -2.000000000000064,
-        "avg_delta_vs_baseline_pips": -0.4000000000000128
+      "PANIC->PANIC": {
+        "count": 3,
+        "total_delta_vs_baseline_pips": 0.10000000000226095,
+        "avg_delta_vs_baseline_pips": 0.03333333333408698
+      },
+      "RUNNER->PANIC": {
+        "count": 8,
+        "total_delta_vs_baseline_pips": -4.700000000000365,
+        "avg_delta_vs_baseline_pips": -0.5875000000000457
       }
     },
     "regressions": {
       "regressed_scenarios": [
-        "BUILD_GIVEBACK_CASCADE",
-        "FAST_PANIC_FAILURE"
+        "BUILD_GIVEBACK_CASCADE"
       ],
-      "major_regression_scenarios": [
-        "BUILD_GIVEBACK_CASCADE",
-        "FAST_PANIC_FAILURE"
-      ],
-      "has_major_regression": true
+      "major_regression_scenarios": [],
+      "has_major_regression": false
     },
     "per_trade": [
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:02:00.000000000Z",
-        "final_result": -0.2999999999997449,
+        "final_result": 3.1000000000003247,
         "baseline_result": 1.5,
         "baseline_1to1_result": 1.5,
         "baseline_protective_result": 0.7999999999999119,
-        "delta": -1.799999999999745,
-        "delta_vs_1to1_baseline": -1.799999999999745,
-        "delta_vs_protective_baseline": -1.0999999999996568,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "delta": 1.6000000000003247,
+        "delta_vs_1to1_baseline": 1.6000000000003247,
+        "delta_vs_protective_baseline": 2.300000000000413,
+        "delta_vs_current": 3.4000000000000696,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "HARVEST->PANIC",
         "giveback": 1.5333333333330164,
-        "time_in_trade": 360.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "time_in_trade": 660.0,
+        "locked_profit": 2.080000000000304,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.6363636363636364
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:05:00.000000000Z",
-        "final_result": -2.1999999999988695,
+        "final_result": -0.1999999999990898,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -2.1999999999988695,
-        "delta": -0.6999999999988695,
-        "delta_vs_1to1_baseline": -0.6999999999988695,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "panic_trigger",
-        "state_transition": "PROTECT->PANIC",
+        "delta": 1.3000000000009102,
+        "delta_vs_1to1_baseline": 1.3000000000009102,
+        "delta_vs_protective_baseline": 1.9999999999997797,
+        "delta_vs_current": 1.9999999999997797,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "PANIC->PANIC",
         "giveback": 1.466666666665913,
-        "time_in_trade": 180.0,
+        "time_in_trade": 240.0,
         "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:08:00.000000000Z",
-        "final_result": 1.40000000000029,
+        "final_result": 0.1999999999990898,
         "baseline_result": 1.5,
         "baseline_1to1_result": 1.5,
         "baseline_protective_result": 1.40000000000029,
-        "delta": -0.0999999999997101,
-        "delta_vs_1to1_baseline": -0.0999999999997101,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "harvest_giveback_breach",
+        "delta": -1.3000000000009102,
+        "delta_vs_1to1_baseline": -1.3000000000009102,
+        "delta_vs_protective_baseline": -1.2000000000012,
+        "delta_vs_current": -1.2000000000012,
+        "reason_code": "v1_objective_close_now",
         "state_transition": "HARVEST->PANIC",
-        "giveback": 1.40000000000029,
-        "time_in_trade": 300.0,
-        "locked_profit": 1.40000000000029,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "giveback": 2.20000000000109,
+        "time_in_trade": 540.0,
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.5555555555555556
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:11:00.000000000Z",
-        "final_result": -2.100000000000435,
+        "final_result": -0.40000000000040004,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -2.100000000000435,
-        "delta": -0.6000000000004349,
-        "delta_vs_1to1_baseline": -0.6000000000004349,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "panic_trigger",
-        "state_transition": "PROTECT->PANIC",
-        "giveback": 1.40000000000029,
-        "time_in_trade": 120.0,
+        "delta": 1.0999999999996,
+        "delta_vs_1to1_baseline": 1.0999999999996,
+        "delta_vs_protective_baseline": 1.7000000000000348,
+        "delta_vs_current": 1.7000000000000348,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "HARVEST->PANIC",
+        "giveback": 1.4666666666673933,
+        "time_in_trade": 240.0,
         "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:14:00.000000000Z",
-        "final_result": -2.900000000001235,
+        "final_result": -1.9999999999997797,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -2.900000000001235,
-        "delta": -1.400000000001235,
-        "delta_vs_1to1_baseline": -1.400000000001235,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "panic_trigger",
-        "state_transition": "BUILD->PANIC",
+        "delta": -0.49999999999977973,
+        "delta_vs_1to1_baseline": -0.49999999999977973,
+        "delta_vs_protective_baseline": 0.9000000000014552,
+        "delta_vs_current": 0.9000000000014552,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "PANIC->PANIC",
         "giveback": 2.20000000000109,
-        "time_in_trade": 180.0,
-        "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "time_in_trade": 240.0,
+        "locked_profit": 0.16000000000016001,
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:17:00.000000000Z",
@@ -257,12 +275,13 @@
         "delta_vs_1to1_baseline": -0.9000000000005102,
         "delta_vs_protective_baseline": -0.440000000000218,
         "delta_vs_current": 0.0,
-        "reason_code": "harvest_giveback_breach",
-        "state_transition": "HARVEST->PANIC",
+        "reason_code": "v1_objective_close_now|objective_urgent_transition:signal_release_risk",
+        "state_transition": "RUNNER->PANIC",
         "giveback": 1.3333333333331865,
         "time_in_trade": 720.0,
-        "locked_profit": 1.0399999999997078,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.16666666666666666
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:20:00.000000000Z",
@@ -274,46 +293,49 @@
         "delta_vs_1to1_baseline": -0.2999999999987999,
         "delta_vs_protective_baseline": -0.07999999999919183,
         "delta_vs_current": 0.0,
-        "reason_code": "harvest_giveback_breach",
-        "state_transition": "HARVEST->PANIC",
+        "reason_code": "v1_objective_close_now|objective_urgent_transition:signal_release_risk",
+        "state_transition": "RUNNER->PANIC",
         "giveback": 1.3333333333331865,
         "time_in_trade": 540.0,
-        "locked_profit": 1.280000000000392,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_001::2024-01-15T08:23:00.000000000Z",
-        "final_result": 0.2999999999997449,
+        "final_result": 1.100000000000545,
         "baseline_result": 1.5,
         "baseline_1to1_result": 1.5,
         "baseline_protective_result": 0.9199999999998099,
-        "delta": -1.200000000000255,
-        "delta_vs_1to1_baseline": -1.200000000000255,
-        "delta_vs_protective_baseline": -0.6200000000000649,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "delta": -0.399999999999455,
+        "delta_vs_1to1_baseline": -0.399999999999455,
+        "delta_vs_protective_baseline": 0.18000000000073513,
+        "delta_vs_current": 0.8000000000008001,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "HARVEST->PANIC",
         "giveback": 1.3333333333331865,
-        "time_in_trade": 360.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "time_in_trade": 420.0,
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.14285714285714285
       },
       {
         "trade_id": "LONG_1.5_002::2024-01-15T08:32:00.000000000Z",
-        "final_result": -0.1999999999990898,
+        "final_result": -0.3999999999981796,
         "baseline_result": 1.5,
         "baseline_1to1_result": 1.5,
         "baseline_protective_result": 0.8400000000001739,
-        "delta": -1.6999999999990898,
-        "delta_vs_1to1_baseline": -1.6999999999990898,
-        "delta_vs_protective_baseline": -1.0399999999992637,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
-        "giveback": 1.5333333333330164,
-        "time_in_trade": 600.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "delta": -1.8999999999981796,
+        "delta_vs_1to1_baseline": -1.8999999999981796,
+        "delta_vs_protective_baseline": -1.2399999999983535,
+        "delta_vs_current": -0.1999999999990898,
+        "reason_code": "v1_objective_close_now|objective_wait_confirm",
+        "state_transition": "RUNNER->PANIC",
+        "giveback": 0.3333333333325565,
+        "time_in_trade": 300.0,
+        "locked_profit": 0.04000000000026205,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_002::2024-01-15T08:35:00.000000000Z",
@@ -325,12 +347,13 @@
         "delta_vs_1to1_baseline": -1.799999999999745,
         "delta_vs_protective_baseline": -1.0999999999996568,
         "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "reason_code": "v1_objective_close_now|objective_urgent_transition:signal_release_risk",
+        "state_transition": "RUNNER->PANIC",
         "giveback": 1.5333333333330164,
         "time_in_trade": 420.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_002::2024-01-15T08:38:00.000000000Z",
@@ -342,63 +365,67 @@
         "delta_vs_1to1_baseline": 0.20000000000036522,
         "delta_vs_protective_baseline": 0.0,
         "delta_vs_current": 0.0,
-        "reason_code": "panic_trigger",
-        "state_transition": "BUILD->PANIC",
+        "reason_code": "v1_panic_trigger|objective_urgent_transition:signal_release_risk",
+        "state_transition": "RUNNER->PANIC",
         "giveback": 1.5333333333330164,
         "time_in_trade": 240.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BASELINE_OUTPERFORM"
+        "locked_profit": 0.39999999999995595,
+        "scenario_id": "BASELINE_OUTPERFORM",
+        "ground_truth_alignment_rate": 0.25
       },
       {
         "trade_id": "LONG_1.5_002::2024-01-15T08:41:00.000000000Z",
-        "final_result": 0.1999999999990898,
+        "final_result": 0.2999999999997449,
         "baseline_result": 1.5,
         "baseline_1to1_result": 1.5,
         "baseline_protective_result": 0.7599999999996498,
-        "delta": -1.3000000000009102,
-        "delta_vs_1to1_baseline": -1.3000000000009102,
-        "delta_vs_protective_baseline": -0.56000000000056,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "delta": -1.200000000000255,
+        "delta_vs_1to1_baseline": -1.200000000000255,
+        "delta_vs_protective_baseline": -0.45999999999990493,
+        "delta_vs_current": 0.10000000000065512,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "HARVEST->PANIC",
         "giveback": 1.1333333333333566,
-        "time_in_trade": 300.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "time_in_trade": 480.0,
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.25
       },
       {
         "trade_id": "LONG_1.5_002::2024-01-15T08:44:00.000000000Z",
-        "final_result": -1.7000000000000348,
+        "final_result": -0.09999999999843467,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -1.7000000000000348,
-        "delta": -0.20000000000003482,
-        "delta_vs_1to1_baseline": -0.20000000000003482,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "panic_trigger",
-        "state_transition": "PROTECT->PANIC",
+        "delta": 1.4000000000015653,
+        "delta_vs_1to1_baseline": 1.4000000000015653,
+        "delta_vs_protective_baseline": 1.6000000000016001,
+        "delta_vs_current": 1.6000000000016001,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "HARVEST->PANIC",
         "giveback": 1.1333333333333566,
-        "time_in_trade": 120.0,
+        "time_in_trade": 240.0,
         "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_002::2024-01-15T08:47:00.000000000Z",
-        "final_result": -1.80000000000069,
+        "final_result": -0.40000000000040004,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -1.500000000000945,
-        "delta": -0.30000000000068994,
-        "delta_vs_1to1_baseline": -0.30000000000068994,
-        "delta_vs_protective_baseline": -0.2999999999997449,
-        "delta_vs_current": -0.2999999999997449,
-        "reason_code": "panic_trigger",
-        "state_transition": "PROTECT->PANIC",
-        "giveback": 1.20000000000046,
-        "time_in_trade": 540.0,
+        "delta": 1.0999999999996,
+        "delta_vs_1to1_baseline": 1.0999999999996,
+        "delta_vs_protective_baseline": 1.100000000000545,
+        "delta_vs_current": 1.100000000000545,
+        "reason_code": "v1_objective_close_now",
+        "state_transition": "HARVEST->PANIC",
+        "giveback": 1.00000000000063,
+        "time_in_trade": 240.0,
         "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_003::2024-01-15T09:02:00.000000000Z",
@@ -410,12 +437,13 @@
         "delta_vs_1to1_baseline": -0.9000000000005102,
         "delta_vs_protective_baseline": -0.12000000000078614,
         "delta_vs_current": 0.2999999999997449,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "reason_code": "v1_objective_close_now|objective_urgent_transition:signal_release_risk",
+        "state_transition": "RUNNER->PANIC",
         "giveback": 0.8000000000008001,
         "time_in_trade": 420.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.42857142857142855
       },
       {
         "trade_id": "LONG_1.5_003::2024-01-15T09:05:00.000000000Z",
@@ -427,80 +455,85 @@
         "delta_vs_1to1_baseline": 1.2999999999986898,
         "delta_vs_protective_baseline": -0.6000000000012662,
         "delta_vs_current": 0.2999999999997449,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "reason_code": "v1_objective_close_now|objective_urgent_transition:signal_release_risk",
+        "state_transition": "RUNNER->PANIC",
         "giveback": 0.8000000000008001,
         "time_in_trade": 240.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "locked_profit": 0.39999999999995595,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_003::2024-01-15T09:08:00.000000000Z",
-        "final_result": -0.2999999999997449,
+        "final_result": 0.700000000000145,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": 0.560000000000116,
-        "delta": 1.200000000000255,
-        "delta_vs_1to1_baseline": 1.200000000000255,
-        "delta_vs_protective_baseline": -0.8599999999998609,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "delta": 2.200000000000145,
+        "delta_vs_1to1_baseline": 2.200000000000145,
+        "delta_vs_protective_baseline": 0.140000000000029,
+        "delta_vs_current": 0.9999999999998899,
+        "reason_code": "v1_objective_close_now|objective_dwell_lock",
+        "state_transition": "HARVEST->PANIC",
         "giveback": 1.1333333333333566,
-        "time_in_trade": 360.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "time_in_trade": 420.0,
+        "locked_profit": 0.560000000000116,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.42857142857142855
       },
       {
         "trade_id": "LONG_1.5_003::2024-01-15T09:11:00.000000000Z",
-        "final_result": -1.40000000000029,
+        "final_result": -0.40000000000040004,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -1.40000000000029,
-        "delta": 0.0999999999997101,
-        "delta_vs_1to1_baseline": 0.0999999999997101,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
+        "delta": 1.0999999999996,
+        "delta_vs_1to1_baseline": 1.0999999999996,
+        "delta_vs_protective_baseline": 0.9999999999998899,
+        "delta_vs_current": 0.9999999999998899,
+        "reason_code": "v1_objective_close_now|objective_dwell_lock",
+        "state_transition": "HARVEST->PANIC",
         "giveback": 1.1333333333333566,
-        "time_in_trade": 180.0,
-        "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "time_in_trade": 240.0,
+        "locked_profit": 0.11999999999989797,
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_003::2024-01-15T09:14:00.000000000Z",
-        "final_result": -1.7000000000000348,
+        "final_result": -2.1999999999988695,
         "baseline_result": -1.5,
         "baseline_1to1_result": -1.5,
         "baseline_protective_result": -1.7000000000000348,
-        "delta": -0.20000000000003482,
-        "delta_vs_1to1_baseline": -0.20000000000003482,
-        "delta_vs_protective_baseline": 0.0,
-        "delta_vs_current": 0.0,
-        "reason_code": "panic_trigger",
-        "state_transition": "PROTECT->PANIC",
-        "giveback": 1.1333333333333566,
-        "time_in_trade": 180.0,
+        "delta": -0.6999999999988695,
+        "delta_vs_1to1_baseline": -0.6999999999988695,
+        "delta_vs_protective_baseline": -0.4999999999988347,
+        "delta_vs_current": -0.4999999999988347,
+        "reason_code": "v1_panic_trigger",
+        "state_transition": "PANIC->PANIC",
+        "giveback": 1.466666666665913,
+        "time_in_trade": 240.0,
         "locked_profit": 0.0,
-        "scenario_id": "FAST_PANIC_FAILURE"
+        "scenario_id": "FAST_PANIC_FAILURE",
+        "ground_truth_alignment_rate": 0.0
       },
       {
         "trade_id": "LONG_1.5_003::2024-01-15T09:17:00.000000000Z",
-        "final_result": 0.2999999999997449,
+        "final_result": 1.0999999999983245,
         "baseline_result": 1.5,
         "baseline_1to1_result": 1.5,
         "baseline_protective_result": 0.7599999999996498,
-        "delta": -1.200000000000255,
-        "delta_vs_1to1_baseline": -1.200000000000255,
-        "delta_vs_protective_baseline": -0.45999999999990493,
-        "delta_vs_current": 0.0,
-        "reason_code": "build_safety_breach",
-        "state_transition": "BUILD->PANIC",
-        "giveback": 1.0666666666662532,
-        "time_in_trade": 540.0,
-        "locked_profit": 0.0,
-        "scenario_id": "BUILD_GIVEBACK_CASCADE"
+        "delta": -0.40000000000167546,
+        "delta_vs_1to1_baseline": -0.40000000000167546,
+        "delta_vs_protective_baseline": 0.3399999999986747,
+        "delta_vs_current": 0.7999999999985796,
+        "reason_code": "v1_objective_close_now|objective_wait_confirm",
+        "state_transition": "RUNNER->PANIC",
+        "giveback": 0.5333333333338667,
+        "time_in_trade": 480.0,
+        "locked_profit": 1.5,
+        "scenario_id": "BUILD_GIVEBACK_CASCADE",
+        "ground_truth_alignment_rate": 0.375
       }
     ]
   },
@@ -509,40 +542,14 @@
       "iteration": 0,
       "status": "ok",
       "report_path": "control/aee_autonomous_discovery_loop_report_iter_00.json",
-      "experiment_count": 90,
-      "best_experiment_id": "iter00_mut_1_protect_progress_r_down__P0__S1_TIGHT",
-      "best_kernel_id": "iter00_mut_1_protect_progress_r_down",
-      "best_total_delta_vs_1to1_baseline_pips": -11.800000000001809,
-      "best_total_delta_vs_protective_baseline_pips": -7.280000000000175,
-      "best_total_delta_vs_current_pips": 0.2999999999997449,
-      "has_major_regression": true,
+      "experiment_count": 108,
+      "best_experiment_id": "iter00_kernel_v1_tight_antithrash__P2_release_close_strong__S0_objective_balanced",
+      "best_kernel_id": "iter00_kernel_v1_tight_antithrash",
+      "best_total_delta_vs_1to1_baseline_pips": 1.0000000000021103,
+      "best_total_delta_vs_protective_baseline_pips": 5.520000000003744,
+      "best_total_delta_vs_current_pips": 13.100000000003664,
+      "has_major_regression": false,
       "plateau_streak": 0
-    },
-    {
-      "iteration": 1,
-      "status": "ok",
-      "report_path": "control/aee_autonomous_discovery_loop_report_iter_01.json",
-      "experiment_count": 90,
-      "best_experiment_id": "iter01_seed_0__P0__S0_BALANCED",
-      "best_kernel_id": "iter01_seed_0",
-      "best_total_delta_vs_1to1_baseline_pips": -11.800000000001809,
-      "best_total_delta_vs_protective_baseline_pips": -7.280000000000175,
-      "best_total_delta_vs_current_pips": 0.2999999999997449,
-      "has_major_regression": true,
-      "plateau_streak": 1
-    },
-    {
-      "iteration": 2,
-      "status": "ok",
-      "report_path": "control/aee_autonomous_discovery_loop_report_iter_02.json",
-      "experiment_count": 90,
-      "best_experiment_id": "iter02_seed_0__P0__S0_BALANCED",
-      "best_kernel_id": "iter02_seed_0",
-      "best_total_delta_vs_1to1_baseline_pips": -11.800000000001809,
-      "best_total_delta_vs_protective_baseline_pips": -7.280000000000175,
-      "best_total_delta_vs_current_pips": 0.2999999999997449,
-      "has_major_regression": true,
-      "plateau_streak": 2
     }
   ]
 }

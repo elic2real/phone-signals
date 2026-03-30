@@ -69,131 +69,215 @@ def _aggregate_breakdown_for_metric(rows: list[dict[str, Any]], key: str, metric
 
 
 def _default_config() -> dict[str, Any]:
+    # All v1 kernels run the objective state machine (enable_objective_v1=1.0).
+    # The legacy kernel_legacy_thresholds is the 1:1 comparative without v1 engine.
     return {
         "kernel_candidates": [
+            # ── Legacy / baseline (no v1 objective engine — comparative anchor) ──
             {
-                "kernel_id": "kernel_baseline",
+                "kernel_id": "kernel_legacy_thresholds",
                 "kernel_type": "pure",
                 "components": [
                     {
-                        "component_id": "STATE_MACHINE_DEFAULTS",
-                        "definition": "Unmodified replay kernel thresholds and transitions.",
+                        "component_id": "LEGACY_THRESHOLD_MACHINE",
+                        "definition": "Original threshold-based transitions without objective/action-value layer.",
                     }
                 ],
-                "policy": {},
+                "policy": {"enable_objective_v1": 0.0},
             },
+            # ── v1 objective engine — default coefficients ──
             {
-                "kernel_id": "kernel_progress_entry",
+                "kernel_id": "kernel_v1_defaults",
                 "kernel_type": "pure",
                 "components": [
                     {
-                        "component_id": "PROGRESS_GATE",
-                        "definition": "Earlier protect-to-build promotion via lower progress threshold.",
+                        "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                        "definition": "Dynamic objective state machine with R-domain action-value selection at default parameters.",
                     }
                 ],
-                "policy": {"protect_progress_r": 0.20},
+                "policy": {"enable_objective_v1": 1.0},
             },
+            # ── v1 + tighter release trigger (exit sooner when risk rises) ──
             {
-                "kernel_id": "kernel_build_guard",
+                "kernel_id": "kernel_v1_early_release",
                 "kernel_type": "pure",
                 "components": [
                     {
-                        "component_id": "PNL_GIVEBACK_GUARD",
-                        "definition": "Tighter build-stage giveback protection.",
-                    }
-                ],
-                "policy": {"build_safety_giveback_r": 0.85},
-            },
-            {
-                "kernel_id": "kernel_harvest_early",
-                "kernel_type": "pure",
-                "components": [
-                    {
-                        "component_id": "PROFIT_LOCK_EARLY",
-                        "definition": "Earlier build-to-harvest transition to lock profit sooner.",
+                        "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                        "definition": "v1 engine with lower giveback threshold before switching to RELEASE_CAPITAL.",
                     }
                 ],
                 "policy": {
-                    "build_to_harvest_unrealized_pips": 2.5,
-                    "build_to_harvest_progress_r": 0.45,
+                    "enable_objective_v1": 1.0,
+                    "release_giveback_trigger_r": 0.65,
+                    "floor_giveback_trigger_r": 0.22,
                 },
             },
+            # ── v1 + delayed release (let winners breathe longer) ──
             {
-                "kernel_id": "kernel_time_pnl_composite",
+                "kernel_id": "kernel_v1_late_release",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                        "definition": "v1 engine with higher giveback tolerance before RELEASE_CAPITAL.",
+                    }
+                ],
+                "policy": {
+                    "enable_objective_v1": 1.0,
+                    "release_giveback_trigger_r": 1.00,
+                    "floor_giveback_trigger_r": 0.45,
+                },
+            },
+            # ── v1 + stronger continuation signal requirement ──
+            {
+                "kernel_id": "kernel_v1_strong_continuation",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                        "definition": "v1 engine requiring higher continuation proxy to stay in MAXIMIZE_CONTINUATION.",
+                    }
+                ],
+                "policy": {
+                    "enable_objective_v1": 1.0,
+                    "continuation_proxy_enter_r": 0.75,
+                    "release_continuation_max_r": 0.15,
+                },
+            },
+            # ── v1 + high inefficiency sensitivity ──
+            {
+                "kernel_id": "kernel_v1_ineff_sensitive",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "INEFFICIENCY_COST_WEIGHT",
+                        "definition": "v1 engine with elevated inefficiency cost weighting — exits stalled trades sooner.",
+                    }
+                ],
+                "policy": {
+                    "enable_objective_v1": 1.0,
+                    "inefficiency_weight": 2.5,
+                    "release_inefficiency_min_r": 0.30,
+                },
+            },
+            # ── v1 + tight anti-thrash (less action switching) ──
+            {
+                "kernel_id": "kernel_v1_tight_antithrash",
+                "kernel_type": "pure",
+                "components": [
+                    {
+                        "component_id": "ANTI_THRASH_TIGHT",
+                        "definition": "v1 engine with increased minimum action dwell and higher confidence gap requirement.",
+                    }
+                ],
+                "policy": {
+                    "enable_objective_v1": 1.0,
+                    "min_action_dwell": 3,
+                    "action_switch_confidence_gap": 0.35,
+                    "objective_min_dwell": 3,
+                    "objective_confirm_bars": 3,
+                },
+            },
+            # ── v1 composite: early release + inefficiency cost ──
+            {
+                "kernel_id": "kernel_v1_composite_release_ineff",
                 "kernel_type": "composite",
                 "components": [
                     {
-                        "component_id": "TIME_TIGHTEN",
-                        "definition": "Lower stall tolerance in runner and harvest states.",
+                        "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                        "definition": "v1 engine with lower release trigger.",
                     },
                     {
-                        "component_id": "PNL_GIVEBACK_GUARD",
-                        "definition": "Tighter giveback protection across build and harvest states.",
-                    }
+                        "component_id": "INEFFICIENCY_COST_WEIGHT",
+                        "definition": "Elevated inefficiency weighting to catch unproductive capital.",
+                    },
                 ],
                 "policy": {
-                    "harvest_to_runner_max_stall_score": 0.25,
-                    "runner_stall_score": 0.55,
-                    "build_safety_giveback_r": 0.82,
-                    "harvest_giveback_r": 0.62,
+                    "enable_objective_v1": 1.0,
+                    "release_giveback_trigger_r": 0.70,
+                    "inefficiency_weight": 2.0,
+                    "release_inefficiency_min_r": 0.35,
+                    "floor_giveback_trigger_r": 0.25,
                 },
             },
+            # ── v1 composite: strong continuation + anti-thrash ──
             {
-                "kernel_id": "kernel_progress_pnl_composite",
+                "kernel_id": "kernel_v1_composite_cont_antithrash",
                 "kernel_type": "composite",
                 "components": [
                     {
-                        "component_id": "PROGRESS_GATE",
-                        "definition": "Earlier protect-to-build promotion via lower progress threshold.",
+                        "component_id": "OBJECTIVE_STATE_MACHINE_V1",
+                        "definition": "v1 engine with high continuation threshold.",
                     },
                     {
-                        "component_id": "PROFIT_LOCK_EARLY",
-                        "definition": "Earlier build-to-harvest transition to protect green trades.",
-                    }
+                        "component_id": "ANTI_THRASH_TIGHT",
+                        "definition": "Higher dwell and confidence requirements to avoid thrashing.",
+                    },
                 ],
                 "policy": {
-                    "protect_progress_r": 0.20,
-                    "build_to_harvest_unrealized_pips": 2.4,
-                    "build_to_harvest_progress_r": 0.42,
+                    "enable_objective_v1": 1.0,
+                    "continuation_proxy_enter_r": 0.70,
+                    "release_continuation_max_r": 0.12,
+                    "min_action_dwell": 3,
+                    "action_switch_confidence_gap": 0.30,
+                    "objective_min_dwell": 3,
                 },
             },
         ],
+        # Parameter sets explore action-value coefficient calibration in R-domain.
         "parameter_sets": [
-            {"param_id": "P0", "parameters": {}},
-            {"param_id": "P1", "parameters": {"protect_continuation_score": 0.40}},
-            {"param_id": "P2", "parameters": {"harvest_giveback_r": 0.65}},
+            {"param_id": "P0_defaults", "parameters": {}},
+            {
+                "param_id": "P1_extend_bonus",
+                "parameters": {
+                    "continuation_extend_bonus_r": 0.25,
+                    "floor_tighten_bonus_r": 0.28,
+                },
+            },
+            {
+                "param_id": "P2_release_close_strong",
+                "parameters": {
+                    "release_close_bonus_r": 0.40,
+                    "action_switch_confidence_gap": 0.15,
+                },
+            },
         ],
+        # Stop logic variants vary the objective state thresholds.
         "stop_logic_variants": [
-            {"stop_variant_id": "S0_BALANCED", "overrides": {}},
+            {"stop_variant_id": "S0_objective_balanced", "overrides": {}},
             {
-                "stop_variant_id": "S1_TIGHT",
+                "stop_variant_id": "S1_objective_floor_sensitive",
                 "overrides": {
-                    "build_safety_giveback_r": 0.80,
-                    "harvest_giveback_r": 0.60,
-                    "runner_safety_giveback_r": 0.80,
+                    "floor_giveback_trigger_r": 0.20,
+                    "floor_productivity_min": -0.10,
                 },
             },
             {
-                "stop_variant_id": "S2_LOOSE",
+                "stop_variant_id": "S2_objective_release_early",
                 "overrides": {
-                    "build_safety_giveback_r": 1.05,
-                    "harvest_giveback_r": 0.80,
-                    "runner_safety_giveback_r": 0.95,
+                    "release_giveback_trigger_r": 0.60,
+                    "release_continuation_max_r": 0.20,
+                    "release_inefficiency_min_r": 0.35,
                 },
             },
         ],
+        # Scenario overrides modify v1 parameters under specific failure modes.
         "scenario_overrides": {
             "FAST_PANIC_FAILURE": {
                 "panic_infer_progress_r": -1.10,
                 "panic_infer_velocity": -0.20,
+                "release_giveback_trigger_r": 0.60,
             },
             "BUILD_GIVEBACK_CASCADE": {
-                "build_to_harvest_unrealized_pips": 2.20,
-                "build_to_harvest_progress_r": 0.40,
+                "floor_giveback_trigger_r": 0.20,
+                "release_giveback_trigger_r": 0.65,
+                "inefficiency_weight": 1.8,
             },
             "PROTECT_LAYER_BREAK": {
-                "protect_progress_r": 0.35,
-                "protect_continuation_score": 0.55,
+                "continuation_proxy_enter_r": 0.40,
+                "release_continuation_max_r": 0.30,
+                "objective_min_dwell": 1,
             },
         },
     }
@@ -210,7 +294,7 @@ def run_batch_experiments_with_config(*, trades_path: Path, report_out: Path, co
 
     current_rows: dict[str, dict[str, Any]] = {}
     for tr in trades:
-        row = replay_trade_path(tr, policy_name="baseline", policy_overrides={})
+        row = replay_trade_path(tr, policy_name="baseline", policy_overrides={"enable_objective_v1": 0.0})
         row["scenario_id"] = classify_scenario(row)
         current_rows[str(row.get("trade_id"))] = row
 
@@ -255,6 +339,7 @@ def run_batch_experiments_with_config(*, trades_path: Path, report_out: Path, co
                 current_deltas = [_safe_float(x.get("delta_vs_current_pips", 0.0), 0.0) for x in trade_rows]
                 baseline_1to1_deltas = [_safe_float(x.get("delta_vs_1to1_baseline_pips", x.get("delta_vs_baseline_pips", 0.0)), 0.0) for x in trade_rows]
                 baseline_protective_deltas = [_safe_float(x.get("delta_vs_protective_baseline_pips", 0.0), 0.0) for x in trade_rows]
+                gt_alignments = [_safe_float(x.get("ground_truth_alignment_rate", 0.0), 0.0) for x in trade_rows]
                 scenario_breakdown = _aggregate_breakdown(trade_rows, "scenario_id")
                 scenario_breakdown_vs_current = _aggregate_breakdown_for_metric(trade_rows, "scenario_id", "delta_vs_current_pips")
                 scenario_breakdown_vs_1to1 = _aggregate_breakdown_for_metric(trade_rows, "scenario_id", "delta_vs_1to1_baseline_pips")
@@ -263,10 +348,13 @@ def run_batch_experiments_with_config(*, trades_path: Path, report_out: Path, co
                 transition_breakdown = _aggregate_breakdown(trade_rows, "final_state_transition")
 
                 regressed_scenarios = [
-                    s for s, b in scenario_breakdown.items() if _safe_float(b.get("total_delta_vs_baseline_pips", 0.0), 0.0) < 0.0
+                    s for s, b in scenario_breakdown.items()
+                    if _safe_float(b.get("avg_delta_vs_baseline_pips", 0.0), 0.0) < -1e-9
                 ]
+                # Major regression: scenario average delta worse than -0.5 pips/trade.
                 major_regressions = [
-                    s for s, b in scenario_breakdown.items() if _safe_float(b.get("total_delta_vs_baseline_pips", 0.0), 0.0) <= -2.0
+                    s for s, b in scenario_breakdown.items()
+                    if _safe_float(b.get("avg_delta_vs_baseline_pips", 0.0), 0.0) <= -0.50
                 ]
 
                 experiments.append(
@@ -288,6 +376,7 @@ def run_batch_experiments_with_config(*, trades_path: Path, report_out: Path, co
                         "avg_delta_vs_protective_baseline_pips": (sum(baseline_protective_deltas) / len(baseline_protective_deltas)) if baseline_protective_deltas else 0.0,
                         "total_delta_vs_current_pips": sum(current_deltas),
                         "avg_delta_vs_current_pips": (sum(current_deltas) / len(current_deltas)) if current_deltas else 0.0,
+                        "avg_ground_truth_alignment_rate": (sum(gt_alignments) / len(gt_alignments)) if gt_alignments else 0.0,
                         "win_count": sum(1 for d in deltas if d > 1e-9),
                         "loss_count": sum(1 for d in deltas if d < -1e-9),
                         "flat_count": len(deltas) - sum(1 for d in deltas if abs(d) > 1e-9),
@@ -320,6 +409,7 @@ def run_batch_experiments_with_config(*, trades_path: Path, report_out: Path, co
                                 "time_in_trade": _safe_float(r.get("time_in_trade_sec", 0.0), 0.0),
                                 "locked_profit": _safe_float(r.get("locked_profit_pips", 0.0), 0.0),
                                 "scenario_id": str(r.get("scenario_id", "UNKNOWN")),
+                                "ground_truth_alignment_rate": _safe_float(r.get("ground_truth_alignment_rate", 0.0), 0.0),
                             }
                             for r in trade_rows
                         ],

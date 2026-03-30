@@ -68,10 +68,13 @@ class TestRunAEEBatchExperiments(unittest.TestCase):
             self.assertIn("reason_code_breakdown", first)
             self.assertIn("transition_breakdown", first)
             self.assertIn("regressions", first)
+            self.assertIn("effective_policy", first)
+            self.assertIn("avg_ground_truth_alignment_rate", first)
             self.assertIn("per_trade", first)
             self.assertIn("delta_vs_current", first["per_trade"][0])
             self.assertIn("baseline_1to1_result", first["per_trade"][0])
             self.assertIn("baseline_protective_result", first["per_trade"][0])
+            self.assertIn("ground_truth_alignment_rate", first["per_trade"][0])
 
 
 if __name__ == "__main__":
