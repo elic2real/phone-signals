@@ -31,7 +31,14 @@ def _to_bool(v: Any) -> bool:
     return s in {"1", "true", "yes", "y", "on"}
 
 
-def _build_context(row: dict[str, Any], *, target_distance: float, peak_pips: float, bars_since_improvement: int) -> AEEContext:
+def _build_context(
+    row: dict[str, Any],
+    *,
+    target_distance: float,
+    peak_pips: float,
+    bars_since_improvement: int,
+    policy_overrides: dict[str, float] | None = None,
+) -> AEEContext:
     unrealized_pips = _safe_float(row.get("profit_now", row.get("pips", 0.0)), 0.0)
     progress_r = _safe_float(row.get("progress_ratio", unrealized_pips / max(0.1, target_distance)), 0.0)
     velocity_now = _safe_float(row.get("velocity_now", 0.0), 0.0)
@@ -41,7 +48,14 @@ def _build_context(row: dict[str, Any], *, target_distance: float, peak_pips: fl
         0.0,
     )
     panic_trigger = _to_bool(row.get("panic_trigger", False))
-    if not panic_trigger and progress_r <= -0.80 and velocity_now <= -0.10:
+    infer_panic_enabled = True
+    panic_progress_r_threshold = -0.80
+    panic_velocity_threshold = -0.10
+    if policy_overrides:
+        infer_panic_enabled = not _to_bool(policy_overrides.get("disable_panic_inference", False))
+        panic_progress_r_threshold = _safe_float(policy_overrides.get("panic_infer_progress_r", panic_progress_r_threshold), panic_progress_r_threshold)
+        panic_velocity_threshold = _safe_float(policy_overrides.get("panic_infer_velocity", panic_velocity_threshold), panic_velocity_threshold)
+    if infer_panic_enabled and (not panic_trigger) and progress_r <= panic_progress_r_threshold and velocity_now <= panic_velocity_threshold:
         panic_trigger = True
 
     giveback_r = max(0.0, (peak_pips - unrealized_pips) / max(0.1, target_distance))
@@ -55,13 +69,20 @@ def _build_context(row: dict[str, Any], *, target_distance: float, peak_pips: fl
     )
 
 
-def replay_trade_path(trade: dict[str, Any], *, initial_state: AEEState = "PROTECT") -> dict[str, Any]:
+def replay_trade_path(
+    trade: dict[str, Any],
+    *,
+    initial_state: AEEState = "PROTECT",
+    policy_overrides: dict[str, float] | None = None,
+    policy_name: str = "baseline",
+) -> dict[str, Any]:
     rows = list(trade.get("rows") or [])
     if not rows:
         raise ValueError("trade rows are required")
 
     trade_id = str(trade.get("trade_id") or f"trade_{id(trade)}")
     meta = dict(trade.get("meta") or {})
+    meta.setdefault("policy_name", str(policy_name))
     target_distance = max(0.1, _safe_float(trade.get("target_distance", rows[0].get("target_distance", 1.0)), 1.0))
     baseline_final_pips = _safe_float(trade.get("baseline_final_pips", rows[-1].get("static_pips", rows[-1].get("profit_now", 0.0))), 0.0)
 
@@ -90,6 +111,7 @@ def replay_trade_path(trade: dict[str, Any], *, initial_state: AEEState = "PROTE
             target_distance=target_distance,
             peak_pips=peak_pips,
             bars_since_improvement=bars_since_improvement,
+            policy_overrides=policy_overrides,
         )
         timestamp = str(row.get("timestamp", "")) or None
         packet = transition_aee_state_with_packet(
@@ -99,6 +121,7 @@ def replay_trade_path(trade: dict[str, Any], *, initial_state: AEEState = "PROTE
             bar_index=_safe_int(row.get("bar_index", idx), idx),
             timestamp=timestamp,
             meta=meta,
+            policy=policy_overrides,
         )
         packets.append(packet)
 
@@ -139,6 +162,7 @@ def replay_trade_path(trade: dict[str, Any], *, initial_state: AEEState = "PROTE
         "max_giveback_r": max_giveback_r,
         "max_giveback_pips": max_giveback_pips,
         "locked_profit_pips": final_locked_profit_pips,
+        "policy_name": str(policy_name),
     }
 
 

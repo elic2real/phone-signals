@@ -1,0 +1,142 @@
+{
+  "benchmark_slice_path": "control/aee_kernel_benchmark_slice.json",
+  "trade_count": 20,
+  "policy_rankings": [
+    {
+      "policy_name": "baseline",
+      "intent": "reference",
+      "overrides": {},
+      "trade_count": 20,
+      "avg_improvement_vs_baseline_kernel_pips": 0.0,
+      "avg_final_money_result_pips": -0.6050000000000777,
+      "scenario_summary": {
+        "BASELINE_OUTPERFORM": {
+          "count": 1,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.2999999999996348,
+          "avg_time_in_trade_sec": 240.0,
+          "avg_max_giveback_r": 1.5333333333330164
+        },
+        "BUILD_GIVEBACK_CASCADE": {
+          "count": 12,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": 0.22499999999999373,
+          "avg_time_in_trade_sec": 480.0,
+          "avg_max_giveback_r": 1.2999999999998815
+        },
+        "FAST_PANIC_FAILURE": {
+          "count": 7,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.928571428571692,
+          "avg_time_in_trade_sec": 154.28571428571428,
+          "avg_max_giveback_r": 1.3523809523811416
+        }
+      }
+    },
+    {
+      "policy_name": "harvest_earlier",
+      "intent": "reduce build giveback cascade",
+      "overrides": {
+        "build_to_harvest_unrealized_pips": 2.5,
+        "build_to_harvest_progress_r": 0.45,
+        "build_safety_giveback_r": 1.0
+      },
+      "trade_count": 20,
+      "avg_improvement_vs_baseline_kernel_pips": 0.0,
+      "avg_final_money_result_pips": -0.6050000000000777,
+      "scenario_summary": {
+        "BASELINE_OUTPERFORM": {
+          "count": 1,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.2999999999996348,
+          "avg_time_in_trade_sec": 240.0,
+          "avg_max_giveback_r": 1.5333333333330164
+        },
+        "BUILD_GIVEBACK_CASCADE": {
+          "count": 12,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": 0.22499999999999373,
+          "avg_time_in_trade_sec": 480.0,
+          "avg_max_giveback_r": 1.2999999999998815
+        },
+        "FAST_PANIC_FAILURE": {
+          "count": 7,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.928571428571692,
+          "avg_time_in_trade_sec": 154.28571428571428,
+          "avg_max_giveback_r": 1.3523809523811416
+        }
+      }
+    },
+    {
+      "policy_name": "protect_stricter",
+      "intent": "avoid weak protect->build transitions",
+      "overrides": {
+        "protect_progress_r": 0.35,
+        "protect_continuation_score": 0.55,
+        "build_safety_giveback_r": 0.95
+      },
+      "trade_count": 20,
+      "avg_improvement_vs_baseline_kernel_pips": 0.0,
+      "avg_final_money_result_pips": -0.6050000000000777,
+      "scenario_summary": {
+        "BASELINE_OUTPERFORM": {
+          "count": 1,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.2999999999996348,
+          "avg_time_in_trade_sec": 240.0,
+          "avg_max_giveback_r": 1.5333333333330164
+        },
+        "BUILD_GIVEBACK_CASCADE": {
+          "count": 12,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": 0.22499999999999373,
+          "avg_time_in_trade_sec": 480.0,
+          "avg_max_giveback_r": 1.2999999999998815
+        },
+        "FAST_PANIC_FAILURE": {
+          "count": 7,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.928571428571692,
+          "avg_time_in_trade_sec": 154.28571428571428,
+          "avg_max_giveback_r": 1.3523809523811416
+        }
+      }
+    },
+    {
+      "policy_name": "panic_soften",
+      "intent": "reduce fast panic exits",
+      "overrides": {
+        "panic_infer_progress_r": -1.1,
+        "panic_infer_velocity": -0.2,
+        "build_safety_giveback_r": 1.1
+      },
+      "trade_count": 20,
+      "avg_improvement_vs_baseline_kernel_pips": -0.010000000000065512,
+      "avg_final_money_result_pips": -0.6150000000001432,
+      "scenario_summary": {
+        "BASELINE_OUTPERFORM": {
+          "count": 1,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0,
+          "avg_final_money_result_pips": -1.2999999999996348,
+          "avg_time_in_trade_sec": 240.0,
+          "avg_max_giveback_r": 1.5333333333330164
+        },
+        "BUILD_GIVEBACK_CASCADE": {
+          "count": 12,
+          "avg_improvement_vs_baseline_kernel_pips": 0.0666666666665483,
+          "avg_final_money_result_pips": 0.291666666666542,
+          "avg_time_in_trade_sec": 515.0,
+          "avg_max_giveback_r": 1.3166666666666573
+        },
+        "FAST_PANIC_FAILURE": {
+          "count": 7,
+          "avg_improvement_vs_baseline_kernel_pips": -0.1428571428571271,
+          "avg_final_money_result_pips": -2.071428571428819,
+          "avg_time_in_trade_sec": 240.0,
+          "avg_max_giveback_r": 1.4476190476192266
+        }
+      }
+    }
+  ]
+}

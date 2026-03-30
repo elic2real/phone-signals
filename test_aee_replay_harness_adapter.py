@@ -87,6 +87,39 @@ class TestAEEReplayHarnessAdapter(unittest.TestCase):
         self.assertTrue(len(report["by_reason_code"]) >= 1)
         self.assertTrue(len(report["by_state_transition"]) >= 1)
 
+    def test_policy_override_annotation(self) -> None:
+        trade = {
+            "trade_id": "R-POLICY",
+            "target_distance": 2.0,
+            "baseline_final_pips": 0.0,
+            "rows": [
+                {
+                    "bar_index": 1,
+                    "profit_now": -1.9,
+                    "velocity_now": -0.2,
+                    "progress_ratio": -0.95,
+                },
+                {
+                    "bar_index": 2,
+                    "profit_now": -1.6,
+                    "velocity_now": 0.3,
+                    "progress_ratio": -0.80,
+                },
+            ],
+        }
+
+        result = replay_trade_path(
+            trade,
+            policy_name="panic_soften",
+            policy_overrides={
+                "disable_panic_inference": 1.0,
+                "build_safety_giveback_r": 1.5,
+            },
+        )
+
+        self.assertEqual(result["policy_name"], "panic_soften")
+        self.assertEqual(result["packets"][0]["meta"]["policy_name"], "panic_soften")
+
 
 if __name__ == "__main__":
     unittest.main()
