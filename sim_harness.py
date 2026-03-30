@@ -15,6 +15,7 @@ Includes:
 import argparse
 import csv
 import json
+import os
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -130,9 +131,14 @@ class SimEnvironment:
             # Use the centralized arbiter from phone_bot
             pair = trade["pair"]
             direction = trade["dir"]
-            bid = current_price if direction == "LONG" else current_price
-            ask = current_price if direction == "SHORT" else current_price
-            mid = current_price
+            current_tick = self.price_feed.get_tick(pair)
+            if current_tick is not None:
+                bid = float(current_tick.bid)
+                ask = float(current_tick.ask)
+            else:
+                bid = float(current_price)
+                ask = float(current_price)
+            mid = (bid + ask) / 2.0
             now = now_ts_val if now_ts_val is not None else self._current_ts
             spread_pips = phone_bot.to_pips(pair, ask - bid)
             speed_class = phone_bot.speed_class_from_setup_name(str(trade.get("setup", "")))
@@ -252,7 +258,29 @@ class SimEnvironment:
         tick_mode_active = False
         last_eval_metrics: Dict[str, Any] = {}
 
-        entry_price = float(trade.get("entry", 0.0) or 0.0)
+        entry_slippage_pips = float(os.getenv("SIM_ENTRY_SLIPPAGE_PIPS", "0") or "0")
+        exit_slippage_pips = float(os.getenv("SIM_EXIT_SLIPPAGE_PIPS", "0") or "0")
+        activation_delay_steps = max(0, int(os.getenv("SIM_EXIT_ACTIVATION_DELAY_STEPS", "1") or "1"))
+
+        def _price_slippage_delta() -> float:
+            return float(phone_bot.pip_size(trade["pair"])) * max(0.0, exit_slippage_pips)
+
+        def _apply_entry_slippage(px: float, side: str) -> float:
+            delta = float(phone_bot.pip_size(trade["pair"])) * max(0.0, entry_slippage_pips)
+            if str(side).upper() == "LONG":
+                return px + delta
+            return px - delta
+
+        def _apply_exit_slippage(px: float, side: str) -> float:
+            delta = _price_slippage_delta()
+            if str(side).upper() == "LONG":
+                return px - delta
+            return px + delta
+
+        pending_core_exit: Optional[Dict[str, Any]] = None
+        pending_runner_exit: Optional[Dict[str, Any]] = None
+
+        entry_price = _apply_entry_slippage(float(trade.get("entry", 0.0) or 0.0), str(trade.get("dir", "LONG")))
         entry_ts = float(trade.get("ts", 0.0) or 0.0)
         direction = str(trade.get("dir", "LONG")).upper()
         min_hold_core = float(getattr(phone_bot, "CORE_MIN_HOLD_TIME", getattr(phone_bot, "RUNNER_MIN_HOLD_TIME", 300.0)))
@@ -289,6 +317,8 @@ class SimEnvironment:
                 "tick_due": None,
                 "tick_reason": None,
                 "exit_reason": None,
+                "core_exit_armed": False,
+                "runner_exit_armed": False,
                 "exit_blocked_min_hold": False,
                 "runner_exit_blocked_min_hold": False,
                 "metrics": {},
@@ -296,6 +326,11 @@ class SimEnvironment:
                 "runner_open": runner_open,
                 "runner_promoted": runner_promoted,
                 "overshoot_peak_atr": overshoot_peak_atr,
+                "execution_model": {
+                    "entry_slippage_pips": entry_slippage_pips,
+                    "exit_slippage_pips": exit_slippage_pips,
+                    "activation_delay_steps": activation_delay_steps,
+                },
             }
 
             if should_eval and (core_open or runner_open):
@@ -366,20 +401,57 @@ class SimEnvironment:
 
                 trade_age_sec = max(0.0, float(ts) - entry_ts)
 
-                # core exits on native AEE reason (delay non-panic exits until min hold)
-                if core_open and rec["exit_reason"]:
-                    is_panic = str(rec["exit_reason"]) == "PANIC_EXIT"
-                    if (not is_panic) and trade_age_sec < min_hold_core:
+                if core_open and pending_core_exit and int(rec["pair_eval_idx"] or 0) >= int(pending_core_exit.get("due_eval_idx", 0) or 0):
+                    pending_reason = str(pending_core_exit.get("reason", "UNKNOWN"))
+                    if pending_reason != "PANIC_EXIT" and trade_age_sec < min_hold_core:
                         rec["exit_blocked_min_hold"] = True
+                        pending_core_exit["due_eval_idx"] = int(rec["pair_eval_idx"] or 0) + 1
                     else:
                         core_open = False
                         core_exit = {
                             "pair_eval_idx": rec["pair_eval_idx"],
                             "idx": rec["idx"],
                             "ts": ts,
-                            "price": tick.bid if direction == "LONG" else tick.ask,
+                            "price": _apply_exit_slippage(float(tick.bid if direction == "LONG" else tick.ask), direction),
+                            "reason": pending_reason,
+                            "metrics": metrics,
+                            "activation_delay_steps": activation_delay_steps,
+                        }
+                        self.logs.append(
+                            "AEE_DECISION_ORDER_ACTION",
+                            {
+                                "ts": ts,
+                                "pair_eval_idx": rec["pair_eval_idx"],
+                                "aee_chosen_rule": pending_reason,
+                                "order_action": "CLOSE_CORE",
+                                "instrument": inst,
+                                "activation_delay_steps": activation_delay_steps,
+                            },
+                        )
+                        pending_core_exit = None
+
+                # core exits on native AEE reason (delay non-panic exits until min hold)
+                if core_open and rec["exit_reason"]:
+                    is_panic = str(rec["exit_reason"]) == "PANIC_EXIT"
+                    if (not is_panic) and trade_age_sec < min_hold_core:
+                        rec["exit_blocked_min_hold"] = True
+                    elif activation_delay_steps > 0:
+                        if pending_core_exit is None:
+                            pending_core_exit = {
+                                "reason": str(rec["exit_reason"]),
+                                "due_eval_idx": int(rec["pair_eval_idx"] or 0) + activation_delay_steps,
+                            }
+                            rec["core_exit_armed"] = True
+                    else:
+                        core_open = False
+                        core_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": _apply_exit_slippage(float(tick.bid if direction == "LONG" else tick.ask), direction),
                             "reason": rec["exit_reason"],
                             "metrics": metrics,
+                            "activation_delay_steps": 0,
                         }
                         if rec.get("exit_reason") == "PULSE_STALL_CAPTURE":
                             core_exit["pulse_exit_time"] = float(ts)
@@ -454,16 +526,24 @@ class SimEnvironment:
                     if runner_exit_now:
                         if (runner_reason != "PANIC_EXIT") and trade_age_sec < min_hold_runner:
                             rec["runner_exit_blocked_min_hold"] = True
+                        elif activation_delay_steps > 0:
+                            if pending_runner_exit is None:
+                                pending_runner_exit = {
+                                    "reason": runner_reason,
+                                    "due_eval_idx": int(rec["pair_eval_idx"] or 0) + activation_delay_steps,
+                                }
+                                rec["runner_exit_armed"] = True
                         else:
                             runner_open = False
                             runner_exit = {
                                 "pair_eval_idx": rec["pair_eval_idx"],
                                 "idx": rec["idx"],
                                 "ts": ts,
-                                "price": tick.bid if direction == "LONG" else tick.ask,
+                                "price": _apply_exit_slippage(float(tick.bid if direction == "LONG" else tick.ask), direction),
                                 "reason": runner_reason,
                                 "metrics": metrics,
                                 "overshoot_peak_atr": overshoot_peak_atr,
+                                "activation_delay_steps": 0,
                             }
                             self.logs.append(
                                 "AEE_DECISION_ORDER_ACTION",
@@ -475,6 +555,36 @@ class SimEnvironment:
                                     "instrument": inst,
                                 },
                             )
+
+                if runner_open and pending_runner_exit and int(rec["pair_eval_idx"] or 0) >= int(pending_runner_exit.get("due_eval_idx", 0) or 0):
+                    pending_reason = str(pending_runner_exit.get("reason", "UNKNOWN"))
+                    if pending_reason != "PANIC_EXIT" and trade_age_sec < min_hold_runner:
+                        rec["runner_exit_blocked_min_hold"] = True
+                        pending_runner_exit["due_eval_idx"] = int(rec["pair_eval_idx"] or 0) + 1
+                    else:
+                        runner_open = False
+                        runner_exit = {
+                            "pair_eval_idx": rec["pair_eval_idx"],
+                            "idx": rec["idx"],
+                            "ts": ts,
+                            "price": _apply_exit_slippage(float(tick.bid if direction == "LONG" else tick.ask), direction),
+                            "reason": pending_reason,
+                            "metrics": metrics,
+                            "overshoot_peak_atr": overshoot_peak_atr,
+                            "activation_delay_steps": activation_delay_steps,
+                        }
+                        self.logs.append(
+                            "AEE_DECISION_ORDER_ACTION",
+                            {
+                                "ts": ts,
+                                "pair_eval_idx": rec["pair_eval_idx"],
+                                "aee_chosen_rule": pending_reason,
+                                "order_action": "CLOSE_RUNNER",
+                                "instrument": inst,
+                                "activation_delay_steps": activation_delay_steps,
+                            },
+                        )
+                        pending_runner_exit = None
 
             rec["core_open"] = core_open
             rec["runner_open"] = runner_open
@@ -502,7 +612,7 @@ class SimEnvironment:
                 last_tick = records[-1]
             core_open = False
             core_exit_ts = float(last_tick.get("ts"))
-            core_exit_price = float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask"))
+            core_exit_price = _apply_exit_slippage(float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask")), direction)
             core_exit = {
                 "pair_eval_idx": last_tick.get("pair_eval_idx"),
                 "idx": last_tick.get("idx"),
@@ -518,7 +628,7 @@ class SimEnvironment:
                 last_tick = records[-1]
             runner_open = False
             runner_exit_ts = float(last_tick.get("ts"))
-            runner_exit_price = float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask"))
+            runner_exit_price = _apply_exit_slippage(float(last_tick.get("bid") if direction == "LONG" else last_tick.get("ask")), direction)
             runner_exit = {
                 "pair_eval_idx": last_tick.get("pair_eval_idx"),
                 "idx": last_tick.get("idx"),
@@ -552,10 +662,10 @@ class SimEnvironment:
                 }
             leg_ts = float(leg_exit.get("ts", 0.0) or 0.0)
             active_rows = [r for r in records if float(r.get("ts", 0.0) or 0.0) <= leg_ts and r.get("instrument") == trade["pair"]]
-            mids = [float(r.get("mid", entry_price) or entry_price) for r in active_rows]
+            executable_prices = [float(r.get("bid", entry_price) if direction == "LONG" else r.get("ask", entry_price)) for r in active_rows]
             pip = float(phone_bot.pip_size(trade["pair"]))
             hold_sec = max(0.0, leg_ts - float(trade.get("ts", leg_ts) or leg_ts))
-            if not mids or pip <= 0:
+            if not executable_prices or pip <= 0:
                 return {
                     "hold_sec": hold_sec,
                     "mfe_pips": 0.0,
@@ -564,12 +674,12 @@ class SimEnvironment:
                     "left_on_table_pips": 0.0,
                 }
             if direction == "LONG":
-                mfe = (max(mids) - entry_price) / pip
-                mae = (min(mids) - entry_price) / pip
+                mfe = (max(executable_prices) - entry_price) / pip
+                mae = (min(executable_prices) - entry_price) / pip
                 realized = (float(leg_exit.get("price", entry_price) or entry_price) - entry_price) / pip
             else:
-                mfe = (entry_price - min(mids)) / pip
-                mae = (entry_price - max(mids)) / pip
+                mfe = (entry_price - min(executable_prices)) / pip
+                mae = (entry_price - max(executable_prices)) / pip
                 realized = (entry_price - float(leg_exit.get("price", entry_price) or entry_price)) / pip
             capture = (realized / mfe) if mfe > 0 else None
             return {
@@ -606,12 +716,12 @@ class SimEnvironment:
                 if not window:
                     out[f"plus_{h}"] = None
                     continue
-                mids = [float(r.get("mid", exit_px) or exit_px) for r in window]
+                executable_prices = [float(r.get("bid", exit_px) if direction == "LONG" else r.get("ask", exit_px)) for r in window]
                 if direction == "LONG":
-                    best = max(mids)
+                    best = max(executable_prices)
                     out[f"plus_{h}"] = (best - exit_px) / pip
                 else:
-                    best = min(mids)
+                    best = min(executable_prices)
                     out[f"plus_{h}"] = (exit_px - best) / pip
             return out
 
@@ -673,6 +783,14 @@ class SimEnvironment:
                 },
             },
             "weighted_pips": total_weighted_pips,
+            "execution_model": {
+                "entry_price_mode": "executable_with_optional_slippage",
+                "entry_slippage_pips": entry_slippage_pips,
+                "exit_slippage_pips": exit_slippage_pips,
+                "exit_activation_delay_steps": activation_delay_steps,
+                "path_price_mode": "bid_for_long_ask_for_short",
+                "slippage_note": "Set SIM_ENTRY_SLIPPAGE_PIPS/SIM_EXIT_SLIPPAGE_PIPS to 0 for no-slippage model",
+            },
             "pips_per_hour": {
                 "weighted": (total_weighted_pips / (replay_wall_time_sec / 3600.0)) if replay_wall_time_sec > 0 else 0.0,
                 "core": (core_pips / (replay_wall_time_sec / 3600.0)) if replay_wall_time_sec > 0 else 0.0,
