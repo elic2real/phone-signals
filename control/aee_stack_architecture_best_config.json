@@ -1,0 +1,38 @@
+{
+  "search_family": "stack_architecture",
+  "stack_id": "edge_1",
+  "composition": ["T", "D", "F"],
+  "panic": "hard_interrupt_outside_search",
+  "placement_order": ["D", "F"],
+  "activation_logic": {
+    "D": "D_stall",
+    "F": "breach_or_risk"
+  },
+  "intervention_type": {
+    "D": "downgrade_hold_tighten",
+    "F": "tighten_or_close"
+  },
+  "permission_set": {
+    "D": "tighten_only",
+    "F": "close_allowed"
+  },
+  "config": {
+    "deg_trigger_mode": "D_stall",
+    "deg_action_mode": "downgrade_hold_tighten",
+    "deg_allow_weak": false,
+    "floor_trigger_mode": "breach_or_risk",
+    "floor_action_mode": "tighten_or_close",
+    "deg_upr_min": 0.25,
+    "deg_cp_max": 0.0,
+    "floor_risk_gb_min": 0.1,
+    "floor_breach_tolerance_r": 0.0
+  },
+  "results": {
+    "total_delta_vs_1to1": -22.8,
+    "total_delta_vs_protective": -70.46,
+    "total_delta_vs_pure_t": 22.3,
+    "total_delta_vs_current": 72.8,
+    "runner_preservation_rate": 0.4667,
+    "reversal_improvement_vs_pure_t_avg": 0.0492
+  }
+}
