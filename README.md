@@ -231,6 +231,21 @@ Stop and report immediately when any of the following occurs:
 5. **Reporting**
    - output performance vs baseline, scenario behavior, and decision logs
 
+6. **Kernel discovery (attributable)**
+   - expand and qualify kernel definitions while still in discovery
+   - run pure-kernel tests first (Time, P&L, Progress, State-transition, Path-quality, Opportunity-cost)
+   - run controlled composite tests after pure-kernel evidence exists
+   - keep every experiment attributable and comparable
+
+**Attribution requirements for all kernel experiments**
+- `kernel_id`
+- component definitions
+- parameter set
+- pure vs composite flag
+- delta vs baseline
+- delta vs current
+- per-scenario results
+
 ### Shared rules
 
 **Git flow**
@@ -261,6 +276,8 @@ git push origin publish/clean-backup-20260326
 - heavy replay simulations
 - large batch testing
 - architecture refactors
+- replay harness development
+- kernel search scripts
 
 **Do not do in CODESPACES**
 - live bot execution
@@ -279,8 +296,22 @@ git push origin publish/clean-backup-20260326
 
 If task requires:
 - real-time behavior → LOCAL
+- replay/batch/kernel search → CODESPACES
 - structural change → CODESPACES
-- heavy testing → CODESPACES
+
+### Discovery rule
+
+This phase is **kernel discovery**, not final-kernel freeze.
+
+- allowed in Codespaces: expand, refine, and combine kernel definitions
+- required always: preserve attribution and comparability
+- not allowed: untracked mixing that loses component-level accountability
+
+### RCP wording (authoritative)
+
+Codespaces owns kernel discovery, including expansion of kernel definitions and
+controlled combination of kernels, provided experiments remain attributable and
+comparable against baseline.
 
 ### Success condition
 
@@ -295,4 +326,8 @@ Never build blind:
 - Codespaces proves logic
 - Local proves reality
 - both are required
+
+Clean distinction:
+- Codespaces: discover truth
+- Local: verify truth survives reality
 
