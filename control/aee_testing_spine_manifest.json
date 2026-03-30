@@ -1,0 +1,31 @@
+{
+  "spine_version": "AEE_TESTING_SPINE_V1",
+  "order": [
+    "packet_standard",
+    "replay_harness",
+    "baseline_comparison",
+    "kernel_benchmark",
+    "scenario_layering"
+  ],
+  "inputs": {
+    "unified_report": "entry_metric_ceiling_report_unified.json",
+    "max_trades": 20
+  },
+  "outputs": {
+    "benchmark_slice": "control/aee_kernel_benchmark_slice.json",
+    "kernel_report": "control/aee_kernel_benchmark_report.json",
+    "packet_stream": "control/aee_kernel_benchmark_packets.json",
+    "scenario_report": "control/aee_scenario_layering_report.json",
+    "scenario_playbooks": "control/aee_scenario_playbooks.json"
+  },
+  "kernel_summary": {
+    "benchmark_trade_count": 20,
+    "report_path": "control/aee_kernel_benchmark_report.json",
+    "packets_path": "control/aee_kernel_benchmark_packets.json"
+  },
+  "scenario_summary": {
+    "scenario_count": 3,
+    "report_path": "control/aee_scenario_layering_report.json",
+    "playbook_path": "control/aee_scenario_playbooks.json"
+  }
+}

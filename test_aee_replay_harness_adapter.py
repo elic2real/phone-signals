@@ -86,6 +86,8 @@ class TestAEEReplayHarnessAdapter(unittest.TestCase):
         self.assertIn("summary", report)
         self.assertIn("by_reason_code", report)
         self.assertIn("by_state_transition", report)
+        self.assertIn("report_contract", report)
+        self.assertIn("per_trade_delta", report)
         self.assertIn("trade_results", report)
 
         self.assertEqual(report["summary"]["count"], 2)

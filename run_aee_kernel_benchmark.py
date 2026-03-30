@@ -111,15 +111,35 @@ def run_kernel_benchmark(
 ) -> dict[str, Any]:
     unified = json.loads(unified_path.read_text(encoding="utf-8"))
     benchmark_trades = extract_fixed_benchmark_slice(unified, max_trades=max_trades)
-    benchmark_slice = {"trades": benchmark_trades, "count": len(benchmark_trades)}
+    benchmark_slice = {
+        "schema_version": "AEE_REPLAY_SLICE_V1",
+        "selection_method": "deterministic_first_n_sorted_by_timestamp_and_cluster",
+        "source_unified_report": str(unified_path),
+        "count": len(benchmark_trades),
+        "trades": benchmark_trades,
+    }
     benchmark_slice_out.write_text(json.dumps(benchmark_slice, indent=2) + "\n", encoding="utf-8")
 
     trade_results = [replay_trade_path(t) for t in benchmark_trades]
     report = build_baseline_comparison_report(trade_results)
     report["kernel_benchmark"] = {
+        "spine_version": "AEE_TESTING_SPINE_V1",
         "source": str(unified_path),
         "benchmark_trade_count": len(benchmark_trades),
         "benchmark_slice_path": str(benchmark_slice_out),
+        "baseline_comparisons": [
+            {
+                "name": "static_trade_baseline",
+                "value_field": "baseline_money_result_pips",
+                "description": "Static TP/SL baseline pips from source benchmark row.pips",
+            },
+            {
+                "name": "replay_kernel_result",
+                "value_field": "final_money_result_pips",
+                "description": "Packet-emitting replay kernel final pips",
+            },
+        ],
+        "proof_question": "Can AEE replay kernel beat static baseline on fixed slice?",
     }
     report_out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 

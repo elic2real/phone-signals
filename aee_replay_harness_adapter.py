@@ -251,16 +251,43 @@ def _avg(values: list[float]) -> float:
 
 
 def _aggregate_bucket(trades: list[dict[str, Any]]) -> dict[str, Any]:
+    final_vals = [_safe_float(t.get("final_money_result_pips", 0.0), 0.0) for t in trades]
+    baseline_vals = [_safe_float(t.get("baseline_money_result_pips", 0.0), 0.0) for t in trades]
+    baseline_1to1_vals = [_safe_float(t.get("baseline_1to1_money_result_pips", t.get("baseline_money_result_pips", 0.0)), 0.0) for t in trades]
+    baseline_protective_vals = [_safe_float(t.get("baseline_protective_money_result_pips", 0.0), 0.0) for t in trades]
+    delta_vals = [_safe_float(t.get("delta_vs_baseline_pips", 0.0), 0.0) for t in trades]
+    delta_1to1_vals = [_safe_float(t.get("delta_vs_1to1_baseline_pips", t.get("delta_vs_baseline_pips", 0.0)), 0.0) for t in trades]
+    delta_protective_vals = [_safe_float(t.get("delta_vs_protective_baseline_pips", 0.0), 0.0) for t in trades]
+    time_vals = [_safe_float(t.get("time_in_trade_sec", 0.0), 0.0) for t in trades]
+    giveback_vals = [_safe_float(t.get("max_giveback_r", 0.0), 0.0) for t in trades]
+    lock_vals = [_safe_float(t.get("locked_profit_pips", 0.0), 0.0) for t in trades]
+
+    positive_delta_trades = sum(1 for d in delta_vals if d > 1e-9)
+    negative_delta_trades = sum(1 for d in delta_vals if d < -1e-9)
+    flat_delta_trades = len(delta_vals) - positive_delta_trades - negative_delta_trades
+
     return {
         "count": len(trades),
-        "avg_final_money_result_pips": _avg([_safe_float(t.get("final_money_result_pips", 0.0), 0.0) for t in trades]),
-        "avg_baseline_1to1_money_result_pips": _avg([_safe_float(t.get("baseline_1to1_money_result_pips", t.get("baseline_money_result_pips", 0.0)), 0.0) for t in trades]),
-        "avg_baseline_protective_money_result_pips": _avg([_safe_float(t.get("baseline_protective_money_result_pips", 0.0), 0.0) for t in trades]),
-        "avg_delta_vs_1to1_baseline_pips": _avg([_safe_float(t.get("delta_vs_1to1_baseline_pips", t.get("delta_vs_baseline_pips", 0.0)), 0.0) for t in trades]),
-        "avg_delta_vs_protective_baseline_pips": _avg([_safe_float(t.get("delta_vs_protective_baseline_pips", 0.0), 0.0) for t in trades]),
-        "avg_time_in_trade_sec": _avg([_safe_float(t.get("time_in_trade_sec", 0.0), 0.0) for t in trades]),
-        "avg_max_giveback_r": _avg([_safe_float(t.get("max_giveback_r", 0.0), 0.0) for t in trades]),
-        "avg_locked_profit_pips": _avg([_safe_float(t.get("locked_profit_pips", 0.0), 0.0) for t in trades]),
+        "total_final_money_result_pips": sum(final_vals),
+        "total_baseline_money_result_pips": sum(baseline_vals),
+        "total_baseline_1to1_money_result_pips": sum(baseline_1to1_vals),
+        "total_baseline_protective_money_result_pips": sum(baseline_protective_vals),
+        "total_delta_vs_baseline_pips": sum(delta_vals),
+        "total_delta_vs_1to1_baseline_pips": sum(delta_1to1_vals),
+        "total_delta_vs_protective_baseline_pips": sum(delta_protective_vals),
+        "avg_final_money_result_pips": _avg(final_vals),
+        "avg_baseline_money_result_pips": _avg(baseline_vals),
+        "avg_baseline_1to1_money_result_pips": _avg(baseline_1to1_vals),
+        "avg_baseline_protective_money_result_pips": _avg(baseline_protective_vals),
+        "avg_delta_vs_baseline_pips": _avg(delta_vals),
+        "avg_delta_vs_1to1_baseline_pips": _avg(delta_1to1_vals),
+        "avg_delta_vs_protective_baseline_pips": _avg(delta_protective_vals),
+        "avg_time_in_trade_sec": _avg(time_vals),
+        "avg_max_giveback_r": _avg(giveback_vals),
+        "avg_locked_profit_pips": _avg(lock_vals),
+        "positive_delta_trades": positive_delta_trades,
+        "negative_delta_trades": negative_delta_trades,
+        "flat_delta_trades": flat_delta_trades,
     }
 
 
@@ -271,10 +298,39 @@ def build_baseline_comparison_report(trade_results: list[dict[str, Any]]) -> dic
         by_reason[str(tr.get("final_reason_code", "UNKNOWN"))].append(tr)
         by_transition[str(tr.get("final_state_transition", "UNKNOWN->UNKNOWN"))].append(tr)
 
+    per_trade_delta = [
+        {
+            "trade_id": str(t.get("trade_id", "")),
+            "policy_name": str(t.get("policy_name", "baseline")),
+            "final_money_result_pips": _safe_float(t.get("final_money_result_pips", 0.0), 0.0),
+            "baseline_money_result_pips": _safe_float(t.get("baseline_money_result_pips", 0.0), 0.0),
+            "delta_vs_baseline_pips": _safe_float(t.get("delta_vs_baseline_pips", 0.0), 0.0),
+            "final_reason_code": str(t.get("final_reason_code", "UNKNOWN")),
+            "final_state_transition": str(t.get("final_state_transition", "UNKNOWN->UNKNOWN")),
+            "time_in_trade_sec": _safe_float(t.get("time_in_trade_sec", 0.0), 0.0),
+            "max_giveback_r": _safe_float(t.get("max_giveback_r", 0.0), 0.0),
+            "locked_profit_pips": _safe_float(t.get("locked_profit_pips", 0.0), 0.0),
+        }
+        for t in trade_results
+    ]
+
     return {
+        "report_contract": {
+            "baseline_definition": "baseline_money_result_pips is the fixed static result sourced from benchmark slice input (row.pips).",
+            "candidate_definition": "final_money_result_pips is replay-kernel outcome from packet-emitting AEE state machine.",
+            "delta_definition": "delta_vs_baseline_pips = final_money_result_pips - baseline_money_result_pips",
+            "required_fields": [
+                "per_trade_delta",
+                "summary",
+                "by_reason_code",
+                "by_state_transition",
+                "trade_results",
+            ],
+        },
         "summary": _aggregate_bucket(trade_results),
         "by_reason_code": {k: _aggregate_bucket(v) for k, v in sorted(by_reason.items())},
         "by_state_transition": {k: _aggregate_bucket(v) for k, v in sorted(by_transition.items())},
+        "per_trade_delta": per_trade_delta,
         "trade_results": trade_results,
     }
 

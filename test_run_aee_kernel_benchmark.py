@@ -65,9 +65,12 @@ class TestRunAEEKernelBenchmark(unittest.TestCase):
             self.assertTrue(packets_path.exists())
 
             report = json.loads(report_path.read_text(encoding="utf-8"))
+            slice_payload = json.loads(slice_path.read_text(encoding="utf-8"))
+            self.assertEqual(slice_payload["schema_version"], "AEE_REPLAY_SLICE_V1")
             self.assertIn("by_reason_code", report)
             self.assertIn("by_state_transition", report)
             self.assertEqual(report["kernel_benchmark"]["benchmark_trade_count"], 1)
+            self.assertIn("baseline_comparisons", report["kernel_benchmark"])
 
 
 if __name__ == "__main__":

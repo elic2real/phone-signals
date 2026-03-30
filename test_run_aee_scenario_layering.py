@@ -70,6 +70,7 @@ class TestRunAEEScenarioLayering(unittest.TestCase):
             self.assertIn("by_scenario", report)
             self.assertIn("FAST_PANIC_FAILURE", report["by_scenario"])
             self.assertIn("BUILD_GIVEBACK_CASCADE", report["by_scenario"])
+            self.assertIn("total_delta_vs_baseline_pips", report["by_scenario"]["FAST_PANIC_FAILURE"])
 
 
 if __name__ == "__main__":

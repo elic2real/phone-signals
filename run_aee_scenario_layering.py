@@ -112,16 +112,24 @@ def build_scenario_layering_report(kernel_report: dict[str, Any]) -> dict[str, A
 
     by_scenario: dict[str, dict[str, Any]] = {}
     for scenario, rows in sorted(buckets.items()):
+        delta_vals = [_safe_float(r.get("delta_vs_baseline_pips", 0.0), 0.0) for r in rows]
+        positive_delta_trades = sum(1 for d in delta_vals if d > 1e-9)
+        negative_delta_trades = sum(1 for d in delta_vals if d < -1e-9)
+        flat_delta_trades = len(delta_vals) - positive_delta_trades - negative_delta_trades
         reason_counts = Counter(str(r.get("final_reason_code", "UNKNOWN")) for r in rows)
         transition_counts = Counter(str(r.get("final_state_transition", "UNKNOWN->UNKNOWN")) for r in rows)
         by_scenario[scenario] = {
             "count": len(rows),
+            "total_delta_vs_baseline_pips": sum(delta_vals),
             "avg_final_money_result_pips": _avg([_safe_float(r.get("final_money_result_pips", 0.0), 0.0) for r in rows]),
             "avg_baseline_money_result_pips": _avg([_safe_float(r.get("baseline_money_result_pips", 0.0), 0.0) for r in rows]),
             "avg_delta_vs_baseline_pips": _avg([_safe_float(r.get("delta_vs_baseline_pips", 0.0), 0.0) for r in rows]),
             "avg_time_in_trade_sec": _avg([_safe_float(r.get("time_in_trade_sec", 0.0), 0.0) for r in rows]),
             "avg_max_giveback_r": _avg([_safe_float(r.get("max_giveback_r", 0.0), 0.0) for r in rows]),
             "avg_locked_profit_pips": _avg([_safe_float(r.get("locked_profit_pips", 0.0), 0.0) for r in rows]),
+            "positive_delta_trades": positive_delta_trades,
+            "negative_delta_trades": negative_delta_trades,
+            "flat_delta_trades": flat_delta_trades,
             "top_reason_codes": dict(reason_counts.most_common(3)),
             "top_state_transitions": dict(transition_counts.most_common(3)),
             "playbook": playbooks.get(scenario, {}),

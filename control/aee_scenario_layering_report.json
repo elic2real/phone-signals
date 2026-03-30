@@ -3,12 +3,18 @@
     "trade_count": 20,
     "kernel_summary": {
       "count": 20,
+      "total_final_money_result_pips": -12.100000000001554,
+      "total_baseline_money_result_pips": 0.0,
+      "total_delta_vs_baseline_pips": -12.100000000001554,
       "avg_final_money_result_pips": -0.6050000000000777,
       "avg_baseline_money_result_pips": 0.0,
       "avg_delta_vs_baseline_pips": -0.6050000000000777,
       "avg_time_in_trade_sec": 354.0,
       "avg_max_giveback_r": 1.3299999999999792,
-      "avg_locked_profit_pips": 0.0
+      "avg_locked_profit_pips": 0.0,
+      "positive_delta_trades": 4,
+      "negative_delta_trades": 15,
+      "flat_delta_trades": 1
     }
   },
   "scenario_order": [
@@ -22,12 +28,16 @@
   "by_scenario": {
     "BASELINE_OUTPERFORM": {
       "count": 1,
+      "total_delta_vs_baseline_pips": 0.20000000000036522,
       "avg_final_money_result_pips": -1.2999999999996348,
       "avg_baseline_money_result_pips": -1.5,
       "avg_delta_vs_baseline_pips": 0.20000000000036522,
       "avg_time_in_trade_sec": 240.0,
       "avg_max_giveback_r": 1.5333333333330164,
       "avg_locked_profit_pips": 0.0,
+      "positive_delta_trades": 1,
+      "negative_delta_trades": 0,
+      "flat_delta_trades": 0,
       "top_reason_codes": {
         "panic_trigger": 1
       },
@@ -46,12 +56,16 @@
     },
     "BUILD_GIVEBACK_CASCADE": {
       "count": 12,
+      "total_delta_vs_baseline_pips": -9.300000000000075,
       "avg_final_money_result_pips": 0.22499999999999373,
       "avg_baseline_money_result_pips": 1.0,
       "avg_delta_vs_baseline_pips": -0.7750000000000062,
       "avg_time_in_trade_sec": 480.0,
       "avg_max_giveback_r": 1.2999999999998815,
       "avg_locked_profit_pips": 0.0,
+      "positive_delta_trades": 2,
+      "negative_delta_trades": 10,
+      "flat_delta_trades": 0,
       "top_reason_codes": {
         "build_safety_breach": 12
       },
@@ -70,12 +84,16 @@
     },
     "FAST_PANIC_FAILURE": {
       "count": 7,
+      "total_delta_vs_baseline_pips": -3.000000000001844,
       "avg_final_money_result_pips": -1.928571428571692,
       "avg_baseline_money_result_pips": -1.5,
       "avg_delta_vs_baseline_pips": -0.428571428571692,
       "avg_time_in_trade_sec": 154.28571428571428,
       "avg_max_giveback_r": 1.3523809523811416,
       "avg_locked_profit_pips": 0.0,
+      "positive_delta_trades": 1,
+      "negative_delta_trades": 5,
+      "flat_delta_trades": 1,
       "top_reason_codes": {
         "panic_trigger": 7
       },
