@@ -9,13 +9,14 @@ WORKSPACE
 
 PURPOSE
 
+Codespaces is the AEE research + kernel discovery engine.
+
 Codespaces is used for:
 
 - AEE development
 - replay harness
 - batch experiments
-- kernel testing
-- scenario testing
+- kernel discovery (expand/refine/combine)
 - baseline comparison
 - report generation
 
@@ -23,7 +24,12 @@ Codespaces is not used for:
 
 - live bot runtime
 - broker execution
-- notification debugging
+- notifications
+- runtime debugging
+
+CORE PRINCIPLE
+
+"Codespaces = discover truth at scale"
 
 GIT FLOW (MANDATORY)
 
@@ -51,7 +57,31 @@ RULES
 
 PRIMARY OBJECTIVE
 
-Build and prove AEE logic using replay + baseline comparison.
+"Find the first kernel (or kernel combination) that beats baseline with proof."
+
+OPERATING MODE: AUTONOMOUS DISCOVERY LOOP
+
+LOOP
+
+1. Generate kernel candidates
+2. Run batch experiments
+3. Produce report
+4. Rank results
+5. Repeat
+
+STOP CONDITIONS
+
+Stop ONLY if:
+
+1. Win condition
+  - beats 1:1 baseline, protective baseline, and current AEE
+  - no major regression
+2. Plateau
+  - no improvement after N iterations
+3. Structural issue
+  - errors / invalid attribution
+4. Scope violation
+  - touches entry or runtime systems
 
 CURRENT FOCUS
 
@@ -100,6 +130,10 @@ Examples of allowed composite discovery:
 - time + state-transition
 - pnl + opportunity-cost
 
+The hard rule in discovery:
+
+- do not lose attribution
+
 AEE INFRASTRUCTURE
 
 - trade-state packet standardization
@@ -114,16 +148,24 @@ Every experiment must preserve attribution and emit:
 - experiment_id
 - kernel_id
 - kernel_type
-- component definitions
+- components
+- component_definitions
 - parameter_set_id
-- parameters
-- stop logic variant
-- total delta vs baseline
-- total delta vs current
-- per-scenario results
+- parameter_set
+- total_delta_vs_baseline
+- total_delta_vs_current
+- per-scenario deltas
 - reason-code breakdown
 - transition breakdown
 - regressions
+
+BASELINE REQUIREMENTS
+
+Every run must compare:
+
+- current AEE
+- static 1:1 baseline
+- simple protective baseline
 
 ENTRY SUPPORT (LIMITED)
 
@@ -217,23 +259,24 @@ Aggregate reporting must include:
 
 Scenario reporting must include:
 
-- delta per scenario
+- per-scenario delta
 - reason concentration
 - transition concentration
+
+HARD RULES
+
+- Do NOT test only one idea
+- Do test many candidates
+- Do NOT lose attribution
+- Do use fixed replay slice
+- Do compare every run to baseline
 
 SUCCESS CONDITION
 
 Codespaces work is successful when:
 
-- a ranked list of kernel candidates is produced
-- candidates outperform baseline on the fixed replay slice
-- attribution remains clear
-- no major regressions are hidden
+"A ranked set of kernel candidates that outperform baseline with attribution and no major regression"
 
 FINAL RULE
 
-Codespaces builds the brain of the system.
-
-Local runs the body of the system.
-
-Do not mix them.
+"Codespaces discovers truth. Do not interrupt the loop unless a stop condition is hit."
