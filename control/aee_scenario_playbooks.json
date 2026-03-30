@@ -1,0 +1,56 @@
+{
+  "FAST_PANIC_FAILURE": {
+    "focus": "init/protect panic suppression",
+    "objective": "Reduce early panic exits without increasing terminal loss tail.",
+    "next_checks": [
+      "raise panic activation evidence threshold in PROTECT",
+      "require dual-condition panic confirmation",
+      "retest fast-failure windows on fixed benchmark slice"
+    ]
+  },
+  "PROTECT_LAYER_BREAK": {
+    "focus": "protect state guard calibration",
+    "objective": "Prevent direct PROTECT->PANIC transitions caused by transient noise.",
+    "next_checks": [
+      "add minimum hold bars before panic eligibility",
+      "compare protect hold outcomes vs immediate panic outcomes",
+      "validate giveback impact remains bounded"
+    ]
+  },
+  "BUILD_GIVEBACK_CASCADE": {
+    "focus": "build state giveback control",
+    "objective": "Convert high-giveback BUILD exits into harvest-safe exits.",
+    "next_checks": [
+      "introduce earlier BUILD->HARVEST transition candidate",
+      "tighten giveback guard before panic boundary",
+      "measure delta_vs_baseline and max_giveback_r shifts"
+    ]
+  },
+  "LOCKED_PROFIT_HOLD": {
+    "focus": "runner/harvest protection",
+    "objective": "Preserve scenarios where locked profit already outperforms baseline.",
+    "next_checks": [
+      "freeze current lock thresholds for this scenario",
+      "verify no regression in time-in-trade efficiency",
+      "expand sample size before modifying logic"
+    ]
+  },
+  "BASELINE_OUTPERFORM": {
+    "focus": "stability verification",
+    "objective": "Confirm outperformance remains stable across larger fixed slices.",
+    "next_checks": [
+      "repeat benchmark with additional fixed contexts",
+      "check reason_code drift",
+      "promote only after consistency proof"
+    ]
+  },
+  "BASELINE_UNDERPERFORM": {
+    "focus": "loss source isolation",
+    "objective": "Identify which transition/reason combinations drive negative delta.",
+    "next_checks": [
+      "prioritize top negative scenario buckets",
+      "compare against transition-level baseline report",
+      "target one guard change at a time"
+    ]
+  }
+}

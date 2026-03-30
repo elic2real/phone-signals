@@ -1,0 +1,97 @@
+{
+  "input_summary": {
+    "trade_count": 20,
+    "kernel_summary": {
+      "count": 20,
+      "avg_final_money_result_pips": -0.6050000000000777,
+      "avg_baseline_money_result_pips": 0.0,
+      "avg_delta_vs_baseline_pips": -0.6050000000000777,
+      "avg_time_in_trade_sec": 354.0,
+      "avg_max_giveback_r": 1.3299999999999792,
+      "avg_locked_profit_pips": 0.0
+    }
+  },
+  "scenario_order": [
+    "FAST_PANIC_FAILURE",
+    "PROTECT_LAYER_BREAK",
+    "BUILD_GIVEBACK_CASCADE",
+    "LOCKED_PROFIT_HOLD",
+    "BASELINE_OUTPERFORM",
+    "BASELINE_UNDERPERFORM"
+  ],
+  "by_scenario": {
+    "BASELINE_OUTPERFORM": {
+      "count": 1,
+      "avg_final_money_result_pips": -1.2999999999996348,
+      "avg_baseline_money_result_pips": -1.5,
+      "avg_delta_vs_baseline_pips": 0.20000000000036522,
+      "avg_time_in_trade_sec": 240.0,
+      "avg_max_giveback_r": 1.5333333333330164,
+      "avg_locked_profit_pips": 0.0,
+      "top_reason_codes": {
+        "panic_trigger": 1
+      },
+      "top_state_transitions": {
+        "BUILD->PANIC": 1
+      },
+      "playbook": {
+        "focus": "stability verification",
+        "objective": "Confirm outperformance remains stable across larger fixed slices.",
+        "next_checks": [
+          "repeat benchmark with additional fixed contexts",
+          "check reason_code drift",
+          "promote only after consistency proof"
+        ]
+      }
+    },
+    "BUILD_GIVEBACK_CASCADE": {
+      "count": 12,
+      "avg_final_money_result_pips": 0.22499999999999373,
+      "avg_baseline_money_result_pips": 1.0,
+      "avg_delta_vs_baseline_pips": -0.7750000000000062,
+      "avg_time_in_trade_sec": 480.0,
+      "avg_max_giveback_r": 1.2999999999998815,
+      "avg_locked_profit_pips": 0.0,
+      "top_reason_codes": {
+        "build_safety_breach": 12
+      },
+      "top_state_transitions": {
+        "BUILD->PANIC": 12
+      },
+      "playbook": {
+        "focus": "build state giveback control",
+        "objective": "Convert high-giveback BUILD exits into harvest-safe exits.",
+        "next_checks": [
+          "introduce earlier BUILD->HARVEST transition candidate",
+          "tighten giveback guard before panic boundary",
+          "measure delta_vs_baseline and max_giveback_r shifts"
+        ]
+      }
+    },
+    "FAST_PANIC_FAILURE": {
+      "count": 7,
+      "avg_final_money_result_pips": -1.928571428571692,
+      "avg_baseline_money_result_pips": -1.5,
+      "avg_delta_vs_baseline_pips": -0.428571428571692,
+      "avg_time_in_trade_sec": 154.28571428571428,
+      "avg_max_giveback_r": 1.3523809523811416,
+      "avg_locked_profit_pips": 0.0,
+      "top_reason_codes": {
+        "panic_trigger": 7
+      },
+      "top_state_transitions": {
+        "PROTECT->PANIC": 6,
+        "BUILD->PANIC": 1
+      },
+      "playbook": {
+        "focus": "init/protect panic suppression",
+        "objective": "Reduce early panic exits without increasing terminal loss tail.",
+        "next_checks": [
+          "raise panic activation evidence threshold in PROTECT",
+          "require dual-condition panic confirmation",
+          "retest fast-failure windows on fixed benchmark slice"
+        ]
+      }
+    }
+  }
+}
