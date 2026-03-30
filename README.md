@@ -81,3 +81,82 @@ Document any relocation plan in `LOCKED_CEILING_PROCESS.md` or a new `ARTIFACT_M
 	- repo-wide compile loop using `py_compile`
 	- bounded startup check: `PYTHONUNBUFFERED=1 timeout 25s python3 phone_bot.py`
 
+## RCP execution protocol (worktree + audit gates)
+
+RCP is mandatory for coding tasks to enforce bounded scope, verification, and resumable state.
+
+### Workspace and branch policy
+
+- **Active coding workspace**: `..\phone-signals-publish-clean`
+- **Operational branch**: `publish/clean-backup-20260326`
+- **Hard rule**: do not perform new coding work in the old blocked tree; use it only for artifact recovery.
+
+### Mandatory Git flow (each task block)
+
+1. `git pull origin publish/clean-backup-20260326`
+2. Complete only the scoped task.
+3. `git add .`
+4. `git commit -m "<task_id>: <what changed>"`
+5. `git push origin publish/clean-backup-20260326`
+
+Rules:
+- Never push directly to `main`.
+- Pull before push.
+- Commit/push at end of each completed task block.
+- If push fails, resolve sync/conflicts before continuing implementation.
+
+### Mandatory audit gates (no code before pass)
+
+Before writing code, the assistant must produce and pass these checks:
+
+1. **Task classification**
+   - Classify: Implementation, Architectural, Infrastructure, Data Contract, Objective,
+     Logic, Abstraction, Kernel, Scenario, Economic, Interaction, Process.
+   - Output: `AUDIT_CLASSIFICATION` with Primary, Secondary, Risk Areas.
+
+2. **Abstraction check**
+   - Confirm implementation level is correct.
+   - If solving symptom instead of structure: **STOP and redesign**.
+
+3. **Kernel check**
+   - Confirm required global rule/kernel exists and is proven.
+   - If missing: **STOP and define kernel first**.
+
+4. **Scenario check**
+   - Confirm scenario-specific vs universal logic is correct.
+   - Create/extend scenario classification if needed.
+
+5. **Objective check**
+   - Confirm direct objective alignment (not proxy optimization without justification).
+
+6. **Interaction check**
+   - Evaluate conflicts with entry, AEE, stop, and runner logic.
+   - Resolve conflicts before implementation.
+
+7. **Infrastructure check**
+   - Confirm isolated testability, replayability, baseline availability.
+   - If not testable: redesign.
+
+8. **Economic reality check**
+   - Validate spread, slippage, latency, and broker constraints.
+
+9. **Go / no-go decision**
+   - Output `GO_DECISION` (`APPROVED` or `REJECTED`) with explicit reason.
+
+10. **Post-implementation audit**
+    - Verify objective alignment, abstraction integrity, interaction safety, and usable outputs/logs.
+
+### Required RCP artifacts per phase
+
+- `control/preflight_report.json` (intent + scope + validation plan)
+- `control/validation_result.json` (commands run + pass/fail + evidence)
+- `control/adjudication.json` (promote/hold/reject + next task + forbidden next actions)
+
+### Stop conditions
+
+Stop and report immediately when any of the following occurs:
+- Kernel missing for the requested logic.
+- Required audit gate fails.
+- Required proof cannot be produced.
+- Remote sync/push cannot be completed.
+
