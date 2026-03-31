@@ -1,0 +1,807 @@
+{
+  "generated_at": "2026-03-31T03:52:03Z",
+  "phase": "setup",
+  "stage": "promotion",
+  "sample_floors": {
+    "discovery": 15,
+    "promotion": 30,
+    "effective": 30
+  },
+  "total_setups": 9,
+  "passed_setups": 0,
+  "failed_setups": 9,
+  "results": [
+    {
+      "setup_id": "EUR_USD_London_LONG_2pip_sweep_retest_level",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.1257"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=17 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "EUR_USD_London_LONG_3pip_sweep_retest_level",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 3,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.3698"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=17 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "EUR_USD_London_LONG_10pip_breakout_retest_level",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 10,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.5469"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=17 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "EUR_USD_London_SHORT_2pip_sweep_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 2,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.0174"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=29 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "EUR_USD_London_SHORT_3pip_sweep_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 3,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.3143"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=28 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "AUD_USD_London_SHORT_5pip_sweep_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 5,
+        "pair": "AUD_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.1763"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=20 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 5,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=1.2211"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=24 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "AUD_USD_London_SHORT_10pip_drift_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 10,
+        "pair": "AUD_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.3132"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=18 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    },
+    {
+      "setup_id": "EUR_USD_London_SHORT_10pip_continuation_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 10,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=1.0813"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": false,
+          "reason": "population_size=23 below minimum=30 (stage=promotion)"
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ],
+      "stage_status": "DISCOVERY_CANDIDATE"
+    }
+  ]
+}
