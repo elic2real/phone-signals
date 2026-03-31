@@ -1,0 +1,60 @@
+{
+  "domain": {
+    "pair": "USD_JPY",
+    "session": "London",
+    "direction": "SHORT",
+    "weekday": "Friday"
+  },
+  "sample_sizes_tested": [
+    100,
+    200,
+    300
+  ],
+  "thresholds": {
+    "expectancy_drift": 0.2,
+    "trigger_quality_drift": 0.15
+  },
+  "summaries": [
+    {
+      "sample_size": 100,
+      "viable_business_count": 5,
+      "setup_count": 2,
+      "trigger_count": 2,
+      "best_setup_expectancy": 2.5936,
+      "best_trigger_quality_score": 0.7625,
+      "discovery_status": "PASS",
+      "promotion_status": "FAIL",
+      "trigger_distinctness": "UNKNOWN"
+    },
+    {
+      "sample_size": 200,
+      "viable_business_count": 5,
+      "setup_count": 4,
+      "trigger_count": 4,
+      "best_setup_expectancy": 2.4141,
+      "best_trigger_quality_score": 0.7567,
+      "discovery_status": "PASS",
+      "promotion_status": "PASS",
+      "trigger_distinctness": "DISTINCT"
+    },
+    {
+      "sample_size": 300,
+      "viable_business_count": 5,
+      "setup_count": 3,
+      "trigger_count": 3,
+      "best_setup_expectancy": 2.4784,
+      "best_trigger_quality_score": 0.7585,
+      "discovery_status": "PASS",
+      "promotion_status": "PASS",
+      "trigger_distinctness": "DISTINCT"
+    }
+  ],
+  "stability": {
+    "stable": true,
+    "reasons": [],
+    "drifts": {
+      "expectancy_100_to_300": -0.04441702652683519,
+      "trigger_quality_100_to_300": -0.0052459016393442675
+    }
+  }
+}

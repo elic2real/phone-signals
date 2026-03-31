@@ -36,7 +36,6 @@ Optional:
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
 import subprocess
 import sys
@@ -59,6 +58,12 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_json_if_exists(path: Path) -> dict | None:
+    if not path.exists():
+        return None
+    return load_json(path)
+
+
 def pct_change(base: float | None, comparison: float | None) -> float | None:
     if base is None or comparison is None or base == 0:
         return None
@@ -74,6 +79,7 @@ def derive_batch_name(pair: str, session: str, direction: str, sample_size: int)
 def run_batch(pair: str, direction: str, session: str, weekday: str, sample_size: int) -> None:
     batch_name = derive_batch_name(pair, session, direction, sample_size)
     art_dir = WORKSPACE / "PC2" / "discovery" / "scale_batches" / batch_name
+    val_dir = WORKSPACE / "control" / "scale_batch_validation" / batch_name
     core_artifacts = [
         "business_viability_report.json",
         "path_family_report.json",
@@ -82,9 +88,19 @@ def run_batch(pair: str, direction: str, session: str, weekday: str, sample_size
         "trigger_truth.json",
         "ceiling_report.json",
     ]
-    if all((art_dir / fn).exists() for fn in core_artifacts):
-        log(f"  sample={sample_size}: artifacts exist, skipping Stage A")
-        # Still re-run validation in case it's missing
+    required_validation_reports = [
+        "setup_phase_reports_discovery/validation_report.json",
+        "setup_phase_reports_promotion/validation_report.json",
+    ]
+    artifacts_ready = all((art_dir / fn).exists() for fn in core_artifacts)
+    validations_ready = all((val_dir / fn).exists() for fn in required_validation_reports)
+    if artifacts_ready and validations_ready:
+        log(f"  sample={sample_size}: artifacts + validations exist, skipping batch run")
+        return
+
+    if artifacts_ready:
+        log(f"  sample={sample_size}: artifacts exist, re-running validation chain")
+
     log(f"  Launching run_scale_batch for sample={sample_size}")
     result = subprocess.run(
         [
@@ -100,6 +116,14 @@ def run_batch(pair: str, direction: str, session: str, weekday: str, sample_size
         capture_output=False,
     )
     if result.returncode != 0:
+        artifacts_ready = all((art_dir / fn).exists() for fn in core_artifacts)
+        validations_ready = all((val_dir / fn).exists() for fn in required_validation_reports)
+        if artifacts_ready and validations_ready:
+            log(
+                f"  WARN: run_scale_batch exited {result.returncode} but required artifacts/"
+                f"validations exist; continuing stability evaluation"
+            )
+            return
         log(f"  FAIL: run_scale_batch for sample={sample_size} exited {result.returncode}")
         sys.exit(result.returncode)
 
@@ -116,7 +140,9 @@ def summarize_batch(pair: str, session: str, direction: str, sample_size: int) -
     viability = load_json(art_dir / "business_viability_report.json")
     discovery_val = load_json(val_dir / "setup_phase_reports_discovery" / "validation_report.json")
     promotion_val = load_json(val_dir / "setup_phase_reports_promotion" / "validation_report.json")
-    trigger_val = load_json(val_dir / "trigger_validation_reports" / "trigger_validation_report.json")
+    trigger_val = load_json_if_exists(
+        val_dir / "trigger_validation_reports" / "trigger_validation_report.json"
+    )
 
     setup_records = setup.get("records", [])
     trigger_records = trigger.get("records", [])
@@ -142,7 +168,10 @@ def summarize_batch(pair: str, session: str, direction: str, sample_size: int) -
         "best_trigger_quality_score": best_trigger_quality,
         "discovery_status": discovery_val.get("status"),
         "promotion_status": promotion_val.get("status"),
-        "trigger_distinctness": trigger_val.get("sibling_distinctness", {}).get("status"),
+        "trigger_distinctness": (
+            trigger_val.get("sibling_distinctness", {}).get("status")
+            if trigger_val is not None else "UNKNOWN"
+        ),
     }
 
 
@@ -179,6 +208,12 @@ def classify_stability(
             f"trigger quality dropped {abs(q_drift)*100:.1f}% "
             f"(threshold {quality_threshold*100:.0f}%)"
         )
+    if base.get("setup_count", 0) == 0:
+        stable = False
+        reasons.append("no setups at smallest sample size")
+    if base.get("trigger_count", 0) == 0:
+        stable = False
+        reasons.append("no triggers at smallest sample size")
     if end.get("setup_count", 0) == 0:
         stable = False
         reasons.append("no setups remain at largest sample size")

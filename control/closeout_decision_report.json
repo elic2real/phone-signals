@@ -1,0 +1,296 @@
+{
+  "invalidated_batches": [
+    "eur_usd_newyork_short_s200",
+    "eur_usd_newyork_long_s200"
+  ],
+  "invalidated_reason": "DATA_UNAVAILABLE: NewYork source duplicates London source except session label",
+  "density_formula_audit": {
+    "raw_metric": "theoretical_equity_per_hour_ceiling",
+    "normalized_metric": "theoretical_equity_per_hour_ceiling / session_instance_count",
+    "status": "APPLIED"
+  },
+  "rows": [
+    {
+      "batch": "eur_usd_london_short_s200_fix",
+      "domain": "EUR_USD/London/SHORT",
+      "setup_count": 3,
+      "trigger_count": 3,
+      "expectancy": 0.7342,
+      "trigger_quality": 0.6036,
+      "density_raw_per_hour": 7828.681645042456,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.069585384044167,
+      "density_status": "OK",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 5
+    },
+    {
+      "batch": "eur_usd_london_long_s200",
+      "domain": "EUR_USD/London/LONG",
+      "setup_count": 2,
+      "trigger_count": 2,
+      "expectancy": 0.6542,
+      "trigger_quality": 0.4875,
+      "density_raw_per_hour": 7828.681645042456,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.069585384044167,
+      "density_status": "OK",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 6
+    },
+    {
+      "batch": "aud_usd_london_short_s200",
+      "domain": "AUD_USD/London/SHORT",
+      "setup_count": 3,
+      "trigger_count": 3,
+      "expectancy": 0.4368,
+      "trigger_quality": 0.6202,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 7
+    },
+    {
+      "batch": "aud_usd_london_long_s200",
+      "domain": "AUD_USD/London/LONG",
+      "setup_count": 0,
+      "trigger_count": 0,
+      "expectancy": null,
+      "trigger_quality": null,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      }
+    },
+    {
+      "batch": "gbp_usd_london_short_s200",
+      "domain": "GBP_USD/London/SHORT",
+      "setup_count": 1,
+      "trigger_count": 1,
+      "expectancy": 1.3209,
+      "trigger_quality": 0.7484,
+      "density_raw_per_hour": 8022.167121359144,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.39259953482328,
+      "density_status": "OK",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 3
+    },
+    {
+      "batch": "gbp_usd_london_long_s200",
+      "domain": "GBP_USD/London/LONG",
+      "setup_count": 3,
+      "trigger_count": 3,
+      "expectancy": 1.1983,
+      "trigger_quality": 0.7087,
+      "density_raw_per_hour": 8022.167121359144,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.39259953482328,
+      "density_status": "OK",
+      "stability": {
+        "stable": false,
+        "reasons": [
+          "no setups at smallest sample size",
+          "no triggers at smallest sample size"
+        ],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 4
+    },
+    {
+      "batch": "usd_jpy_london_short_s200",
+      "domain": "USD_JPY/London/SHORT",
+      "setup_count": 4,
+      "trigger_count": 4,
+      "expectancy": 2.4141,
+      "trigger_quality": 0.7567,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": true,
+        "reasons": [],
+        "expectancy_drift_100_to_300": -0.04441702652683519
+      },
+      "rank": 2
+    },
+    {
+      "batch": "usd_jpy_london_long_s200",
+      "domain": "USD_JPY/London/LONG",
+      "setup_count": 5,
+      "trigger_count": 5,
+      "expectancy": 3.6638,
+      "trigger_quality": 0.845,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": true,
+        "reasons": [],
+        "expectancy_drift_100_to_300": -0.062207039008500865
+      },
+      "rank": 1
+    }
+  ],
+  "ranked_survivors": [
+    {
+      "batch": "usd_jpy_london_long_s200",
+      "domain": "USD_JPY/London/LONG",
+      "setup_count": 5,
+      "trigger_count": 5,
+      "expectancy": 3.6638,
+      "trigger_quality": 0.845,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": true,
+        "reasons": [],
+        "expectancy_drift_100_to_300": -0.062207039008500865
+      },
+      "rank": 1
+    },
+    {
+      "batch": "usd_jpy_london_short_s200",
+      "domain": "USD_JPY/London/SHORT",
+      "setup_count": 4,
+      "trigger_count": 4,
+      "expectancy": 2.4141,
+      "trigger_quality": 0.7567,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": true,
+        "reasons": [],
+        "expectancy_drift_100_to_300": -0.04441702652683519
+      },
+      "rank": 2
+    },
+    {
+      "batch": "gbp_usd_london_short_s200",
+      "domain": "GBP_USD/London/SHORT",
+      "setup_count": 1,
+      "trigger_count": 1,
+      "expectancy": 1.3209,
+      "trigger_quality": 0.7484,
+      "density_raw_per_hour": 8022.167121359144,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.39259953482328,
+      "density_status": "OK",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 3
+    },
+    {
+      "batch": "gbp_usd_london_long_s200",
+      "domain": "GBP_USD/London/LONG",
+      "setup_count": 3,
+      "trigger_count": 3,
+      "expectancy": 1.1983,
+      "trigger_quality": 0.7087,
+      "density_raw_per_hour": 8022.167121359144,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.39259953482328,
+      "density_status": "OK",
+      "stability": {
+        "stable": false,
+        "reasons": [
+          "no setups at smallest sample size",
+          "no triggers at smallest sample size"
+        ],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 4
+    },
+    {
+      "batch": "eur_usd_london_short_s200_fix",
+      "domain": "EUR_USD/London/SHORT",
+      "setup_count": 3,
+      "trigger_count": 3,
+      "expectancy": 0.7342,
+      "trigger_quality": 0.6036,
+      "density_raw_per_hour": 7828.681645042456,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.069585384044167,
+      "density_status": "OK",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 5
+    },
+    {
+      "batch": "eur_usd_london_long_s200",
+      "domain": "EUR_USD/London/LONG",
+      "setup_count": 2,
+      "trigger_count": 2,
+      "expectancy": 0.6542,
+      "trigger_quality": 0.4875,
+      "density_raw_per_hour": 7828.681645042456,
+      "session_instance_count": 599,
+      "density_normalized_per_hour": 13.069585384044167,
+      "density_status": "OK",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 6
+    },
+    {
+      "batch": "aud_usd_london_short_s200",
+      "domain": "AUD_USD/London/SHORT",
+      "setup_count": 3,
+      "trigger_count": 3,
+      "expectancy": 0.4368,
+      "trigger_quality": 0.6202,
+      "density_raw_per_hour": null,
+      "session_instance_count": 1,
+      "density_normalized_per_hour": null,
+      "density_status": "MISSING_ODM",
+      "stability": {
+        "stable": null,
+        "reasons": [],
+        "expectancy_drift_100_to_300": null
+      },
+      "rank": 7
+    }
+  ],
+  "lead_decision": {
+    "domain": "USD_JPY/London/LONG",
+    "decision": "GO_FORWARD",
+    "reason": "Stable at s100\u2192s300 with expectancy drift within <=20% threshold"
+  }
+}

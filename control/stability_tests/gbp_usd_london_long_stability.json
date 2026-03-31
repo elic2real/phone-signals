@@ -1,0 +1,63 @@
+{
+  "domain": {
+    "pair": "GBP_USD",
+    "session": "London",
+    "direction": "LONG",
+    "weekday": "Friday"
+  },
+  "sample_sizes_tested": [
+    100,
+    200,
+    300
+  ],
+  "thresholds": {
+    "expectancy_drift": 0.2,
+    "trigger_quality_drift": 0.15
+  },
+  "summaries": [
+    {
+      "sample_size": 100,
+      "viable_business_count": 2,
+      "setup_count": 0,
+      "trigger_count": 0,
+      "best_setup_expectancy": null,
+      "best_trigger_quality_score": null,
+      "discovery_status": "PASS",
+      "promotion_status": "PASS",
+      "trigger_distinctness": "DISTINCT"
+    },
+    {
+      "sample_size": 200,
+      "viable_business_count": 4,
+      "setup_count": 3,
+      "trigger_count": 3,
+      "best_setup_expectancy": 1.1983,
+      "best_trigger_quality_score": 0.7087,
+      "discovery_status": "PASS",
+      "promotion_status": "PASS",
+      "trigger_distinctness": "DISTINCT"
+    },
+    {
+      "sample_size": 300,
+      "viable_business_count": 4,
+      "setup_count": 2,
+      "trigger_count": 2,
+      "best_setup_expectancy": 0.7447,
+      "best_trigger_quality_score": 0.5422,
+      "discovery_status": "PASS",
+      "promotion_status": "PASS",
+      "trigger_distinctness": "DISTINCT"
+    }
+  ],
+  "stability": {
+    "stable": false,
+    "reasons": [
+      "no setups at smallest sample size",
+      "no triggers at smallest sample size"
+    ],
+    "drifts": {
+      "expectancy_100_to_300": null,
+      "trigger_quality_100_to_300": null
+    }
+  }
+}
