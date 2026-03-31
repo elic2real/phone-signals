@@ -1,28 +1,24 @@
 {
   "$artifact": "trigger_truth",
   "produced_by": "PC2_DISCOVERY",
-  "run_ts_utc": "2026-03-31T02:42:06.577707+00:00",
+  "run_ts_utc": "2026-03-31T02:56:25.259484+00:00",
   "derived_from": [
     "setup_truth.json"
   ],
   "trigger_doctrine": "The engine enters inside an execution band when a stateful event grammar confirms directional dominance before business decay drops below tradable viability.",
   "summary": {
     "candidate_setups": 9,
-    "valid_triggers": 11,
+    "valid_triggers": 9,
     "invalid_triggers": 0,
     "trigger_families": [
-      "acceptance_failure",
-      "displacement",
-      "failed_second_push",
-      "reassertion",
-      "reclaim_failure"
+      "reassertion"
     ]
   },
   "records": [
     {
-      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "reclaim_failure",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "LONG",
         "target_bucket": 2,
@@ -68,7 +64,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "reclaim_failure_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -117,18 +113,18 @@
         "opportunity_cost_score": 0.6809
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0075,
+        "expectancy_delta_vs_setup": 0.0138,
         "mae_improvement": 0.0,
         "smoothness_improvement": 0.6051,
         "spread_efficiency_improvement": 0.0882,
         "time_compression_improvement": 0.0873,
         "fill_survivability": 0.6566,
-        "trigger_quality_score": 0.2624
+        "trigger_quality_score": 0.3124
       },
       "criteria": {
-        "trigger_family": "reclaim_failure",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
-        "directional_bias": "reversal",
+        "directional_bias": "continuation",
         "min_continuation_strength": 0.4571,
         "min_rejection_strength": 0.3927,
         "max_failed_push_count": 6,
@@ -152,9 +148,9 @@
       "status": "valid"
     },
     {
-      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "reclaim_failure",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "LONG",
         "target_bucket": 3,
@@ -200,7 +196,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "reclaim_failure_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -249,18 +245,18 @@
         "opportunity_cost_score": 0.5035
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0222,
+        "expectancy_delta_vs_setup": 0.0407,
         "mae_improvement": 0.0,
         "smoothness_improvement": 0.5825,
         "spread_efficiency_improvement": 0.0882,
         "time_compression_improvement": 0.3255,
         "fill_survivability": 0.6383,
-        "trigger_quality_score": 0.3285
+        "trigger_quality_score": 0.3785
       },
       "criteria": {
-        "trigger_family": "reclaim_failure",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
-        "directional_bias": "reversal",
+        "directional_bias": "continuation",
         "min_continuation_strength": 0.4562,
         "min_rejection_strength": 0.3272,
         "max_failed_push_count": 5,
@@ -284,9 +280,9 @@
       "status": "valid"
     },
     {
-      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level::ACCEPTANCE_FAILURE",
+      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "acceptance_failure",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "LONG",
         "target_bucket": 10,
@@ -332,7 +328,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "acceptance_failure_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -381,16 +377,16 @@
         "opportunity_cost_score": 0.1639
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0492,
+        "expectancy_delta_vs_setup": 0.0602,
         "mae_improvement": 0.7964,
         "smoothness_improvement": 0.7413,
         "spread_efficiency_improvement": 0.1819,
         "time_compression_improvement": 0.7603,
         "fill_survivability": 0.8115,
-        "trigger_quality_score": 0.6536
+        "trigger_quality_score": 0.6736
       },
       "criteria": {
-        "trigger_family": "acceptance_failure",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
         "directional_bias": "continuation",
         "min_continuation_strength": 0.5689,
@@ -416,9 +412,9 @@
       "status": "valid"
     },
     {
-      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "reclaim_failure",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "SHORT",
         "target_bucket": 2,
@@ -464,7 +460,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "reclaim_failure_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -513,18 +509,18 @@
         "opportunity_cost_score": 0.7925
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.001,
+        "expectancy_delta_vs_setup": 0.0019,
         "mae_improvement": 0.0,
         "smoothness_improvement": 0.6017,
         "spread_efficiency_improvement": 0.0904,
         "time_compression_improvement": 0.05,
         "fill_survivability": 0.6842,
-        "trigger_quality_score": 0.2428
+        "trigger_quality_score": 0.2928
       },
       "criteria": {
-        "trigger_family": "reclaim_failure",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
-        "directional_bias": "reversal",
+        "directional_bias": "continuation",
         "min_continuation_strength": 0.2984,
         "min_rejection_strength": 0.4429,
         "max_failed_push_count": 6,
@@ -548,9 +544,9 @@
       "status": "valid"
     },
     {
-      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "reclaim_failure",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "SHORT",
         "target_bucket": 3,
@@ -596,7 +592,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "reclaim_failure_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -645,18 +641,18 @@
         "opportunity_cost_score": 0.597
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0189,
+        "expectancy_delta_vs_setup": 0.0346,
         "mae_improvement": 0.0,
         "smoothness_improvement": 0.6019,
         "spread_efficiency_improvement": 0.0953,
         "time_compression_improvement": 0.2676,
         "fill_survivability": 0.6811,
-        "trigger_quality_score": 0.3212
+        "trigger_quality_score": 0.3712
       },
       "criteria": {
-        "trigger_family": "reclaim_failure",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
-        "directional_bias": "reversal",
+        "directional_bias": "continuation",
         "min_continuation_strength": 0.3328,
         "min_rejection_strength": 0.3587,
         "max_failed_push_count": 5,
@@ -680,9 +676,9 @@
       "status": "valid"
     },
     {
-      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "reclaim_failure",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "SHORT",
         "target_bucket": 5,
@@ -728,7 +724,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "reclaim_failure_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -777,18 +773,18 @@
         "opportunity_cost_score": 0.3273
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0106,
+        "expectancy_delta_vs_setup": 0.0194,
         "mae_improvement": 0.5648,
         "smoothness_improvement": 0.6732,
         "spread_efficiency_improvement": 0.0811,
         "time_compression_improvement": 0.5795,
         "fill_survivability": 0.7185,
-        "trigger_quality_score": 0.4598
+        "trigger_quality_score": 0.5098
       },
       "criteria": {
-        "trigger_family": "reclaim_failure",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
-        "directional_bias": "reversal",
+        "directional_bias": "continuation",
         "min_continuation_strength": 0.399,
         "min_rejection_strength": 0.2958,
         "max_failed_push_count": 4,
@@ -944,273 +940,9 @@
       "status": "valid"
     },
     {
-      "trigger_label": "trigger::EUR_USD_London_SHORT_5pip_continuation_retest_level::ACCEPTANCE_FAILURE",
+      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level::REASSERTION",
       "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "acceptance_failure",
-      "business_key": {
-        "direction": "SHORT",
-        "target_bucket": 5,
-        "pair": "EUR_USD",
-        "session": "LONDON",
-        "path_family": "continuation",
-        "structure_label": "retest_level",
-        "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level"
-      },
-      "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
-      "structure_label": "retest_level",
-      "path_family": "continuation",
-      "direction": "SHORT",
-      "target_bucket": 5,
-      "pair": "EUR_USD",
-      "session": "London",
-      "host_zone": {
-        "zone_type": "retest_level",
-        "zone_width_pips": 2.2685,
-        "acceptance_boundary": "host_zone_outer_boundary",
-        "rejection_boundary": "host_zone_inner_rejection_boundary",
-        "consumption_boundary": "host_zone_consumption_boundary"
-      },
-      "execution_band": {
-        "band_width_pips": 0.828,
-        "entry_preference": "inner_band_retest",
-        "max_spread_to_band_ratio": 0.25
-      },
-      "states": {
-        "ARMED": {
-          "entry_conditions": [
-            "price_inside_host_zone",
-            "residual_business_above_min",
-            "spread_efficiency_above_min"
-          ],
-          "transition_to": "MONITORING"
-        },
-        "MONITORING": {
-          "conditions": [
-            "price_inside_execution_band",
-            "failed_push_count_within_limit",
-            "no_opposite_acceptance",
-            "zone_residency_below_max"
-          ],
-          "transition_rules": {
-            "to_CONFIRMED": "acceptance_failure_confirmation_event",
-            "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
-            "to_INVALID": "acceptance_boundary_broken_against_direction"
-          }
-        },
-        "CONFIRMED": {
-          "conditions": [
-            "micro_displacement_above_min",
-            "directional_dominance_short",
-            "latency_adjusted_fill_viable"
-          ],
-          "transition_to": "EXECUTE"
-        },
-        "EXECUTE": {
-          "order_policy": "zone_marketable_limit_or_market_if_inside_slippage_budget"
-        },
-        "EXPIRED": {},
-        "INVALID": {}
-      },
-      "hazard_model": {
-        "edge_half_life_sec": 406,
-        "zone_residency_sec_max": 345,
-        "residual_business_decay_rate": 0.0008,
-        "stagnation_hazard": 0.3179,
-        "failure_mode_hazard": {
-          "opposite_acceptance": 0.3861,
-          "dominance_break": 0.08,
-          "temporal_spoilage": 0.2208
-        }
-      },
-      "directional_dominance": {
-        "ratio": 4.8471,
-        "impulse_asymmetry": 0.4655,
-        "signed_displacement_efficiency": 0.7633
-      },
-      "fill_quality": {
-        "fill_quality_budget": 0.8024,
-        "slippage_budget_pips": 0.2245,
-        "latency_tolerance_ms": 1679,
-        "spread_to_business_ratio": 0.1702,
-        "execution_survivability": 0.7683
-      },
-      "path_quality": {
-        "path_quality_score": 0.7311,
-        "adverse_path_burden": 0.3356,
-        "path_toxicity": 0.2861,
-        "opportunity_cost_score": 0.2247
-      },
-      "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.1099,
-        "mae_improvement": 0.6644,
-        "smoothness_improvement": 0.7279,
-        "spread_efficiency_improvement": 0.1136,
-        "time_compression_improvement": 0.6821,
-        "fill_survivability": 0.7614,
-        "trigger_quality_score": 0.7088
-      },
-      "criteria": {
-        "trigger_family": "acceptance_failure",
-        "entry_position_required": "retest",
-        "directional_bias": "continuation",
-        "min_continuation_strength": 0.5279,
-        "min_rejection_strength": 0.12,
-        "max_failed_push_count": 2,
-        "min_micro_displacement_quality": 0.687,
-        "max_pre_entry_mae_to_bucket_ratio": 0.3524,
-        "min_spread_efficiency": 0.8042,
-        "directional_dominance_ratio_min": 4.12,
-        "impulse_asymmetry_min": 0.3724,
-        "edge_half_life_sec": 406,
-        "zone_residency_sec_max": 345,
-        "residual_business_decay_rate": 0.0008,
-        "stagnation_hazard_max": 0.3338,
-        "notes": [
-          "State-machine trigger specification.",
-          "No AEE logic included.",
-          "No promotion decision included."
-        ]
-      },
-      "sample_count": 24,
-      "expectancy": 1.2211,
-      "status": "valid"
-    },
-    {
-      "trigger_label": "trigger::EUR_USD_London_SHORT_5pip_continuation_retest_level::FAILED_SECOND_PUSH",
-      "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "failed_second_push",
-      "business_key": {
-        "direction": "SHORT",
-        "target_bucket": 5,
-        "pair": "EUR_USD",
-        "session": "LONDON",
-        "path_family": "continuation",
-        "structure_label": "retest_level",
-        "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level"
-      },
-      "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
-      "structure_label": "retest_level",
-      "path_family": "continuation",
-      "direction": "SHORT",
-      "target_bucket": 5,
-      "pair": "EUR_USD",
-      "session": "London",
-      "host_zone": {
-        "zone_type": "retest_level",
-        "zone_width_pips": 2.2685,
-        "acceptance_boundary": "host_zone_outer_boundary",
-        "rejection_boundary": "host_zone_inner_rejection_boundary",
-        "consumption_boundary": "host_zone_consumption_boundary"
-      },
-      "execution_band": {
-        "band_width_pips": 0.828,
-        "entry_preference": "inner_band_retest",
-        "max_spread_to_band_ratio": 0.25
-      },
-      "states": {
-        "ARMED": {
-          "entry_conditions": [
-            "price_inside_host_zone",
-            "residual_business_above_min",
-            "spread_efficiency_above_min"
-          ],
-          "transition_to": "MONITORING"
-        },
-        "MONITORING": {
-          "conditions": [
-            "price_inside_execution_band",
-            "failed_push_count_within_limit",
-            "no_opposite_acceptance",
-            "zone_residency_below_max"
-          ],
-          "transition_rules": {
-            "to_CONFIRMED": "failed_second_push_confirmation_event",
-            "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
-            "to_INVALID": "acceptance_boundary_broken_against_direction"
-          }
-        },
-        "CONFIRMED": {
-          "conditions": [
-            "micro_displacement_above_min",
-            "directional_dominance_short",
-            "latency_adjusted_fill_viable"
-          ],
-          "transition_to": "EXECUTE"
-        },
-        "EXECUTE": {
-          "order_policy": "zone_marketable_limit_or_market_if_inside_slippage_budget"
-        },
-        "EXPIRED": {},
-        "INVALID": {}
-      },
-      "hazard_model": {
-        "edge_half_life_sec": 406,
-        "zone_residency_sec_max": 345,
-        "residual_business_decay_rate": 0.0008,
-        "stagnation_hazard": 0.3179,
-        "failure_mode_hazard": {
-          "opposite_acceptance": 0.3861,
-          "dominance_break": 0.08,
-          "temporal_spoilage": 0.2208
-        }
-      },
-      "directional_dominance": {
-        "ratio": 4.8471,
-        "impulse_asymmetry": 0.4655,
-        "signed_displacement_efficiency": 0.7633
-      },
-      "fill_quality": {
-        "fill_quality_budget": 0.8024,
-        "slippage_budget_pips": 0.2245,
-        "latency_tolerance_ms": 1679,
-        "spread_to_business_ratio": 0.1702,
-        "execution_survivability": 0.7683
-      },
-      "path_quality": {
-        "path_quality_score": 0.7311,
-        "adverse_path_burden": 0.3356,
-        "path_toxicity": 0.2861,
-        "opportunity_cost_score": 0.2247
-      },
-      "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0977,
-        "mae_improvement": 0.6644,
-        "smoothness_improvement": 0.7279,
-        "spread_efficiency_improvement": 0.1136,
-        "time_compression_improvement": 0.6821,
-        "fill_survivability": 0.7614,
-        "trigger_quality_score": 0.6988
-      },
-      "criteria": {
-        "trigger_family": "failed_second_push",
-        "entry_position_required": "retest",
-        "directional_bias": "continuation",
-        "min_continuation_strength": 0.5279,
-        "min_rejection_strength": 0.12,
-        "max_failed_push_count": 2,
-        "min_micro_displacement_quality": 0.687,
-        "max_pre_entry_mae_to_bucket_ratio": 0.3524,
-        "min_spread_efficiency": 0.8042,
-        "directional_dominance_ratio_min": 4.12,
-        "impulse_asymmetry_min": 0.3724,
-        "edge_half_life_sec": 406,
-        "zone_residency_sec_max": 345,
-        "residual_business_decay_rate": 0.0008,
-        "stagnation_hazard_max": 0.3338,
-        "notes": [
-          "State-machine trigger specification.",
-          "No AEE logic included.",
-          "No promotion decision included."
-        ]
-      },
-      "sample_count": 24,
-      "expectancy": 1.2211,
-      "status": "valid"
-    },
-    {
-      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level::DISPLACEMENT",
-      "logic_type": "STATEFUL_ZONE_EXECUTION",
-      "trigger_family": "displacement",
+      "trigger_family": "reassertion",
       "business_key": {
         "direction": "SHORT",
         "target_bucket": 10,
@@ -1256,7 +988,7 @@
             "zone_residency_below_max"
           ],
           "transition_rules": {
-            "to_CONFIRMED": "displacement_confirmation_event",
+            "to_CONFIRMED": "reassertion_confirmation_event",
             "to_EXPIRED": "stagnation_hazard_exceeded_or_half_life_exhausted",
             "to_INVALID": "acceptance_boundary_broken_against_direction"
           }
@@ -1305,16 +1037,16 @@
         "opportunity_cost_score": 0.1934
       },
       "trigger_quality": {
-        "expectancy_delta_vs_setup": 0.0219,
+        "expectancy_delta_vs_setup": 0.0345,
         "mae_improvement": 0.8668,
         "smoothness_improvement": 0.7139,
         "spread_efficiency_improvement": 0.0883,
         "time_compression_improvement": 0.7413,
         "fill_survivability": 0.7464,
-        "trigger_quality_score": 0.5804
+        "trigger_quality_score": 0.6203
       },
       "criteria": {
-        "trigger_family": "displacement",
+        "trigger_family": "reassertion",
         "entry_position_required": "retest",
         "directional_bias": "continuation",
         "min_continuation_strength": 0.454,

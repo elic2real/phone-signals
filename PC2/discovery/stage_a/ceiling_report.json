@@ -1,15 +1,15 @@
 {
   "$artifact": "ceiling_report",
   "produced_by": "PC2_DISCOVERY",
-  "run_ts_utc": "2026-03-31T02:42:06.766446+00:00",
+  "run_ts_utc": "2026-03-31T02:56:27.558709+00:00",
   "derived_from": [
     "setup_truth.json",
     "trigger_truth.json"
   ],
   "summary": {
-    "candidate_triggers": 11,
+    "candidate_triggers": 9,
     "valid_ceiling_records": 9,
-    "invalid_ceiling_records": 2
+    "invalid_ceiling_records": 0
   },
   "records": [
     {
@@ -20,8 +20,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_LONG_2pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level::RECLAIM_FAILURE",
-      "trigger_family": "reclaim_failure",
+      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -32,9 +32,9 @@
           "theoretical_pips_per_setup": 0.0192,
           "theoretical_pips_per_hour_ceiling": 0.0327,
           "criteria_snapshot": {
-            "trigger_family": "reclaim_failure",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
-            "directional_bias": "reversal",
+            "directional_bias": "continuation",
             "min_continuation_strength": 0.4571,
             "min_rejection_strength": 0.3927,
             "max_failed_push_count": 6,
@@ -53,7 +53,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.2624
+          "trigger_quality_score": 0.3124
         }
       }
     },
@@ -65,8 +65,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_LONG_3pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level::RECLAIM_FAILURE",
-      "trigger_family": "reclaim_failure",
+      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -77,9 +77,9 @@
           "theoretical_pips_per_setup": 0.0522,
           "theoretical_pips_per_hour_ceiling": 0.0888,
           "criteria_snapshot": {
-            "trigger_family": "reclaim_failure",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
-            "directional_bias": "reversal",
+            "directional_bias": "continuation",
             "min_continuation_strength": 0.4562,
             "min_rejection_strength": 0.3272,
             "max_failed_push_count": 5,
@@ -98,7 +98,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.3285
+          "trigger_quality_score": 0.3785
         }
       }
     },
@@ -110,8 +110,8 @@
       "path_family": "breakout",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_LONG_10pip_breakout_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level::ACCEPTANCE_FAILURE",
-      "trigger_family": "acceptance_failure",
+      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -122,7 +122,7 @@
           "theoretical_pips_per_setup": 0.236,
           "theoretical_pips_per_hour_ceiling": 0.4012,
           "criteria_snapshot": {
-            "trigger_family": "acceptance_failure",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
             "directional_bias": "continuation",
             "min_continuation_strength": 0.5689,
@@ -143,7 +143,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.6536
+          "trigger_quality_score": 0.6736
         }
       }
     },
@@ -155,8 +155,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_SHORT_2pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level::RECLAIM_FAILURE",
-      "trigger_family": "reclaim_failure",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -167,9 +167,9 @@
           "theoretical_pips_per_setup": 0.002,
           "theoretical_pips_per_hour_ceiling": 0.0057,
           "criteria_snapshot": {
-            "trigger_family": "reclaim_failure",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
-            "directional_bias": "reversal",
+            "directional_bias": "continuation",
             "min_continuation_strength": 0.2984,
             "min_rejection_strength": 0.4429,
             "max_failed_push_count": 6,
@@ -188,7 +188,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.2428
+          "trigger_quality_score": 0.2928
         }
       }
     },
@@ -200,8 +200,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_SHORT_3pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level::RECLAIM_FAILURE",
-      "trigger_family": "reclaim_failure",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -212,9 +212,9 @@
           "theoretical_pips_per_setup": 0.0358,
           "theoretical_pips_per_hour_ceiling": 0.1001,
           "criteria_snapshot": {
-            "trigger_family": "reclaim_failure",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
-            "directional_bias": "reversal",
+            "directional_bias": "continuation",
             "min_continuation_strength": 0.3328,
             "min_rejection_strength": 0.3587,
             "max_failed_push_count": 5,
@@ -233,7 +233,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.3212
+          "trigger_quality_score": 0.3712
         }
       }
     },
@@ -245,8 +245,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "AUD_USD_London_SHORT_5pip_sweep_retest_level",
-      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level::RECLAIM_FAILURE",
-      "trigger_family": "reclaim_failure",
+      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -257,9 +257,9 @@
           "theoretical_pips_per_setup": 0.0501,
           "theoretical_pips_per_hour_ceiling": 0.1003,
           "criteria_snapshot": {
-            "trigger_family": "reclaim_failure",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
-            "directional_bias": "reversal",
+            "directional_bias": "continuation",
             "min_continuation_strength": 0.399,
             "min_rejection_strength": 0.2958,
             "max_failed_push_count": 4,
@@ -278,7 +278,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.4598
+          "trigger_quality_score": 0.5098
         }
       }
     },
@@ -335,8 +335,8 @@
       "path_family": "drift",
       "structure_label": "retest_level",
       "setup_label": "AUD_USD_London_SHORT_10pip_drift_retest_level",
-      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level::DISPLACEMENT",
-      "trigger_family": "displacement",
+      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -347,7 +347,7 @@
           "theoretical_pips_per_setup": 0.1223,
           "theoretical_pips_per_hour_ceiling": 0.2201,
           "criteria_snapshot": {
-            "trigger_family": "displacement",
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
             "directional_bias": "continuation",
             "min_continuation_strength": 0.454,
@@ -368,7 +368,7 @@
               "No promotion decision included."
             ]
           },
-          "trigger_quality_score": 0.5804
+          "trigger_quality_score": 0.6203
         }
       }
     },

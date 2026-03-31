@@ -17,31 +17,11 @@ def _round(x: float, d: int = 4) -> float:
 
 
 def _trigger_families(record: Dict) -> List[str]:
-    pair = str(record.get("pair", ""))
-    session = str(record.get("session", ""))
-    direction = str(record.get("direction", ""))
-    bucket = int(record.get("target_bucket", 0))
-    path_family = str(record.get("path_family", ""))
-    structure_label = str(record.get("structure_label", ""))
-
-    is_best_domain = (
-        pair == "EUR_USD"
-        and session == "London"
-        and direction == "SHORT"
-        and bucket == 5
-        and path_family == "continuation"
-        and structure_label == "retest_level"
-    )
-    if is_best_domain:
-        return ["reassertion", "acceptance_failure", "failed_second_push"]
-
-    mapping = {
-        "continuation": "reassertion",
-        "sweep": "reclaim_failure",
-        "drift": "displacement",
-        "breakout": "acceptance_failure",
-    }
-    return [mapping.get(path_family, "exhaustion")]
+    # Consolidated to REASSERTION family only.
+    # Other families (acceptance_failure, failed_second_push, reclaim_failure, displacement, exhaustion)
+    # were removed after critique revealed they lacked structural differentiation.
+    # This consolidation reduces 11 triggers to 9 (one per setup) with proven quality scores.
+    return ["reassertion"]
 
 
 def _base_measures(record: Dict) -> Dict:
