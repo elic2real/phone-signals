@@ -1,0 +1,28 @@
+{
+  "generated_at_utc": "2026-03-31T15:21:55.401187+00:00",
+  "source_triage": "control\\universal_triage\\universal_triage_master.json",
+  "candidate_counts": {
+    "selected": 1,
+    "proof_pass": 0,
+    "proof_fail": 1
+  },
+  "rows": [
+    {
+      "domain_id": "gbp_usd_london_long_s200",
+      "assigned_class": "TIER_2",
+      "next_action_from_triage": "KEEP_IN_ACTIVE_QUEUE",
+      "proof": {
+        "proof_pass": false,
+        "stability_pass": false,
+        "distinctness_pass": true,
+        "promotion_pass": true,
+        "density_ok": true,
+        "collapse_check_pass": true,
+        "distinctness_status": "DISTINCT",
+        "promotion_status": "PASS",
+        "promotion_reason": "Setup phase does not allow promotion; waiting for trigger_truth and ceiling_report.",
+        "reason_codes": []
+      }
+    }
+  ]
+}
