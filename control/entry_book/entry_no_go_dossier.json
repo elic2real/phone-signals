@@ -1,0 +1,26 @@
+{
+  "generated_at_utc": "2026-03-31T15:29:15.448434+00:00",
+  "status": "NO_GO",
+  "source_triage": "control\\universal_triage\\universal_triage_master.json",
+  "failing_domain_count": 1,
+  "proof_fail_reason_histogram": {
+    "PROOF_STABILITY_FAIL": 1
+  },
+  "failing_domains": [
+    {
+      "domain_id": "gbp_usd_london_long_s200",
+      "pair": "GBP_USD",
+      "session": "London",
+      "direction": "LONG",
+      "assigned_class": "TIER_2",
+      "proof_fail_reasons": [
+        "PROOF_STABILITY_FAIL"
+      ]
+    }
+  ],
+  "remediation_actions": [
+    "Restore normalized density source for high-edge domains currently failing PROOF_DENSITY_NOT_NORMALIZED.",
+    "Re-run stability for failing domains and require stable=true before entry promotion.",
+    "Do not promote any entry until distinctness and promotion remain PASS in the same run."
+  ]
+}

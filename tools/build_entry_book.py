@@ -30,6 +30,23 @@ def write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
+def ceiling_report_path(row: dict) -> Path:
+    domain_id = row.get("domain_id")
+    return WORKSPACE / "PC2" / "discovery" / "scale_batches" / str(domain_id) / "ceiling_report.json"
+
+
+def density_proxy_from_ceiling(row: dict) -> float | None:
+    ceiling = read_json_if_exists(ceiling_report_path(row)) or {}
+    values: list[float] = []
+    for rec in ceiling.get("records") or []:
+        metric = (((rec.get("ceiling") or {}).get("metrics") or {}).get("theoretical_pips_per_hour_ceiling"))
+        if isinstance(metric, (int, float)):
+            values.append(float(metric))
+    if not values:
+        return None
+    return sum(values) / len(values)
+
+
 def assign_role(entry: dict, proof: dict, triage_row: dict) -> str:
     expectancy = entry.get("setup_expectancy")
     density = triage_row.get("D_raw")
@@ -204,7 +221,7 @@ def setup_truth_path(row: dict) -> Path:
     return WORKSPACE / "PC2" / "discovery" / "scale_batches" / str(domain_id) / "setup_truth.json"
 
 
-def evaluate_proof(row: dict) -> dict:
+def evaluate_proof(row: dict, density_floor: float) -> dict:
     reasons: list[str] = []
 
     stability = read_json_if_exists(stability_report_path(row))
@@ -241,9 +258,20 @@ def evaluate_proof(row: dict) -> dict:
     if not promotion_pass:
         reasons.append("PROOF_PROMOTION_FAIL")
 
-    density_ok = row.get("D_raw") is not None
-    if not density_ok:
-        reasons.append("PROOF_DENSITY_MISSING")
+    normalized_density = row.get("D_raw")
+    density_proxy = density_proxy_from_ceiling(row)
+    density_ok = isinstance(normalized_density, (int, float)) and normalized_density >= density_floor
+    if normalized_density is None:
+        reasons.append("PROOF_DENSITY_NOT_NORMALIZED")
+    elif normalized_density < density_floor:
+        reasons.append("PROOF_DENSITY_BELOW_FLOOR")
+
+    density_stress = {
+        "normalized_density": normalized_density,
+        "proxy_density_from_ceiling": density_proxy,
+        "density_floor": density_floor,
+        "status": "PASS" if density_ok else "FAIL",
+    }
 
     # sample-growth collapse proxy from stability summaries if available
     collapse_check_pass = True
@@ -278,6 +306,7 @@ def evaluate_proof(row: dict) -> dict:
         "distinctness_status": distinctness_status,
         "promotion_status": promotion_status,
         "promotion_reason": promotion_reason,
+        "density_stress": density_stress,
         "reason_codes": sorted(set(reasons)),
     }
 
@@ -314,6 +343,24 @@ def build_entries_for_row(row: dict) -> list[dict]:
                 "zone_residency_sec_max": (record.get("criteria") or {}).get("zone_residency_sec_max"),
                 "failed_push_count_max": (record.get("criteria") or {}).get("max_failed_push_count"),
             },
+            "stale_entry_timeout_sec": (((record.get("criteria") or {}).get("edge_half_life_sec")) or 420),
+            "friction_admissibility": {
+                "min_spread_efficiency": (record.get("criteria") or {}).get("min_spread_efficiency"),
+                "max_spread_to_band_ratio": (record.get("execution_band") or {}).get("max_spread_to_band_ratio"),
+                "spread_to_business_ratio": (record.get("fill_quality") or {}).get("spread_to_business_ratio"),
+            },
+            "allow_conditions": [
+                "tier_is_active",
+                "density_and_edge_meet_policy",
+                "spread_latency_within_budget",
+                "state_machine_reaches_ENTER",
+            ],
+            "deny_conditions": [
+                "integrity_or_quarantine_flag",
+                "distinctness_fail",
+                "promotion_fail",
+                "stale_entry_timeout_breached",
+            ],
             "state_machine": {
                 "WATCH": "domain economic and session preconditions true",
                 "GET_READY": "host zone formed and structural setup valid",
@@ -333,7 +380,47 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     p.add_argument("--top-tier2", type=int, default=2)
     p.add_argument("--include-tier3-throughput", type=int, default=0)
+    p.add_argument("--density-floor", type=float, default=8.0)
     return p.parse_args()
+
+
+def build_no_go_dossier(proof_rows: list[dict], triage_source: str) -> dict:
+    histogram: dict[str, int] = {}
+    failing_domains: list[dict] = []
+
+    for row in proof_rows:
+        proof = row.get("proof") or {}
+        if proof.get("proof_pass"):
+            continue
+        reasons = proof.get("reason_codes") or ["PROOF_FAIL"]
+        for reason in reasons:
+            histogram[reason] = histogram.get(reason, 0) + 1
+        failing_domains.append(
+            {
+                "domain_id": row.get("domain_id"),
+                "pair": row.get("pair"),
+                "session": row.get("session"),
+                "direction": row.get("direction"),
+                "assigned_class": row.get("assigned_class"),
+                "proof_fail_reasons": reasons,
+            }
+        )
+
+    remediation = [
+        "Restore normalized density source for high-edge domains currently failing PROOF_DENSITY_NOT_NORMALIZED.",
+        "Re-run stability for failing domains and require stable=true before entry promotion.",
+        "Do not promote any entry until distinctness and promotion remain PASS in the same run.",
+    ]
+
+    return {
+        "generated_at_utc": now_utc(),
+        "status": "NO_GO",
+        "source_triage": triage_source,
+        "failing_domain_count": len(failing_domains),
+        "proof_fail_reason_histogram": histogram,
+        "failing_domains": failing_domains,
+        "remediation_actions": remediation,
+    }
 
 
 def main() -> None:
@@ -351,7 +438,7 @@ def main() -> None:
     excluded_entries = []
 
     for row in candidates:
-        proof = evaluate_proof(row)
+        proof = evaluate_proof(row, density_floor=args.density_floor)
         proof_rows.append(
             {
                 "domain_id": row.get("domain_id"),
@@ -414,6 +501,8 @@ def main() -> None:
     write_json(out_dir / "entry_state_policy.json", entry_state_policy())
     write_json(out_dir / "entry_economics_policy.json", entry_economics_policy())
     write_json(out_dir / "entry_portfolio_utility.json", summarize_portfolio_utility(active_entries, proof_rows))
+    if entry_book["active_entry_count"] == 0:
+        write_json(out_dir / "entry_no_go_dossier.json", build_no_go_dossier(proof_rows, str(args.triage_master)))
 
     print(
         json.dumps(

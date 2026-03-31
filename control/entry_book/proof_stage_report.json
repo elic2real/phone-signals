@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-31T15:25:16.952417+00:00",
+  "generated_at_utc": "2026-03-31T15:29:15.445424+00:00",
   "source_triage": "control\\universal_triage\\universal_triage_master.json",
   "candidate_counts": {
     "selected": 1,
@@ -24,6 +24,12 @@
         "distinctness_status": "DISTINCT",
         "promotion_status": "PASS",
         "promotion_reason": "Setup phase does not allow promotion; waiting for trigger_truth and ceiling_report.",
+        "density_stress": {
+          "normalized_density": 13.39259953482328,
+          "proxy_density_from_ceiling": 0.5673333333333334,
+          "density_floor": 8.0,
+          "status": "PASS"
+        },
         "reason_codes": [
           "PROOF_STABILITY_FAIL"
         ]
