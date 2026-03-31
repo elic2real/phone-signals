@@ -43,6 +43,7 @@ from artifact_validator import load_schema
 
 
 MIN_SAMPLE_SIZE = 30
+DISCOVERY_SAMPLE_FLOOR = 15
 
 
 @dataclass
@@ -341,6 +342,8 @@ def run_setup_phase_validation(
     artifact_dir: Path,
     output_dir: Path,
     min_sample_size: int,
+    stage: str,
+    discovery_sample_floor: int,
 ) -> int:
     errors: List[str] = []
 
@@ -400,6 +403,7 @@ def run_setup_phase_validation(
 
     # Validate each setup against upstream key and labels
     setup_results: List[SetupValidationResult] = []
+    setup_stage_status: Dict[str, str] = {}
     for i, setup in enumerate(setup_records):
         setup_id = setup.get("setup_id") or setup.get("setup_label") or f"setup_index_{i}"
         key = {
@@ -526,12 +530,22 @@ def run_setup_phase_validation(
         population_size = setup.get("population_size")
         if population_size is None:
             population_size = setup.get("sample_count")
-        pop_ok = isinstance(population_size, int) and population_size >= min_sample_size
+
+        promotion_floor = min_sample_size
+        effective_floor = discovery_sample_floor if stage == "discovery" else promotion_floor
+        pop_ok = isinstance(population_size, int) and population_size >= effective_floor
         result.add(
             "domain.sample_size_floor",
             pop_ok,
-            "" if pop_ok else f"population_size={population_size!r} below minimum={min_sample_size}",
+            "" if pop_ok else f"population_size={population_size!r} below minimum={effective_floor} (stage={stage})",
         )
+
+        if isinstance(population_size, int) and population_size >= promotion_floor:
+            setup_stage_status[setup_id] = "PROMOTION_ELIGIBLE"
+        elif isinstance(population_size, int) and population_size >= discovery_sample_floor:
+            setup_stage_status[setup_id] = "DISCOVERY_CANDIDATE"
+        else:
+            setup_stage_status[setup_id] = "INSUFFICIENT_SAMPLE"
 
         # Step 5 gold-case checks
         for gc in _gold_case_checks(setup, bvr_match, pfr_match, st_match):
@@ -552,10 +566,22 @@ def run_setup_phase_validation(
     setup_consistency_report = {
         "generated_at": _now(),
         "phase": "setup",
+        "stage": stage,
+        "sample_floors": {
+            "discovery": discovery_sample_floor,
+            "promotion": min_sample_size,
+            "effective": discovery_sample_floor if stage == "discovery" else min_sample_size,
+        },
         "total_setups": len(setup_results),
         "passed_setups": passed_count,
         "failed_setups": len(setup_results) - passed_count,
-        "results": [sr.to_dict() for sr in setup_results],
+        "results": [
+            {
+                **sr.to_dict(),
+                "stage_status": setup_stage_status.get(sr.setup_id, "UNKNOWN"),
+            }
+            for sr in setup_results
+        ],
     }
 
     distribution = {
@@ -614,7 +640,13 @@ def run_setup_phase_validation(
     validation_report = {
         "generated_at": _now(),
         "phase": "setup",
+        "stage": stage,
         "status": status,
+        "sample_floors": {
+            "discovery": discovery_sample_floor,
+            "promotion": min_sample_size,
+            "effective": discovery_sample_floor if stage == "discovery" else min_sample_size,
+        },
         "input_files": {
             "business_viability_report": str(bvr_path),
             "path_family_report": str(pfr_path),
@@ -636,6 +668,7 @@ def run_setup_phase_validation(
     setup_failure_report = {
         "generated_at": _now(),
         "phase": "setup",
+        "stage": stage,
         "status": "FAIL" if status == "FAIL" else "PASS",
         "global_failures": all_errors,
         "failed_setups": [
@@ -646,6 +679,7 @@ def run_setup_phase_validation(
     setup_consistency_metrics = {
         "generated_at": _now(),
         "phase": "setup",
+        "stage": stage,
         "consistency_ratio": (
             passed_count / len(setup_results) if setup_results else 0.0
         ),
@@ -694,7 +728,19 @@ def main() -> int:
         "--min-sample-size",
         type=int,
         default=MIN_SAMPLE_SIZE,
-        help="Minimum setup population size required.",
+        help="Promotion-stage minimum setup population size required.",
+    )
+    parser.add_argument(
+        "--discovery-sample-floor",
+        type=int,
+        default=DISCOVERY_SAMPLE_FLOOR,
+        help="Discovery-stage minimum setup sample floor.",
+    )
+    parser.add_argument(
+        "--stage",
+        choices=["discovery", "promotion"],
+        default="discovery",
+        help="Validation stage policy. discovery=allow candidate setups at discovery floor; promotion=full floor.",
     )
     args = parser.parse_args()
 
@@ -702,6 +748,8 @@ def main() -> int:
         artifact_dir=args.artifact_dir,
         output_dir=args.output_dir,
         min_sample_size=args.min_sample_size,
+        stage=args.stage,
+        discovery_sample_floor=args.discovery_sample_floor,
     )
 
 
