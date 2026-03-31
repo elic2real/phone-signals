@@ -28,7 +28,9 @@ class OwnershipIssue:
 def validate_ownership(report_path: Path) -> List[OwnershipIssue]:
     loaded = load_report(report_path)
     metadata = loaded.payload.get("metadata", {})
-    owner = metadata.get("owner")
+    owner = metadata.get("owner") if isinstance(metadata, dict) else None
+    if owner is None:
+        owner = loaded.payload.get("produced_by")
     expected = EXPECTED_OWNER.get(loaded.artifact_name)
 
     issues: List[OwnershipIssue] = []
