@@ -1,0 +1,133 @@
+{
+  "manifest_version": "1.0.0",
+  "generated_at": "2026-03-31T01:45:06Z",
+  "description": "Baseline gold-case manifest. One valid stub per artifact type for schema regression and validator pipeline verification.",
+  "cases": [
+    {
+      "case_id": "baseline_business_viability_report",
+      "description": "Minimum valid stub for business_viability_report.",
+      "artifact_type": "business_viability_report",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    },
+    {
+      "case_id": "baseline_path_family_report",
+      "description": "Minimum valid stub for path_family_report.",
+      "artifact_type": "path_family_report",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    },
+    {
+      "case_id": "baseline_structure_truth",
+      "description": "Minimum valid stub for structure_truth.",
+      "artifact_type": "structure_truth",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    },
+    {
+      "case_id": "baseline_ceiling_report",
+      "description": "Minimum valid stub for ceiling_report.",
+      "artifact_type": "ceiling_report",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    },
+    {
+      "case_id": "baseline_segmentation_gap_report",
+      "description": "Minimum valid stub for segmentation_gap_report.",
+      "artifact_type": "segmentation_gap_report",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    },
+    {
+      "case_id": "baseline_setup_truth",
+      "description": "Minimum valid stub for setup_truth.",
+      "artifact_type": "setup_truth",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    },
+    {
+      "case_id": "baseline_trigger_truth",
+      "description": "Minimum valid stub for trigger_truth.",
+      "artifact_type": "trigger_truth",
+      "key": {
+        "direction": "LONG",
+        "target_bucket": 2.5,
+        "pair": "EUR_USD",
+        "session": "london"
+      },
+      "expected_fields": {
+        "schema_version": "1.0.0"
+      },
+      "must_pass_schema": true,
+      "must_pass_ownership": true,
+      "must_pass_dependency": false,
+      "notes": "Baseline stub \u2014 real gold case to be defined after Trunk 2 sync."
+    }
+  ]
+}

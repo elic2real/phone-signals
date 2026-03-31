@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "intervention_basis.schema.json",
+  "title": "InterventionBasis",
+  "description": "Contract defining why and how a manual or automated intervention is applied to a discovery, setup, trigger, or promotion decision. Must be filed before any intervention takes effect.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "intervention_id",
+    "intervention_type",
+    "scope",
+    "reason",
+    "authority",
+    "effect"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "intervention_id": {
+      "type": "string",
+      "description": "Unique identifier for this intervention record."
+    },
+    "intervention_type": {
+      "type": "string",
+      "enum": [
+        "suppress",
+        "override_viable",
+        "override_not_viable",
+        "force_promote",
+        "force_block",
+        "relabel_structure",
+        "extend_population_window",
+        "manual_lock",
+        "manual_unlock"
+      ],
+      "description": "What kind of intervention this is."
+    },
+    "scope": {
+      "type": "object",
+      "description": "Which artifact(s) and key(s) this intervention applies to.",
+      "required": ["artifact_type"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_type": {
+          "type": "string",
+          "enum": [
+            "business_viability_report",
+            "path_family_report",
+            "structure_truth",
+            "setup_truth",
+            "trigger_truth",
+            "ceiling_report",
+            "segmentation_gap_report"
+          ]
+        },
+        "direction": {
+          "type": ["string", "null"],
+          "enum": ["LONG", "SHORT", null]
+        },
+        "target_bucket": {
+          "type": ["number", "null"]
+        },
+        "pair": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+        },
+        "session": {
+          "type": ["string", "null"]
+        },
+        "path_family": {
+          "type": ["string", "null"]
+        },
+        "artifact_id": {
+          "type": ["string", "null"],
+          "description": "Specific artifact ID if this intervention targets a single known artifact."
+        }
+      }
+    },
+    "reason": {
+      "type": "object",
+      "description": "Structured justification for why this intervention was filed.",
+      "required": ["code", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "data_quality_issue",
+            "known_structural_regime_break",
+            "population_spike_event",
+            "manual_expert_override",
+            "schema_migration",
+            "system_test_isolation",
+            "other"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Free-text explanation. Must be at least 10 chars — interventions must not be undocumented."
+        },
+        "supporting_evidence": {
+          "type": ["string", "null"],
+          "description": "Reference to supporting artifact or log entry, if any."
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "description": "Who or what issued this intervention.",
+      "required": ["issued_by"],
+      "additionalProperties": false,
+      "properties": {
+        "issued_by": {
+          "type": "string",
+          "description": "Identifier of the issuing agent (e.g. 'codespaces_enforcement', 'manual_operator')."
+        },
+        "reviewed_by": {
+          "type": ["string", "null"]
+        },
+        "issued_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "description": "What concrete change this intervention causes.",
+      "required": ["summary"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "One-line description of the intervention effect."
+        },
+        "field_overrides": {
+          "type": "object",
+          "description": "Key/value pairs to override in the target artifact. Must not override locked or schema_version fields.",
+          "additionalProperties": true
+        },
+        "expires_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "If set, intervention auto-expires at this UTC time."
+        },
+        "permanent": {
+          "type": "boolean",
+          "description": "If true, this intervention does not expire and must be manually revoked."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

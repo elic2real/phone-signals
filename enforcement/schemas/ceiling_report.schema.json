@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ceiling_report.schema.json",
+  "title": "CeilingReport",
+  "description": "Upper-bound performance ceiling for a direction/target_bucket/pair/session key. Depends on business_viability passing. Does not require path_family (ceiling can be computed at Phase 0 level).",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "ceiling_metrics",
+    "population_size"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "target_bucket": {
+      "type": "number"
+    },
+    "pair": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string"
+    },
+    "path_family": {
+      "type": ["string", "null"],
+      "description": "Optional — ceiling can be computed before or after family clustering."
+    },
+    "ceiling_metrics": {
+      "type": "object",
+      "description": "The computed ceiling values. All fields represent theoretical maximums, not realized performance.",
+      "required": ["win_rate_ceiling", "capture_pips_ceiling", "profit_ceiling"],
+      "additionalProperties": false,
+      "properties": {
+        "win_rate_ceiling": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Max achievable win rate assuming perfect filter."
+        },
+        "capture_pips_ceiling": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Max average pip capture per trade."
+        },
+        "profit_ceiling": {
+          "type": "number",
+          "description": "Max total profit in pips across population."
+        },
+        "pips_per_hour_ceiling": {
+          "type": ["number", "null"],
+          "description": "Max pips per hour of market exposure."
+        },
+        "equity_per_hour_ceiling": {
+          "type": ["number", "null"],
+          "description": "Max equity per hour."
+        }
+      }
+    },
+    "population_size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ceiling_method": {
+      "type": "string",
+      "enum": ["mfe_based", "oracle_filter", "percentile_95"],
+      "description": "Method used to compute ceiling."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

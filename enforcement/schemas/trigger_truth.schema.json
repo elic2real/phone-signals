@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trigger_truth.schema.json",
+  "title": "TriggerTruth",
+  "description": "Locked trigger logic for an active setup. Depends on setup_truth. Immutable once locked.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "trigger_id",
+    "setup_id",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "path_family",
+    "trigger_conditions",
+    "locked"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "trigger_id": {
+      "type": "string",
+      "description": "Unique stable identifier for this trigger."
+    },
+    "setup_id": {
+      "type": "string",
+      "description": "Must match an existing locked setup_truth.setup_id."
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "target_bucket": {
+      "type": "number"
+    },
+    "pair": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string"
+    },
+    "path_family": {
+      "type": "string",
+      "description": "Required — triggers are always family-scoped."
+    },
+    "trigger_conditions": {
+      "type": "object",
+      "description": "Exact trigger logic including timing, confirmation signals, and kill conditions.",
+      "required": ["entry_signals", "kill_conditions"],
+      "additionalProperties": false,
+      "properties": {
+        "entry_signals": {
+          "type": "array",
+          "description": "Ordered list of conditions that must be satisfied before trigger fires.",
+          "items": {
+            "type": "object",
+            "required": ["field", "op", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "field": { "type": "string" },
+              "op": {
+                "type": "string",
+                "enum": ["gt", "gte", "lt", "lte", "eq", "neq", "in", "not_in"]
+              },
+              "value": {},
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "kill_conditions": {
+          "type": "array",
+          "description": "Conditions that immediately suppress the trigger.",
+          "items": {
+            "type": "object",
+            "required": ["field", "op", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "field": { "type": "string" },
+              "op": {
+                "type": "string",
+                "enum": ["gt", "gte", "lt", "lte", "eq", "neq", "in", "not_in"]
+              },
+              "value": {},
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "confirmation_window_bars": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Number of bars within which confirmation must occur. Null = no window constraint."
+        },
+        "logic": {
+          "type": "string",
+          "enum": ["AND", "OR"],
+          "default": "AND"
+        }
+      }
+    },
+    "locked": {
+      "type": "boolean",
+      "const": true
+    },
+    "locked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
