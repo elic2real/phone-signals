@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "codespaces_rcp/schemas/ceiling_report.schema.json",
+  "title": "ceiling_report",
+  "type": "object",
+  "required": ["artifact", "metadata", "key", "ceiling"],
+  "properties": {
+    "artifact": { "const": "ceiling_report.json" },
+    "metadata": {
+      "type": "object",
+      "required": ["owner", "stage", "generated_at"],
+      "properties": {
+        "owner": { "type": "string" },
+        "stage": { "type": "string", "enum": ["phase6"] },
+        "generated_at": { "type": "string" },
+        "dependencies": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "key": {
+      "type": "object",
+      "required": ["direction", "target_bucket", "pair", "session"],
+      "properties": {
+        "direction": { "type": "string" },
+        "target_bucket": { "type": "string" },
+        "pair": { "type": "string" },
+        "session": { "type": "string" },
+        "path_family": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "ceiling": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string" },
+        "metrics": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

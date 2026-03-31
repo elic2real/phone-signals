@@ -1,0 +1,2975 @@
+{
+  "study_id": "pc2.direction_attribution.v1",
+  "status": "STRICTLY_PROMOTED",
+  "run_metadata": {
+    "generated_at_utc": "2026-03-31T00:52:52.264602+00:00",
+    "generator": "tools/strict_promote_direction_results.py",
+    "mode": "strict_promotion"
+  },
+  "baseline": {
+    "resolved_bucket_pair_session_combos": 73,
+    "resolved_pair_session_combos": 11,
+    "long_missing": 0,
+    "short_missing": 73
+  },
+  "result_summary": {
+    "combos_evaluated": 73,
+    "short_present": 0,
+    "short_missing": 73,
+    "short_derivable_from_existing": 0,
+    "short_requires_source_replay": 73,
+    "short_unresolved_upstream": 0,
+    "count_by_status": {
+      "REQUIRES_REPLAY": 73
+    },
+    "former_derivable_rows": 55,
+    "former_derivable_downgraded": 55,
+    "pass": false
+  },
+  "status_enums": {
+    "status": [
+      "MISSING_SHORT",
+      "DERIVABLE_CANDIDATE",
+      "REQUIRES_REPLAY",
+      "REQUIRES_SOURCE_DATA",
+      "BLOCKED_UNRESOLVED_UPSTREAM"
+    ]
+  },
+  "record_schema": {
+    "required_fields": [
+      "direction",
+      "target_bucket",
+      "pair",
+      "session",
+      "status",
+      "evidence_available",
+      "derivable_from_long",
+      "requires_regeneration",
+      "source_candidates",
+      "unresolved_upstream",
+      "notes"
+    ]
+  },
+  "records": [
+    {
+      "row_id": "SHORT_GAP_001",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__11_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 3,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_011",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__11_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_018",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__11_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_029",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__11_D/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_036",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__11_E/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_045",
+      "direction": "SHORT",
+      "target_bucket": "11_F",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__11_F/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_051",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__22_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_058",
+      "direction": "SHORT",
+      "target_bucket": "22_B",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__22_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_063",
+      "direction": "SHORT",
+      "target_bucket": "22_C",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__22_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_069",
+      "direction": "SHORT",
+      "target_bucket": "44_A",
+      "pair": "AUD_CAD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__London__44_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 2308,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_003",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 3,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_013",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_020",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__Sydney__11_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_031",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_D/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_038",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__11_E/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_047",
+      "direction": "SHORT",
+      "target_bucket": "11_F",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__11_F/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_053",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_060",
+      "direction": "SHORT",
+      "target_bucket": "22_B",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__22_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_065",
+      "direction": "SHORT",
+      "target_bucket": "22_C",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Sydney__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__22_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_071",
+      "direction": "SHORT",
+      "target_bucket": "44_A",
+      "pair": "AUD_CAD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Sydney__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Sydney__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Sydney__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_tuesday_refactor/AUD_CAD__Tuesday__Sydney__44_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1682,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_004",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_014",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_021",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_032",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_D/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_039",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_E/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_048",
+      "direction": "SHORT",
+      "target_bucket": "11_F",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__11_F/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_054",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__22_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_061",
+      "direction": "SHORT",
+      "target_bucket": "22_B",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__Tokyo__22_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_066",
+      "direction": "SHORT",
+      "target_bucket": "22_C",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__Tokyo__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__22_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_072",
+      "direction": "SHORT",
+      "target_bucket": "44_A",
+      "pair": "AUD_CAD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase6/session_state_build_report.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase6/node_identity.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__Tokyo__44_A/phase6/odm_ceiling_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 1334,
+      "strict_evidence": {
+        "same_bucket_asset_count": 13,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 13
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_005",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_015",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_B/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_022",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_033",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_D/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_040",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_E/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_049",
+      "direction": "SHORT",
+      "target_bucket": "11_F",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__11_F/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_055",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_062",
+      "direction": "SHORT",
+      "target_bucket": "22_B",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_B/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_067",
+      "direction": "SHORT",
+      "target_bucket": "22_C",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__22_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_073",
+      "direction": "SHORT",
+      "target_bucket": "44_A",
+      "pair": "AUD_JPY",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__London__44_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 662,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_007",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_USD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 527,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_016",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_USD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_B/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 527,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_024",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_USD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__London__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 527,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_034",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_USD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_D/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 527,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_041",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_USD",
+      "session": "London",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_USD__Monday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__London__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_USD__Monday__London__11_E/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 527,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_010",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase6/session_state_build_report.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_A/phase6/node_identity.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 14,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 14
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_017",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_B/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_027",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_035",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_D/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_044",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_E/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_050",
+      "direction": "SHORT",
+      "target_bucket": "11_F",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__11_F/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_057",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_USD",
+      "session": "Tokyo",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Tokyo__22_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 499,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_009",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_USD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 354,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_026",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_USD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 354,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_043",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_USD",
+      "session": "Sydney",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__Sydney__11_E/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 354,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_002",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 3,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_006",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_JPY",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_008",
+      "direction": "SHORT",
+      "target_bucket": "11_A",
+      "pair": "AUD_USD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_012",
+      "direction": "SHORT",
+      "target_bucket": "11_B",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__11_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__11_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_019",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_023",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_JPY",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/AUD_JPY__Monday__NewYork__11_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_025",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "AUD_USD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_028",
+      "direction": "SHORT",
+      "target_bucket": "11_C",
+      "pair": "CHF_JPY",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase6/node_identity.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_monday_refactor/CHF_JPY__Monday__NewYork__11_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_030",
+      "direction": "SHORT",
+      "target_bucket": "11_D",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__11_D/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__11_D/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_D/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_037",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_E/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_042",
+      "direction": "SHORT",
+      "target_bucket": "11_E",
+      "pair": "AUD_USD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__11_E/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_046",
+      "direction": "SHORT",
+      "target_bucket": "11_F",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__11_F/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__11_F/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_CAD__Friday__NewYork__11_F/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_052",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__22_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_056",
+      "direction": "SHORT",
+      "target_bucket": "22_A",
+      "pair": "AUD_USD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_A/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_059",
+      "direction": "SHORT",
+      "target_bucket": "22_B",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__22_B/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_B/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__22_B/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_064",
+      "direction": "SHORT",
+      "target_bucket": "22_C",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__22_C/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_068",
+      "direction": "SHORT",
+      "target_bucket": "22_C",
+      "pair": "AUD_USD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase1/opportunity_map_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase1/opportunity_map_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase2/cluster_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase2/cluster_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase3/entry_window_audit.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase3/entry_window_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/mapping_minimal/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase4/zone_label_summary.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase6/node_identity.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase6/odm_ceiling_report.json",
+        "PC2/compiled_friday_refactor/AUD_USD__Friday__NewYork__22_C/phase6/session_state_build_report.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 15,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 15
+      }
+    },
+    {
+      "row_id": "SHORT_GAP_070",
+      "direction": "SHORT",
+      "target_bucket": "44_A",
+      "pair": "AUD_CAD",
+      "session": "NewYork",
+      "status": "REQUIRES_REPLAY",
+      "evidence_available": true,
+      "derivable_from_long": false,
+      "requires_regeneration": true,
+      "source_candidates": [
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase1/opportunity_map_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase1/opportunity_map_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase2/cluster_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase2/cluster_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase3/entry_window_audit.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase3/entry_window_summary.json",
+        "PC2/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_tuesday_refactor/AUD_CAD__Tuesday__NewYork__44_A/phase4/zone_label_summary.json",
+        "PC2/compiled_wednesday_refactor/AUD_CAD__Wednesday__NewYork__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_monday_refactor/AUD_CAD__Monday__NewYork__44_A/phase4/zone_label_summary.json",
+        "PC2/mapping_minimal/compiled_thursday_refactor/AUD_CAD__Thursday__NewYork__44_A/phase4/zone_label_summary.json"
+      ],
+      "unresolved_upstream": {
+        "direction": false,
+        "target_bucket": false,
+        "pair": false,
+        "session": false
+      },
+      "notes": "Sufficient same-combo structural evidence exists, but direction remains agnostic; replay required.",
+      "priority_score": 0,
+      "strict_evidence": {
+        "same_bucket_asset_count": 18,
+        "entry_structural_count": 6,
+        "aee_structural_count": 2,
+        "directional_asset_count": 0,
+        "agnostic_asset_count": 18
+      }
+    }
+  ]
+}

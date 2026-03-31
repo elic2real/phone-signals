@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "codespaces_rcp/schemas/setup_truth.schema.json",
+  "title": "setup_truth",
+  "type": "object",
+  "required": ["artifact", "metadata", "key", "setup"],
+  "properties": {
+    "artifact": { "const": "setup_truth.json" },
+    "metadata": {
+      "type": "object",
+      "required": ["owner", "stage", "generated_at"],
+      "properties": {
+        "owner": { "type": "string" },
+        "stage": { "type": "string", "enum": ["phase3", "phase4"] },
+        "generated_at": { "type": "string" },
+        "dependencies": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "key": {
+      "type": "object",
+      "required": ["direction", "target_bucket", "pair", "session"],
+      "properties": {
+        "direction": { "type": "string" },
+        "target_bucket": { "type": "string" },
+        "pair": { "type": "string" },
+        "session": { "type": "string" },
+        "path_family": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "setup": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string" },
+        "signals": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

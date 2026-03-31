@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "codespaces_rcp/schemas/intervention_basis.schema.json",
+  "title": "intervention_basis",
+  "type": "object",
+  "required": [
+    "intervention_id",
+    "artifact_scope",
+    "hypothesis",
+    "expected_signal",
+    "disconfirming_signal",
+    "rollback_condition"
+  ],
+  "properties": {
+    "intervention_id": { "type": "string", "minLength": 1 },
+    "artifact_scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "business_viability_report.json",
+          "path_family_report.json",
+          "structure_truth.json",
+          "setup_truth.json",
+          "trigger_truth.json",
+          "ceiling_report.json",
+          "segmentation_gap_report.json"
+        ]
+      }
+    },
+    "hypothesis": { "type": "string", "minLength": 1 },
+    "expected_signal": { "type": "string", "minLength": 1 },
+    "disconfirming_signal": { "type": "string", "minLength": 1 },
+    "rollback_condition": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": true
+}

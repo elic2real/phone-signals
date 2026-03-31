@@ -1,0 +1,177 @@
+{
+  "study_id": "pc2.direction_attribution.v1",
+  "purpose": "Attribute direction at the composite-key level and close the explicit SHORT-side gap without inventing synthetic coverage.",
+  "directive": "For each (target_bucket, pair, session), document existing LONG behavior, missing SHORT behavior, and whether SHORT can be derived from existing assets or must be regenerated from source/replay.",
+  "policy": {
+    "ranking_change": "NO_CHANGE_BUCKET_FIRST",
+    "fabrication_rule": "FORBIDDEN",
+    "cross_direction_aggregation": "FORBIDDEN",
+    "cross_bucket_aggregation": "FORBIDDEN"
+  },
+  "baseline_from_gap_report": {
+    "resolved_bucket_pair_session_combos": 73,
+    "resolved_pair_session_combos": 11,
+    "long_missing": 0,
+    "short_missing": 73,
+    "baseline_source": "control/pc2_segmentation_gap_report.json"
+  },
+  "required_inputs": [
+    {
+      "path": "control/pc2_segmentation_gap_report.json",
+      "required": true,
+      "role": "Baseline combo list and directional gap counts"
+    },
+    {
+      "path": "control/top_20_reusable_pc2_assets.json",
+      "required": true,
+      "role": "Portable seed assets for attribution candidates"
+    },
+    {
+      "path": "control/entry_mapping_report.json",
+      "required": true,
+      "role": "Entry-side grouped asset evidence"
+    },
+    {
+      "path": "control/aee_mapping_report.json",
+      "required": true,
+      "role": "AEE-side grouped asset evidence"
+    },
+    {
+      "path": "control/pc2_mapping_key_schema.json",
+      "required": true,
+      "role": "Composite-key contract and fallback policy"
+    },
+    {
+      "path": "PC2/**/phase2/cluster_summary.json",
+      "required": false,
+      "role": "Directional signal candidates for Entry mapping"
+    },
+    {
+      "path": "PC2/**/phase2/cluster_audit.json",
+      "required": false,
+      "role": "Directional signal candidates and supporting diagnostics"
+    },
+    {
+      "path": "PC2/**/phase6/odm_ceiling_report.json",
+      "required": false,
+      "role": "AEE-side behavior and guardrail evidence"
+    },
+    {
+      "path": "control/runtime_replay_bridge/manifest_runtime_replay_bridge.json",
+      "required": false,
+      "role": "Replay dependency linkage when regeneration is required"
+    }
+  ],
+  "required_key": {
+    "order": [
+      "direction",
+      "target_bucket",
+      "pair",
+      "session"
+    ],
+    "fields": {
+      "direction": {
+        "type": "string",
+        "allowed": [
+          "LONG",
+          "SHORT",
+          "UNRESOLVED_UPSTREAM",
+          "INVALID_DEPENDENCY"
+        ],
+        "required": true
+      },
+      "target_bucket": {
+        "type": "string",
+        "allowed": [
+          "11_A",
+          "11_B",
+          "11_C",
+          "11_D",
+          "11_E",
+          "11_F",
+          "22_A",
+          "22_B",
+          "22_C",
+          "44_A",
+          "UNRESOLVED_UPSTREAM",
+          "INVALID_DEPENDENCY"
+        ],
+        "required": true
+      },
+      "pair": {
+        "type": "string",
+        "pattern": "^[A-Z]{3}_[A-Z]{3}$|^UNRESOLVED_UPSTREAM$|^INVALID_DEPENDENCY$",
+        "required": true
+      },
+      "session": {
+        "type": "string",
+        "allowed": [
+          "Tokyo",
+          "London",
+          "NewYork",
+          "Newyork",
+          "Sydney",
+          "UNRESOLVED_UPSTREAM",
+          "INVALID_DEPENDENCY"
+        ],
+        "required": true
+      }
+    }
+  },
+  "study_questions": [
+    "What LONG behavior already exists for each (target_bucket, pair, session)?",
+    "What SHORT behavior is missing for each (target_bucket, pair, session)?",
+    "Can missing SHORT be derived from existing assets without replay regeneration?",
+    "If not derivable, what replay/source regeneration path is required?"
+  ],
+  "expected_outputs": [
+    {
+      "path": "control/direction_attribution_results.json",
+      "required": true,
+      "description": "Per-combo attribution decision with explicit SHORT status and evidence"
+    },
+    {
+      "path": "control/direction_resolved_mapping.json",
+      "required": false,
+      "description": "Optional resolved direction map for downstream mapping generation"
+    }
+  ],
+  "pass_fail_conditions": {
+    "pass_when": [
+      "Every resolved (target_bucket, pair, session) combo has explicit LONG and SHORT status entries in results.",
+      "Every missing SHORT case is marked as one of: DERIVABLE_FROM_EXISTING, REQUIRES_SOURCE_REPLAY, or UNRESOLVED_UPSTREAM.",
+      "Every status is backed by at least one concrete source path in evidence_assets.",
+      "No result row claims observed SHORT behavior without source evidence."
+    ],
+    "fail_when": [
+      "Any combo omits SHORT status.",
+      "Any combo is marked SHORT_PRESENT without evidence.",
+      "Any key violates required order/field policy.",
+      "Any unresolved key is silently dropped instead of flagged."
+    ]
+  },
+  "unresolved_upstream_fields": {
+    "direction": {
+      "count": 294,
+      "source": "control/pc2_segmentation_gap_report.json",
+      "handling": "Carry as UNRESOLVED_UPSTREAM until attributed or replay-resolved"
+    },
+    "target_bucket": {
+      "count": 198,
+      "source": "control/pc2_segmentation_gap_report.json",
+      "handling": "Do not infer; keep unresolved until upstream bucket evidence exists"
+    },
+    "session": {
+      "count": 6,
+      "source": "control/pc2_segmentation_gap_report.json",
+      "handling": "Normalize and recover from upstream metadata when possible"
+    }
+  },
+  "first_execution_steps": [
+    "Load control/pc2_segmentation_gap_report.json and extract short_direction_gaps.examples as the primary work queue.",
+    "For each queued (target_bucket, pair, session), gather LONG evidence from entry/aee grouped reports and phase2/phase6 source assets.",
+    "Attempt SHORT derivation using existing asset families and replay bridge manifests; record explicit derivation basis or replay requirement.",
+    "Write per-combo decisions into control/direction_attribution_results.json using required_key contract and explicit status enums.",
+    "Run pass/fail checks from this study definition and block completion if any fabricated or unsupported SHORT claim exists."
+  ]
+}

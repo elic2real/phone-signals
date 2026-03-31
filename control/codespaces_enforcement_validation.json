@@ -1,0 +1,35 @@
+{
+  "report_dir": "control",
+  "schema_dir": "codespaces_rcp\\schemas",
+  "artifacts_checked": 0,
+  "results": [],
+  "universal_analyzer_scaffold": {
+    "status": "BLOCKED_NO_DISCOVERY_OUTPUT",
+    "present_artifacts": [],
+    "missing_artifacts": [
+      "business_viability_report.json",
+      "ceiling_report.json",
+      "path_family_report.json",
+      "segmentation_gap_report.json",
+      "setup_truth.json",
+      "structure_truth.json",
+      "trigger_truth.json"
+    ],
+    "notes": [
+      "Scaffold only: no candidate judgement performed.",
+      "Promotion logic must remain blocked if required discovery outputs are missing."
+    ]
+  },
+  "promotion_gate": {
+    "status": "BLOCKED_NO_DISCOVERY_OUTPUT",
+    "missing_artifacts": [
+      "business_viability_report.json",
+      "path_family_report.json",
+      "structure_truth.json",
+      "setup_truth.json",
+      "trigger_truth.json",
+      "ceiling_report.json"
+    ],
+    "message": "Promotion gate blocked: required discovery outputs are missing."
+  }
+}

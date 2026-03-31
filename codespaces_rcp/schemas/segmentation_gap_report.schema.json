@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "codespaces_rcp/schemas/segmentation_gap_report.schema.json",
+  "title": "segmentation_gap_report",
+  "type": "object",
+  "required": ["artifact", "metadata", "gaps"],
+  "properties": {
+    "artifact": { "const": "segmentation_gap_report.json" },
+    "metadata": {
+      "type": "object",
+      "required": ["owner", "generated_at"],
+      "properties": {
+        "owner": { "type": "string" },
+        "generated_at": { "type": "string" },
+        "dependencies": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "gaps": {
+      "type": "object",
+      "required": ["direction", "target_bucket", "pair", "session"],
+      "properties": {
+        "direction": { "type": "array", "items": { "type": "object" } },
+        "target_bucket": { "type": "array", "items": { "type": "object" } },
+        "pair": { "type": "array", "items": { "type": "object" } },
+        "session": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

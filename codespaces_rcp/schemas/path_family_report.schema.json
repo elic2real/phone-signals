@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "codespaces_rcp/schemas/path_family_report.schema.json",
+  "title": "path_family_report",
+  "type": "object",
+  "required": ["artifact", "metadata", "key", "path_family"],
+  "properties": {
+    "artifact": { "const": "path_family_report.json" },
+    "metadata": {
+      "type": "object",
+      "required": ["owner", "stage", "generated_at"],
+      "properties": {
+        "owner": { "type": "string", "minLength": 1 },
+        "stage": { "type": "string", "enum": ["phase1"] },
+        "generated_at": { "type": "string", "minLength": 1 },
+        "dependencies": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "key": {
+      "type": "object",
+      "required": ["direction", "target_bucket", "pair", "session"],
+      "properties": {
+        "direction": { "type": "string" },
+        "target_bucket": { "type": "string" },
+        "pair": { "type": "string" },
+        "session": { "type": "string" },
+        "path_family": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "path_family": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "confidence": { "type": "number" },
+        "features": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
