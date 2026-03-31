@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "structure_truth.schema.json",
+  "title": "StructureTruth",
+  "description": "PC2 Phase 2 output: structural label truth for a direction/target_bucket/pair/session key. Labels must not be fuzzy — only exact structure names permitted.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "structure_label",
+    "label_confidence",
+    "sample_count",
+    "label_source"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "target_bucket": {
+      "type": "number"
+    },
+    "pair": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string"
+    },
+    "path_family": {
+      "type": ["string", "null"],
+      "description": "Path family if known at time of structure detection; null if structure detected before family phase."
+    },
+    "structure_label": {
+      "type": "string",
+      "description": "Exact non-fuzzy structure label. Must be drawn from a fixed controlled vocabulary.",
+      "enum": [
+        "impulse_breakout",
+        "impulse_continuation",
+        "pullback_reclaim",
+        "range_expansion",
+        "reversal_snap",
+        "grind_recovery",
+        "stall_compression",
+        "unknown"
+      ]
+    },
+    "label_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence score for the assigned label. 1.0 = deterministic, <1.0 = probabilistic."
+    },
+    "sample_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of trades used to derive this label."
+    },
+    "label_source": {
+      "type": "string",
+      "enum": ["detector", "manual", "inherited"],
+      "description": "How this label was assigned."
+    },
+    "feature_snapshot": {
+      "type": "object",
+      "description": "Feature values used by the structure detector at label time.",
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

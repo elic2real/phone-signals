@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "path_family_report.schema.json",
+  "title": "PathFamilyReport",
+  "description": "PC2 Phase 1 output: clusters discovered opportunities into path families after viability is confirmed. path_family is ADDED by this phase and must not be required in pre-family-phase artifacts.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "family_count",
+    "families"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "target_bucket": {
+      "type": "number"
+    },
+    "pair": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string"
+    },
+    "family_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "families": {
+      "type": "array",
+      "description": "Array of discovered path family records. May be empty if no families found.",
+      "items": {
+        "type": "object",
+        "required": [
+          "path_family",
+          "member_count",
+          "centroid_features"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "path_family": {
+            "type": "string",
+            "description": "Stable family identifier (e.g. 'impulse_clean', 'grind_recovery'). Must not be null once assigned."
+          },
+          "member_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "centroid_features": {
+            "type": "object",
+            "description": "Representative feature vector for this family's centroid.",
+            "additionalProperties": true
+          },
+          "win_rate": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "avg_capture_pips": {
+            "type": ["number", "null"]
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

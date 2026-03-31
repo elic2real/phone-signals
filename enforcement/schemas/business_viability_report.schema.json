@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "business_viability_report.schema.json",
+  "title": "BusinessViabilityReport",
+  "description": "PC2 Phase 0 output: assesses whether a direction/target_bucket/pair/session combination has sufficient raw opportunity to proceed.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "trade_count",
+    "viable",
+    "fail_reasons"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Schema version this report was emitted against.",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp of report generation."
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"],
+      "description": "Trade direction. Must not be mixed."
+    },
+    "target_bucket": {
+      "type": "number",
+      "description": "Target pip bucket (e.g. 2.5, 3.5, 5, 6, 7, 8). Must be exactly the bucket value, not averaged."
+    },
+    "pair": {
+      "type": "string",
+      "description": "Instrument pair (e.g. EUR_USD). No cross-pair averaging permitted.",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string",
+      "description": "Trading session key (e.g. london, new_york, sydney). No cross-session averaging permitted."
+    },
+    "trade_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Raw number of qualifying trades in the population for this key."
+    },
+    "win_rate": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Win rate if available; null if insufficient population."
+    },
+    "avg_capture_pips": {
+      "type": ["number", "null"],
+      "description": "Mean pip capture if available; null if insufficient population."
+    },
+    "viable": {
+      "type": "boolean",
+      "description": "True only if this key passes all minimum thresholds for further discovery."
+    },
+    "fail_reasons": {
+      "type": "array",
+      "description": "List of reasons this key failed viability check. Empty array if viable=true.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional diagnostic metadata from the runner.",
+      "additionalProperties": true
+    }
+  }
+}
