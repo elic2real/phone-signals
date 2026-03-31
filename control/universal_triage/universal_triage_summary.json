@@ -1,0 +1,122 @@
+{
+  "total_domains": 10,
+  "class_counts": {
+    "TIER_1": 0,
+    "TIER_2": 1,
+    "TIER_3": 0,
+    "PARKED": 3,
+    "DEAD": 4,
+    "QUARANTINE": 2
+  },
+  "top_cts_domains": [
+    {
+      "domain_id": "gbp_usd_london_short_s200",
+      "CTS": 0.5009399602566631,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "gbp_usd_london_long_s200",
+      "CTS": 0.46367973674915103,
+      "assigned_class": "TIER_2",
+      "next_action": "KEEP_IN_ACTIVE_QUEUE"
+    },
+    {
+      "domain_id": "eur_usd_london_short_s200_fix",
+      "CTS": 0.10422878639798382,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_long_s200",
+      "CTS": 0.016842268360706535,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    }
+  ],
+  "top_expectancy_domains": [
+    {
+      "domain_id": "gbp_usd_london_short_s200",
+      "E_raw": 1.3209,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "gbp_usd_london_long_s200",
+      "E_raw": 1.1983,
+      "assigned_class": "TIER_2",
+      "next_action": "KEEP_IN_ACTIVE_QUEUE"
+    },
+    {
+      "domain_id": "eur_usd_london_short_s200_fix",
+      "E_raw": 0.7342,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_long_s200",
+      "E_raw": 0.6542,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    }
+  ],
+  "top_density_domains": [
+    {
+      "domain_id": "gbp_usd_london_short_s200",
+      "D_raw": 13.39259953482328,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "gbp_usd_london_long_s200",
+      "D_raw": 13.39259953482328,
+      "assigned_class": "TIER_2",
+      "next_action": "KEEP_IN_ACTIVE_QUEUE"
+    },
+    {
+      "domain_id": "eur_usd_london_short_s200_fix",
+      "D_raw": 13.069585384044167,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_long_s200",
+      "D_raw": 13.069585384044167,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    }
+  ],
+  "top_trigger_quality_domains": [
+    {
+      "domain_id": "gbp_usd_london_short_s200",
+      "T_raw": 0.7484,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "gbp_usd_london_long_s200",
+      "T_raw": 0.7087,
+      "assigned_class": "TIER_2",
+      "next_action": "KEEP_IN_ACTIVE_QUEUE"
+    },
+    {
+      "domain_id": "eur_usd_london_short_s200_fix",
+      "T_raw": 0.6036,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_long_s200",
+      "T_raw": 0.4875,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    }
+  ],
+  "dead_reason_histogram": {
+    "D_DENSITY_NOT_NORMALIZED": 3,
+    "D_BELOW_COST": 1
+  },
+  "quarantine_reason_histogram": {
+    "Q_DUPLICATE_SESSION": 2
+  }
+}
