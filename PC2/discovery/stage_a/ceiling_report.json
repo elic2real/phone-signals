@@ -1,15 +1,15 @@
 {
   "$artifact": "ceiling_report",
   "produced_by": "PC2_DISCOVERY",
-  "run_ts_utc": "2026-03-31T02:27:19.467878+00:00",
+  "run_ts_utc": "2026-03-31T02:42:06.766446+00:00",
   "derived_from": [
     "setup_truth.json",
     "trigger_truth.json"
   ],
   "summary": {
-    "candidate_triggers": 9,
+    "candidate_triggers": 11,
     "valid_ceiling_records": 9,
-    "invalid_ceiling_records": 0
+    "invalid_ceiling_records": 2
   },
   "records": [
     {
@@ -20,7 +20,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_LONG_2pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_family": "reclaim_failure",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -31,6 +32,7 @@
           "theoretical_pips_per_setup": 0.0192,
           "theoretical_pips_per_hour_ceiling": 0.0327,
           "criteria_snapshot": {
+            "trigger_family": "reclaim_failure",
             "entry_position_required": "retest",
             "directional_bias": "reversal",
             "min_continuation_strength": 0.4571,
@@ -39,12 +41,19 @@
             "min_micro_displacement_quality": 0.5665,
             "max_pre_entry_mae_to_bucket_ratio": 1.6538,
             "min_spread_efficiency": 0.8,
+            "directional_dominance_ratio_min": 1.05,
+            "impulse_asymmetry_min": 0.0367,
+            "edge_half_life_sec": 345,
+            "zone_residency_sec_max": 293,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.95,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.2624
         }
       }
     },
@@ -56,7 +65,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_LONG_3pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_family": "reclaim_failure",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -67,6 +77,7 @@
           "theoretical_pips_per_setup": 0.0522,
           "theoretical_pips_per_hour_ceiling": 0.0888,
           "criteria_snapshot": {
+            "trigger_family": "reclaim_failure",
             "entry_position_required": "retest",
             "directional_bias": "reversal",
             "min_continuation_strength": 0.4562,
@@ -75,12 +86,19 @@
             "min_micro_displacement_quality": 0.5413,
             "max_pre_entry_mae_to_bucket_ratio": 1.1025,
             "min_spread_efficiency": 0.8,
+            "directional_dominance_ratio_min": 1.1191,
+            "impulse_asymmetry_min": 0.0975,
+            "edge_half_life_sec": 339,
+            "zone_residency_sec_max": 288,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.7082,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.3285
         }
       }
     },
@@ -92,7 +110,8 @@
       "path_family": "breakout",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_LONG_10pip_breakout_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level::ACCEPTANCE_FAILURE",
+      "trigger_family": "acceptance_failure",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -103,6 +122,7 @@
           "theoretical_pips_per_setup": 0.236,
           "theoretical_pips_per_hour_ceiling": 0.4012,
           "criteria_snapshot": {
+            "trigger_family": "acceptance_failure",
             "entry_position_required": "retest",
             "directional_bias": "continuation",
             "min_continuation_strength": 0.5689,
@@ -111,12 +131,19 @@
             "min_micro_displacement_quality": 0.6917,
             "max_pre_entry_mae_to_bucket_ratio": 0.35,
             "min_spread_efficiency": 0.8657,
+            "directional_dominance_ratio_min": 3.9799,
+            "impulse_asymmetry_min": 0.3977,
+            "edge_half_life_sec": 420,
+            "zone_residency_sec_max": 357,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.2517,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.6536
         }
       }
     },
@@ -128,7 +155,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_SHORT_2pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_family": "reclaim_failure",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -139,6 +167,7 @@
           "theoretical_pips_per_setup": 0.002,
           "theoretical_pips_per_hour_ceiling": 0.0057,
           "criteria_snapshot": {
+            "trigger_family": "reclaim_failure",
             "entry_position_required": "retest",
             "directional_bias": "reversal",
             "min_continuation_strength": 0.2984,
@@ -147,12 +176,19 @@
             "min_micro_displacement_quality": 0.6023,
             "max_pre_entry_mae_to_bucket_ratio": 1.7997,
             "min_spread_efficiency": 0.8,
+            "directional_dominance_ratio_min": 1.05,
+            "impulse_asymmetry_min": -0.05,
+            "edge_half_life_sec": 279,
+            "zone_residency_sec_max": 237,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.95,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.2428
         }
       }
     },
@@ -164,7 +200,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_SHORT_3pip_sweep_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_family": "reclaim_failure",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -175,6 +212,7 @@
           "theoretical_pips_per_setup": 0.0358,
           "theoretical_pips_per_hour_ceiling": 0.1001,
           "criteria_snapshot": {
+            "trigger_family": "reclaim_failure",
             "entry_position_required": "retest",
             "directional_bias": "reversal",
             "min_continuation_strength": 0.3328,
@@ -183,12 +221,19 @@
             "min_micro_displacement_quality": 0.5939,
             "max_pre_entry_mae_to_bucket_ratio": 1.1095,
             "min_spread_efficiency": 0.8,
+            "directional_dominance_ratio_min": 1.05,
+            "impulse_asymmetry_min": -0.0418,
+            "edge_half_life_sec": 293,
+            "zone_residency_sec_max": 249,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.769,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.3212
         }
       }
     },
@@ -200,7 +245,8 @@
       "path_family": "sweep",
       "structure_label": "retest_level",
       "setup_label": "AUD_USD_London_SHORT_5pip_sweep_retest_level",
-      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level",
+      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level::RECLAIM_FAILURE",
+      "trigger_family": "reclaim_failure",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -211,6 +257,7 @@
           "theoretical_pips_per_setup": 0.0501,
           "theoretical_pips_per_hour_ceiling": 0.1003,
           "criteria_snapshot": {
+            "trigger_family": "reclaim_failure",
             "entry_position_required": "retest",
             "directional_bias": "reversal",
             "min_continuation_strength": 0.399,
@@ -219,12 +266,19 @@
             "min_micro_displacement_quality": 0.6576,
             "max_pre_entry_mae_to_bucket_ratio": 0.457,
             "min_spread_efficiency": 0.8,
+            "directional_dominance_ratio_min": 1.0828,
+            "impulse_asymmetry_min": 0.0762,
+            "edge_half_life_sec": 339,
+            "zone_residency_sec_max": 288,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.4415,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.4598
         }
       }
     },
@@ -236,7 +290,8 @@
       "path_family": "continuation",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_SHORT_5pip_continuation_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_5pip_continuation_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -247,6 +302,7 @@
           "theoretical_pips_per_setup": 0.4382,
           "theoretical_pips_per_hour_ceiling": 1.0516,
           "criteria_snapshot": {
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
             "directional_bias": "continuation",
             "min_continuation_strength": 0.5279,
@@ -255,12 +311,19 @@
             "min_micro_displacement_quality": 0.687,
             "max_pre_entry_mae_to_bucket_ratio": 0.3524,
             "min_spread_efficiency": 0.8042,
+            "directional_dominance_ratio_min": 4.12,
+            "impulse_asymmetry_min": 0.3724,
+            "edge_half_life_sec": 406,
+            "zone_residency_sec_max": 345,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.3338,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.7288
         }
       }
     },
@@ -272,7 +335,8 @@
       "path_family": "drift",
       "structure_label": "retest_level",
       "setup_label": "AUD_USD_London_SHORT_10pip_drift_retest_level",
-      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level",
+      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level::DISPLACEMENT",
+      "trigger_family": "displacement",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -283,6 +347,7 @@
           "theoretical_pips_per_setup": 0.1223,
           "theoretical_pips_per_hour_ceiling": 0.2201,
           "criteria_snapshot": {
+            "trigger_family": "displacement",
             "entry_position_required": "retest",
             "directional_bias": "continuation",
             "min_continuation_strength": 0.454,
@@ -291,12 +356,19 @@
             "min_micro_displacement_quality": 0.6896,
             "max_pre_entry_mae_to_bucket_ratio": 0.35,
             "min_spread_efficiency": 0.8,
+            "directional_dominance_ratio_min": 3.3502,
+            "impulse_asymmetry_min": 0.3012,
+            "edge_half_life_sec": 372,
+            "zone_residency_sec_max": 316,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.2716,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.5804
         }
       }
     },
@@ -308,7 +380,8 @@
       "path_family": "continuation",
       "structure_label": "retest_level",
       "setup_label": "EUR_USD_London_SHORT_10pip_continuation_retest_level",
-      "trigger_label": "trigger::EUR_USD_London_SHORT_10pip_continuation_retest_level",
+      "trigger_label": "trigger::EUR_USD_London_SHORT_10pip_continuation_retest_level::REASSERTION",
+      "trigger_family": "reassertion",
       "ceiling": {
         "status": "valid",
         "metrics": {
@@ -319,6 +392,7 @@
           "theoretical_pips_per_setup": 0.5016,
           "theoretical_pips_per_hour_ceiling": 1.1536,
           "criteria_snapshot": {
+            "trigger_family": "reassertion",
             "entry_position_required": "retest",
             "directional_bias": "continuation",
             "min_continuation_strength": 0.5437,
@@ -327,12 +401,19 @@
             "min_micro_displacement_quality": 0.742,
             "max_pre_entry_mae_to_bucket_ratio": 0.35,
             "min_spread_efficiency": 0.8494,
+            "directional_dominance_ratio_min": 2.4221,
+            "impulse_asymmetry_min": 0.3137,
+            "edge_half_life_sec": 420,
+            "zone_residency_sec_max": 357,
+            "residual_business_decay_rate": 0.0008,
+            "stagnation_hazard_max": 0.2393,
             "notes": [
-              "Derived directly from setup causal signature.",
+              "State-machine trigger specification.",
               "No AEE logic included.",
               "No promotion decision included."
             ]
-          }
+          },
+          "trigger_quality_score": 0.7774
         }
       }
     }

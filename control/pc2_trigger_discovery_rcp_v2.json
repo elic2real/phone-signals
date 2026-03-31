@@ -1,0 +1,87 @@
+{
+  "$artifact": "pc2_trigger_discovery_rcp_v2",
+  "produced_by": "PC2_DISCOVERY",
+  "version": "v2.0",
+  "doctrine": "The engine does not enter at a price; it enters inside an execution band when a stateful event grammar confirms directional dominance before the business decays below tradable viability.",
+  "business_key": [
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "path_family",
+    "structure_label",
+    "setup_label"
+  ],
+  "logic_type": "STATEFUL_ZONE_EXECUTION",
+  "state_machine_contract": {
+    "required_states": [
+      "ARMED",
+      "MONITORING",
+      "CONFIRMED",
+      "EXECUTE",
+      "EXPIRED",
+      "INVALID"
+    ],
+    "required_time_decay": [
+      "edge_half_life_sec",
+      "zone_residency_sec_max",
+      "residual_business_decay_rate",
+      "stagnation_hazard"
+    ],
+    "required_dominance": [
+      "directional_dominance_ratio",
+      "impulse_asymmetry",
+      "signed_displacement_efficiency"
+    ],
+    "required_friction": [
+      "fill_quality_budget",
+      "slippage_budget_pips",
+      "latency_tolerance_ms",
+      "spread_to_business_ratio",
+      "execution_survivability"
+    ]
+  },
+  "zone_model": {
+    "host_zone": [
+      "zone_width_pips",
+      "acceptance_boundary",
+      "rejection_boundary",
+      "consumption_boundary"
+    ],
+    "execution_band": [
+      "band_width_pips",
+      "entry_preference",
+      "max_spread_to_band_ratio"
+    ]
+  },
+  "trigger_families": [
+    "reassertion",
+    "reclaim_failure",
+    "displacement",
+    "acceptance_failure",
+    "failed_second_push",
+    "exhaustion"
+  ],
+  "quality_objectives": [
+    "expectancy_delta_vs_setup",
+    "mae_improvement",
+    "smoothness_improvement",
+    "spread_efficiency_improvement",
+    "time_compression_improvement",
+    "fill_survivability",
+    "trigger_quality_score"
+  ],
+  "non_goals": [
+    "No AEE logic",
+    "No promotion decision",
+    "No environment generalization"
+  ],
+  "lexicon": {
+    "business": "tradable money-extraction opportunity",
+    "host_zone": "structural area where setup lives",
+    "execution_band": "narrow tradable sub-band inside host zone",
+    "residual_business": "remaining extractable move after costs",
+    "temporal_spoilage": "edge degradation due to delay",
+    "path_toxicity": "adverse-path burden before target"
+  }
+}

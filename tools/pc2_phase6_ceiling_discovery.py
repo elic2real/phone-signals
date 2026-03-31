@@ -27,8 +27,22 @@ def _k(record: Dict) -> Tuple[str, int, str, str, str, str]:
     )
 
 
-def _idx(records: List[Dict]) -> Dict[Tuple[str, int, str, str, str, str], Dict]:
-    return {_k(r): r for r in records if isinstance(r, dict)}
+def _idx(records: List[Dict]) -> Dict[Tuple[str, int, str, str, str, str], List[Dict]]:
+    grouped: Dict[Tuple[str, int, str, str, str, str], List[Dict]] = {}
+    for row in records:
+        if not isinstance(row, dict):
+            continue
+        grouped.setdefault(_k(row), []).append(row)
+    return grouped
+
+
+def _select_best_trigger(candidates: List[Dict]) -> Dict:
+    if not candidates:
+        return {}
+    return max(
+        candidates,
+        key=lambda row: float(row.get("trigger_quality", {}).get("trigger_quality_score", 0.0)),
+    )
 
 
 def build_ceiling_records(setup_truth: Dict, trigger_truth: Dict) -> List[Dict]:
@@ -37,8 +51,8 @@ def build_ceiling_records(setup_truth: Dict, trigger_truth: Dict) -> List[Dict]:
 
     out: List[Dict] = []
     for key in sorted(set(setup_index) & set(trigger_index)):
-        s = setup_index[key]
-        t = trigger_index[key]
+        s = setup_index[key][0]
+        t = _select_best_trigger(trigger_index[key])
 
         if str(s.get("status", "")).lower() != "valid":
             continue
@@ -73,6 +87,7 @@ def build_ceiling_records(setup_truth: Dict, trigger_truth: Dict) -> List[Dict]:
                 "structure_label": structure_label,
                 "setup_label": s.get("setup_label", ""),
                 "trigger_label": t.get("trigger_label", ""),
+                "trigger_family": t.get("trigger_family", ""),
                 "ceiling": {
                     "status": "valid",
                     "metrics": {
@@ -83,6 +98,7 @@ def build_ceiling_records(setup_truth: Dict, trigger_truth: Dict) -> List[Dict]:
                         "theoretical_pips_per_setup": _round(theoretical_pips_per_setup),
                         "theoretical_pips_per_hour_ceiling": _round(theoretical_pips_per_hour_ceiling),
                         "criteria_snapshot": criteria,
+                        "trigger_quality_score": _round(float(t.get("trigger_quality", {}).get("trigger_quality_score", 0.0))),
                     },
                 },
             }
