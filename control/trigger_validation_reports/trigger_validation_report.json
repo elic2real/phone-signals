@@ -1,0 +1,281 @@
+{
+  "timestamp": "2026-03-31T03:57:19.174108",
+  "validation_status": "PASS",
+  "trigger_validation": {
+    "status": "PASS",
+    "total_triggers": 9,
+    "sibling_groups_count": 6,
+    "fake_variant_groups_count": 0
+  },
+  "sibling_distinctness": {
+    "status": "DISTINCT",
+    "fake_groups": []
+  },
+  "all_sibling_groups": [
+    {
+      "sibling_key": "EUR_USD_London_LONG_retest_level_sweep",
+      "trigger_count": 2,
+      "triggers": [
+        {
+          "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_LONG_2pip_sweep_retest_level",
+          "target_bucket": 2,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0138,
+            "mae_improvement": 0.0,
+            "smoothness_improvement": 0.6051,
+            "spread_efficiency_improvement": 0.0882,
+            "time_compression_improvement": 0.0873,
+            "fill_survivability": 0.6566,
+            "trigger_quality_score": 0.3124
+          },
+          "path_quality": {
+            "path_quality_score": 0.5136,
+            "adverse_path_burden": 1.575,
+            "path_toxicity": 0.8214,
+            "opportunity_cost_score": 0.6809
+          }
+        },
+        {
+          "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_LONG_3pip_sweep_retest_level",
+          "target_bucket": 3,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0407,
+            "mae_improvement": 0.0,
+            "smoothness_improvement": 0.5825,
+            "spread_efficiency_improvement": 0.0882,
+            "time_compression_improvement": 0.3255,
+            "fill_survivability": 0.6383,
+            "trigger_quality_score": 0.3785
+          },
+          "path_quality": {
+            "path_quality_score": 0.5374,
+            "adverse_path_burden": 1.05,
+            "path_toxicity": 0.607,
+            "opportunity_cost_score": 0.5035
+          }
+        }
+      ],
+      "is_distinct": true,
+      "status": "DISTINCT"
+    },
+    {
+      "sibling_key": "EUR_USD_London_LONG_retest_level_breakout",
+      "trigger_count": 1,
+      "triggers": [
+        {
+          "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_LONG_10pip_breakout_retest_level",
+          "target_bucket": 10,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0602,
+            "mae_improvement": 0.7964,
+            "smoothness_improvement": 0.7413,
+            "spread_efficiency_improvement": 0.1819,
+            "time_compression_improvement": 0.7603,
+            "fill_survivability": 0.8115,
+            "trigger_quality_score": 0.6736
+          },
+          "path_quality": {
+            "path_quality_score": 0.669,
+            "adverse_path_burden": 0.2036,
+            "path_toxicity": 0.2157,
+            "opportunity_cost_score": 0.1639
+          }
+        }
+      ],
+      "is_distinct": true,
+      "status": "DISTINCT"
+    },
+    {
+      "sibling_key": "EUR_USD_London_SHORT_retest_level_sweep",
+      "trigger_count": 2,
+      "triggers": [
+        {
+          "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_SHORT_2pip_sweep_retest_level",
+          "target_bucket": 2,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0019,
+            "mae_improvement": 0.0,
+            "smoothness_improvement": 0.6017,
+            "spread_efficiency_improvement": 0.0904,
+            "time_compression_improvement": 0.05,
+            "fill_survivability": 0.6842,
+            "trigger_quality_score": 0.2928
+          },
+          "path_quality": {
+            "path_quality_score": 0.4497,
+            "adverse_path_burden": 1.714,
+            "path_toxicity": 0.855,
+            "opportunity_cost_score": 0.7925
+          }
+        },
+        {
+          "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_SHORT_3pip_sweep_retest_level",
+          "target_bucket": 3,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0346,
+            "mae_improvement": 0.0,
+            "smoothness_improvement": 0.6019,
+            "spread_efficiency_improvement": 0.0953,
+            "time_compression_improvement": 0.2676,
+            "fill_survivability": 0.6811,
+            "trigger_quality_score": 0.3712
+          },
+          "path_quality": {
+            "path_quality_score": 0.5006,
+            "adverse_path_burden": 1.0567,
+            "path_toxicity": 0.6592,
+            "opportunity_cost_score": 0.597
+          }
+        }
+      ],
+      "is_distinct": true,
+      "status": "DISTINCT"
+    },
+    {
+      "sibling_key": "AUD_USD_London_SHORT_retest_level_sweep",
+      "trigger_count": 1,
+      "triggers": [
+        {
+          "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level::REASSERTION",
+          "setup_label": "AUD_USD_London_SHORT_5pip_sweep_retest_level",
+          "target_bucket": 5,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0194,
+            "mae_improvement": 0.5648,
+            "smoothness_improvement": 0.6732,
+            "spread_efficiency_improvement": 0.0811,
+            "time_compression_improvement": 0.5795,
+            "fill_survivability": 0.7185,
+            "trigger_quality_score": 0.5098
+          },
+          "path_quality": {
+            "path_quality_score": 0.527,
+            "adverse_path_burden": 0.4352,
+            "path_toxicity": 0.3785,
+            "opportunity_cost_score": 0.3273
+          }
+        }
+      ],
+      "is_distinct": true,
+      "status": "DISTINCT"
+    },
+    {
+      "sibling_key": "EUR_USD_London_SHORT_retest_level_continuation",
+      "trigger_count": 2,
+      "triggers": [
+        {
+          "trigger_label": "trigger::EUR_USD_London_SHORT_5pip_continuation_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
+          "target_bucket": 5,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.1343,
+            "mae_improvement": 0.6644,
+            "smoothness_improvement": 0.7279,
+            "spread_efficiency_improvement": 0.1136,
+            "time_compression_improvement": 0.6821,
+            "fill_survivability": 0.7614,
+            "trigger_quality_score": 0.7288
+          },
+          "path_quality": {
+            "path_quality_score": 0.7311,
+            "adverse_path_burden": 0.3356,
+            "path_toxicity": 0.2861,
+            "opportunity_cost_score": 0.2247
+          }
+        },
+        {
+          "trigger_label": "trigger::EUR_USD_London_SHORT_10pip_continuation_retest_level::REASSERTION",
+          "setup_label": "EUR_USD_London_SHORT_10pip_continuation_retest_level",
+          "target_bucket": 10,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.1189,
+            "mae_improvement": 0.847,
+            "smoothness_improvement": 0.7803,
+            "spread_efficiency_improvement": 0.1638,
+            "time_compression_improvement": 0.7721,
+            "fill_survivability": 0.837,
+            "trigger_quality_score": 0.7774
+          },
+          "path_quality": {
+            "path_quality_score": 0.7445,
+            "adverse_path_burden": 0.153,
+            "path_toxicity": 0.2051,
+            "opportunity_cost_score": 0.1591
+          }
+        }
+      ],
+      "is_distinct": true,
+      "status": "DISTINCT"
+    },
+    {
+      "sibling_key": "AUD_USD_London_SHORT_retest_level_drift",
+      "trigger_count": 1,
+      "triggers": [
+        {
+          "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level::REASSERTION",
+          "setup_label": "AUD_USD_London_SHORT_10pip_drift_retest_level",
+          "target_bucket": 10,
+          "has_criteria": true,
+          "criteria_count": 16,
+          "has_states": true,
+          "state_count": 6,
+          "quality_score": {
+            "expectancy_delta_vs_setup": 0.0345,
+            "mae_improvement": 0.8668,
+            "smoothness_improvement": 0.7139,
+            "spread_efficiency_improvement": 0.0883,
+            "time_compression_improvement": 0.7413,
+            "fill_survivability": 0.7464,
+            "trigger_quality_score": 0.6203
+          },
+          "path_quality": {
+            "path_quality_score": 0.5784,
+            "adverse_path_burden": 0.1332,
+            "path_toxicity": 0.2328,
+            "opportunity_cost_score": 0.1934
+          }
+        }
+      ],
+      "is_distinct": true,
+      "status": "DISTINCT"
+    }
+  ],
+  "errors": []
+}
