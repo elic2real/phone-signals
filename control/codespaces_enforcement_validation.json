@@ -1,7 +1,7 @@
 {
   "report_dir": "PC2\\discovery\\stage_a",
   "schema_dir": "codespaces_rcp\\schemas",
-  "artifacts_checked": 3,
+  "artifacts_checked": 4,
   "results": [
     {
       "artifact": "business_viability_report.json",
@@ -11,6 +11,12 @@
     },
     {
       "artifact": "path_family_report.json",
+      "schema_issues": [],
+      "ownership_issues": [],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "setup_truth.json",
       "schema_issues": [],
       "ownership_issues": [],
       "dependency_issues": []
@@ -27,12 +33,12 @@
     "present_artifacts": [
       "business_viability_report.json",
       "path_family_report.json",
+      "setup_truth.json",
       "structure_truth.json"
     ],
     "missing_artifacts": [
       "ceiling_report.json",
       "segmentation_gap_report.json",
-      "setup_truth.json",
       "trigger_truth.json"
     ],
     "notes": [
@@ -43,7 +49,6 @@
   "promotion_gate": {
     "status": "BLOCKED_NO_DISCOVERY_OUTPUT",
     "missing_artifacts": [
-      "setup_truth.json",
       "trigger_truth.json",
       "ceiling_report.json"
     ],

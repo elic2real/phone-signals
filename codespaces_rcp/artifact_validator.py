@@ -28,6 +28,7 @@ STAGE_BY_ARTIFACT = {
     "business_viability_report.json": "phase0",
     "path_family_report.json": "phase1",
     "structure_truth.json": "phase2",
+    "setup_truth.json": "phase3",
 }
 
 
@@ -110,6 +111,19 @@ def _map_record_to_schema_payload(
                 f"placement_rate={record.get('placement_rate', 0)}",
                 f"consistent_verdict={bool(record.get('consistent_verdict'))}",
             ],
+        }
+    elif loaded.artifact_name == "setup_truth.json":
+        base["key"]["path_family"] = str(record.get("path_family", ""))
+        base["key"]["structure_label"] = str(record.get("structure_label", ""))
+        base["setup"] = {
+            "status": str(record.get("status", "")),
+            "signals": {
+                "setup_label": record.get("setup_label", ""),
+                "causal_signature": record.get("causal_signature", {}),
+                "expectancy": record.get("expectancy", 0.0),
+                "mae_profile": record.get("mae_profile", {}),
+                "sample_count": record.get("sample_count", 0),
+            },
         }
 
     return base

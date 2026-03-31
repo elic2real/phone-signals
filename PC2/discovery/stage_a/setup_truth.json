@@ -1,0 +1,278 @@
+{
+  "$artifact": "setup_truth",
+  "produced_by": "PC2_DISCOVERY",
+  "run_ts_utc": "2026-03-31T02:21:17.941428+00:00",
+  "derived_from": [
+    "business_viability_report.json",
+    "path_family_report.json",
+    "structure_truth.json"
+  ],
+  "summary": {
+    "candidate_domains": 9,
+    "valid_setups": 9,
+    "invalid_setups": 0
+  },
+  "records": [
+    {
+      "setup_label": "EUR_USD_London_LONG_2pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "LONG",
+      "target_bucket": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.462,
+        "continuation_strength": 0.5079,
+        "failed_push_count": 5,
+        "micro_displacement_quality": 0.6294,
+        "pre_entry_adverse_movement": 3.15,
+        "dominant_family_pct": 0.48,
+        "dominant_structure_pct": 0.34,
+        "placement_rate": 0.74,
+        "stability_score": 0.4462
+      },
+      "expectancy": 0.1257,
+      "mae_profile": {
+        "avg_mae_pips": 3.15,
+        "mae_to_bucket_ratio": 1.575,
+        "spread_efficiency": 0.8682
+      },
+      "sample_count": 17,
+      "status": "valid"
+    },
+    {
+      "setup_label": "EUR_USD_London_LONG_3pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "LONG",
+      "target_bucket": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.385,
+        "continuation_strength": 0.5069,
+        "failed_push_count": 4,
+        "micro_displacement_quality": 0.6014,
+        "pre_entry_adverse_movement": 3.15,
+        "dominant_family_pct": 0.34,
+        "dominant_structure_pct": 0.34,
+        "placement_rate": 0.74,
+        "stability_score": 0.4066
+      },
+      "expectancy": 0.3698,
+      "mae_profile": {
+        "avg_mae_pips": 3.15,
+        "mae_to_bucket_ratio": 1.05,
+        "spread_efficiency": 0.8682
+      },
+      "sample_count": 17,
+      "status": "valid"
+    },
+    {
+      "setup_label": "EUR_USD_London_LONG_10pip_breakout_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "breakout",
+      "direction": "LONG",
+      "target_bucket": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.135,
+        "continuation_strength": 0.6321,
+        "failed_push_count": 1,
+        "micro_displacement_quality": 0.7686,
+        "pre_entry_adverse_movement": 2.036,
+        "dominant_family_pct": 0.34,
+        "dominant_structure_pct": 0.48,
+        "placement_rate": 0.72,
+        "stability_score": 0.328
+      },
+      "expectancy": 0.5469,
+      "mae_profile": {
+        "avg_mae_pips": 2.036,
+        "mae_to_bucket_ratio": 0.2036,
+        "spread_efficiency": 0.9619
+      },
+      "sample_count": 17,
+      "status": "valid"
+    },
+    {
+      "setup_label": "EUR_USD_London_SHORT_2pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "SHORT",
+      "target_bucket": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.521,
+        "continuation_strength": 0.3315,
+        "failed_push_count": 5,
+        "micro_displacement_quality": 0.6692,
+        "pre_entry_adverse_movement": 3.428,
+        "dominant_family_pct": 0.74,
+        "dominant_structure_pct": 0.58,
+        "placement_rate": 0.74,
+        "stability_score": 0.4911
+      },
+      "expectancy": 0.0174,
+      "mae_profile": {
+        "avg_mae_pips": 3.428,
+        "mae_to_bucket_ratio": 1.714,
+        "spread_efficiency": 0.8704
+      },
+      "sample_count": 29,
+      "status": "valid"
+    },
+    {
+      "setup_label": "EUR_USD_London_SHORT_3pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "SHORT",
+      "target_bucket": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.422,
+        "continuation_strength": 0.3698,
+        "failed_push_count": 4,
+        "micro_displacement_quality": 0.6599,
+        "pre_entry_adverse_movement": 3.17,
+        "dominant_family_pct": 0.56,
+        "dominant_structure_pct": 0.6,
+        "placement_rate": 0.76,
+        "stability_score": 0.498
+      },
+      "expectancy": 0.3143,
+      "mae_profile": {
+        "avg_mae_pips": 3.17,
+        "mae_to_bucket_ratio": 1.0567,
+        "spread_efficiency": 0.8753
+      },
+      "sample_count": 28,
+      "status": "valid"
+    },
+    {
+      "setup_label": "AUD_USD_London_SHORT_5pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "SHORT",
+      "target_bucket": 5,
+      "pair": "AUD_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.348,
+        "continuation_strength": 0.4433,
+        "failed_push_count": 3,
+        "micro_displacement_quality": 0.7307,
+        "pre_entry_adverse_movement": 2.176,
+        "dominant_family_pct": 0.4,
+        "dominant_structure_pct": 0.56,
+        "placement_rate": 0.78,
+        "stability_score": 0.3385
+      },
+      "expectancy": 0.1763,
+      "mae_profile": {
+        "avg_mae_pips": 2.176,
+        "mae_to_bucket_ratio": 0.4352,
+        "spread_efficiency": 0.8611
+      },
+      "sample_count": 20,
+      "status": "valid"
+    },
+    {
+      "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "continuation",
+      "direction": "SHORT",
+      "target_bucket": 5,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.121,
+        "continuation_strength": 0.5865,
+        "failed_push_count": 0,
+        "micro_displacement_quality": 0.7633,
+        "pre_entry_adverse_movement": 1.678,
+        "dominant_family_pct": 0.48,
+        "dominant_structure_pct": 0.68,
+        "placement_rate": 0.86,
+        "stability_score": 0.4964
+      },
+      "expectancy": 1.2211,
+      "mae_profile": {
+        "avg_mae_pips": 1.678,
+        "mae_to_bucket_ratio": 0.3356,
+        "spread_efficiency": 0.8936
+      },
+      "sample_count": 24,
+      "status": "valid"
+    },
+    {
+      "setup_label": "AUD_USD_London_SHORT_10pip_drift_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "drift",
+      "direction": "SHORT",
+      "target_bucket": 10,
+      "pair": "AUD_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.128,
+        "continuation_strength": 0.5045,
+        "failed_push_count": 0,
+        "micro_displacement_quality": 0.7662,
+        "pre_entry_adverse_movement": 1.332,
+        "dominant_family_pct": 0.36,
+        "dominant_structure_pct": 0.64,
+        "placement_rate": 0.84,
+        "stability_score": 0.2056
+      },
+      "expectancy": 0.3132,
+      "mae_profile": {
+        "avg_mae_pips": 1.332,
+        "mae_to_bucket_ratio": 0.1332,
+        "spread_efficiency": 0.8683
+      },
+      "sample_count": 18,
+      "status": "valid"
+    },
+    {
+      "setup_label": "EUR_USD_London_SHORT_10pip_continuation_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "continuation",
+      "direction": "SHORT",
+      "target_bucket": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "causal_signature": {
+        "entry_position_in_structure": "retest",
+        "rejection_strength": 0.212,
+        "continuation_strength": 0.6041,
+        "failed_push_count": 2,
+        "micro_displacement_quality": 0.8244,
+        "pre_entry_adverse_movement": 1.53,
+        "dominant_family_pct": 0.48,
+        "dominant_structure_pct": 0.46,
+        "placement_rate": 0.9,
+        "stability_score": 0.4336
+      },
+      "expectancy": 1.0813,
+      "mae_profile": {
+        "avg_mae_pips": 1.53,
+        "mae_to_bucket_ratio": 0.153,
+        "spread_efficiency": 0.9438
+      },
+      "sample_count": 23,
+      "status": "valid"
+    }
+  ]
+}
