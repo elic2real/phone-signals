@@ -1,0 +1,462 @@
+{
+  "$artifact": "structure_truth",
+  "produced_by": "SCALED_DISCOVERY_DEMO",
+  "run_ts_utc": "2026-03-31T04:31:55.898052+00:00",
+  "batch": "EUR_USD_London_SHORT",
+  "records": [
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 8,
+      "pair": "AUD_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 24,
+          "pct": 0.48,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 15,
+          "pct": 0.3,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 5,
+          "pct": 0.1,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 3,
+      "placed_count": 47,
+      "placement_rate": 0.94,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 5,
+      "pair": "AUD_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 28,
+          "pct": 0.56,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 7,
+          "pct": 0.14,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 11,
+      "placed_count": 39,
+      "placement_rate": 0.78,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 10,
+      "pair": "AUD_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 32,
+          "pct": 0.64,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 6,
+          "pct": 0.12,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 8,
+      "placed_count": 42,
+      "placement_rate": 0.84,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 17,
+          "pct": 0.34,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 12,
+          "pct": 0.24,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 5,
+          "pct": 0.1,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 2,
+          "pct": 0.04,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 13,
+      "placed_count": 37,
+      "placement_rate": 0.74,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 17,
+          "pct": 0.34,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 12,
+          "pct": 0.24,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 5,
+          "pct": 0.1,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 2,
+          "pct": 0.04,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 13,
+      "placed_count": 37,
+      "placement_rate": 0.74,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 24,
+          "pct": 0.48,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 4,
+          "pct": 0.08,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 2,
+          "pct": 0.04,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 14,
+      "placed_count": 36,
+      "placement_rate": 0.72,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 29,
+          "pct": 0.58,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 5,
+          "pct": 0.1,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 13,
+      "placed_count": 37,
+      "placement_rate": 0.74,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 30,
+          "pct": 0.6,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 5,
+          "pct": 0.1,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 12,
+      "placed_count": 38,
+      "placement_rate": 0.76,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 5,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 34,
+          "pct": 0.68,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 5,
+          "pct": 0.1,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        },
+        {
+          "label": "drift_channel",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 7,
+      "placed_count": 43,
+      "placement_rate": 0.86,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 8,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 36,
+          "pct": 0.72,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 4,
+          "pct": 0.08,
+          "objective": true
+        },
+        {
+          "label": "range_edge",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 1,
+          "pct": 0.02,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 6,
+      "placed_count": 44,
+      "placement_rate": 0.88,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "struct_breakdown": [
+        {
+          "label": "retest_level",
+          "count": 23,
+          "pct": 0.46,
+          "objective": true
+        },
+        {
+          "label": "range_edge",
+          "count": 9,
+          "pct": 0.18,
+          "objective": true
+        },
+        {
+          "label": "compression",
+          "count": 6,
+          "pct": 0.12,
+          "objective": true
+        },
+        {
+          "label": "break_level",
+          "count": 4,
+          "pct": 0.08,
+          "objective": true
+        },
+        {
+          "label": "liquidity_sweep_zone",
+          "count": 3,
+          "pct": 0.06,
+          "objective": true
+        }
+      ],
+      "rejected_ambiguous_count": 5,
+      "placed_count": 45,
+      "placement_rate": 0.9,
+      "dominant_structure": "retest_level",
+      "consistent_verdict": true
+    }
+  ]
+}

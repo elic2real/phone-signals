@@ -1,0 +1,330 @@
+{
+  "$artifact": "path_family_report",
+  "produced_by": "SCALED_DISCOVERY_DEMO",
+  "run_ts_utc": "2026-03-31T04:31:55.897736+00:00",
+  "batch": "EUR_USD_London_SHORT",
+  "records": [
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 8,
+      "pair": "AUD_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "oscillation",
+          "count": 5,
+          "pct": 0.1,
+          "real": true
+        }
+      ],
+      "unclassified_count": 42,
+      "dominant_family": "oscillation",
+      "dominant_count": 5,
+      "dominant_real": true,
+      "non_random_verdict": false
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 5,
+      "pair": "AUD_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "sweep",
+          "count": 20,
+          "pct": 0.4,
+          "real": true
+        },
+        {
+          "family": "continuation",
+          "count": 9,
+          "pct": 0.18,
+          "real": true
+        }
+      ],
+      "unclassified_count": 19,
+      "dominant_family": "sweep",
+      "dominant_count": 20,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 10,
+      "pair": "AUD_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "drift",
+          "count": 18,
+          "pct": 0.36,
+          "real": true
+        }
+      ],
+      "unclassified_count": 32,
+      "dominant_family": "drift",
+      "dominant_count": 18,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "sweep",
+          "count": 24,
+          "pct": 0.48,
+          "real": true
+        },
+        {
+          "family": "breakout",
+          "count": 17,
+          "pct": 0.34,
+          "real": true
+        },
+        {
+          "family": "continuation",
+          "count": 4,
+          "pct": 0.08,
+          "real": false
+        }
+      ],
+      "unclassified_count": 5,
+      "dominant_family": "sweep",
+      "dominant_count": 24,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "sweep",
+          "count": 17,
+          "pct": 0.34,
+          "real": true
+        },
+        {
+          "family": "breakout",
+          "count": 13,
+          "pct": 0.26,
+          "real": true
+        },
+        {
+          "family": "continuation",
+          "count": 10,
+          "pct": 0.2,
+          "real": true
+        }
+      ],
+      "unclassified_count": 9,
+      "dominant_family": "sweep",
+      "dominant_count": 17,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "LONG",
+      "target_bucket_pips": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "breakout",
+          "count": 17,
+          "pct": 0.34,
+          "real": true
+        },
+        {
+          "family": "continuation",
+          "count": 10,
+          "pct": 0.2,
+          "real": true
+        },
+        {
+          "family": "oscillation",
+          "count": 4,
+          "pct": 0.08,
+          "real": false
+        },
+        {
+          "family": "drift",
+          "count": 3,
+          "pct": 0.06,
+          "real": false
+        }
+      ],
+      "unclassified_count": 16,
+      "dominant_family": "breakout",
+      "dominant_count": 17,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "sweep",
+          "count": 37,
+          "pct": 0.74,
+          "real": true
+        },
+        {
+          "family": "breakout",
+          "count": 3,
+          "pct": 0.06,
+          "real": false
+        }
+      ],
+      "unclassified_count": 8,
+      "dominant_family": "sweep",
+      "dominant_count": 37,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "sweep",
+          "count": 28,
+          "pct": 0.56,
+          "real": true
+        },
+        {
+          "family": "oscillation",
+          "count": 7,
+          "pct": 0.14,
+          "real": true
+        },
+        {
+          "family": "breakout",
+          "count": 4,
+          "pct": 0.08,
+          "real": false
+        },
+        {
+          "family": "continuation",
+          "count": 3,
+          "pct": 0.06,
+          "real": false
+        }
+      ],
+      "unclassified_count": 8,
+      "dominant_family": "sweep",
+      "dominant_count": 28,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 5,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "continuation",
+          "count": 24,
+          "pct": 0.48,
+          "real": true
+        },
+        {
+          "family": "oscillation",
+          "count": 15,
+          "pct": 0.3,
+          "real": true
+        }
+      ],
+      "unclassified_count": 11,
+      "dominant_family": "continuation",
+      "dominant_count": 24,
+      "dominant_real": true,
+      "non_random_verdict": true
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 8,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "drift",
+          "count": 7,
+          "pct": 0.14,
+          "real": true
+        },
+        {
+          "family": "oscillation",
+          "count": 5,
+          "pct": 0.1,
+          "real": true
+        },
+        {
+          "family": "continuation",
+          "count": 3,
+          "pct": 0.06,
+          "real": false
+        }
+      ],
+      "unclassified_count": 34,
+      "dominant_family": "drift",
+      "dominant_count": 7,
+      "dominant_real": true,
+      "non_random_verdict": false
+    },
+    {
+      "direction": "SHORT",
+      "target_bucket_pips": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "sample_size": 50,
+      "families": [
+        {
+          "family": "continuation",
+          "count": 24,
+          "pct": 0.48,
+          "real": true
+        },
+        {
+          "family": "oscillation",
+          "count": 6,
+          "pct": 0.12,
+          "real": true
+        },
+        {
+          "family": "drift",
+          "count": 3,
+          "pct": 0.06,
+          "real": false
+        }
+      ],
+      "unclassified_count": 17,
+      "dominant_family": "continuation",
+      "dominant_count": 24,
+      "dominant_real": true,
+      "non_random_verdict": true
+    }
+  ]
+}

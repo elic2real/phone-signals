@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-03-31T04:32:05Z",
+  "phase": "setup",
+  "stage": "discovery",
+  "status": "FAIL",
+  "sample_floors": {
+    "discovery": 15,
+    "promotion": 30,
+    "effective": 15
+  },
+  "input_files": {
+    "business_viability_report": "control/batches/eurusd_london_short_extended/business_viability_report.json",
+    "path_family_report": "control/batches/eurusd_london_short_extended/path_family_report.json",
+    "structure_truth": "control/batches/eurusd_london_short_extended/structure_truth.json",
+    "setup_truth": "control/batches/eurusd_london_short_extended/setup_truth.json"
+  },
+  "schema_errors": [],
+  "setup_artifact_errors": [],
+  "ownership_errors": [],
+  "dependency_errors": [],
+  "promotion_gate": {
+    "status": "BLOCKED",
+    "reason": "Setup phase does not allow promotion; waiting for trigger_truth and ceiling_report.",
+    "missing_required_artifacts": []
+  },
+  "summary": {
+    "total_setups": 5,
+    "passed_setups": 4,
+    "failed_setups": 1
+  }
+}

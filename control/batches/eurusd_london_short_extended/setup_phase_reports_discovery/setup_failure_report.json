@@ -1,0 +1,96 @@
+{
+  "generated_at": "2026-03-31T04:32:05Z",
+  "phase": "setup",
+  "stage": "discovery",
+  "status": "FAIL",
+  "global_failures": [],
+  "failed_setups": [
+    {
+      "setup_id": "EUR_USD_London_SHORT_8pip_sweep_retest_level",
+      "key": {
+        "direction": "SHORT",
+        "target_bucket": 8,
+        "pair": "EUR_USD",
+        "session": "London"
+      },
+      "passed": false,
+      "checks": [
+        {
+          "name": "setup.required.path_family",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "setup.required.structure_label",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.key_alignment",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.viable_upstream",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "dependency.path_family_exists_upstream",
+          "passed": false,
+          "reason": "setup.path_family='sweep' not present in path_family_report.families"
+        },
+        {
+          "name": "dependency.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.expectancy_non_negative",
+          "passed": true,
+          "reason": "negative expectancy=0.0174"
+        },
+        {
+          "name": "domain.mae_within_viability_bound",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.path_family_match",
+          "passed": false,
+          "reason": "setup path_family not in upstream families"
+        },
+        {
+          "name": "domain.structure_match",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "domain.sample_size_floor",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_winner_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.clean_loser_case",
+          "passed": true,
+          "reason": ""
+        },
+        {
+          "name": "gold_case.no_fake_runner_behavior",
+          "passed": false,
+          "reason": "path_family is not marked real in path_family_report"
+        },
+        {
+          "name": "gold_case.no_structural_ambiguity",
+          "passed": true,
+          "reason": ""
+        }
+      ]
+    }
+  ]
+}

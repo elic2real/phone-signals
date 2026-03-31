@@ -1,0 +1,56 @@
+{
+  "manifest": {
+    "batch_type": "extension",
+    "base_source": "stage_a",
+    "pair": "EUR_USD",
+    "session": "London",
+    "direction": "SHORT",
+    "base_buckets": [
+      2,
+      3,
+      5,
+      10
+    ],
+    "extension_buckets": [
+      8
+    ],
+    "planned_outputs": [
+      "business_viability_report.json",
+      "path_family_report.json",
+      "structure_truth.json",
+      "setup_truth.json",
+      "trigger_truth.json",
+      "ceiling_report.json"
+    ],
+    "strategy": "Extend existing family with additional bucket coverage and sample depth"
+  },
+  "validation": {
+    "batch_name": "eurusd_london_short_extended",
+    "batch_dir": "control/batches/eurusd_london_short_extended",
+    "timestamp": "2026-03-31T04:31:55.906764+00:00",
+    "validation_status": "READY_FOR_FULL_PIPELINE",
+    "details": {
+      "setup_count": 5,
+      "trigger_count": 5,
+      "sibling_groups": 2,
+      "sibling_details": [
+        {
+          "family": "retest_level_continuation",
+          "buckets": [
+            5,
+            10
+          ]
+        },
+        {
+          "family": "retest_level_sweep",
+          "buckets": [
+            2,
+            3,
+            8
+          ]
+        }
+      ]
+    }
+  },
+  "note": "This is a DEMONSTRATION batch. For production, replace synthetic generation with real Phase 0-2 discovery."
+}

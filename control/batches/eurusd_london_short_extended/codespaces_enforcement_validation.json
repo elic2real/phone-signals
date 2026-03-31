@@ -1,0 +1,102 @@
+{
+  "report_dir": "control/batches/eurusd_london_short_extended",
+  "schema_dir": "codespaces_rcp/schemas",
+  "artifacts_checked": 6,
+  "results": [
+    {
+      "artifact": "business_viability_report.json",
+      "schema_issues": [],
+      "ownership_issues": [
+        {
+          "code": "OWNER_MISMATCH",
+          "message": "Owner 'SCALED_DISCOVERY_DEMO' does not match expected 'PC2_DISCOVERY' for business_viability_report.json",
+          "severity": "error"
+        }
+      ],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "ceiling_report.json",
+      "schema_issues": [],
+      "ownership_issues": [
+        {
+          "code": "OWNER_MISMATCH",
+          "message": "Owner 'SCALED_DISCOVERY_DEMO' does not match expected 'PC2_DISCOVERY' for ceiling_report.json",
+          "severity": "error"
+        }
+      ],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "path_family_report.json",
+      "schema_issues": [],
+      "ownership_issues": [
+        {
+          "code": "OWNER_MISMATCH",
+          "message": "Owner 'SCALED_DISCOVERY_DEMO' does not match expected 'PC2_DISCOVERY' for path_family_report.json",
+          "severity": "error"
+        }
+      ],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "setup_truth.json",
+      "schema_issues": [],
+      "ownership_issues": [
+        {
+          "code": "OWNER_MISMATCH",
+          "message": "Owner 'SCALED_DISCOVERY_DEMO' does not match expected 'PC2_DISCOVERY' for setup_truth.json",
+          "severity": "error"
+        }
+      ],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "structure_truth.json",
+      "schema_issues": [],
+      "ownership_issues": [
+        {
+          "code": "OWNER_MISMATCH",
+          "message": "Owner 'SCALED_DISCOVERY_DEMO' does not match expected 'PC2_DISCOVERY' for structure_truth.json",
+          "severity": "error"
+        }
+      ],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "trigger_truth.json",
+      "schema_issues": [],
+      "ownership_issues": [
+        {
+          "code": "OWNER_MISMATCH",
+          "message": "Owner 'SCALED_DISCOVERY_DEMO' does not match expected 'PC2_DISCOVERY' for trigger_truth.json",
+          "severity": "error"
+        }
+      ],
+      "dependency_issues": []
+    }
+  ],
+  "universal_analyzer_scaffold": {
+    "status": "READY_FOR_SYNC",
+    "present_artifacts": [
+      "business_viability_report.json",
+      "ceiling_report.json",
+      "path_family_report.json",
+      "setup_truth.json",
+      "structure_truth.json",
+      "trigger_truth.json"
+    ],
+    "missing_artifacts": [
+      "segmentation_gap_report.json"
+    ],
+    "notes": [
+      "Scaffold only: no candidate judgement performed.",
+      "Promotion logic must remain blocked if required discovery outputs are missing."
+    ]
+  },
+  "promotion_gate": {
+    "status": "READY_FOR_PROMOTION_CHECK",
+    "missing_artifacts": [],
+    "message": "All required discovery artifacts exist. Promotion checks may proceed in a later trunk."
+  }
+}
