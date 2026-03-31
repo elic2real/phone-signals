@@ -1,0 +1,23 @@
+{
+  "TIER_1": {
+    "min_net_expectancy": 2.0,
+    "min_density": 10.0,
+    "min_trigger_quality": 0.7,
+    "spread_tolerance": "strict",
+    "priority": "aggressive"
+  },
+  "TIER_2": {
+    "min_net_expectancy": 1.0,
+    "min_density": 8.0,
+    "min_trigger_quality": 0.55,
+    "spread_tolerance": "normal",
+    "priority": "routine"
+  },
+  "TIER_3": {
+    "min_net_expectancy": 0.4,
+    "min_density": 5.0,
+    "min_trigger_quality": 0.4,
+    "spread_tolerance": "conditional",
+    "priority": "opportunistic"
+  }
+}

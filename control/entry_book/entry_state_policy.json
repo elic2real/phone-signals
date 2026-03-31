@@ -1,0 +1,41 @@
+{
+  "WATCH": {
+    "description": "Domain-level economics and session preconditions are valid.",
+    "must_hold": [
+      "integrity_ok",
+      "tier_allowed",
+      "session_match"
+    ]
+  },
+  "GET_READY": {
+    "description": "Host zone and structural setup are formed.",
+    "must_hold": [
+      "setup_valid",
+      "structure_valid",
+      "path_family_valid"
+    ]
+  },
+  "ARM": {
+    "description": "Trigger preconditions are armed with admissible friction.",
+    "must_hold": [
+      "spread_within_budget",
+      "residual_business_positive",
+      "armed_state_reached"
+    ]
+  },
+  "ENTER": {
+    "description": "Trigger confirmation event transitions to execute.",
+    "must_hold": [
+      "confirmed_state",
+      "execution_band_valid",
+      "latency_budget_ok"
+    ]
+  },
+  "INVALIDATE": {
+    "description": "Setup or trigger assumptions broke before/after entry.",
+    "must_hold": [
+      "invalid_state_or_expired",
+      "promotion_no_longer_valid_or_structure_break"
+    ]
+  }
+}

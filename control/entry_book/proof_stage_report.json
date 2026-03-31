@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-31T15:21:55.401187+00:00",
+  "generated_at_utc": "2026-03-31T15:25:16.952417+00:00",
   "source_triage": "control\\universal_triage\\universal_triage_master.json",
   "candidate_counts": {
     "selected": 1,
@@ -9,6 +9,9 @@
   "rows": [
     {
       "domain_id": "gbp_usd_london_long_s200",
+      "pair": "GBP_USD",
+      "session": "London",
+      "direction": "LONG",
       "assigned_class": "TIER_2",
       "next_action_from_triage": "KEEP_IN_ACTIVE_QUEUE",
       "proof": {
@@ -21,7 +24,9 @@
         "distinctness_status": "DISTINCT",
         "promotion_status": "PASS",
         "promotion_reason": "Setup phase does not allow promotion; waiting for trigger_truth and ceiling_report.",
-        "reason_codes": []
+        "reason_codes": [
+          "PROOF_STABILITY_FAIL"
+        ]
       }
     }
   ]

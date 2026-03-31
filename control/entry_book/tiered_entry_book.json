@@ -1,6 +1,106 @@
 {
-  "generated_at_utc": "2026-03-31T15:21:55.401187+00:00",
+  "generated_at_utc": "2026-03-31T15:25:16.952417+00:00",
   "scope": "POST_TRIAGE_ENTRY_OPERATIONALIZATION",
   "active_entry_count": 0,
-  "entries": []
+  "entries": [],
+  "tiered_entries": {
+    "TIER_1": [],
+    "TIER_2": [],
+    "TIER_3": [],
+    "EXCLUDED": [
+      {
+        "domain_id": "gbp_usd_london_long_s200",
+        "assigned_class": "TIER_2",
+        "excluded_reason_codes": [
+          "PROOF_STABILITY_FAIL"
+        ],
+        "next_action": "REVIEW_OR_RETIRE"
+      }
+    ]
+  },
+  "entry_state_policy": {
+    "WATCH": {
+      "description": "Domain-level economics and session preconditions are valid.",
+      "must_hold": [
+        "integrity_ok",
+        "tier_allowed",
+        "session_match"
+      ]
+    },
+    "GET_READY": {
+      "description": "Host zone and structural setup are formed.",
+      "must_hold": [
+        "setup_valid",
+        "structure_valid",
+        "path_family_valid"
+      ]
+    },
+    "ARM": {
+      "description": "Trigger preconditions are armed with admissible friction.",
+      "must_hold": [
+        "spread_within_budget",
+        "residual_business_positive",
+        "armed_state_reached"
+      ]
+    },
+    "ENTER": {
+      "description": "Trigger confirmation event transitions to execute.",
+      "must_hold": [
+        "confirmed_state",
+        "execution_band_valid",
+        "latency_budget_ok"
+      ]
+    },
+    "INVALIDATE": {
+      "description": "Setup or trigger assumptions broke before/after entry.",
+      "must_hold": [
+        "invalid_state_or_expired",
+        "promotion_no_longer_valid_or_structure_break"
+      ]
+    }
+  },
+  "entry_economics_policy": {
+    "TIER_1": {
+      "min_net_expectancy": 2.0,
+      "min_density": 10.0,
+      "min_trigger_quality": 0.7,
+      "spread_tolerance": "strict",
+      "priority": "aggressive"
+    },
+    "TIER_2": {
+      "min_net_expectancy": 1.0,
+      "min_density": 8.0,
+      "min_trigger_quality": 0.55,
+      "spread_tolerance": "normal",
+      "priority": "routine"
+    },
+    "TIER_3": {
+      "min_net_expectancy": 0.4,
+      "min_density": 5.0,
+      "min_trigger_quality": 0.4,
+      "spread_tolerance": "conditional",
+      "priority": "opportunistic"
+    }
+  },
+  "portfolio_utility": {
+    "active_entries_total": 0,
+    "active_by_tier": {
+      "TIER_1": 0,
+      "TIER_2": 0,
+      "TIER_3": 0
+    },
+    "active_by_role": {
+      "ANCHOR": 0,
+      "THROUGHPUT": 0,
+      "SPECIALIST": 0
+    },
+    "avg_density_active_entries": null,
+    "tier2_or_tier3_throughput_contribution": {
+      "count": 0,
+      "status": "NO_ADDITIONAL_THROUGHPUT"
+    },
+    "proof_fail_reason_histogram": {
+      "PROOF_STABILITY_FAIL": 1
+    }
+  }
 }
