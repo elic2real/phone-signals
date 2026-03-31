@@ -29,6 +29,8 @@ STAGE_BY_ARTIFACT = {
     "path_family_report.json": "phase1",
     "structure_truth.json": "phase2",
     "setup_truth.json": "phase3",
+    "trigger_truth.json": "phase5",
+    "ceiling_report.json": "phase6",
 }
 
 
@@ -124,6 +126,26 @@ def _map_record_to_schema_payload(
                 "mae_profile": record.get("mae_profile", {}),
                 "sample_count": record.get("sample_count", 0),
             },
+        }
+    elif loaded.artifact_name == "trigger_truth.json":
+        base["key"]["path_family"] = str(record.get("path_family", ""))
+        base["key"]["structure_label"] = str(record.get("structure_label", ""))
+        base["trigger"] = {
+            "status": str(record.get("status", "")),
+            "criteria": {
+                "trigger_label": record.get("trigger_label", ""),
+                "setup_label": record.get("setup_label", ""),
+                "expectancy": record.get("expectancy", 0.0),
+                "sample_count": record.get("sample_count", 0),
+                "criteria": record.get("criteria", {}),
+            },
+        }
+    elif loaded.artifact_name == "ceiling_report.json":
+        base["key"]["path_family"] = str(record.get("path_family", ""))
+        base["key"]["structure_label"] = str(record.get("structure_label", ""))
+        base["ceiling"] = {
+            "status": str(record.get("ceiling", {}).get("status", "")),
+            "metrics": record.get("ceiling", {}).get("metrics", {}),
         }
 
     return base

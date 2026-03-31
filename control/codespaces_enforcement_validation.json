@@ -1,10 +1,16 @@
 {
   "report_dir": "PC2\\discovery\\stage_a",
   "schema_dir": "codespaces_rcp\\schemas",
-  "artifacts_checked": 4,
+  "artifacts_checked": 6,
   "results": [
     {
       "artifact": "business_viability_report.json",
+      "schema_issues": [],
+      "ownership_issues": [],
+      "dependency_issues": []
+    },
+    {
+      "artifact": "ceiling_report.json",
       "schema_issues": [],
       "ownership_issues": [],
       "dependency_issues": []
@@ -26,20 +32,26 @@
       "schema_issues": [],
       "ownership_issues": [],
       "dependency_issues": []
+    },
+    {
+      "artifact": "trigger_truth.json",
+      "schema_issues": [],
+      "ownership_issues": [],
+      "dependency_issues": []
     }
   ],
   "universal_analyzer_scaffold": {
     "status": "READY_FOR_SYNC",
     "present_artifacts": [
       "business_viability_report.json",
+      "ceiling_report.json",
       "path_family_report.json",
       "setup_truth.json",
-      "structure_truth.json"
+      "structure_truth.json",
+      "trigger_truth.json"
     ],
     "missing_artifacts": [
-      "ceiling_report.json",
-      "segmentation_gap_report.json",
-      "trigger_truth.json"
+      "segmentation_gap_report.json"
     ],
     "notes": [
       "Scaffold only: no candidate judgement performed.",
@@ -47,11 +59,8 @@
     ]
   },
   "promotion_gate": {
-    "status": "BLOCKED_NO_DISCOVERY_OUTPUT",
-    "missing_artifacts": [
-      "trigger_truth.json",
-      "ceiling_report.json"
-    ],
-    "message": "Promotion gate blocked: required discovery outputs are missing."
+    "status": "READY_FOR_PROMOTION_CHECK",
+    "missing_artifacts": [],
+    "message": "All required discovery artifacts exist. Promotion checks may proceed in a later trunk."
   }
 }

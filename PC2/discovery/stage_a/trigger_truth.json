@@ -1,0 +1,267 @@
+{
+  "$artifact": "trigger_truth",
+  "produced_by": "PC2_DISCOVERY",
+  "run_ts_utc": "2026-03-31T02:26:24.740939+00:00",
+  "derived_from": [
+    "setup_truth.json"
+  ],
+  "summary": {
+    "candidate_setups": 9,
+    "valid_triggers": 9,
+    "invalid_triggers": 0
+  },
+  "records": [
+    {
+      "trigger_label": "trigger::EUR_USD_London_LONG_2pip_sweep_retest_level",
+      "setup_label": "EUR_USD_London_LONG_2pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "LONG",
+      "target_bucket": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "reversal",
+        "min_continuation_strength": 0.4571,
+        "min_rejection_strength": 0.3927,
+        "max_failed_push_count": 6,
+        "min_micro_displacement_quality": 0.5665,
+        "max_pre_entry_mae_to_bucket_ratio": 1.6538,
+        "min_spread_efficiency": 0.8,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 17,
+      "expectancy": 0.1257,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::EUR_USD_London_LONG_3pip_sweep_retest_level",
+      "setup_label": "EUR_USD_London_LONG_3pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "LONG",
+      "target_bucket": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "reversal",
+        "min_continuation_strength": 0.4562,
+        "min_rejection_strength": 0.3272,
+        "max_failed_push_count": 5,
+        "min_micro_displacement_quality": 0.5413,
+        "max_pre_entry_mae_to_bucket_ratio": 1.1025,
+        "min_spread_efficiency": 0.8,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 17,
+      "expectancy": 0.3698,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::EUR_USD_London_LONG_10pip_breakout_retest_level",
+      "setup_label": "EUR_USD_London_LONG_10pip_breakout_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "breakout",
+      "direction": "LONG",
+      "target_bucket": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "continuation",
+        "min_continuation_strength": 0.5689,
+        "min_rejection_strength": 0.12,
+        "max_failed_push_count": 2,
+        "min_micro_displacement_quality": 0.6917,
+        "max_pre_entry_mae_to_bucket_ratio": 0.35,
+        "min_spread_efficiency": 0.8657,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 17,
+      "expectancy": 0.5469,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::EUR_USD_London_SHORT_2pip_sweep_retest_level",
+      "setup_label": "EUR_USD_London_SHORT_2pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "SHORT",
+      "target_bucket": 2,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "reversal",
+        "min_continuation_strength": 0.2984,
+        "min_rejection_strength": 0.4429,
+        "max_failed_push_count": 6,
+        "min_micro_displacement_quality": 0.6023,
+        "max_pre_entry_mae_to_bucket_ratio": 1.7997,
+        "min_spread_efficiency": 0.8,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 29,
+      "expectancy": 0.0174,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::EUR_USD_London_SHORT_3pip_sweep_retest_level",
+      "setup_label": "EUR_USD_London_SHORT_3pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "SHORT",
+      "target_bucket": 3,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "reversal",
+        "min_continuation_strength": 0.3328,
+        "min_rejection_strength": 0.3587,
+        "max_failed_push_count": 5,
+        "min_micro_displacement_quality": 0.5939,
+        "max_pre_entry_mae_to_bucket_ratio": 1.1095,
+        "min_spread_efficiency": 0.8,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 28,
+      "expectancy": 0.3143,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::AUD_USD_London_SHORT_5pip_sweep_retest_level",
+      "setup_label": "AUD_USD_London_SHORT_5pip_sweep_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "sweep",
+      "direction": "SHORT",
+      "target_bucket": 5,
+      "pair": "AUD_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "reversal",
+        "min_continuation_strength": 0.399,
+        "min_rejection_strength": 0.2958,
+        "max_failed_push_count": 4,
+        "min_micro_displacement_quality": 0.6576,
+        "max_pre_entry_mae_to_bucket_ratio": 0.457,
+        "min_spread_efficiency": 0.8,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 20,
+      "expectancy": 0.1763,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::EUR_USD_London_SHORT_5pip_continuation_retest_level",
+      "setup_label": "EUR_USD_London_SHORT_5pip_continuation_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "continuation",
+      "direction": "SHORT",
+      "target_bucket": 5,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "continuation",
+        "min_continuation_strength": 0.5279,
+        "min_rejection_strength": 0.12,
+        "max_failed_push_count": 2,
+        "min_micro_displacement_quality": 0.687,
+        "max_pre_entry_mae_to_bucket_ratio": 0.3524,
+        "min_spread_efficiency": 0.8042,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 24,
+      "expectancy": 1.2211,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::AUD_USD_London_SHORT_10pip_drift_retest_level",
+      "setup_label": "AUD_USD_London_SHORT_10pip_drift_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "drift",
+      "direction": "SHORT",
+      "target_bucket": 10,
+      "pair": "AUD_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "continuation",
+        "min_continuation_strength": 0.454,
+        "min_rejection_strength": 0.12,
+        "max_failed_push_count": 2,
+        "min_micro_displacement_quality": 0.6896,
+        "max_pre_entry_mae_to_bucket_ratio": 0.35,
+        "min_spread_efficiency": 0.8,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 18,
+      "expectancy": 0.3132,
+      "status": "valid"
+    },
+    {
+      "trigger_label": "trigger::EUR_USD_London_SHORT_10pip_continuation_retest_level",
+      "setup_label": "EUR_USD_London_SHORT_10pip_continuation_retest_level",
+      "structure_label": "retest_level",
+      "path_family": "continuation",
+      "direction": "SHORT",
+      "target_bucket": 10,
+      "pair": "EUR_USD",
+      "session": "London",
+      "criteria": {
+        "entry_position_required": "retest",
+        "directional_bias": "continuation",
+        "min_continuation_strength": 0.5437,
+        "min_rejection_strength": 0.1802,
+        "max_failed_push_count": 3,
+        "min_micro_displacement_quality": 0.742,
+        "max_pre_entry_mae_to_bucket_ratio": 0.35,
+        "min_spread_efficiency": 0.8494,
+        "notes": [
+          "Derived directly from setup causal signature.",
+          "No AEE logic included.",
+          "No promotion decision included."
+        ]
+      },
+      "sample_count": 23,
+      "expectancy": 1.0813,
+      "status": "valid"
+    }
+  ]
+}
