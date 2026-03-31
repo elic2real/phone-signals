@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-03-31T04:54:34Z",
+  "phase": "setup",
+  "stage": "discovery",
+  "status": "PASS",
+  "sample_floors": {
+    "discovery": 15,
+    "promotion": 30,
+    "effective": 15
+  },
+  "input_files": {
+    "business_viability_report": "PC2\\discovery\\stage_a\\business_viability_report.json",
+    "path_family_report": "PC2\\discovery\\stage_a\\path_family_report.json",
+    "structure_truth": "PC2\\discovery\\stage_a\\structure_truth.json",
+    "setup_truth": "PC2\\discovery\\stage_a\\setup_truth.json"
+  },
+  "schema_errors": [],
+  "setup_artifact_errors": [],
+  "ownership_errors": [],
+  "dependency_errors": [],
+  "promotion_gate": {
+    "status": "BLOCKED",
+    "reason": "Setup phase does not allow promotion; waiting for trigger_truth and ceiling_report.",
+    "missing_required_artifacts": []
+  },
+  "summary": {
+    "total_setups": 9,
+    "passed_setups": 9,
+    "failed_setups": 0
+  }
+}

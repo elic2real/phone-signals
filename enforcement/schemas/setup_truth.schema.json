@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "setup_truth.schema.json",
+  "title": "SetupTruth",
+  "description": "Locked truth artifact for a discovered and promoted setup. Requires structure_truth and path_family to already exist. This artifact is immutable once written.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "setup_id",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "path_family",
+    "structure_label",
+    "entry_filter",
+    "population_size",
+    "locked"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "setup_id": {
+      "type": "string",
+      "description": "Unique stable identifier for this setup (direction__pair__session__bucket__family__structure)."
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "target_bucket": {
+      "type": "number"
+    },
+    "pair": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string"
+    },
+    "path_family": {
+      "type": "string",
+      "description": "Path family is REQUIRED in setup_truth — setups cannot be locked without a family."
+    },
+    "structure_label": {
+      "type": "string",
+      "description": "Structure label is REQUIRED in setup_truth — setups cannot be locked without a structure."
+    },
+    "entry_filter": {
+      "type": "object",
+      "description": "Locked entry filter conditions for this setup.",
+      "required": ["conditions"],
+      "additionalProperties": false,
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["field", "op", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "field": { "type": "string" },
+              "op": {
+                "type": "string",
+                "enum": ["gt", "gte", "lt", "lte", "eq", "neq", "in", "not_in"]
+              },
+              "value": {}
+            }
+          }
+        },
+        "logic": {
+          "type": "string",
+          "enum": ["AND", "OR"],
+          "default": "AND"
+        }
+      }
+    },
+    "population_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "win_rate": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "avg_capture_pips": {
+      "type": ["number", "null"]
+    },
+    "locked": {
+      "type": "boolean",
+      "description": "Must be true. A setup_truth that is not locked is invalid.",
+      "const": true
+    },
+    "locked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "promoted_from": {
+      "type": ["string", "null"],
+      "description": "Reference to the discovery artifact that triggered this lock."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

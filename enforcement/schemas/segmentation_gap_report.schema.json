@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "segmentation_gap_report.schema.json",
+  "title": "SegmentationGapReport",
+  "description": "PC2 output identifying where the discovery pipeline found insufficient population or structural gaps. Used to understand which keys cannot proceed to family/trigger phases.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "direction",
+    "target_bucket",
+    "pair",
+    "session",
+    "gap_type",
+    "gap_details",
+    "recoverable"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "target_bucket": {
+      "type": "number"
+    },
+    "pair": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[A-Z]{3}$"
+    },
+    "session": {
+      "type": "string"
+    },
+    "gap_type": {
+      "type": "string",
+      "enum": [
+        "insufficient_population",
+        "no_viable_structure",
+        "family_clustering_failed",
+        "data_missing",
+        "win_rate_below_floor",
+        "capture_below_floor",
+        "other"
+      ],
+      "description": "Categorical gap type for routing."
+    },
+    "gap_details": {
+      "type": "object",
+      "description": "Structured details about the gap.",
+      "required": ["message"],
+      "additionalProperties": true,
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Human-readable description of the gap."
+        },
+        "observed_count": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "required_count": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "observed_win_rate": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "required_win_rate": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "recoverable": {
+      "type": "boolean",
+      "description": "True if this gap may be resolved with more data or relaxed thresholds. False if structurally unviable."
+    },
+    "downstream_blocked": {
+      "type": "array",
+      "description": "List of downstream phases that cannot proceed due to this gap.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "path_family_clustering",
+          "structure_detection",
+          "ceiling_analysis",
+          "setup_lock",
+          "trigger_lock",
+          "promotion"
+        ]
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
