@@ -10,6 +10,14 @@ from typing import Any
 WORKSPACE = Path(__file__).resolve().parent.parent
 DEFAULT_INPUT = WORKSPACE / "control" / "closeout_decision_report.json"
 DEFAULT_OUT_DIR = WORKSPACE / "control" / "universal_triage"
+CORE_ARTIFACTS = [
+    "business_viability_report.json",
+    "path_family_report.json",
+    "structure_truth.json",
+    "setup_truth.json",
+    "trigger_truth.json",
+    "ceiling_report.json",
+]
 
 
 @dataclass
@@ -81,6 +89,19 @@ def pair_to_complex(pair: str) -> str:
 def parse_domain(domain: str) -> tuple[str, str, str]:
     pair, session, direction = domain.split("/")
     return pair, session, direction
+
+
+def parse_batch_identity(batch_name: str) -> tuple[str, str, str, int | None] | None:
+    parts = batch_name.split("_")
+    if len(parts) < 4:
+        return None
+    pair = f"{parts[0].upper()}_{parts[1].upper()}"
+    session = parts[2].capitalize()
+    direction = parts[3].upper()
+    sample_size = None
+    if len(parts) >= 5 and parts[4].startswith("s") and parts[4][1:].isdigit():
+        sample_size = int(parts[4][1:])
+    return pair, session, direction, sample_size
 
 
 def resolve_source_path(pair: str, session: str, weekday: str) -> str:
@@ -184,6 +205,168 @@ def build_universe_from_closeout(closeout_path: Path) -> list[dict]:
     return universe
 
 
+def extract_best_expectancy_and_bucket(batch_dir: Path) -> tuple[float | None, int | None, int]:
+    setup = read_json_if_exists(batch_dir / "setup_truth.json") or {}
+    records = setup.get("records", [])
+    if not records:
+        return None, None, 0
+    best = max(records, key=lambda r: r.get("expectancy", float("-inf")))
+    return best.get("expectancy"), best.get("target_bucket"), len(records)
+
+
+def extract_best_trigger_quality(batch_dir: Path) -> tuple[float | None, int]:
+    trigger = read_json_if_exists(batch_dir / "trigger_truth.json") or {}
+    records = trigger.get("records", [])
+    if not records:
+        return None, 0
+    best = max(
+        records,
+        key=lambda r: (r.get("trigger_quality") or {}).get("trigger_quality_score", float("-inf")),
+    )
+    return (best.get("trigger_quality") or {}).get("trigger_quality_score"), len(records)
+
+
+def load_density(pair: str, session: str, weekday: str = "Friday") -> tuple[float | None, str]:
+    odm_candidates = [
+        WORKSPACE
+        / "PC2"
+        / "mapping_minimal"
+        / "mapping_minimal"
+        / "compiled_friday_refactor"
+        / f"{pair}__{weekday}__{session}"
+        / "phase6"
+        / "odm_ceiling_report.json",
+        WORKSPACE
+        / "PC2"
+        / "mapping_minimal"
+        / "compiled_friday_refactor"
+        / f"{pair}__{weekday}__{session}"
+        / "phase6"
+        / "odm_ceiling_report.json",
+    ]
+    odm_path = next((p for p in odm_candidates if p.exists()), None)
+    if odm_path is None:
+        return None, "MISSING_ODM"
+    odm = read_json(odm_path)
+    raw = odm.get("theoretical_equity_per_hour_ceiling")
+    session_instances = (
+        odm.get("session_instance_count")
+        or (odm.get("formula_inputs") or {}).get("session_instance_count")
+        or 1
+    )
+    if not isinstance(raw, (int, float)):
+        return None, "MISSING_ODM"
+    return float(raw) / float(session_instances), "OK"
+
+
+def load_trigger_distinctness(batch_name: str) -> str | None:
+    path = (
+        WORKSPACE
+        / "control"
+        / "scale_batch_validation"
+        / batch_name
+        / "trigger_validation_reports"
+        / "trigger_validation_report.json"
+    )
+    report = read_json_if_exists(path)
+    if not report:
+        return None
+    return (report.get("sibling_distinctness") or {}).get("status")
+
+
+def load_stability_for_domain(pair: str, session: str, direction: str) -> dict:
+    key = f"{pair.lower()}_{session.lower()}_{direction.lower()}"
+    path = WORKSPACE / "control" / "stability_tests" / f"{key}_stability.json"
+    report = read_json_if_exists(path)
+    if not report:
+        return {}
+    drifts = (report.get("stability") or {}).get("drifts") or {}
+    return {
+        "stable": (report.get("stability") or {}).get("stable"),
+        "reasons": (report.get("stability") or {}).get("reasons") or [],
+        "expectancy_drift_100_to_300": drifts.get("expectancy_100_to_300"),
+    }
+
+
+def build_universe_from_batches(scale_batches_dir: Path) -> list[dict]:
+    universe: list[dict] = []
+
+    for batch_dir in sorted(scale_batches_dir.glob("*")):
+        if not batch_dir.is_dir():
+            continue
+        batch = batch_dir.name
+        parsed = parse_batch_identity(batch)
+        if parsed is None:
+            continue
+        pair, session, direction, sample_size = parsed
+
+        invalid_doc = read_json_if_exists(batch_dir / "INVALID.json")
+        if invalid_doc:
+            universe.append(
+                {
+                    "domain_id": batch,
+                    "batch": batch,
+                    "pair": pair,
+                    "session": session,
+                    "direction": direction,
+                    "target_bucket": None,
+                    "sample_size": sample_size,
+                    "weekday": "Friday",
+                    "source_cohort_path": resolve_source_path(pair, session, "Friday"),
+                    "complex_label": pair_to_complex(pair),
+                    "integrity_status": "QUARANTINE",
+                    "integrity_reason": "Q_DUPLICATE_SESSION",
+                    "E_raw": None,
+                    "D_raw": None,
+                    "T_raw": None,
+                    "density_status": "MISSING_ODM",
+                    "setup_count": 0,
+                    "trigger_count": 0,
+                    "stability_obj": {},
+                    "rank": None,
+                    "trigger_distinctness": None,
+                }
+            )
+            continue
+
+        if not all((batch_dir / f).exists() for f in CORE_ARTIFACTS):
+            continue
+
+        best_expectancy, best_bucket, setup_count = extract_best_expectancy_and_bucket(batch_dir)
+        best_tq, trigger_count = extract_best_trigger_quality(batch_dir)
+        d_raw, density_status = load_density(pair, session, "Friday")
+        distinctness = load_trigger_distinctness(batch)
+        stability = load_stability_for_domain(pair, session, direction)
+
+        universe.append(
+            {
+                "domain_id": batch,
+                "batch": batch,
+                "pair": pair,
+                "session": session,
+                "direction": direction,
+                "target_bucket": best_bucket,
+                "sample_size": sample_size,
+                "weekday": "Friday",
+                "source_cohort_path": resolve_source_path(pair, session, "Friday"),
+                "complex_label": pair_to_complex(pair),
+                "integrity_status": "OK",
+                "integrity_reason": None,
+                "E_raw": best_expectancy,
+                "D_raw": d_raw,
+                "T_raw": best_tq,
+                "density_status": density_status,
+                "setup_count": setup_count,
+                "trigger_count": trigger_count,
+                "stability_obj": stability,
+                "rank": None,
+                "trigger_distinctness": distinctness,
+            }
+        )
+
+    return universe
+
+
 def stability_proxy(stability_obj: dict, setup_count: int | None, trigger_count: int | None, e_raw: float | None) -> float | None:
     drift = stability_obj.get("expectancy_drift_100_to_300")
     stable_flag = stability_obj.get("stable")
@@ -229,6 +412,10 @@ def apply_hard_gates(domain: dict, t: Thresholds) -> tuple[str | None, list[str]
     if domain.get("integrity_status") == "QUARANTINE":
         reason_codes.append(domain.get("integrity_reason") or "Q_LABEL_MISMATCH")
         return "QUARANTINE", reason_codes, "VERIFY_DATA"
+
+    if domain.get("trigger_distinctness") not in {None, "DISTINCT", "PASS"}:
+        reason_codes.append("D_TRIGGER_NOT_DISTINCT")
+        return "DEAD", reason_codes, "RETIRE"
 
     e_raw = domain.get("E_raw")
     if e_raw is None:
@@ -373,8 +560,14 @@ def compute_summary(rows: list[dict]) -> dict:
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Single-Pass Universal Triage Engine")
+    p.add_argument("--input-mode", choices=["closeout", "batches"], default="batches")
     p.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     p.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
+    p.add_argument(
+        "--scale-batches-dir",
+        type=Path,
+        default=WORKSPACE / "PC2" / "discovery" / "scale_batches",
+    )
     p.add_argument("--cost-buffer", type=float, default=0.20)
     p.add_argument("--min-density", type=float, default=1.0)
     p.add_argument("--min-setup-count", type=int, default=1)
@@ -421,7 +614,10 @@ def main() -> None:
         parked_cts_max=args.parked_cts_max,
     )
 
-    universe = build_universe_from_closeout(args.input)
+    if args.input_mode == "closeout":
+        universe = build_universe_from_closeout(args.input)
+    else:
+        universe = build_universe_from_batches(args.scale_batches_dir)
 
     rows: list[dict] = []
     for domain in universe:
@@ -474,6 +670,7 @@ def main() -> None:
                 "source_cohort_path": row.get("source_cohort_path"),
                 "integrity_status": row.get("integrity_status"),
                 "complex_label": row.get("complex_label"),
+                "sample_size": row.get("sample_size"),
                 "E_raw": row.get("E_raw"),
                 "D_raw": row.get("D_raw"),
                 "T_raw": row.get("T_raw"),

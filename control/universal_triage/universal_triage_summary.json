@@ -1,35 +1,41 @@
 {
-  "total_domains": 10,
+  "total_domains": 18,
   "class_counts": {
     "TIER_1": 0,
     "TIER_2": 1,
     "TIER_3": 0,
-    "PARKED": 3,
-    "DEAD": 4,
+    "PARKED": 6,
+    "DEAD": 9,
     "QUARANTINE": 2
   },
   "top_cts_domains": [
     {
-      "domain_id": "gbp_usd_london_short_s200",
-      "CTS": 0.5009399602566631,
-      "assigned_class": "PARKED",
-      "next_action": "PARK"
-    },
-    {
       "domain_id": "gbp_usd_london_long_s200",
-      "CTS": 0.46367973674915103,
+      "CTS": 0.5756660382935194,
       "assigned_class": "TIER_2",
       "next_action": "KEEP_IN_ACTIVE_QUEUE"
     },
     {
-      "domain_id": "eur_usd_london_short_s200_fix",
-      "CTS": 0.10422878639798382,
+      "domain_id": "gbp_usd_london_short_s200",
+      "CTS": 0.4898907526765438,
       "assigned_class": "PARKED",
       "next_action": "PARK"
     },
     {
-      "domain_id": "eur_usd_london_long_s200",
-      "CTS": 0.016842268360706535,
+      "domain_id": "gbp_usd_london_long_s300",
+      "CTS": 0.4059550834464355,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_short_s200_fix",
+      "CTS": 0.09956208280652999,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_short",
+      "CTS": 0.09269538019621311,
       "assigned_class": "PARKED",
       "next_action": "PARK"
     }
@@ -48,25 +54,25 @@
       "next_action": "KEEP_IN_ACTIVE_QUEUE"
     },
     {
-      "domain_id": "eur_usd_london_short_s200_fix",
-      "E_raw": 0.7342,
+      "domain_id": "eur_usd_london_short",
+      "E_raw": 0.8568,
       "assigned_class": "PARKED",
       "next_action": "PARK"
     },
     {
-      "domain_id": "eur_usd_london_long_s200",
-      "E_raw": 0.6542,
+      "domain_id": "eur_usd_london_short_s200",
+      "E_raw": 0.8568,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "gbp_usd_london_long_s300",
+      "E_raw": 0.7447,
       "assigned_class": "PARKED",
       "next_action": "PARK"
     }
   ],
   "top_density_domains": [
-    {
-      "domain_id": "gbp_usd_london_short_s200",
-      "D_raw": 13.39259953482328,
-      "assigned_class": "PARKED",
-      "next_action": "PARK"
-    },
     {
       "domain_id": "gbp_usd_london_long_s200",
       "D_raw": 13.39259953482328,
@@ -74,13 +80,25 @@
       "next_action": "KEEP_IN_ACTIVE_QUEUE"
     },
     {
-      "domain_id": "eur_usd_london_short_s200_fix",
-      "D_raw": 13.069585384044167,
+      "domain_id": "gbp_usd_london_long_s300",
+      "D_raw": 13.39259953482328,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "gbp_usd_london_short_s200",
+      "D_raw": 13.39259953482328,
       "assigned_class": "PARKED",
       "next_action": "PARK"
     },
     {
       "domain_id": "eur_usd_london_long_s200",
+      "D_raw": 13.069585384044167,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_short",
       "D_raw": 13.069585384044167,
       "assigned_class": "PARKED",
       "next_action": "PARK"
@@ -106,15 +124,21 @@
       "next_action": "PARK"
     },
     {
-      "domain_id": "eur_usd_london_long_s200",
-      "T_raw": 0.4875,
+      "domain_id": "eur_usd_london_short",
+      "T_raw": 0.5795,
+      "assigned_class": "PARKED",
+      "next_action": "PARK"
+    },
+    {
+      "domain_id": "eur_usd_london_short_s200",
+      "T_raw": 0.5795,
       "assigned_class": "PARKED",
       "next_action": "PARK"
     }
   ],
   "dead_reason_histogram": {
-    "D_DENSITY_NOT_NORMALIZED": 3,
-    "D_BELOW_COST": 1
+    "D_BELOW_COST": 2,
+    "D_DENSITY_NOT_NORMALIZED": 7
   },
   "quarantine_reason_histogram": {
     "Q_DUPLICATE_SESSION": 2
