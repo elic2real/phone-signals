@@ -1,0 +1,8 @@
+{
+  "status": "DATA_UNAVAILABLE",
+  "reason": "EUR_USD__Friday__NewYork source CSV is byte-identical to EUR_USD__Friday__London except session column label. No independent NewYork cohort data exists in compiled_friday_refactor. This batch does NOT constitute an independent session-axis test.",
+  "confirmed_by": "pd.util.hash_pandas_object on all non-session columns — hashes match",
+  "batch": "eur_usd_newyork_short_s200",
+  "invalidated_at": "2026-03-31",
+  "action_required": "Exclude from independence grid and any session-axis ranking. Do not use expectancy/trigger values for NewYork independence claims."
+}
