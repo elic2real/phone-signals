@@ -1,0 +1,41 @@
+{
+  "artifact_id": "V2_DETERMINISM_LOCK",
+  "version": "1.0",
+  "purpose": "Prevent non-reproducible phase drift in the V2 physics-driven extraction engine.",
+  "seed": 20260401,
+  "randomness_policy": {
+    "global_seed_required": true,
+    "scenario_seed_offset_mode": "base_plus_index",
+    "forbid_unseeded_sampling": true
+  },
+  "sampling_policy": {
+    "fixed_phase1_scenarios": [
+      "trend_continuation",
+      "panic_reversal",
+      "chop_mean_reversion",
+      "spread_widening",
+      "whipsaw_spike_fade",
+      "slow_grind_break"
+    ],
+    "fixed_max_profiles_per_scenario": 12,
+    "fixed_profile_stride": 25
+  },
+  "config_lock": {
+    "velocity_window": 5,
+    "acceleration_window": 3,
+    "compression_short_window": 12,
+    "compression_long_window": 48,
+    "displacement_window": 8,
+    "spread_anomaly_multiplier": 3.0,
+    "jump_sigma_multiplier": 6.0,
+    "commission_pips": 0.1,
+    "slippage_pips": 0.05,
+    "epsilon": 1e-09
+  },
+  "forbidden_runtime_behavior": [
+    "auto-retune thresholds during evaluation",
+    "use pnl as discovery input",
+    "use asset labels inside T1 clustering",
+    "mutate phase1 config from result quality"
+  ]
+}

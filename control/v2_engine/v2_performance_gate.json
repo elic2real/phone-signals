@@ -1,0 +1,25 @@
+{
+  "artifact_id": "V2_PERFORMANCE_GATE",
+  "version": "1.0",
+  "purpose": "Minimum low-performance qualifications required for a strategy stack to proceed without promoting unprofitable output.",
+  "phase2": {
+    "minimum_cluster_size": 4,
+    "minimum_trade_count": 3,
+    "minimum_win_rate": 0.45,
+    "minimum_expectancy_pips": 0.01,
+    "minimum_net_pnl_pips": 0.01
+  },
+  "phase3": {
+    "minimum_expected_target_to_stop_ratio": 1.1
+  },
+  "phase4": {
+    "minimum_ready_candidates": 5,
+    "maximum_abort_ratio": 0.95
+  },
+  "phase5": {
+    "minimum_trade_count": 5,
+    "minimum_win_rate": 0.45,
+    "minimum_expectancy_pips": 0.05,
+    "minimum_net_pnl_pips": 0.25
+  }
+}

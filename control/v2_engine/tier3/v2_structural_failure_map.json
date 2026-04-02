@@ -1,0 +1,55 @@
+{
+  "artifact_id": "V2_STRUCTURAL_FAILURE_MAP",
+  "generated_at_utc": "2026-04-02T02:03:50.171486Z",
+  "failing_doctrine_count": 0,
+  "classification_summary": {
+    "INSTANTIATION": 0,
+    "MIXED_WINDOW": 0,
+    "SYMMETRY": 0,
+    "TRIGGER_OVERKILL": 0
+  },
+  "repair_structure": {
+    "track_1": {
+      "name": "INSTANTIATION_FAILURES",
+      "goal": "Strengthen doctrine-specific route identity and Tier 1 admission before any pocket tuning."
+    },
+    "track_2": {
+      "name": "MIXED_WINDOW_FAILURES",
+      "goal": "Whitelist profitable T5 pocket combinations and split doctrines where necessary."
+    },
+    "isolated_symmetry_audit": {
+      "name": "LONG_SHORT_SYMMETRY",
+      "goal": "Audit whether the long doctrine is economically real as a mirror of the short winner."
+    },
+    "track_3": {
+      "name": "TRIGGER_OVERKILL",
+      "goal": "Apply doctrine-local charge and decay relief only after route identity and pocket separation are already clean."
+    }
+  },
+  "foundation_audit": {
+    "has_explicit_htf_bias_gate": false,
+    "htf_bias_gate_evidence": [
+      "Tier 1 truth kernels now propagate macro_bias_kernel, htf_zone_kernel, and liquidity_map_kernel into Phase 3 and Phase 4 artifacts.",
+      "Those truth primitives currently modulate projection and charge confirmation rather than acting as a hard upstream admission gate."
+    ],
+    "has_structural_level_awareness": "GLOBAL_KERNEL_SOFT_GATED",
+    "level_awareness_evidence": [
+      "Phase 1 still computes local zone_state such as NEAR_FLOOR, NEAR_CEILING, MID_ZONE.",
+      "Tier 1 truth kernels now add higher-level structural hints through htf_zone_kernel and liquidity_map_kernel.",
+      "The remaining weakness is not total absence of structural awareness, but insufficiently strict use of those kernels as doctrine admission constraints."
+    ],
+    "entry_foundation_read": [
+      "The stack is no longer purely local-pattern driven because truth kernels are carried into the later tiers.",
+      "But most failing doctrines are still not being filtered or instantiated strongly enough by those global truth primitives before downstream replay.",
+      "The likely foundation gap is weak enforcement and composition, not missing truth-kernel transport."
+    ],
+    "most_likely_foundation_problem": "Global truth primitives exist, but they are still acting more like soft modifiers than hard doctrine-shaping admission truth."
+  },
+  "doctrines": [],
+  "notes": [
+    "This is the locked repair map for the currently failing doctrines in the latest salvage audit snapshot.",
+    "Track 1 and Track 2 are parallel workstreams because they address different structural failure classes.",
+    "EXPANSION_RELEASE_LONG is no longer treated as a pure identity failure because it now instantiates and mainly leaks through T6 charge and decay.",
+    "Retired-disabled doctrines are excluded from the active failure queue because they are no longer runtime blockers."
+  ]
+}

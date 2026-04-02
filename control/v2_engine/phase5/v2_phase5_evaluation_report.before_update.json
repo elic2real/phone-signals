@@ -1,0 +1,455 @@
+{
+  "artifact_id": "V2_PHASE5_EVALUATION_REPORT",
+  "generated_at_utc": "2026-04-01T20:13:15.549453Z",
+  "one_way_firewall": true,
+  "focus_strategy": null,
+  "result_count": 1258,
+  "performance_gate": {
+    "minimum_trade_count": 5,
+    "minimum_win_rate": 0.45,
+    "minimum_expectancy_pips": 0.05,
+    "minimum_net_pnl_pips": 0.25
+  },
+  "stage_gates": {
+    "phase2_cluster_floor": true,
+    "phase3_projection_floor": true,
+    "phase4_ready_floor": true,
+    "phase4_abort_floor": true,
+    "phase5_strategy_floor": true
+  },
+  "strategies": [
+    {
+      "strategy_id": "LONG_DOCTRINE_EXPANSION_RELEASE",
+      "trade_count": 3,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "EXPANSION|NEAR_FLOOR|OPEN|LONG|LONG|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 0.666667,
+      "expectancy_pips": 4.618333,
+      "net_pnl_pips": 13.855,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_COILED_COMPRESSION",
+      "trade_count": 5,
+      "aborted_count": 0,
+      "distance_expression_count": 2,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "COMPRESSION|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM",
+        "COMPRESSION|MID_ZONE|TIGHT|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "MEDIUM"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 3.97,
+      "net_pnl_pips": 19.85,
+      "viable": true
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_TRANSITION_RELEASE",
+      "trade_count": 24,
+      "aborted_count": 0,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|COMPRESSED|SHORT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|SHORT|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 0.583333,
+      "expectancy_pips": 1.913208,
+      "net_pnl_pips": 45.917,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_RAW_BALANCED_MID_BALANCE_BALANCED",
+      "trade_count": 5,
+      "aborted_count": 0,
+      "distance_expression_count": 4,
+      "target_distance_bucket_count": 3,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|EXTENDED",
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|LARGE",
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM"
+      ],
+      "win_rate": 0.6,
+      "expectancy_pips": 1.681,
+      "net_pnl_pips": 8.405,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_PRESSURE_DRIVE",
+      "trade_count": 9,
+      "aborted_count": 0,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|OPEN|LONG|LONG|LARGE"
+      ],
+      "target_distance_buckets": [
+        "LARGE",
+        "MEDIUM"
+      ],
+      "win_rate": 0.666667,
+      "expectancy_pips": 1.15,
+      "net_pnl_pips": 10.35,
+      "viable": true
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_RAW_COMPRESSION_MID_DRIFT_PRESSURED",
+      "trade_count": 4,
+      "aborted_count": 0,
+      "distance_expression_count": 2,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "COMPRESSION|MID_ZONE|COMPRESSED|SHORT|SHORT|EXTENDED",
+        "COMPRESSION|MID_ZONE|COMPRESSED|SHORT|SHORT|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "MEDIUM"
+      ],
+      "win_rate": 0.5,
+      "expectancy_pips": 0.8175,
+      "net_pnl_pips": 3.27,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_COILED_TRANSITION",
+      "trade_count": 4,
+      "aborted_count": 0,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|LONG|LONG|MEDIUM",
+        "TRANSITION|MID_ZONE|BALANCED|LONG|LONG|SMALL",
+        "TRANSITION|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.5,
+      "expectancy_pips": 0.8,
+      "net_pnl_pips": 3.2,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_OSCILLATION_EDGE",
+      "trade_count": 8,
+      "aborted_count": 0,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 3,
+      "distance_expression_ids": [
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|LONG|LARGE",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|LONG|SMALL",
+        "OSCILLATION|NEAR_FLOOR|OPEN|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "LARGE",
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.625,
+      "expectancy_pips": 0.25,
+      "net_pnl_pips": 2.0,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_FLOW_DRIFT",
+      "trade_count": 47,
+      "aborted_count": 0,
+      "distance_expression_count": 9,
+      "target_distance_bucket_count": 4,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|EXTENDED",
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|LARGE",
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|EXTENDED",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|LARGE",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|OPEN|LONG|LONG|LARGE",
+        "BALANCED|MID_ZONE|OPEN|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|OPEN|LONG|LONG|SMALL"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.510638,
+      "expectancy_pips": 0.106872,
+      "net_pnl_pips": 5.023,
+      "viable": true
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_EXPANSION_RELEASE",
+      "trade_count": 2,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "EXPANSION|MID_ZONE|OPEN|SHORT|SHORT|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "MEDIUM"
+      ],
+      "win_rate": 0.5,
+      "expectancy_pips": 4.1755,
+      "net_pnl_pips": 8.351,
+      "viable": false
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_COILED_COMPRESSION",
+      "trade_count": 1,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT|SHORT|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "MEDIUM"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 2.65,
+      "net_pnl_pips": 2.65,
+      "viable": false
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_RAW_COMPRESSION_MID_DRIFT_BALANCED",
+      "trade_count": 2,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "COMPRESSION|MID_ZONE|TIGHT|LONG|LONG|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 2.614,
+      "net_pnl_pips": 5.228,
+      "viable": false
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_RAW_BALANCED_MID_DRIFT_COILED",
+      "trade_count": 1,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|SMALL"
+      ],
+      "target_distance_buckets": [
+        "SMALL"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 2.05,
+      "net_pnl_pips": 2.05,
+      "viable": false
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_RAW_BALANCED_MID_DRIFT_BALANCED",
+      "trade_count": 16,
+      "aborted_count": 0,
+      "distance_expression_count": 4,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|OPEN|LONG|LONG|LARGE",
+        "BALANCED|MID_ZONE|OPEN|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "LARGE",
+        "MEDIUM"
+      ],
+      "win_rate": 0.5,
+      "expectancy_pips": -0.13125,
+      "net_pnl_pips": -2.1,
+      "viable": false
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_TRANSITION_RELEASE",
+      "trade_count": 27,
+      "aborted_count": 0,
+      "distance_expression_count": 8,
+      "target_distance_bucket_count": 4,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|LONG|LONG|SMALL",
+        "TRANSITION|MID_ZONE|COMPRESSED|LONG|LONG|LARGE",
+        "TRANSITION|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM",
+        "TRANSITION|MID_ZONE|COMPRESSED|LONG|LONG|SMALL",
+        "TRANSITION|MID_ZONE|OPEN|LONG|LONG|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|LONG|LONG|LARGE",
+        "TRANSITION|MID_ZONE|OPEN|LONG|LONG|MEDIUM",
+        "TRANSITION|NEAR_FLOOR|COMPRESSED|LONG|LONG|LARGE"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.444444,
+      "expectancy_pips": -0.641148,
+      "net_pnl_pips": -17.311,
+      "viable": false
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_RAW_COMPRESSION_FLOOR_REBOUND_BALANCED",
+      "trade_count": 14,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "COMPRESSION|NEAR_FLOOR|TIGHT|LONG|LONG|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 0.357143,
+      "expectancy_pips": -0.856286,
+      "net_pnl_pips": -11.988,
+      "viable": false
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_OSCILLATION_EDGE",
+      "trade_count": 3,
+      "aborted_count": 0,
+      "distance_expression_count": 2,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|SHORT|SHORT|EXTENDED",
+        "OSCILLATION|NEAR_CEILING|OPEN|SHORT|SHORT|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 0.333333,
+      "expectancy_pips": -1.020333,
+      "net_pnl_pips": -3.061,
+      "viable": false
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_FLOW_DRIFT",
+      "trade_count": 6,
+      "aborted_count": 0,
+      "distance_expression_count": 2,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|COMPRESSED|SHORT|SHORT|EXTENDED",
+        "BALANCED|MID_ZONE|OPEN|SHORT|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE"
+      ],
+      "win_rate": 0.166667,
+      "expectancy_pips": -3.1605,
+      "net_pnl_pips": -18.963,
+      "viable": false
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_PRESSURE_DRIVE",
+      "trade_count": 1,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|COMPRESSED|SHORT|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "LARGE"
+      ],
+      "win_rate": 0.0,
+      "expectancy_pips": -6.718,
+      "net_pnl_pips": -6.718,
+      "viable": false
+    }
+  ],
+  "selected_strategy_count": 3,
+  "selected_strategies": [
+    {
+      "strategy_id": "LONG_DOCTRINE_COILED_COMPRESSION",
+      "trade_count": 5,
+      "aborted_count": 0,
+      "distance_expression_count": 2,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "COMPRESSION|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM",
+        "COMPRESSION|MID_ZONE|TIGHT|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "MEDIUM"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 3.97,
+      "net_pnl_pips": 19.85,
+      "viable": true
+    },
+    {
+      "strategy_id": "SHORT_DOCTRINE_TRANSITION_RELEASE",
+      "trade_count": 24,
+      "aborted_count": 0,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|COMPRESSED|SHORT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|SHORT|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 0.583333,
+      "expectancy_pips": 1.913208,
+      "net_pnl_pips": 45.917,
+      "viable": true
+    },
+    {
+      "strategy_id": "LONG_DOCTRINE_RAW_BALANCED_MID_BALANCE_BALANCED",
+      "trade_count": 5,
+      "aborted_count": 0,
+      "distance_expression_count": 4,
+      "target_distance_bucket_count": 3,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|EXTENDED",
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|LARGE",
+        "BALANCED|MID_ZONE|BALANCED|LONG|LONG|MEDIUM",
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM"
+      ],
+      "win_rate": 0.6,
+      "expectancy_pips": 1.681,
+      "net_pnl_pips": 8.405,
+      "viable": true
+    }
+  ]
+}

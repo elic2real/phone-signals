@@ -1,0 +1,42 @@
+{
+  "artifact_id": "V2_TRIGGER_STATE_PATCH_WAVE2",
+  "scope_rule": "Wave 2 only: deepen the four underfiring trigger states with layered internal logic and keep the doctrine set fixed.",
+  "implemented_trigger_states": [
+    "TREND_PRESSURE_CONTINUATION_SHORT",
+    "TREND_PRESSURE_CONTINUATION_LONG",
+    "COMPRESSION_PRESSURE_PUSH",
+    "COMPRESSION_PRESSURE_DROP_CONFIRM"
+  ],
+  "wave2_design": {
+    "principle": "Do not assume one scalar gate is enough. Each target trigger now requires layered surface eligibility, directional pressure, continuation or release confirmation, and bounded session behavior.",
+    "no_doctrine_expansion": true,
+    "same_doctrine_families_reused": true
+  },
+  "existing_doctrine_mappings_used": {
+    "TREND_PRESSURE_CONTINUATION_SHORT": [
+      "TRANSITION_RELEASE_SHORT_STANDARD",
+      "TRANSITION_RELEASE_SHORT_EXTENDED"
+    ],
+    "TREND_PRESSURE_CONTINUATION_LONG": [
+      "TRANSITION_RELEASE_LONG_STANDARD"
+    ],
+    "COMPRESSION_PRESSURE_PUSH": [
+      "COMPRESSION_PRESSURE_LIFT_LONG"
+    ],
+    "COMPRESSION_PRESSURE_DROP_CONFIRM": [
+      "COMPRESSION_PRESSURE_DROP_SHORT"
+    ]
+  },
+  "files_changed": [
+    "tools/v2_phase1_physics_engine.py"
+  ],
+  "baseline": {
+    "reject_no_trigger_count": 1674,
+    "promising_reject_mass": 530,
+    "junk_reject_mass": 1144,
+    "phase2_passed": 10,
+    "phase2_failed": 8,
+    "phase5_passed": 4,
+    "phase5_failed": 3
+  }
+}

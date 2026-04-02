@@ -1,0 +1,51 @@
+{
+  "artifact_id": "V2_PHASE4_UPSTREAM_LEAK_TRACE",
+  "generated_at_utc": "2026-04-02T12:23:49.422400Z",
+  "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+  "phase2_cluster_present": true,
+  "phase2_active_cluster": true,
+  "phase2_tier1_survivor": true,
+  "phase2_runtime_status": "ACTIVE_RUNTIME",
+  "phase2_failed_gates": [],
+  "phase2_extraction_summary": {
+    "strategy_id": "OSCILLATION_EDGE_LONG_SCALP",
+    "trade_count": 20,
+    "aborted_count": 0,
+    "result_count": 20,
+    "distance_expression_count": 4,
+    "target_distance_bucket_count": 3,
+    "distance_expression_ids": [
+      "OSCILLATION|NEAR_FLOOR|BALANCED|LONG|FLOOR_REBOUND|LONG|EXTENDED",
+      "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|EXTENDED",
+      "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|MEDIUM",
+      "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|SMALL"
+    ],
+    "target_distance_buckets": [
+      "EXTENDED",
+      "MEDIUM",
+      "SMALL"
+    ],
+    "win_rate": 0.55,
+    "expectancy_pips": 0.67635,
+    "net_pnl_pips": 13.527,
+    "viable": true,
+    "abort_reason_counts": {},
+    "exit_reason_counts": {
+      "TARGET_HIT": 11,
+      "STOP_HIT": 9
+    },
+    "scenario_count": 2,
+    "scenarios": [
+      "chop_mean_reversion",
+      "panic_reversal"
+    ]
+  },
+  "phase3_context_row_count": 20,
+  "phase4_trigger_row_count": 20,
+  "phase4_trigger_status_counts": {
+    "READY": 0,
+    "ABORTED": 0,
+    "INVALID": 20
+  },
+  "diagnosis": "Leak location unresolved within current reports."
+}

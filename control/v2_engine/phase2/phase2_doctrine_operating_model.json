@@ -1,0 +1,388 @@
+{
+  "artifact_id": "V2_PHASE2_DOCTRINE_OPERATING_MODEL",
+  "generated_at_utc": "2026-04-02T12:23:45.333524Z",
+  "doctrines": [
+    {
+      "doctrine_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+      "doctrine_operating_tier": "FRAGILE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_CEILING_OR_MID_ZONE",
+        "trigger_demand": "PRESSURE_PERSISTENCE_PLUS_PATH_PROOF",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "CAPTURE_BALANCED",
+          "CAPTURE_NEAR",
+          "PRESSURE_BUILD_DRIVE"
+        ],
+        "invalid_route_classes": [
+          "PRESSURE_SWING_ON_PRESSURED_OR_DRIFT_OR_PATTERN_HARVEST",
+          "PRESSURED_CAPTURE_EXTENSION"
+        ],
+        "extraction_intent": "FRAGILE_PRESSURE_BUILD_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "doctrine_operating_tier": "BACKBONE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_CEILING",
+        "trigger_demand": "COMPRESSION_PRESSURE_PERSISTENCE",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "COMPRESSION_SWING",
+          "CAPTURE_EXTENSION",
+          "PRESSURE_EXTENSION"
+        ],
+        "invalid_route_classes": [],
+        "extraction_intent": "HIGH_VOLUME_PRESSURE_LIFT_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "OSCILLATION_EDGE_SHORT_SCALP",
+      "doctrine_operating_tier": "FRAGILE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_CEILING",
+        "trigger_demand": "HARD_REJECTION_CONFIRMATION",
+        "allowed_route_classes": [
+          "EDGE_SCALP",
+          "EDGE_CONFIRM",
+          "EDGE_RELOAD",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [
+          "BROAD_EXTENSION_BEHAVIOR"
+        ],
+        "extraction_intent": "FAST_OSCILLATION_REJECTION_SCALP"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_LONG_STANDARD",
+      "doctrine_operating_tier": "FROZEN",
+      "doctrine_runtime_status": "FROZEN_RESEARCH_ONLY",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_CEILING",
+        "trigger_demand": "LONG_RELEASE_CONFIRMATION",
+        "allowed_route_classes": [
+          "CAPTURE_BALANCED",
+          "CAPTURE_FULL",
+          "TRANSITION_LATE"
+        ],
+        "invalid_route_classes": [
+          "TRANSITION_RUNNER",
+          "IGNITION_CAPTURE_EXTENSION",
+          "IGNITION_CAPTURE_NEAR"
+        ],
+        "extraction_intent": "LONG_RELEASE_CAPTURE_UNDER_REWRITE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "COILED_COMPRESSION_LONG",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "doctrine_operating_tier": "BACKBONE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "DRIFT_REACCEL_OR_DRIFT_CONFIRM",
+        "allowed_route_classes": [
+          "DRIFT_REACCEL",
+          "DRIFT_CONFIRM",
+          "CAPTURE_SCALP",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [
+          "DRIFT_SCALP_ON_DORMANT_OR_PATTERN_HARVEST"
+        ],
+        "extraction_intent": "MID_DRIFT_REACCEL_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "COILED_COMPRESSION_SHORT",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": false
+    },
+    {
+      "doctrine_id": "FLOW_DRIFT_LONG",
+      "doctrine_operating_tier": "BACKBONE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "LONG_DRIFT_REACCEL_OR_IGNITION_ACCEPTANCE",
+        "allowed_route_classes": [
+          "DRIFT_REACCEL",
+          "DRIFT_CONFIRM",
+          "CAPTURE_BALANCED",
+          "CAPTURE_EXTENSION"
+        ],
+        "invalid_route_classes": [
+          "DRIFT_RIDE"
+        ],
+        "extraction_intent": "UNDER_ARMED_LONG_DRIFT_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "OSCILLATION_PRESSURE_BUILD_SHORT",
+      "doctrine_operating_tier": "FROZEN",
+      "doctrine_runtime_status": "FROZEN_RESEARCH_ONLY",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_FLOOR_OR_MID_ZONE",
+        "trigger_demand": "PRESSURE_PERSISTENCE_PLUS_PATH_PROOF",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "CAPTURE_BALANCED",
+          "CAPTURE_EXTENSION"
+        ],
+        "invalid_route_classes": [
+          "OVER_BROAD_SWING_AND_EXTENSION_BEHAVIOR"
+        ],
+        "extraction_intent": "SHORT_PRESSURE_BUILD_UNDER_REWRITE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "doctrine_operating_tier": "BACKBONE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "IGNITION_RELEASE_OR_RELEASE_CONFIRM",
+        "allowed_route_classes": [
+          "TRANSITION_FRONT_RUN",
+          "TRANSITION_CONFIRM",
+          "CAPTURE_SCALP",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [],
+        "extraction_intent": "FAST_RELEASE_THEN_SELECTIVE_EXTENSION"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "doctrine_operating_tier": "FRAGILE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "FLOOR_REBOUND_CONFIRMATION",
+        "allowed_route_classes": [
+          "EDGE_SCALP",
+          "EDGE_CONFIRM",
+          "EDGE_RELOAD",
+          "CAPTURE_BALANCED"
+        ],
+        "invalid_route_classes": [
+          "CEILING_LONG_ROUTE_FAMILIES"
+        ],
+        "extraction_intent": "SELECTIVE_OSCILLATION_REBOUND_SCALP"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+      "doctrine_operating_tier": "FRAGILE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "REVERSAL_CONFIRMATION",
+        "allowed_route_classes": [
+          "REVERSAL_SNAP",
+          "REVERSAL_CONFIRM",
+          "CAPTURE_BALANCED"
+        ],
+        "invalid_route_classes": [
+          "MIXED_FAMILY_SURFACES"
+        ],
+        "extraction_intent": "FAILED_PUSH_REVERSAL_SCALP_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "COMPRESSION_RELEASE_SHORT",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": false
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_LONG",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "PRESSURE_CONTINUATION_CONFIRMATION",
+        "allowed_route_classes": [
+          "PRESSURE_BREAK",
+          "PRESSURE_HOLD",
+          "PRESSURE_FRONT_RUN"
+        ],
+        "invalid_route_classes": [
+          "OVER_BROAD_MID_ZONE_ASSIGNMENT"
+        ],
+        "extraction_intent": "PRESSURE_DRIVE_EDGE_TO_MID_CONTINUATION"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "COMPRESSION_PRESSURE_DROP_SHORT",
+      "doctrine_operating_tier": "FROZEN",
+      "doctrine_runtime_status": "FROZEN_RESEARCH_ONLY",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "COMPRESSION_PRESSURE_PERSISTENCE",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "CAPTURE_BALANCED",
+          "CAPTURE_EXTENSION"
+        ],
+        "invalid_route_classes": [
+          "CAPTURE_EXTENSION_ON_DRIFT",
+          "CAPTURE_EXTENSION_ON_PATTERN_HARVEST"
+        ],
+        "extraction_intent": "SHORT_PRESSURE_DROP_CAPTURE_UNDER_REVIEW"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "EXPANSION_RELEASE_LONG",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "COMPRESSION_RELEASE_LONG",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_SHORT",
+      "doctrine_operating_tier": "FRAGILE",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "PRESSURE_CONTINUATION_CONFIRMATION",
+        "allowed_route_classes": [
+          "PRESSURE_BREAK",
+          "PRESSURE_HOLD",
+          "PRESSURE_FRONT_RUN"
+        ],
+        "invalid_route_classes": [
+          "OVER_BROAD_MID_ZONE_ASSIGNMENT"
+        ],
+        "extraction_intent": "PRESSURE_DRIVE_EDGE_TO_MID_CONTINUATION"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_SHORT_EXTENDED",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "IGNITION_RELEASE_OR_RELEASE_CONFIRM",
+        "allowed_route_classes": [
+          "TRANSITION_FRONT_RUN",
+          "TRANSITION_CONFIRM",
+          "CAPTURE_SCALP",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [],
+        "extraction_intent": "FAST_RELEASE_THEN_SELECTIVE_EXTENSION"
+      },
+      "tier1_survivor": true
+    },
+    {
+      "doctrine_id": "FAILED_BREAK_LONG_RECLAIM_STANDARD",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": false
+    },
+    {
+      "doctrine_id": "EXPANSION_RELEASE_SHORT",
+      "doctrine_operating_tier": "UNCLASSIFIED",
+      "doctrine_runtime_status": "ACTIVE_RUNTIME",
+      "doctrine_runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_survivor": false
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_LONG_REVERSAL_SCALP",
+      "doctrine_operating_tier": "RETIRED",
+      "doctrine_runtime_status": "RETIRED_DISABLED",
+      "doctrine_runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "REVERSAL_CONFIRMATION",
+        "allowed_route_classes": [
+          "REVERSAL_SNAP",
+          "REVERSAL_CONFIRM",
+          "CAPTURE_BALANCED"
+        ],
+        "invalid_route_classes": [
+          "MIXED_FAMILY_SURFACES"
+        ],
+        "extraction_intent": "FAILED_PUSH_REVERSAL_SCALP_CAPTURE"
+      },
+      "tier1_survivor": false
+    }
+  ]
+}

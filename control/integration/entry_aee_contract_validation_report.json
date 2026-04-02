@@ -1,0 +1,71 @@
+{
+  "artifact": "entry_aee_contract_validation_report",
+  "version": "1.0.0",
+  "ts_utc": "2026-04-01T03:30:00Z",
+  "scope": "Entry-AEE contract hardening status for horizon, role, and pocket alignment enforcement.",
+  "contract_ref": "control/integration/entry_aee_contract.json",
+  "runtime_ref": "phone_bot.py",
+  "overall_status": "RUNTIME_ENFORCED",
+  "checks": [
+    {
+      "check_id": "C1",
+      "name": "short_term_vs_long_term_enforcement",
+      "status": "PASS",
+      "contract_declared": true,
+      "runtime_builder_present": true,
+      "runtime_validator_present": true,
+      "evidence": [
+        "control/integration/entry_aee_contract.json",
+        "phone_bot.py"
+      ],
+      "notes": "Canonical packet contract declares trade_horizon and runtime validation enforces enum validity."
+    },
+    {
+      "check_id": "C2",
+      "name": "harvest_runner_hybrid_enforcement",
+      "status": "PASS",
+      "contract_declared": true,
+      "runtime_builder_present": true,
+      "runtime_validator_present": true,
+      "evidence": [
+        "control/integration/entry_aee_contract.json",
+        "phone_bot.py"
+      ],
+      "notes": "Canonical packet contract declares trade_role and runtime validation enforces HARVEST/RUNNER/HYBRID with challenger skip on invalid packet."
+    },
+    {
+      "check_id": "C3",
+      "name": "pocket_alignment_enforcement",
+      "status": "PASS",
+      "contract_declared": true,
+      "runtime_builder_present": true,
+      "runtime_validator_present": true,
+      "evidence": [
+        "control/integration/entry_aee_contract.json",
+        "phone_bot.py"
+      ],
+      "notes": "Runtime now rejects mismatched aee_pocket_id unless deterministic derivation is present and records derivation_used in audit telemetry."
+    },
+    {
+      "check_id": "C4",
+      "name": "contract_audit_event_emission",
+      "status": "PASS",
+      "contract_declared": true,
+      "runtime_builder_present": true,
+      "runtime_validator_present": true,
+      "evidence": [
+        "control/integration/entry_aee_contract.json",
+        "phone_bot.py"
+      ],
+      "notes": "Runtime now emits ENTRY_AEE_CONTRACT_AUDIT with contract_version, contract_valid, missing_fields, entry_pocket_id, aee_pocket_id, derivation_used, trade_horizon, trade_role, target_profile, and engine_path."
+    }
+  ],
+  "promotion_implication": {
+    "status": "KEEP_GATES_UNTIL_PERF_PROOF",
+    "reason": "Contract enforcement is runtime-hardened. Promotion still requires wide replay compatibility and baseline-outperformance evidence."
+  },
+  "required_next_actions": [
+    "Run replay/evidence pass and verify ENTRY_AEE_CONTRACT_AUDIT events in emitted trade logs.",
+    "Keep promotion gate off until wide replay path is dataset-compatible and challenger beats baseline."
+  ]
+}

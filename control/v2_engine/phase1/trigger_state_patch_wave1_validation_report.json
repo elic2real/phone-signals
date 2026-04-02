@@ -1,0 +1,156 @@
+{
+  "artifact_id": "V2_TRIGGER_STATE_PATCH_WAVE1_VALIDATION_REPORT",
+  "before_after": {
+    "reject_count_before": 1691,
+    "reject_count_after": 1674,
+    "reject_count_delta": -17,
+    "reject_share_before": 0.567069,
+    "reject_share_after": 0.561368,
+    "reject_share_delta": -0.005701
+  },
+  "capture_quality": {
+    "promising_reject_mass_before": 596,
+    "promising_reject_mass_after_same_clusters": 575,
+    "promising_reject_mass_captured": 21,
+    "promising_capture_share": 0.035235,
+    "junk_reject_mass_before": 1095,
+    "junk_reject_mass_after_same_clusters": 1087,
+    "junk_captured_accidentally": 8,
+    "junk_capture_share": 0.007306
+  },
+  "downstream_change": {
+    "phase2_passed_before": 9,
+    "phase2_passed_after": 10,
+    "phase2_failed_before": 11,
+    "phase2_failed_after": 8,
+    "phase2_capture_share_before": 0.164154,
+    "phase2_capture_share_after": 0.164496,
+    "phase5_passed_before": 3,
+    "phase5_passed_after": 4,
+    "phase5_failed_before": 3,
+    "phase5_failed_after": 3,
+    "phase5_selected_strategy_count_before": 2,
+    "phase5_selected_strategy_count_after": 3,
+    "phase5_viability_held": true
+  },
+  "trigger_overfire_check": [
+    {
+      "trigger_state": "TREND_PRESSURE_CONTINUATION_SHORT",
+      "fired_count": 0,
+      "mapped_doctrines": [
+        {
+          "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+          "phase2_survivor": false,
+          "phase2_trade_count": 0,
+          "phase2_expectancy_pips": 0.0,
+          "phase5_viable": false,
+          "phase5_trade_count": 0,
+          "phase5_expectancy_pips": 0.0
+        },
+        {
+          "doctrine_id": "TRANSITION_RELEASE_SHORT_EXTENDED",
+          "phase2_survivor": false,
+          "phase2_trade_count": 0,
+          "phase2_expectancy_pips": 0.0,
+          "phase5_viable": false,
+          "phase5_trade_count": 0,
+          "phase5_expectancy_pips": 0.0
+        }
+      ],
+      "overfiring": false,
+      "underfiring": true
+    },
+    {
+      "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
+      "fired_count": 1,
+      "mapped_doctrines": [
+        {
+          "doctrine_id": "TRANSITION_RELEASE_LONG_STANDARD",
+          "phase2_survivor": false,
+          "phase2_trade_count": 0,
+          "phase2_expectancy_pips": 0.0,
+          "phase5_viable": false,
+          "phase5_trade_count": 0,
+          "phase5_expectancy_pips": 0.0
+        }
+      ],
+      "overfiring": false,
+      "underfiring": true
+    },
+    {
+      "trigger_state": "COMPRESSION_PRESSURE_PUSH",
+      "fired_count": 0,
+      "mapped_doctrines": [
+        {
+          "doctrine_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "phase2_survivor": false,
+          "phase2_trade_count": 0,
+          "phase2_expectancy_pips": 0.0,
+          "phase5_viable": false,
+          "phase5_trade_count": 0,
+          "phase5_expectancy_pips": 0.0
+        }
+      ],
+      "overfiring": false,
+      "underfiring": true
+    },
+    {
+      "trigger_state": "COMPRESSION_PRESSURE_DROP_CONFIRM",
+      "fired_count": 0,
+      "mapped_doctrines": [
+        {
+          "doctrine_id": "COMPRESSION_PRESSURE_DROP_SHORT",
+          "phase2_survivor": false,
+          "phase2_trade_count": 0,
+          "phase2_expectancy_pips": 0.0,
+          "phase5_viable": false,
+          "phase5_trade_count": 0,
+          "phase5_expectancy_pips": 0.0
+        }
+      ],
+      "overfiring": false,
+      "underfiring": true
+    },
+    {
+      "trigger_state": "TREND_DRIFT_CONTINUATION_LONG",
+      "fired_count": 43,
+      "mapped_doctrines": [
+        {
+          "doctrine_id": "FLOW_DRIFT_LONG",
+          "phase2_survivor": true,
+          "phase2_trade_count": 24,
+          "phase2_expectancy_pips": 0.898333,
+          "phase5_viable": true,
+          "phase5_trade_count": 11,
+          "phase5_expectancy_pips": 0.440818
+        }
+      ],
+      "overfiring": false,
+      "underfiring": false
+    },
+    {
+      "trigger_state": "TREND_DRIFT_CONTINUATION_SHORT",
+      "fired_count": 50,
+      "mapped_doctrines": [
+        {
+          "doctrine_id": "FLOW_DRIFT_SHORT",
+          "phase2_survivor": true,
+          "phase2_trade_count": 29,
+          "phase2_expectancy_pips": 2.106931,
+          "phase5_viable": true,
+          "phase5_trade_count": 19,
+          "phase5_expectancy_pips": 1.589053
+        }
+      ],
+      "overfiring": false,
+      "underfiring": false
+    }
+  ],
+  "success_condition_check": {
+    "promising_mass_dropped_materially": true,
+    "junk_capture_stayed_low": true,
+    "phase5_viability_not_degraded": true,
+    "reject_share_fell_meaningfully": true,
+    "no_major_precision_collapse": true
+  }
+}

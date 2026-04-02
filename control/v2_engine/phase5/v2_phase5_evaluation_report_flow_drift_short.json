@@ -1,0 +1,253 @@
+{
+  "artifact_id": "V2_PHASE5_EVALUATION_REPORT",
+  "generated_at_utc": "2026-04-02T02:12:56.709969Z",
+  "one_way_firewall": true,
+  "focus_strategy": "FLOW_DRIFT_SHORT",
+  "result_count": 22,
+  "performance_gate": {
+    "minimum_trade_count": 5,
+    "minimum_win_rate": 0.45,
+    "minimum_expectancy_pips": 0.05,
+    "minimum_net_pnl_pips": 0.25
+  },
+  "stage_gates": {
+    "phase2_cluster_floor": true,
+    "phase3_projection_floor": true,
+    "phase4_ready_floor": true,
+    "phase4_abort_floor": true,
+    "phase5_strategy_floor": true
+  },
+  "strategies": [
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "trade_count": 6,
+      "aborted_count": 16,
+      "result_count": 22,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 3.928333,
+      "net_pnl_pips": 23.57,
+      "viable": true,
+      "abort_reason_counts": {
+        "insufficient_charge": 12,
+        "kill_switch_decay": 4
+      },
+      "exit_reason_counts": {
+        "TARGET_HIT": 6
+      },
+      "scenario_count": 3,
+      "scenarios": [
+        "chop_mean_reversion",
+        "panic_reversal",
+        "trend_continuation"
+      ],
+      "base_viable": true,
+      "phase5_gate_passed": true
+    }
+  ],
+  "variant_strategies": [
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "trade_count": 3,
+      "aborted_count": 5,
+      "result_count": 8,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 2.198667,
+      "net_pnl_pips": 6.596,
+      "viable": false,
+      "abort_reason_counts": {
+        "kill_switch_decay": 3,
+        "insufficient_charge": 2
+      },
+      "exit_reason_counts": {
+        "TARGET_HIT": 3
+      },
+      "scenario_count": 2,
+      "scenarios": [
+        "panic_reversal",
+        "trend_continuation"
+      ],
+      "base_viable": true,
+      "phase5_gate_passed": false
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+      "trade_count": 2,
+      "aborted_count": 1,
+      "result_count": 3,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 5.731,
+      "net_pnl_pips": 11.462,
+      "viable": false,
+      "abort_reason_counts": {
+        "insufficient_charge": 1
+      },
+      "exit_reason_counts": {
+        "TARGET_HIT": 2
+      },
+      "scenario_count": 1,
+      "scenarios": [
+        "panic_reversal"
+      ],
+      "base_viable": false,
+      "phase5_gate_passed": false
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|CAPTURE_BALANCED",
+      "trade_count": 1,
+      "aborted_count": 1,
+      "result_count": 2,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "LARGE"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 5.512,
+      "net_pnl_pips": 5.512,
+      "viable": false,
+      "abort_reason_counts": {
+        "insufficient_charge": 1
+      },
+      "exit_reason_counts": {
+        "TARGET_HIT": 1
+      },
+      "scenario_count": 2,
+      "scenarios": [
+        "chop_mean_reversion",
+        "panic_reversal"
+      ],
+      "base_viable": false,
+      "phase5_gate_passed": false
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "trade_count": 0,
+      "aborted_count": 6,
+      "result_count": 6,
+      "distance_expression_count": 0,
+      "target_distance_bucket_count": 0,
+      "distance_expression_ids": [],
+      "target_distance_buckets": [],
+      "win_rate": 0.0,
+      "expectancy_pips": 0.0,
+      "net_pnl_pips": 0,
+      "viable": false,
+      "abort_reason_counts": {
+        "insufficient_charge": 6
+      },
+      "exit_reason_counts": {},
+      "scenario_count": 2,
+      "scenarios": [
+        "chop_mean_reversion",
+        "trend_continuation"
+      ],
+      "base_viable": false,
+      "phase5_gate_passed": false
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+      "trade_count": 0,
+      "aborted_count": 3,
+      "result_count": 3,
+      "distance_expression_count": 0,
+      "target_distance_bucket_count": 0,
+      "distance_expression_ids": [],
+      "target_distance_buckets": [],
+      "win_rate": 0.0,
+      "expectancy_pips": 0.0,
+      "net_pnl_pips": 0,
+      "viable": false,
+      "abort_reason_counts": {
+        "kill_switch_decay": 1,
+        "insufficient_charge": 2
+      },
+      "exit_reason_counts": {},
+      "scenario_count": 2,
+      "scenarios": [
+        "chop_mean_reversion",
+        "trend_continuation"
+      ],
+      "base_viable": false,
+      "phase5_gate_passed": false
+    }
+  ],
+  "selected_strategy_count": 1,
+  "selected_strategies": [
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "trade_count": 6,
+      "aborted_count": 16,
+      "result_count": 22,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE"
+      ],
+      "win_rate": 1.0,
+      "expectancy_pips": 3.928333,
+      "net_pnl_pips": 23.57,
+      "viable": true,
+      "abort_reason_counts": {
+        "insufficient_charge": 12,
+        "kill_switch_decay": 4
+      },
+      "exit_reason_counts": {
+        "TARGET_HIT": 6
+      },
+      "scenario_count": 3,
+      "scenarios": [
+        "chop_mean_reversion",
+        "panic_reversal",
+        "trend_continuation"
+      ],
+      "base_viable": true,
+      "phase5_gate_passed": true
+    }
+  ]
+}

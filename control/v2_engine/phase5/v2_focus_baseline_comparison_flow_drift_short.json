@@ -1,0 +1,86 @@
+{
+  "artifact_id": "V2_FOCUSED_BASELINE_COMPARISON",
+  "generated_at_utc": "2026-04-02T02:12:56.737380Z",
+  "strategy_id": "FLOW_DRIFT_SHORT",
+  "baseline_report": "control\\v2_engine\\phase5\\v2_phase5_evaluation_report.json",
+  "current_report": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report_flow_drift_short.json",
+  "before": {
+    "strategy_id": "FLOW_DRIFT_SHORT",
+    "trade_count": 6,
+    "aborted_count": 16,
+    "result_count": 22,
+    "distance_expression_count": 3,
+    "target_distance_bucket_count": 2,
+    "distance_expression_ids": [
+      "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+    ],
+    "target_distance_buckets": [
+      "EXTENDED",
+      "LARGE"
+    ],
+    "win_rate": 0.833333,
+    "expectancy_pips": 3.578333,
+    "net_pnl_pips": 21.47,
+    "viable": true,
+    "abort_reason_counts": {
+      "insufficient_charge": 12,
+      "kill_switch_decay": 4
+    },
+    "exit_reason_counts": {
+      "TTL_EXIT": 1,
+      "TARGET_HIT": 5
+    },
+    "scenario_count": 3,
+    "scenarios": [
+      "chop_mean_reversion",
+      "panic_reversal",
+      "trend_continuation"
+    ],
+    "base_viable": true,
+    "phase5_gate_passed": true
+  },
+  "after": {
+    "strategy_id": "FLOW_DRIFT_SHORT",
+    "trade_count": 6,
+    "aborted_count": 16,
+    "result_count": 22,
+    "distance_expression_count": 3,
+    "target_distance_bucket_count": 2,
+    "distance_expression_ids": [
+      "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+    ],
+    "target_distance_buckets": [
+      "EXTENDED",
+      "LARGE"
+    ],
+    "win_rate": 1.0,
+    "expectancy_pips": 3.928333,
+    "net_pnl_pips": 23.57,
+    "viable": true,
+    "abort_reason_counts": {
+      "insufficient_charge": 12,
+      "kill_switch_decay": 4
+    },
+    "exit_reason_counts": {
+      "TARGET_HIT": 6
+    },
+    "scenario_count": 3,
+    "scenarios": [
+      "chop_mean_reversion",
+      "panic_reversal",
+      "trend_continuation"
+    ],
+    "base_viable": true,
+    "phase5_gate_passed": true
+  },
+  "delta": {
+    "trade_count": 0,
+    "win_rate": 0.166667,
+    "expectancy_pips": 0.35,
+    "net_pnl_pips": 2.1
+  }
+}

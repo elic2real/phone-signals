@@ -1,0 +1,45 @@
+{
+  "artifact_id": "V2_TRIGGER_STATE_PATCH_WAVE1",
+  "scope_rule": "Wave 1 only: implement top six trigger states from the expansion plan with no doctrine expansion, no pair/session work, and no broad retuning.",
+  "implemented_trigger_states": [
+    "TREND_PRESSURE_CONTINUATION_SHORT",
+    "TREND_PRESSURE_CONTINUATION_LONG",
+    "COMPRESSION_PRESSURE_PUSH",
+    "COMPRESSION_PRESSURE_DROP_CONFIRM",
+    "TREND_DRIFT_CONTINUATION_LONG",
+    "TREND_DRIFT_CONTINUATION_SHORT"
+  ],
+  "existing_doctrine_mappings_used": {
+    "TREND_PRESSURE_CONTINUATION_SHORT": [
+      "TRANSITION_RELEASE_SHORT_STANDARD",
+      "TRANSITION_RELEASE_SHORT_EXTENDED"
+    ],
+    "TREND_PRESSURE_CONTINUATION_LONG": [
+      "TRANSITION_RELEASE_LONG_STANDARD"
+    ],
+    "COMPRESSION_PRESSURE_PUSH": [
+      "COMPRESSION_PRESSURE_LIFT_LONG"
+    ],
+    "COMPRESSION_PRESSURE_DROP_CONFIRM": [
+      "COMPRESSION_PRESSURE_DROP_SHORT"
+    ],
+    "TREND_DRIFT_CONTINUATION_LONG": [
+      "FLOW_DRIFT_LONG"
+    ],
+    "TREND_DRIFT_CONTINUATION_SHORT": [
+      "FLOW_DRIFT_SHORT"
+    ]
+  },
+  "files_changed": [
+    "tools/v2_phase1_physics_engine.py"
+  ],
+  "baseline": {
+    "reject_no_trigger_count": 1691,
+    "promising_reject_mass": 596,
+    "junk_reject_mass": 1095,
+    "phase2_passed": 9,
+    "phase2_failed": 11,
+    "phase5_passed": 3,
+    "phase5_failed": 3
+  }
+}

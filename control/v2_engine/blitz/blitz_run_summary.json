@@ -1,0 +1,32 @@
+{
+  "artifact_id": "V2_BLITZ_RUN_SUMMARY",
+  "generated_at_utc": "2026-04-01T23:06:20.475897Z",
+  "contracts": [
+    {
+      "contract_id": "C1_FLOW_DRIFT_SHORT",
+      "status": "FAIL_IS",
+      "namespace": "c1_flow_drift_short"
+    },
+    {
+      "contract_id": "C2_TRANSITION_RELEASE_SHORT_STANDARD",
+      "status": "FAIL_IS",
+      "namespace": "c2_transition_release_short_standard"
+    },
+    {
+      "contract_id": "C3_OSCILLATION_EDGE_LONG_SCALP",
+      "status": "BLOCKED_BY_PHASE2_ADMISSION",
+      "namespace": "c3_oscillation_edge_long_scalp"
+    }
+  ],
+  "portfolio_gate": {
+    "artifact_id": "V2_BLITZ_PORTFOLIO_GATE_REPORT",
+    "generated_at_utc": "2026-04-01T23:06:20.475897Z",
+    "passing_contract_ids": [],
+    "positive_oos_contract_ids": [],
+    "positive_oos_contract_count": 0,
+    "minimum_positive_oos_strategies": 1,
+    "conflict_pairs": [],
+    "portfolio_gate_passed": false
+  },
+  "shared_harness": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\shared_harness.json"
+}

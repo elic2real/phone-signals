@@ -1,0 +1,84 @@
+{
+  "artifact_id": "V2_BOUNDARY_LOCK",
+  "version": "1.0",
+  "tier_contracts": [
+    {
+      "tier": "T0.0_TO_T0.4",
+      "allowed_inputs": [
+        "ticks",
+        "candles",
+        "instrument_microstructure",
+        "cost_assumptions"
+      ],
+      "allowed_outputs": [
+        "sanitized_ticks",
+        "displacement_metrics",
+        "spatial_metrics",
+        "kinetic_metrics",
+        "extractable_profile_payloads"
+      ],
+      "forbidden_inputs": [
+        "pnl",
+        "win_rate",
+        "session_label",
+        "regime_label",
+        "pair_rank",
+        "doctrine_name"
+      ]
+    },
+    {
+      "tier": "T1",
+      "allowed_inputs": [
+        "extractable_profile_payloads"
+      ],
+      "allowed_outputs": [
+        "mathematical_cluster_ids"
+      ],
+      "forbidden_inputs": [
+        "asset_name",
+        "pair",
+        "session",
+        "regime",
+        "profitability",
+        "execution_outcome"
+      ]
+    },
+    {
+      "tier": "T2_TO_T6",
+      "allowed_inputs": [
+        "cluster_ids",
+        "regime_modifiers",
+        "session_modifiers",
+        "instrument_calibration",
+        "projection_axis",
+        "spatial_zone",
+        "kinetic_charge"
+      ],
+      "allowed_outputs": [
+        "convergence_state",
+        "trigger_trap",
+        "execution_candidate"
+      ],
+      "forbidden_inputs": [
+        "pnl_feedback_for_redefinition"
+      ]
+    },
+    {
+      "tier": "T7",
+      "allowed_inputs": [
+        "execution_candidate",
+        "spread",
+        "slippage",
+        "commission",
+        "fill_model"
+      ],
+      "allowed_outputs": [
+        "economic_viability_verdict"
+      ],
+      "forbidden_outputs": [
+        "mutated_t1_cluster_definition",
+        "mutated_t0_feature_definition"
+      ]
+    }
+  ]
+}

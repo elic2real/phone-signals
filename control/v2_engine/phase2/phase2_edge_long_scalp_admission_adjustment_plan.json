@@ -1,0 +1,37 @@
+{
+  "artifact_id": "V2_PHASE2_EDGE_LONG_SCALP_ADMISSION_ADJUSTMENT_PLAN",
+  "generated_at_utc": "2026-04-02T12:23:49.425403Z",
+  "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+  "current_problem": "Fails generic Phase 2 survivor economics before Phase 3/4 propagation.",
+  "recommended_order": [
+    "Create a fragile-scalp survivor lane with doctrine-tier-aware economics instead of global doctrine floors.",
+    "Require route-level evidence concentration before relaxed admission is allowed.",
+    "Do not change Phase 4 until the doctrine can re-enter active clusters."
+  ],
+  "candidate_admission_options": [
+    {
+      "option_id": "SCALP_PROBATION_LANE",
+      "description": "Allow fragile scalp doctrines to survive with lower aggregate win/expectancy floors if at least one route family is positive and cluster size is sufficient.",
+      "trigger_conditions": {
+        "doctrine_operating_tier": "FRAGILE",
+        "cluster_size_min": 12,
+        "route_level_positive_edge_required": true
+      }
+    },
+    {
+      "option_id": "ROUTE_DOMINANCE_ADMISSION",
+      "description": "Admit only if one or two route families dominate with positive expectancy, even when doctrine-wide aggregate is slightly negative.",
+      "trigger_conditions": {
+        "positive_route_share_required": 0.25,
+        "max_live_routes": 2
+      }
+    },
+    {
+      "option_id": "NO_CHANGE_RESEARCH_ONLY",
+      "description": "Keep current survivor gate unchanged and leave the doctrine outside active runtime until Phase 2 route identity improves.",
+      "trigger_conditions": {
+        "requires_no_runtime_change": true
+      }
+    }
+  ]
+}

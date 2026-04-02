@@ -1,0 +1,98 @@
+{
+  "artifact_id": "V2_PHASE4_BACKBONE_LOCK_CORRECTION_PLAN",
+  "generated_at_utc": "2026-04-02T12:23:49.419263Z",
+  "rows": [
+    {
+      "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "current_live_options": [
+        {
+          "route_operating_mode": "PRESSURE_EXTENSION_QUALIFIED",
+          "option_id": "EXT_BALANCED"
+        },
+        {
+          "route_operating_mode": "PRESSURE_LIFT_CAPTURE",
+          "option_id": "CAPTURE_FAST"
+        }
+      ],
+      "current_probationary_options": [
+        {
+          "route_operating_mode": "COMPRESSION_SWING",
+          "option_id": "SWING_TIGHT"
+        }
+      ],
+      "profit_leak_tags": [],
+      "recommended_corrections": [
+        "Keep current lock set unchanged and observe one more rerun."
+      ]
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "current_live_options": [
+        {
+          "route_operating_mode": "LONG_DRIFT_CONFIRM",
+          "option_id": "LONG_CONFIRM_BALANCED"
+        },
+        {
+          "route_operating_mode": "LONG_DRIFT_REACCEL",
+          "option_id": "LONG_REACCEL_TIGHT"
+        }
+      ],
+      "current_probationary_options": [
+        {
+          "route_operating_mode": "LONG_DRIFT_REACCEL",
+          "option_id": "LONG_REACCEL_BALANCED"
+        }
+      ],
+      "profit_leak_tags": [],
+      "recommended_corrections": [
+        "Keep current lock set unchanged and observe one more rerun."
+      ]
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "current_live_options": [
+        {
+          "route_operating_mode": "DRIFT_REACCEL",
+          "option_id": "REACCEL_BALANCED"
+        },
+        {
+          "route_operating_mode": "DRIFT_CONFIRM",
+          "option_id": "CONFIRM_BALANCED"
+        }
+      ],
+      "current_probationary_options": [
+        {
+          "route_operating_mode": "DRIFT_HARVEST",
+          "option_id": "HARVEST_BALANCED"
+        }
+      ],
+      "profit_leak_tags": [],
+      "recommended_corrections": [
+        "Keep current lock set unchanged and observe one more rerun."
+      ]
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "current_live_options": [
+        {
+          "route_operating_mode": "IGNITION_RELEASE_FAST",
+          "option_id": "FAST_BALANCED"
+        },
+        {
+          "route_operating_mode": "RELEASE_CONFIRM",
+          "option_id": "CONFIRM_BALANCED"
+        }
+      ],
+      "current_probationary_options": [
+        {
+          "route_operating_mode": "RELEASE_EXTENSION",
+          "option_id": "EXTENSION_BALANCED"
+        }
+      ],
+      "profit_leak_tags": [],
+      "recommended_corrections": [
+        "Keep current lock set unchanged and observe one more rerun."
+      ]
+    }
+  ]
+}

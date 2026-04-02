@@ -1,0 +1,43 @@
+{
+  "artifact_id": "V2_PHASE5_EVALUATION_REPORT",
+  "generated_at_utc": "2026-04-01T18:34:22.253757Z",
+  "one_way_firewall": true,
+  "focus_strategy": "SHORT_CLUSTER_GAMMA",
+  "result_count": 50,
+  "performance_gate": {
+    "minimum_trade_count": 5,
+    "minimum_win_rate": 0.45,
+    "minimum_expectancy_pips": 0.05,
+    "minimum_net_pnl_pips": 0.25
+  },
+  "stage_gates": {
+    "phase2_cluster_floor": true,
+    "phase3_projection_floor": true,
+    "phase4_ready_floor": true,
+    "phase4_abort_floor": true,
+    "phase5_strategy_floor": true
+  },
+  "strategies": [
+    {
+      "strategy_id": "SHORT_CLUSTER_GAMMA",
+      "trade_count": 50,
+      "aborted_count": 0,
+      "win_rate": 0.54,
+      "expectancy_pips": 3.45682,
+      "net_pnl_pips": 172.841,
+      "viable": true
+    }
+  ],
+  "selected_strategy_count": 1,
+  "selected_strategies": [
+    {
+      "strategy_id": "SHORT_CLUSTER_GAMMA",
+      "trade_count": 50,
+      "aborted_count": 0,
+      "win_rate": 0.54,
+      "expectancy_pips": 3.45682,
+      "net_pnl_pips": 172.841,
+      "viable": true
+    }
+  ]
+}

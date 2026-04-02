@@ -1,0 +1,4808 @@
+{
+  "artifact_id": "V2_DOCTRINE_LAYER_CONTRACTS",
+  "generated_at_utc": "2026-04-02T02:03:45.414216Z",
+  "scope": "T2_TO_T6_DOCTRINE_LOCAL_PIPELINE",
+  "doctrine_count": 21,
+  "layered_profitable_count": 19,
+  "diagnosis_summary": [
+    {
+      "value": "WINDOW_EXISTS_BUT_IS_NOISY",
+      "count": 9,
+      "share": 0.290323
+    },
+    {
+      "value": "NO_CONTEXT_ROWS",
+      "count": 9,
+      "share": 0.290323
+    },
+    {
+      "value": "T6_CHARGE_TOO_STRICT",
+      "count": 7,
+      "share": 0.225806
+    },
+    {
+      "value": "T6_DECAY_TOO_STRICT",
+      "count": 4,
+      "share": 0.129032
+    },
+    {
+      "value": "WINDOW_CONTRACT_PRESENT",
+      "count": 2,
+      "share": 0.064516
+    }
+  ],
+  "notes": [
+    "This report replaces basket-style runtime language with doctrine-local pipeline contracts.",
+    "T2-T6 are inferred from live V2 artifacts: Phase 2 contracts, Phase 3 context, Phase 4 triggers, and Phase 5 evaluation rows.",
+    "A doctrine can show profitable pockets in T5 while still failing overall if the layered window remains too broad or the T6 trigger trap aborts too aggressively."
+  ],
+  "doctrines": [
+    {
+      "doctrine_id": "COILED_COMPRESSION_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 73,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "COILED_COMPRESSION_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COILED_COMPRESSION_LONG",
+        "trade_count": 50,
+        "aborted_count": 0,
+        "result_count": 50,
+        "distance_expression_count": 9,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MICRO",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "win_rate": 0.52,
+        "expectancy_pips": 0.652,
+        "net_pnl_pips": 32.6,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 9,
+          "TTL_EXIT": 19,
+          "STOP_HIT": 22
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 26,
+        "layered_expectancy_pips": 1.288462,
+        "layered_net_pnl_pips": 33.5,
+        "trade_count_delta": -24,
+        "expectancy_delta_pips": 0.636462,
+        "net_pnl_delta_pips": 0.9
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 41,
+            "share": 0.803922
+          },
+          {
+            "value": "EXPANSION",
+            "count": 10,
+            "share": 0.196078
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.501665,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 41,
+            "filled_count": 17,
+            "win_rate": 0.647059,
+            "expectancy_pips": 1.144118,
+            "net_pnl_pips": 19.45
+          },
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 10,
+            "filled_count": 9,
+            "win_rate": 0.666667,
+            "expectancy_pips": 1.561111,
+            "net_pnl_pips": 14.05
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 24,
+            "share": 0.470588
+          },
+          {
+            "value": "BLEEDING",
+            "count": 20,
+            "share": 0.392157
+          },
+          {
+            "value": "INJECTING",
+            "count": 7,
+            "share": 0.137255
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 0.904832,
+        "session_modifier_contract": {
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          },
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "STABLE",
+            "candidate_count": 24,
+            "filled_count": 15,
+            "win_rate": 0.666667,
+            "expectancy_pips": 1.736667,
+            "net_pnl_pips": 26.05
+          },
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 7,
+            "filled_count": 7,
+            "win_rate": 0.714286,
+            "expectancy_pips": 0.721429,
+            "net_pnl_pips": 5.05
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 20,
+            "filled_count": 4,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.6,
+            "net_pnl_pips": 2.4
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 50,
+            "share": 0.980392
+          },
+          {
+            "value": "GBP_USD",
+            "count": 1,
+            "share": 0.019608
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.650222
+        },
+        "mean_energy_floor": 0.421832,
+        "mean_kill_switch_energy_floor": 0.329076
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 20,
+        "profitable_pocket_count": 10,
+        "profitable_pocket_share": 0.5,
+        "best_pockets": [
+          {
+            "pocket_id": "STABLE|BALANCED|COIL_EXPAND|SMALL",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "COIL_EXPAND",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 8,
+            "filled_count": 3,
+            "win_rate": 1.0,
+            "expectancy_pips": 3.016667,
+            "net_pnl_pips": 9.05
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|COIL_EXPAND|MEDIUM",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "COIL_EXPAND",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 10,
+            "filled_count": 7,
+            "win_rate": 0.571429,
+            "expectancy_pips": 1.035714,
+            "net_pnl_pips": 7.25
+          },
+          {
+            "pocket_id": "STABLE|EXPANSION|COIL_EXPAND|MICRO",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "COIL_EXPAND",
+            "target_distance_bucket": "MICRO",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 6.05,
+            "net_pnl_pips": 6.05
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "INJECTING|EXPANSION|COIL_BREAK|SMALL",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "COIL_BREAK",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -2.05,
+            "net_pnl_pips": -2.05
+          },
+          {
+            "pocket_id": "INJECTING|BALANCED|COIL_EXPAND|MEDIUM",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "COIL_EXPAND",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 2,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": -0.9,
+            "net_pnl_pips": -1.8
+          },
+          {
+            "pocket_id": "BLEEDING|BALANCED|COIL_BREAK|SMALL",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "COIL_BREAK",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 4,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.65,
+            "net_pnl_pips": -1.65
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 51,
+        "ready_count": 26,
+        "aborted_count": 25,
+        "invalid_count": 0,
+        "ready_rate": 0.509804,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 20,
+            "share": 0.8
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 4,
+            "share": 0.16
+          },
+          {
+            "value": "zone_misaligned",
+            "count": 1,
+            "share": 0.04
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "COIL_EXPAND",
+            "count": 41,
+            "share": 0.803922
+          },
+          {
+            "value": "COIL_BREAK",
+            "count": 10,
+            "share": 0.196078
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "CONSERVATIVE",
+            "count": 47,
+            "share": 0.921569
+          },
+          {
+            "value": "BALANCED",
+            "count": 4,
+            "share": 0.078431
+          }
+        ],
+        "mean_ttl_ticks": 12.058824,
+        "mean_surface_quality_score": 1.850613
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT"
+      ]
+    },
+    {
+      "doctrine_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 131,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_CEILING",
+        "trigger_demand": "COMPRESSION_PRESSURE_PERSISTENCE",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "COMPRESSION_SWING",
+          "CAPTURE_EXTENSION",
+          "PRESSURE_EXTENSION"
+        ],
+        "invalid_route_classes": [],
+        "extraction_intent": "HIGH_VOLUME_PRESSURE_LIFT_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+        "trade_count": 114,
+        "aborted_count": 0,
+        "result_count": 114,
+        "distance_expression_count": 8,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "win_rate": 0.657895,
+        "expectancy_pips": 2.205939,
+        "net_pnl_pips": 251.477,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "STOP_HIT": 36,
+          "TTL_EXIT": 69,
+          "TARGET_HIT": 9
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 63,
+        "layered_expectancy_pips": 0.503603,
+        "layered_net_pnl_pips": 31.727,
+        "trade_count_delta": -51,
+        "expectancy_delta_pips": -1.702336,
+        "net_pnl_delta_pips": -219.75
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 86,
+            "share": 0.722689
+          },
+          {
+            "value": "EXPANSION",
+            "count": 33,
+            "share": 0.277311
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.518101,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 33,
+            "filled_count": 30,
+            "win_rate": 0.733333,
+            "expectancy_pips": 1.053333,
+            "net_pnl_pips": 31.6
+          },
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 86,
+            "filled_count": 30,
+            "win_rate": 0.433333,
+            "expectancy_pips": -0.247433,
+            "net_pnl_pips": -7.423
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 61,
+            "share": 0.512605
+          },
+          {
+            "value": "BLEEDING",
+            "count": 37,
+            "share": 0.310924
+          },
+          {
+            "value": "INJECTING",
+            "count": 21,
+            "share": 0.176471
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 0.965865,
+        "session_modifier_contract": {
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "STABLE",
+            "candidate_count": 61,
+            "filled_count": 30,
+            "win_rate": 0.566667,
+            "expectancy_pips": 0.476667,
+            "net_pnl_pips": 14.3
+          },
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 21,
+            "filled_count": 14,
+            "win_rate": 0.642857,
+            "expectancy_pips": 0.6055,
+            "net_pnl_pips": 8.477
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 37,
+            "filled_count": 16,
+            "win_rate": 0.5625,
+            "expectancy_pips": 0.0875,
+            "net_pnl_pips": 1.4
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 115,
+            "share": 0.966387
+          },
+          {
+            "value": "GBP_USD",
+            "count": 3,
+            "share": 0.02521
+          },
+          {
+            "value": "USD_JPY",
+            "count": 1,
+            "share": 0.008403
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.69
+        },
+        "mean_energy_floor": 0.540436,
+        "mean_kill_switch_energy_floor": 0.333751
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 33,
+        "profitable_pocket_count": 17,
+        "profitable_pocket_share": 0.515152,
+        "best_pockets": [
+          {
+            "pocket_id": "STABLE|EXPANSION|PRESSURE_EXTENSION_QUALIFIED|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "PRESSURE_EXTENSION_QUALIFIED",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 6,
+            "filled_count": 5,
+            "win_rate": 1.0,
+            "expectancy_pips": 2.23,
+            "net_pnl_pips": 11.15
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|PRESSURE_LIFT_CAPTURE|SMALL",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_LIFT_CAPTURE",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 10,
+            "filled_count": 4,
+            "win_rate": 0.75,
+            "expectancy_pips": 2.0,
+            "net_pnl_pips": 8.0
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|PRESSURE_EXTENSION_QUALIFIED|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "PRESSURE_EXTENSION_QUALIFIED",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 4,
+            "filled_count": 4,
+            "win_rate": 0.75,
+            "expectancy_pips": 1.425,
+            "net_pnl_pips": 5.7
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "STABLE|BALANCED|PRESSURE_EXTENSION_QUALIFIED|MEDIUM",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_EXTENSION_QUALIFIED",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 13,
+            "filled_count": 4,
+            "win_rate": 0.25,
+            "expectancy_pips": -1.575,
+            "net_pnl_pips": -6.3
+          },
+          {
+            "pocket_id": "BLEEDING|BALANCED|PRESSURE_LIFT_CAPTURE|SMALL",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_LIFT_CAPTURE",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 5,
+            "filled_count": 2,
+            "win_rate": 0.0,
+            "expectancy_pips": -2.7,
+            "net_pnl_pips": -5.4
+          },
+          {
+            "pocket_id": "INJECTING|BALANCED|PRESSURE_EXTENSION_QUALIFIED|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_EXTENSION_QUALIFIED",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 3,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": -1.9615,
+            "net_pnl_pips": -3.923
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 119,
+        "ready_count": 60,
+        "aborted_count": 56,
+        "invalid_count": 3,
+        "ready_rate": 0.504202,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 51,
+            "share": 0.910714
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 5,
+            "share": 0.089286
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "PRESSURE_EXTENSION_QUALIFIED",
+            "count": 76,
+            "share": 0.638655
+          },
+          {
+            "value": "PRESSURE_LIFT_CAPTURE",
+            "count": 31,
+            "share": 0.260504
+          },
+          {
+            "value": "COMPRESSION_SWING",
+            "count": 12,
+            "share": 0.10084
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "EXT_BALANCED",
+            "count": 76,
+            "share": 0.638655
+          },
+          {
+            "value": "CAPTURE_FAST",
+            "count": 31,
+            "share": 0.260504
+          },
+          {
+            "value": "SWING_TIGHT",
+            "count": 12,
+            "share": 0.10084
+          }
+        ],
+        "mean_ttl_ticks": 13.10084,
+        "mean_surface_quality_score": 2.382408
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT"
+      ]
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 83,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "TRANSITION_RELEASE_SHORT_STANDARD",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "IGNITION_RELEASE_OR_RELEASE_CONFIRM",
+        "allowed_route_classes": [
+          "TRANSITION_FRONT_RUN",
+          "TRANSITION_CONFIRM",
+          "CAPTURE_SCALP",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [],
+        "extraction_intent": "FAST_RELEASE_THEN_SELECTIVE_EXTENSION"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+        "trade_count": 55,
+        "aborted_count": 0,
+        "result_count": 55,
+        "distance_expression_count": 9,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|MEDIUM",
+          "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|SMALL",
+          "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "TRANSITION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "TRANSITION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.563636,
+        "expectancy_pips": 1.416927,
+        "net_pnl_pips": 77.931,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TTL_EXIT": 25,
+          "TARGET_HIT": 14,
+          "STOP_HIT": 16
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 20,
+        "layered_expectancy_pips": 1.5672,
+        "layered_net_pnl_pips": 31.344,
+        "trade_count_delta": -35,
+        "expectancy_delta_pips": 0.150273,
+        "net_pnl_delta_pips": -46.587
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 35,
+            "share": 0.636364
+          },
+          {
+            "value": "EXPANSION",
+            "count": 20,
+            "share": 0.363636
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.796967,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 35,
+            "filled_count": 12,
+            "win_rate": 0.833333,
+            "expectancy_pips": 2.695333,
+            "net_pnl_pips": 32.344
+          },
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 20,
+            "filled_count": 8,
+            "win_rate": 0.375,
+            "expectancy_pips": -0.125,
+            "net_pnl_pips": -1.0
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 33,
+            "share": 0.6
+          },
+          {
+            "value": "INJECTING",
+            "count": 16,
+            "share": 0.290909
+          },
+          {
+            "value": "BLEEDING",
+            "count": 6,
+            "share": 0.109091
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 1.14614,
+        "session_modifier_contract": {
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          },
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 16,
+            "filled_count": 6,
+            "win_rate": 0.833333,
+            "expectancy_pips": 2.738167,
+            "net_pnl_pips": 16.429
+          },
+          {
+            "session_state": "STABLE",
+            "candidate_count": 33,
+            "filled_count": 12,
+            "win_rate": 0.583333,
+            "expectancy_pips": 1.241333,
+            "net_pnl_pips": 14.896
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 6,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.0095,
+            "net_pnl_pips": 0.019
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "USD_JPY",
+            "count": 21,
+            "share": 0.381818
+          },
+          {
+            "value": "EUR_USD",
+            "count": 17,
+            "share": 0.309091
+          },
+          {
+            "value": "GBP_USD",
+            "count": 17,
+            "share": 0.309091
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.69
+        },
+        "mean_energy_floor": 1.911035,
+        "mean_kill_switch_energy_floor": 1.38843
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 23,
+        "profitable_pocket_count": 8,
+        "profitable_pocket_share": 0.347826,
+        "best_pockets": [
+          {
+            "pocket_id": "INJECTING|BALANCED|IGNITION_RELEASE_FAST|EXTENDED",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "IGNITION_RELEASE_FAST",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 4,
+            "filled_count": 2,
+            "win_rate": 1.0,
+            "expectancy_pips": 5.569,
+            "net_pnl_pips": 11.138
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|RELEASE_CONFIRM|EXTENDED",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "RELEASE_CONFIRM",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 6.889,
+            "net_pnl_pips": 6.889
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|IGNITION_RELEASE_FAST|EXTENDED",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "IGNITION_RELEASE_FAST",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 5,
+            "filled_count": 4,
+            "win_rate": 0.75,
+            "expectancy_pips": 1.34,
+            "net_pnl_pips": 5.36
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "BLEEDING|BALANCED|RELEASE_EXTENSION|MEDIUM",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "RELEASE_EXTENSION",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.883,
+            "net_pnl_pips": -1.883
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|RELEASE_CONFIRM|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "RELEASE_CONFIRM",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 4,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.15,
+            "net_pnl_pips": -1.15
+          },
+          {
+            "pocket_id": "STABLE|EXPANSION|RELEASE_CONFIRM|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "RELEASE_CONFIRM",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 9,
+            "filled_count": 6,
+            "win_rate": 0.333333,
+            "expectancy_pips": -0.033333,
+            "net_pnl_pips": -0.2
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 55,
+        "ready_count": 20,
+        "aborted_count": 35,
+        "invalid_count": 0,
+        "ready_rate": 0.363636,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 21,
+            "share": 0.6
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 10,
+            "share": 0.285714
+          },
+          {
+            "value": "zone_misaligned",
+            "count": 4,
+            "share": 0.114286
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "RELEASE_CONFIRM",
+            "count": 23,
+            "share": 0.418182
+          },
+          {
+            "value": "IGNITION_RELEASE_FAST",
+            "count": 17,
+            "share": 0.309091
+          },
+          {
+            "value": "RELEASE_EXTENSION",
+            "count": 15,
+            "share": 0.272727
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "CONFIRM_BALANCED",
+            "count": 23,
+            "share": 0.418182
+          },
+          {
+            "value": "FAST_BALANCED",
+            "count": 17,
+            "share": 0.309091
+          },
+          {
+            "value": "EXTENSION_BALANCED",
+            "count": 15,
+            "share": 0.272727
+          }
+        ],
+        "mean_ttl_ticks": 9.109091,
+        "mean_surface_quality_score": 3.504249
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 83,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "FLOW_DRIFT_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "DRIFT_REACCEL_OR_DRIFT_CONFIRM",
+        "allowed_route_classes": [
+          "DRIFT_REACCEL",
+          "DRIFT_CONFIRM",
+          "CAPTURE_SCALP",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [
+          "DRIFT_SCALP_ON_DORMANT_OR_PATTERN_HARVEST"
+        ],
+        "extraction_intent": "MID_DRIFT_REACCEL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "FLOW_DRIFT_SHORT",
+        "trade_count": 22,
+        "aborted_count": 0,
+        "result_count": 22,
+        "distance_expression_count": 4,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+          "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "win_rate": 0.681818,
+        "expectancy_pips": 2.761409,
+        "net_pnl_pips": 60.751,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 14,
+          "STOP_HIT": 7,
+          "TTL_EXIT": 1
+        },
+        "scenario_count": 3,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "trend_continuation"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 6,
+        "layered_expectancy_pips": 3.578333,
+        "layered_net_pnl_pips": 21.47,
+        "trade_count_delta": -16,
+        "expectancy_delta_pips": 0.816924,
+        "net_pnl_delta_pips": -39.281
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 14,
+            "share": 0.636364
+          },
+          {
+            "value": "COMPRESSION",
+            "count": 6,
+            "share": 0.272727
+          },
+          {
+            "value": "EXPANSION",
+            "count": 2,
+            "share": 0.090909
+          }
+        ],
+        "observed_regime_count": 3,
+        "mean_volatility_percentile": 0.414605,
+        "regime_modifier_contract": {
+          "COMPRESSION": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 0.98,
+            "ttl_multiplier": 1.08
+          },
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "COMPRESSION",
+            "candidate_count": 6,
+            "filled_count": 2,
+            "win_rate": 1.0,
+            "expectancy_pips": 5.728,
+            "net_pnl_pips": 11.456
+          },
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 14,
+            "filled_count": 4,
+            "win_rate": 0.75,
+            "expectancy_pips": 2.5035,
+            "net_pnl_pips": 10.014
+          },
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 2,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 15,
+            "share": 0.681818
+          },
+          {
+            "value": "BLEEDING",
+            "count": 5,
+            "share": 0.227273
+          },
+          {
+            "value": "INJECTING",
+            "count": 2,
+            "share": 0.090909
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 0.972992,
+        "session_modifier_contract": {
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "STABLE",
+            "candidate_count": 15,
+            "filled_count": 5,
+            "win_rate": 0.8,
+            "expectancy_pips": 3.6368,
+            "net_pnl_pips": 18.184
+          },
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 3.286,
+            "net_pnl_pips": 3.286
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 5,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "USD_JPY",
+            "count": 11,
+            "share": 0.5
+          },
+          {
+            "value": "EUR_USD",
+            "count": 7,
+            "share": 0.318182
+          },
+          {
+            "value": "GBP_USD",
+            "count": 4,
+            "share": 0.181818
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.538853,
+          "max": 1.69
+        },
+        "mean_energy_floor": 0.925206,
+        "mean_kill_switch_energy_floor": 0.683228
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 12,
+        "profitable_pocket_count": 5,
+        "profitable_pocket_share": 0.416667,
+        "best_pockets": [
+          {
+            "pocket_id": "STABLE|COMPRESSION|DRIFT_CONFIRM|EXTENDED",
+            "session_state": "STABLE",
+            "regime_state": "COMPRESSION",
+            "route_operating_mode": "DRIFT_CONFIRM",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 5.944,
+            "net_pnl_pips": 5.944
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|DRIFT_CONFIRM|EXTENDED",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "DRIFT_CONFIRM",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 5.518,
+            "net_pnl_pips": 5.518
+          },
+          {
+            "pocket_id": "STABLE|COMPRESSION|DRIFT_CONFIRM|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "COMPRESSION",
+            "route_operating_mode": "DRIFT_CONFIRM",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 5.512,
+            "net_pnl_pips": 5.512
+          }
+        ],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 22,
+        "ready_count": 6,
+        "aborted_count": 16,
+        "invalid_count": 0,
+        "ready_rate": 0.272727,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 12,
+            "share": 0.75
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 4,
+            "share": 0.25
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "DRIFT_HARVEST",
+            "count": 17,
+            "share": 0.772727
+          },
+          {
+            "value": "DRIFT_CONFIRM",
+            "count": 5,
+            "share": 0.227273
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "HARVEST_BALANCED",
+            "count": 17,
+            "share": 0.772727
+          },
+          {
+            "value": "CONFIRM_BALANCED",
+            "count": 5,
+            "share": 0.227273
+          }
+        ],
+        "mean_ttl_ticks": 8.318182,
+        "mean_surface_quality_score": 3.642101
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT"
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_PRESSURE_BUILD_SHORT",
+      "runtime_status": "FROZEN_RESEARCH_ONLY",
+      "tier1_survivor": true,
+      "cluster_size": 147,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_FLOOR_OR_MID_ZONE",
+        "trigger_demand": "PRESSURE_PERSISTENCE_PLUS_PATH_PROOF",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "CAPTURE_BALANCED",
+          "CAPTURE_EXTENSION"
+        ],
+        "invalid_route_classes": [
+          "OVER_BROAD_SWING_AND_EXTENSION_BEHAVIOR"
+        ],
+        "extraction_intent": "SHORT_PRESSURE_BUILD_UNDER_REWRITE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "OSCILLATION_PRESSURE_BUILD_SHORT",
+        "trade_count": 110,
+        "aborted_count": 0,
+        "result_count": 110,
+        "distance_expression_count": 9,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "OSCILLATION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "OSCILLATION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "OSCILLATION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "OSCILLATION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "OSCILLATION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "OSCILLATION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|MICRO"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "MICRO"
+        ],
+        "win_rate": 0.536364,
+        "expectancy_pips": 1.229391,
+        "net_pnl_pips": 135.233,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "STOP_HIT": 47,
+          "TARGET_HIT": 43,
+          "TTL_EXIT": 20
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 16,
+        "layered_expectancy_pips": 1.006625,
+        "layered_net_pnl_pips": 16.106,
+        "trade_count_delta": -94,
+        "expectancy_delta_pips": -0.222766,
+        "net_pnl_delta_pips": -119.127
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_LONG_STANDARD",
+      "runtime_status": "FROZEN_RESEARCH_ONLY",
+      "tier1_survivor": true,
+      "cluster_size": 79,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_CEILING",
+        "trigger_demand": "LONG_RELEASE_CONFIRMATION",
+        "allowed_route_classes": [
+          "CAPTURE_BALANCED",
+          "CAPTURE_FULL",
+          "TRANSITION_LATE"
+        ],
+        "invalid_route_classes": [
+          "TRANSITION_RUNNER",
+          "IGNITION_CAPTURE_EXTENSION",
+          "IGNITION_CAPTURE_NEAR"
+        ],
+        "extraction_intent": "LONG_RELEASE_CAPTURE_UNDER_REWRITE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "TRANSITION_RELEASE_LONG_STANDARD",
+        "trade_count": 63,
+        "aborted_count": 0,
+        "result_count": 63,
+        "distance_expression_count": 8,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "TRANSITION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|LARGE"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.619048,
+        "expectancy_pips": 1.219238,
+        "net_pnl_pips": 76.812,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "STOP_HIT": 15,
+          "TTL_EXIT": 32,
+          "TARGET_HIT": 16
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 28,
+        "layered_expectancy_pips": 0.431143,
+        "layered_net_pnl_pips": 12.072,
+        "trade_count_delta": -35,
+        "expectancy_delta_pips": -0.788095,
+        "net_pnl_delta_pips": -64.74
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS"
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 307,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_CEILING_OR_MID_ZONE",
+        "trigger_demand": "PRESSURE_PERSISTENCE_PLUS_PATH_PROOF",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "CAPTURE_BALANCED",
+          "CAPTURE_NEAR",
+          "PRESSURE_BUILD_DRIVE"
+        ],
+        "invalid_route_classes": [
+          "PRESSURE_SWING_ON_PRESSURED_OR_DRIFT_OR_PATTERN_HARVEST",
+          "PRESSURED_CAPTURE_EXTENSION"
+        ],
+        "extraction_intent": "FRAGILE_PRESSURE_BUILD_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+        "trade_count": 210,
+        "aborted_count": 2,
+        "result_count": 212,
+        "distance_expression_count": 8,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.514286,
+        "expectancy_pips": 0.516667,
+        "net_pnl_pips": 108.5,
+        "viable": true,
+        "abort_reason_counts": {
+          "anchor_out_of_range": 2
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 95,
+          "TTL_EXIT": 35,
+          "TARGET_HIT": 80
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 133,
+        "layered_expectancy_pips": 0.06203,
+        "layered_net_pnl_pips": 8.25,
+        "trade_count_delta": -77,
+        "expectancy_delta_pips": -0.454637,
+        "net_pnl_delta_pips": -100.25
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 155,
+            "share": 0.731132
+          },
+          {
+            "value": "EXPANSION",
+            "count": 37,
+            "share": 0.174528
+          },
+          {
+            "value": "COMPRESSION",
+            "count": 20,
+            "share": 0.09434
+          }
+        ],
+        "observed_regime_count": 3,
+        "mean_volatility_percentile": 0.543769,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "COMPRESSION": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 0.98,
+            "ttl_multiplier": 1.08
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 37,
+            "filled_count": 24,
+            "win_rate": 0.708333,
+            "expectancy_pips": 0.8125,
+            "net_pnl_pips": 19.5
+          },
+          {
+            "regime_state": "UNKNOWN",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "regime_state": "COMPRESSION",
+            "candidate_count": 20,
+            "filled_count": 3,
+            "win_rate": 0.333333,
+            "expectancy_pips": -0.85,
+            "net_pnl_pips": -2.55
+          },
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 154,
+            "filled_count": 101,
+            "win_rate": 0.455446,
+            "expectancy_pips": -0.039109,
+            "net_pnl_pips": -3.95
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 114,
+            "share": 0.537736
+          },
+          {
+            "value": "BLEEDING",
+            "count": 53,
+            "share": 0.25
+          },
+          {
+            "value": "INJECTING",
+            "count": 45,
+            "share": 0.212264
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 1.027123,
+        "session_modifier_contract": {
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          },
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 44,
+            "filled_count": 35,
+            "win_rate": 0.685714,
+            "expectancy_pips": 0.732857,
+            "net_pnl_pips": 25.65
+          },
+          {
+            "session_state": "UNKNOWN",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 53,
+            "filled_count": 25,
+            "win_rate": 0.44,
+            "expectancy_pips": -0.198,
+            "net_pnl_pips": -4.95
+          },
+          {
+            "session_state": "STABLE",
+            "candidate_count": 114,
+            "filled_count": 68,
+            "win_rate": 0.426471,
+            "expectancy_pips": -0.113235,
+            "net_pnl_pips": -7.7
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 186,
+            "share": 0.877358
+          },
+          {
+            "value": "GBP_USD",
+            "count": 26,
+            "share": 0.122642
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.650222
+        },
+        "mean_energy_floor": 0.430787,
+        "mean_kill_switch_energy_floor": 0.274053
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 27,
+        "profitable_pocket_count": 11,
+        "profitable_pocket_share": 0.407407,
+        "best_pockets": [
+          {
+            "pocket_id": "INJECTING|EXPANSION|PRESSURE_BUILD_CAPTURE|MEDIUM",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 13,
+            "filled_count": 12,
+            "win_rate": 0.833333,
+            "expectancy_pips": 0.983333,
+            "net_pnl_pips": 11.8
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|PRESSURE_BUILD_CAPTURE|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 24,
+            "filled_count": 18,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.5,
+            "net_pnl_pips": 9.0
+          },
+          {
+            "pocket_id": "INJECTING|BALANCED|PRESSURE_BUILD_CAPTURE|MEDIUM",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 12,
+            "filled_count": 10,
+            "win_rate": 0.6,
+            "expectancy_pips": 0.58,
+            "net_pnl_pips": 5.8
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "STABLE|BALANCED|PRESSURE_BUILD_CAPTURE|MEDIUM",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 43,
+            "filled_count": 28,
+            "win_rate": 0.357143,
+            "expectancy_pips": -0.478571,
+            "net_pnl_pips": -13.4
+          },
+          {
+            "pocket_id": "BLEEDING|BALANCED|PRESSURE_BUILD_CAPTURE|MEDIUM",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 26,
+            "filled_count": 14,
+            "win_rate": 0.428571,
+            "expectancy_pips": -0.378571,
+            "net_pnl_pips": -5.3
+          },
+          {
+            "pocket_id": "STABLE|COMPRESSION|PRESSURE_BUILD_CAPTURE|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "COMPRESSION",
+            "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 10,
+            "filled_count": 3,
+            "win_rate": 0.333333,
+            "expectancy_pips": -0.85,
+            "net_pnl_pips": -2.55
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 212,
+        "ready_count": 128,
+        "aborted_count": 79,
+        "invalid_count": 5,
+        "ready_rate": 0.603774,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 55,
+            "share": 0.696203
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 19,
+            "share": 0.240506
+          },
+          {
+            "value": "zone_misaligned",
+            "count": 4,
+            "share": 0.050633
+          },
+          {
+            "value": "anchor_out_of_range",
+            "count": 1,
+            "share": 0.012658
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "PRESSURE_BUILD_CAPTURE",
+            "count": 165,
+            "share": 0.778302
+          },
+          {
+            "value": "PRESSURE_BUILD_SWING",
+            "count": 47,
+            "share": 0.221698
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "BUILD_BALANCED",
+            "count": 165,
+            "share": 0.778302
+          },
+          {
+            "value": "SWING_STRICT",
+            "count": 46,
+            "share": 0.216981
+          },
+          {
+            "value": "UNKNOWN",
+            "count": 1,
+            "share": 0.004717
+          }
+        ],
+        "mean_ttl_ticks": 10.919811,
+        "mean_surface_quality_score": 3.108444
+      },
+      "window_contract_diagnosis": [
+        "WINDOW_CONTRACT_PRESENT"
+      ]
+    },
+    {
+      "doctrine_id": "FLOW_DRIFT_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 79,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "FLOW_DRIFT_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "LONG_DRIFT_REACCEL_OR_IGNITION_ACCEPTANCE",
+        "allowed_route_classes": [
+          "DRIFT_REACCEL",
+          "DRIFT_CONFIRM",
+          "CAPTURE_BALANCED",
+          "CAPTURE_EXTENSION"
+        ],
+        "invalid_route_classes": [
+          "DRIFT_RIDE"
+        ],
+        "extraction_intent": "UNDER_ARMED_LONG_DRIFT_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "FLOW_DRIFT_LONG",
+        "trade_count": 44,
+        "aborted_count": 0,
+        "result_count": 44,
+        "distance_expression_count": 11,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|LARGE",
+          "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "BALANCED|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|LARGE",
+          "BALANCED|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|MEDIUM",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|LARGE",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|SMALL",
+          "TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.545455,
+        "expectancy_pips": 0.696818,
+        "net_pnl_pips": 30.66,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 24,
+          "STOP_HIT": 18,
+          "TTL_EXIT": 2
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 15,
+        "layered_expectancy_pips": 0.545333,
+        "layered_net_pnl_pips": 8.18,
+        "trade_count_delta": -29,
+        "expectancy_delta_pips": -0.151485,
+        "net_pnl_delta_pips": -22.48
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 29,
+            "share": 0.659091
+          },
+          {
+            "value": "EXPANSION",
+            "count": 15,
+            "share": 0.340909
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.627037,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 29,
+            "filled_count": 8,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.65375,
+            "net_pnl_pips": 5.23
+          },
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 15,
+            "filled_count": 7,
+            "win_rate": 0.571429,
+            "expectancy_pips": 0.421429,
+            "net_pnl_pips": 2.95
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 24,
+            "share": 0.545455
+          },
+          {
+            "value": "BLEEDING",
+            "count": 10,
+            "share": 0.227273
+          },
+          {
+            "value": "INJECTING",
+            "count": 10,
+            "share": 0.227273
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 1.003166,
+        "session_modifier_contract": {
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          },
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 10,
+            "filled_count": 7,
+            "win_rate": 0.714286,
+            "expectancy_pips": 1.457,
+            "net_pnl_pips": 10.199
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 10,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.45,
+            "net_pnl_pips": 1.45
+          },
+          {
+            "session_state": "STABLE",
+            "candidate_count": 24,
+            "filled_count": 7,
+            "win_rate": 0.285714,
+            "expectancy_pips": -0.495571,
+            "net_pnl_pips": -3.469
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 30,
+            "share": 0.681818
+          },
+          {
+            "value": "GBP_USD",
+            "count": 11,
+            "share": 0.25
+          },
+          {
+            "value": "USD_JPY",
+            "count": 3,
+            "share": 0.068182
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.69
+        },
+        "mean_energy_floor": 1.202537,
+        "mean_kill_switch_energy_floor": 0.810196
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 15,
+        "profitable_pocket_count": 6,
+        "profitable_pocket_share": 0.4,
+        "best_pockets": [
+          {
+            "pocket_id": "INJECTING|BALANCED|LONG_DRIFT_CONFIRM|EXTENDED",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "LONG_DRIFT_CONFIRM",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 7.299,
+            "net_pnl_pips": 7.299
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|LONG_DRIFT_CONFIRM|MEDIUM",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "LONG_DRIFT_CONFIRM",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 2,
+            "filled_count": 2,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.75,
+            "net_pnl_pips": 3.5
+          },
+          {
+            "pocket_id": "STABLE|EXPANSION|LONG_DRIFT_REACCEL|SMALL",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "LONG_DRIFT_REACCEL",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 3.35,
+            "net_pnl_pips": 3.35
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "STABLE|BALANCED|LONG_DRIFT_CONFIRM|MEDIUM",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "LONG_DRIFT_CONFIRM",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 5,
+            "filled_count": 2,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.95,
+            "net_pnl_pips": -3.9
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|LONG_DRIFT_CONFIRM|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "LONG_DRIFT_CONFIRM",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 3,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -2.35,
+            "net_pnl_pips": -2.35
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|LONG_DRIFT_REACCEL|SMALL",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "LONG_DRIFT_REACCEL",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.55,
+            "net_pnl_pips": -1.55
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 44,
+        "ready_count": 15,
+        "aborted_count": 29,
+        "invalid_count": 0,
+        "ready_rate": 0.340909,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 24,
+            "share": 0.827586
+          },
+          {
+            "value": "zone_misaligned",
+            "count": 4,
+            "share": 0.137931
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 1,
+            "share": 0.034483
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "LONG_DRIFT_CONFIRM",
+            "count": 41,
+            "share": 0.931818
+          },
+          {
+            "value": "LONG_DRIFT_REACCEL",
+            "count": 3,
+            "share": 0.068182
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "LONG_CONFIRM_BALANCED",
+            "count": 41,
+            "share": 0.931818
+          },
+          {
+            "value": "LONG_REACCEL_BALANCED",
+            "count": 2,
+            "share": 0.045455
+          },
+          {
+            "value": "LONG_REACCEL_TIGHT",
+            "count": 1,
+            "share": 0.022727
+          }
+        ],
+        "mean_ttl_ticks": 11.977273,
+        "mean_surface_quality_score": 3.578128
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT"
+      ]
+    },
+    {
+      "doctrine_id": "COMPRESSION_RELEASE_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": false,
+      "cluster_size": 9,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "COMPRESSION_RELEASE_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COMPRESSION_RELEASE_LONG",
+        "trade_count": 1,
+        "aborted_count": 0,
+        "result_count": 1,
+        "distance_expression_count": 1,
+        "target_distance_bucket_count": 1,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 9.722,
+        "net_pnl_pips": 9.722,
+        "viable": false,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 1,
+        "scenarios": [
+          "panic_reversal"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 1,
+        "layered_expectancy_pips": 4.589,
+        "layered_net_pnl_pips": 4.589,
+        "trade_count_delta": 0,
+        "expectancy_delta_pips": -5.133,
+        "net_pnl_delta_pips": -5.133
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS"
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_EDGE_SHORT_SCALP",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 219,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "OSCILLATION_EDGE_SHORT_SCALP",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_CEILING",
+        "trigger_demand": "HARD_REJECTION_CONFIRMATION",
+        "allowed_route_classes": [
+          "EDGE_SCALP",
+          "EDGE_CONFIRM",
+          "EDGE_RELOAD",
+          "CAPTURE_NEAR"
+        ],
+        "invalid_route_classes": [
+          "BROAD_EXTENSION_BEHAVIOR"
+        ],
+        "extraction_intent": "FAST_OSCILLATION_REJECTION_SCALP"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "OSCILLATION_EDGE_SHORT_SCALP",
+        "trade_count": 17,
+        "aborted_count": 0,
+        "result_count": 17,
+        "distance_expression_count": 4,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|EXTENDED",
+          "OSCILLATION|NEAR_CEILING|OPEN|SHORT|CEILING_REJECTION|SHORT|EXTENDED",
+          "OSCILLATION|NEAR_CEILING|OPEN|SHORT|CEILING_REJECTION|SHORT|LARGE",
+          "OSCILLATION|NEAR_CEILING|OPEN|SHORT|CEILING_REJECTION|SHORT|SMALL"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "SMALL"
+        ],
+        "win_rate": 0.470588,
+        "expectancy_pips": 0.755588,
+        "net_pnl_pips": 12.845,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 7,
+          "STOP_HIT": 9,
+          "TTL_EXIT": 1
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 8,
+        "layered_expectancy_pips": 0.525,
+        "layered_net_pnl_pips": 4.2,
+        "trade_count_delta": -9,
+        "expectancy_delta_pips": -0.230588,
+        "net_pnl_delta_pips": -8.645
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 15,
+            "share": 0.882353
+          },
+          {
+            "value": "COMPRESSION",
+            "count": 2,
+            "share": 0.117647
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.449059,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "COMPRESSION": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 0.98,
+            "ttl_multiplier": 1.08
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 12,
+            "filled_count": 7,
+            "win_rate": 0.571429,
+            "expectancy_pips": 0.578571,
+            "net_pnl_pips": 4.05
+          },
+          {
+            "regime_state": "COMPRESSION",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 0.15,
+            "net_pnl_pips": 0.15
+          },
+          {
+            "regime_state": "UNKNOWN",
+            "candidate_count": 4,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 10,
+            "share": 0.588235
+          },
+          {
+            "value": "INJECTING",
+            "count": 5,
+            "share": 0.294118
+          },
+          {
+            "value": "BLEEDING",
+            "count": 2,
+            "share": 0.117647
+          }
+        ],
+        "observed_session_count": 3,
+        "mean_session_activity_ratio": 1.161423,
+        "session_modifier_contract": {
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          },
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "STABLE",
+            "candidate_count": 7,
+            "filled_count": 4,
+            "win_rate": 0.75,
+            "expectancy_pips": 1.25,
+            "net_pnl_pips": 5.0
+          },
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "session_state": "UNKNOWN",
+            "candidate_count": 4,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 5,
+            "filled_count": 4,
+            "win_rate": 0.5,
+            "expectancy_pips": -0.2,
+            "net_pnl_pips": -0.8
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 12,
+            "share": 0.705882
+          },
+          {
+            "value": "GBP_USD",
+            "count": 3,
+            "share": 0.176471
+          },
+          {
+            "value": "USD_JPY",
+            "count": 2,
+            "share": 0.117647
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.69
+        },
+        "mean_energy_floor": 0.397131,
+        "mean_kill_switch_energy_floor": 0.168094
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 6,
+        "profitable_pocket_count": 2,
+        "profitable_pocket_share": 0.333333,
+        "best_pockets": [
+          {
+            "pocket_id": "STABLE|BALANCED|HARD_REJECTION|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "HARD_REJECTION",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 5,
+            "filled_count": 3,
+            "win_rate": 0.666667,
+            "expectancy_pips": 1.616667,
+            "net_pnl_pips": 4.85
+          },
+          {
+            "pocket_id": "STABLE|COMPRESSION|HARD_REJECTION|SMALL",
+            "session_state": "STABLE",
+            "regime_state": "COMPRESSION",
+            "route_operating_mode": "HARD_REJECTION",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 0.15,
+            "net_pnl_pips": 0.15
+          },
+          {
+            "pocket_id": "BLEEDING|BALANCED|HARD_REJECTION|LARGE",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "HARD_REJECTION",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "INJECTING|BALANCED|HARD_REJECTION|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "HARD_REJECTION",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 5,
+            "filled_count": 4,
+            "win_rate": 0.5,
+            "expectancy_pips": -0.2,
+            "net_pnl_pips": -0.8
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 17,
+        "ready_count": 8,
+        "aborted_count": 5,
+        "invalid_count": 4,
+        "ready_rate": 0.470588,
+        "abort_reason_breakdown": [
+          {
+            "value": "kill_switch_decay",
+            "count": 4,
+            "share": 0.8
+          },
+          {
+            "value": "zone_misaligned",
+            "count": 1,
+            "share": 0.2
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "HARD_REJECTION",
+            "count": 13,
+            "share": 0.764706
+          },
+          {
+            "value": "SOFT_REJECTION",
+            "count": 4,
+            "share": 0.235294
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "REJECT_FAST",
+            "count": 13,
+            "share": 0.764706
+          },
+          {
+            "value": "UNKNOWN",
+            "count": 4,
+            "share": 0.235294
+          }
+        ],
+        "mean_ttl_ticks": 5.352941,
+        "mean_surface_quality_score": 2.477304
+      },
+      "window_contract_diagnosis": [
+        "T6_DECAY_TOO_STRICT",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": false,
+      "cluster_size": 120,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "OSCILLATION_EDGE_LONG_SCALP",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "FLOOR_REBOUND_CONFIRMATION",
+        "allowed_route_classes": [
+          "EDGE_SCALP",
+          "EDGE_CONFIRM",
+          "EDGE_RELOAD",
+          "CAPTURE_BALANCED"
+        ],
+        "invalid_route_classes": [
+          "CEILING_LONG_ROUTE_FAMILIES"
+        ],
+        "extraction_intent": "SELECTIVE_OSCILLATION_REBOUND_SCALP"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "OSCILLATION_EDGE_LONG_SCALP",
+        "trade_count": 44,
+        "aborted_count": 0,
+        "result_count": 44,
+        "distance_expression_count": 6,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "OSCILLATION|NEAR_FLOOR|BALANCED|LONG|FLOOR_REBOUND|LONG|LARGE",
+          "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|LARGE",
+          "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|MEDIUM",
+          "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|SMALL",
+          "OSCILLATION|NEAR_FLOOR|OPEN|LONG|FLOOR_REBOUND|LONG|LARGE",
+          "OSCILLATION|NEAR_FLOOR|OPEN|LONG|FLOOR_REBOUND|LONG|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.386364,
+        "expectancy_pips": -0.041273,
+        "net_pnl_pips": -1.816,
+        "viable": false,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "STOP_HIT": 27,
+          "TARGET_HIT": 17
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 11,
+        "layered_expectancy_pips": 0.359091,
+        "layered_net_pnl_pips": 3.95,
+        "trade_count_delta": -33,
+        "expectancy_delta_pips": 0.400364,
+        "net_pnl_delta_pips": 5.766
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 22,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "REVERSAL_CONFIRMATION",
+        "allowed_route_classes": [
+          "REVERSAL_SNAP",
+          "REVERSAL_CONFIRM",
+          "CAPTURE_BALANCED"
+        ],
+        "invalid_route_classes": [
+          "MIXED_FAMILY_SURFACES"
+        ],
+        "extraction_intent": "FAILED_PUSH_REVERSAL_SCALP_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+        "trade_count": 5,
+        "aborted_count": 0,
+        "result_count": 5,
+        "distance_expression_count": 2,
+        "target_distance_bucket_count": 1,
+        "distance_expression_ids": [
+          "BALANCED|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "BALANCED|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|LARGE"
+        ],
+        "target_distance_buckets": [
+          "LARGE"
+        ],
+        "win_rate": 0.8,
+        "expectancy_pips": 2.77,
+        "net_pnl_pips": 13.85,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TTL_EXIT": 3,
+          "TARGET_HIT": 2
+        },
+        "scenario_count": 3,
+        "scenarios": [
+          "chop_mean_reversion",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 3,
+        "layered_expectancy_pips": 1.016667,
+        "layered_net_pnl_pips": 3.05,
+        "trade_count_delta": -2,
+        "expectancy_delta_pips": -1.753333,
+        "net_pnl_delta_pips": -10.8
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "EXPANSION",
+            "count": 3,
+            "share": 0.6
+          },
+          {
+            "value": "BALANCED",
+            "count": 2,
+            "share": 0.4
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.807847,
+        "regime_modifier_contract": {
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          },
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 3,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 2.65,
+            "net_pnl_pips": 2.65
+          },
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 2,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.2,
+            "net_pnl_pips": 0.4
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 3,
+            "share": 0.6
+          },
+          {
+            "value": "INJECTING",
+            "count": 2,
+            "share": 0.4
+          }
+        ],
+        "observed_session_count": 2,
+        "mean_session_activity_ratio": 1.188542,
+        "session_modifier_contract": {
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          },
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "STABLE",
+            "candidate_count": 3,
+            "filled_count": 3,
+            "win_rate": 0.666667,
+            "expectancy_pips": 1.016667,
+            "net_pnl_pips": 3.05
+          },
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 2,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 3,
+            "share": 0.6
+          },
+          {
+            "value": "GBP_USD",
+            "count": 2,
+            "share": 0.4
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.461063,
+          "max": 1.598154
+        },
+        "mean_energy_floor": 0.651603,
+        "mean_kill_switch_energy_floor": 0.389917
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 3,
+        "profitable_pocket_count": 2,
+        "profitable_pocket_share": 0.666667,
+        "best_pockets": [
+          {
+            "pocket_id": "STABLE|EXPANSION|FAILED_PUSH_REJECTION|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "FAILED_PUSH_REJECTION",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 2.65,
+            "net_pnl_pips": 2.65
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|FAILED_PUSH_REJECTION|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "FAILED_PUSH_REJECTION",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 2,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.2,
+            "net_pnl_pips": 0.4
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|FAILED_PUSH_REJECTION|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "FAILED_PUSH_REJECTION",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 2,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 5,
+        "ready_count": 3,
+        "aborted_count": 0,
+        "invalid_count": 2,
+        "ready_rate": 0.6,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [
+          {
+            "value": "FAILED_PUSH_REJECTION",
+            "count": 5,
+            "share": 1.0
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "BALANCED",
+            "count": 5,
+            "share": 1.0
+          }
+        ],
+        "mean_ttl_ticks": 9.6,
+        "mean_surface_quality_score": 4.527953
+      },
+      "window_contract_diagnosis": [
+        "WINDOW_CONTRACT_PRESENT"
+      ]
+    },
+    {
+      "doctrine_id": "COILED_COMPRESSION_SHORT",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": false,
+      "cluster_size": 73,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "COILED_COMPRESSION_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COILED_COMPRESSION_SHORT",
+        "trade_count": 19,
+        "aborted_count": 0,
+        "result_count": 19,
+        "distance_expression_count": 4,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|SHORT|CEILING_REJECTION|SHORT|MEDIUM",
+          "COMPRESSION|NEAR_FLOOR|TIGHT|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "COMPRESSION|NEAR_FLOOR|TIGHT|SHORT|FLOOR_PRESSURE|SHORT|SMALL"
+        ],
+        "target_distance_buckets": [
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.315789,
+        "expectancy_pips": 0.507895,
+        "net_pnl_pips": 9.65,
+        "viable": false,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "STOP_HIT": 13,
+          "TTL_EXIT": 5,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 1,
+        "layered_expectancy_pips": 2.45,
+        "layered_net_pnl_pips": 2.45,
+        "trade_count_delta": -18,
+        "expectancy_delta_pips": 1.942105,
+        "net_pnl_delta_pips": -7.2
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "COMPRESSION_RELEASE_SHORT",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": false,
+      "cluster_size": 3,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "COMPRESSION_RELEASE_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COMPRESSION_RELEASE_SHORT",
+        "trade_count": 2,
+        "aborted_count": 0,
+        "result_count": 2,
+        "distance_expression_count": 2,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "COMPRESSION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "MEDIUM"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 1.9,
+        "net_pnl_pips": 3.8,
+        "viable": false,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TTL_EXIT": 1,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 1,
+        "layered_expectancy_pips": 2.45,
+        "layered_net_pnl_pips": 2.45,
+        "trade_count_delta": -1,
+        "expectancy_delta_pips": 0.55,
+        "net_pnl_delta_pips": -1.35
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS"
+      ]
+    },
+    {
+      "doctrine_id": "EXPANSION_RELEASE_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 17,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "EXPANSION_RELEASE_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "EXPANSION_RELEASE_LONG",
+        "trade_count": 10,
+        "aborted_count": 0,
+        "result_count": 10,
+        "distance_expression_count": 5,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "MICRO"
+        ],
+        "win_rate": 0.5,
+        "expectancy_pips": 1.3614,
+        "net_pnl_pips": 13.614,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 2,
+          "TTL_EXIT": 5,
+          "STOP_HIT": 3
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 1,
+        "layered_expectancy_pips": 1.55,
+        "layered_net_pnl_pips": 1.55,
+        "trade_count_delta": -9,
+        "expectancy_delta_pips": 0.1886,
+        "net_pnl_delta_pips": -12.064
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "EXPANSION",
+            "count": 6,
+            "share": 0.6
+          },
+          {
+            "value": "BALANCED",
+            "count": 4,
+            "share": 0.4
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.888356,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 4,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.55,
+            "net_pnl_pips": 1.55
+          },
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 6,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 6,
+            "share": 0.6
+          },
+          {
+            "value": "INJECTING",
+            "count": 4,
+            "share": 0.4
+          }
+        ],
+        "observed_session_count": 2,
+        "mean_session_activity_ratio": 1.249318,
+        "session_modifier_contract": {
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          },
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 4,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.55,
+            "net_pnl_pips": 1.55
+          },
+          {
+            "session_state": "STABLE",
+            "candidate_count": 6,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 8,
+            "share": 0.8
+          },
+          {
+            "value": "USD_JPY",
+            "count": 1,
+            "share": 0.1
+          },
+          {
+            "value": "GBP_USD",
+            "count": 1,
+            "share": 0.1
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.237901,
+          "max": 1.69
+        },
+        "mean_energy_floor": 1.54398,
+        "mean_kill_switch_energy_floor": 0.987055
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 7,
+        "profitable_pocket_count": 1,
+        "profitable_pocket_share": 0.142857,
+        "best_pockets": [
+          {
+            "pocket_id": "INJECTING|BALANCED|EXPANSION_RELEASE_LAUNCH|MICRO",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+            "target_distance_bucket": "MICRO",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.55,
+            "net_pnl_pips": 1.55
+          },
+          {
+            "pocket_id": "INJECTING|BALANCED|EXPANSION_RELEASE_HOLD|MEDIUM",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "EXPANSION_RELEASE_HOLD",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "pocket_id": "INJECTING|BALANCED|EXPANSION_RELEASE_LAUNCH|EXTENDED",
+            "session_state": "INJECTING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 10,
+        "ready_count": 1,
+        "aborted_count": 5,
+        "invalid_count": 4,
+        "ready_rate": 0.1,
+        "abort_reason_breakdown": [
+          {
+            "value": "kill_switch_decay",
+            "count": 5,
+            "share": 1.0
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "EXPANSION_RELEASE_LAUNCH",
+            "count": 6,
+            "share": 0.6
+          },
+          {
+            "value": "EXPANSION_RELEASE_HOLD",
+            "count": 4,
+            "share": 0.4
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "LAUNCH_BALANCED",
+            "count": 6,
+            "share": 0.6
+          },
+          {
+            "value": "HOLD_BALANCED",
+            "count": 4,
+            "share": 0.4
+          }
+        ],
+        "mean_ttl_ticks": 9.8,
+        "mean_surface_quality_score": 4.036081
+      },
+      "window_contract_diagnosis": [
+        "T6_DECAY_TOO_STRICT",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_LONG",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 8,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "PRESSURE_DRIVE_LONG",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "PRESSURE_CONTINUATION_CONFIRMATION",
+        "allowed_route_classes": [
+          "PRESSURE_BREAK",
+          "PRESSURE_HOLD",
+          "PRESSURE_FRONT_RUN"
+        ],
+        "invalid_route_classes": [
+          "OVER_BROAD_MID_ZONE_ASSIGNMENT"
+        ],
+        "extraction_intent": "PRESSURE_DRIVE_EDGE_TO_MID_CONTINUATION"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "PRESSURE_DRIVE_LONG",
+        "trade_count": 3,
+        "aborted_count": 0,
+        "result_count": 3,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_BALANCE|LONG|SMALL",
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|SMALL",
+          "BALANCED|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 0.95,
+        "net_pnl_pips": 2.85,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TTL_EXIT": 2,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 1,
+        "scenarios": [
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 1,
+        "layered_expectancy_pips": 1.25,
+        "layered_net_pnl_pips": 1.25,
+        "trade_count_delta": -2,
+        "expectancy_delta_pips": 0.3,
+        "net_pnl_delta_pips": -1.6
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 2,
+            "share": 0.666667
+          },
+          {
+            "value": "COMPRESSION",
+            "count": 1,
+            "share": 0.333333
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.322941,
+        "regime_modifier_contract": {
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "COMPRESSION": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 0.98,
+            "ttl_multiplier": 1.08
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.25,
+            "net_pnl_pips": 1.25
+          },
+          {
+            "regime_state": "COMPRESSION",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "BLEEDING",
+            "count": 3,
+            "share": 1.0
+          }
+        ],
+        "observed_session_count": 1,
+        "mean_session_activity_ratio": 0.684365,
+        "session_modifier_contract": {
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 3,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.25,
+            "net_pnl_pips": 1.25
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 3,
+            "share": 1.0
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.461063,
+          "max": 1.461063
+        },
+        "mean_energy_floor": 0.525983,
+        "mean_kill_switch_energy_floor": 0.40974
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 3,
+        "profitable_pocket_count": 1,
+        "profitable_pocket_share": 0.333333,
+        "best_pockets": [
+          {
+            "pocket_id": "BLEEDING|BALANCED|PRESSURE_DRIVE_HOLD|SMALL",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_DRIVE_HOLD",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 1.25,
+            "net_pnl_pips": 1.25
+          },
+          {
+            "pocket_id": "BLEEDING|BALANCED|PRESSURE_DRIVE_MID|SMALL",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_DRIVE_MID",
+            "target_distance_bucket": "SMALL",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "pocket_id": "BLEEDING|COMPRESSION|PRESSURE_DRIVE_MID|MEDIUM",
+            "session_state": "BLEEDING",
+            "regime_state": "COMPRESSION",
+            "route_operating_mode": "PRESSURE_DRIVE_MID",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 3,
+        "ready_count": 1,
+        "aborted_count": 2,
+        "invalid_count": 0,
+        "ready_rate": 0.333333,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 2,
+            "share": 1.0
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "PRESSURE_DRIVE_MID",
+            "count": 2,
+            "share": 0.666667
+          },
+          {
+            "value": "PRESSURE_DRIVE_HOLD",
+            "count": 1,
+            "share": 0.333333
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "CONSERVATIVE",
+            "count": 3,
+            "share": 1.0
+          }
+        ],
+        "mean_ttl_ticks": 12.0,
+        "mean_surface_quality_score": 2.112692
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "COMPRESSION_PRESSURE_DROP_SHORT",
+      "runtime_status": "FROZEN_RESEARCH_ONLY",
+      "tier1_survivor": true,
+      "cluster_size": 37,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "COMPRESSION_PRESSURE_DROP_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "NEAR_FLOOR",
+        "trigger_demand": "COMPRESSION_PRESSURE_PERSISTENCE",
+        "allowed_route_classes": [
+          "CAPTURE_FULL",
+          "CAPTURE_BALANCED",
+          "CAPTURE_EXTENSION"
+        ],
+        "invalid_route_classes": [
+          "CAPTURE_EXTENSION_ON_DRIFT",
+          "CAPTURE_EXTENSION_ON_PATTERN_HARVEST"
+        ],
+        "extraction_intent": "SHORT_PRESSURE_DROP_CAPTURE_UNDER_REVIEW"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COMPRESSION_PRESSURE_DROP_SHORT",
+        "trade_count": 15,
+        "aborted_count": 0,
+        "result_count": 15,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "COMPRESSION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "COMPRESSION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "COMPRESSION|NEAR_FLOOR|TIGHT|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "MEDIUM"
+        ],
+        "win_rate": 0.533333,
+        "expectancy_pips": 1.7602,
+        "net_pnl_pips": 26.403,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TTL_EXIT": 8,
+          "STOP_HIT": 6,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 1,
+        "layered_expectancy_pips": 1.05,
+        "layered_net_pnl_pips": 1.05,
+        "trade_count_delta": -14,
+        "expectancy_delta_pips": -0.7102,
+        "net_pnl_delta_pips": -25.353
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_SHORT",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 12,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "PRESSURE_DRIVE_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "PRESSURE_CONTINUATION_CONFIRMATION",
+        "allowed_route_classes": [
+          "PRESSURE_BREAK",
+          "PRESSURE_HOLD",
+          "PRESSURE_FRONT_RUN"
+        ],
+        "invalid_route_classes": [
+          "OVER_BROAD_MID_ZONE_ASSIGNMENT"
+        ],
+        "extraction_intent": "PRESSURE_DRIVE_EDGE_TO_MID_CONTINUATION"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "PRESSURE_DRIVE_SHORT",
+        "trade_count": 7,
+        "aborted_count": 0,
+        "result_count": 7,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|MICRO",
+          "BALANCED|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "BALANCED|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MICRO"
+        ],
+        "win_rate": 0.714286,
+        "expectancy_pips": 1.682143,
+        "net_pnl_pips": 11.775,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "STOP_HIT": 2,
+          "TARGET_HIT": 5
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 4,
+        "layered_expectancy_pips": 0.243,
+        "layered_net_pnl_pips": 0.972,
+        "trade_count_delta": -3,
+        "expectancy_delta_pips": -1.439143,
+        "net_pnl_delta_pips": -10.803
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "BALANCED",
+            "count": 5,
+            "share": 0.714286
+          },
+          {
+            "value": "EXPANSION",
+            "count": 2,
+            "share": 0.285714
+          }
+        ],
+        "observed_regime_count": 2,
+        "mean_volatility_percentile": 0.551069,
+        "regime_modifier_contract": {
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          },
+          "BALANCED": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "BALANCED",
+            "candidate_count": 5,
+            "filled_count": 3,
+            "win_rate": 0.666667,
+            "expectancy_pips": 0.774,
+            "net_pnl_pips": 2.322
+          },
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.35,
+            "net_pnl_pips": -1.35
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 4,
+            "share": 0.571429
+          },
+          {
+            "value": "BLEEDING",
+            "count": 3,
+            "share": 0.428571
+          }
+        ],
+        "observed_session_count": 2,
+        "mean_session_activity_ratio": 0.901267,
+        "session_modifier_contract": {
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "BLEEDING": {
+            "target_multiplier": 0.94,
+            "stop_multiplier": 1.01,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "BLEEDING",
+            "candidate_count": 3,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 3.364,
+            "net_pnl_pips": 3.364
+          },
+          {
+            "session_state": "STABLE",
+            "candidate_count": 4,
+            "filled_count": 3,
+            "win_rate": 0.333333,
+            "expectancy_pips": -0.797333,
+            "net_pnl_pips": -2.392
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "EUR_USD",
+            "count": 3,
+            "share": 0.428571
+          },
+          {
+            "value": "USD_JPY",
+            "count": 3,
+            "share": 0.428571
+          },
+          {
+            "value": "GBP_USD",
+            "count": 1,
+            "share": 0.142857
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.461063,
+          "max": 1.69
+        },
+        "mean_energy_floor": 0.779601,
+        "mean_kill_switch_energy_floor": 0.50078
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 5,
+        "profitable_pocket_count": 2,
+        "profitable_pocket_share": 0.4,
+        "best_pockets": [
+          {
+            "pocket_id": "BLEEDING|BALANCED|PRESSURE_DRIVE_EDGE|EXTENDED",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_DRIVE_EDGE",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 3.364,
+            "net_pnl_pips": 3.364
+          },
+          {
+            "pocket_id": "STABLE|BALANCED|PRESSURE_DRIVE_EDGE|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_DRIVE_EDGE",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 2.95,
+            "net_pnl_pips": 2.95
+          },
+          {
+            "pocket_id": "BLEEDING|BALANCED|PRESSURE_DRIVE_MID|MICRO",
+            "session_state": "BLEEDING",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_DRIVE_MID",
+            "target_distance_bucket": "MICRO",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "STABLE|BALANCED|PRESSURE_DRIVE_EDGE|EXTENDED",
+            "session_state": "STABLE",
+            "regime_state": "BALANCED",
+            "route_operating_mode": "PRESSURE_DRIVE_EDGE",
+            "target_distance_bucket": "EXTENDED",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -3.992,
+            "net_pnl_pips": -3.992
+          },
+          {
+            "pocket_id": "STABLE|EXPANSION|PRESSURE_DRIVE_EDGE|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "PRESSURE_DRIVE_EDGE",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 2,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.35,
+            "net_pnl_pips": -1.35
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 7,
+        "ready_count": 4,
+        "aborted_count": 3,
+        "invalid_count": 0,
+        "ready_rate": 0.571429,
+        "abort_reason_breakdown": [
+          {
+            "value": "kill_switch_decay",
+            "count": 2,
+            "share": 0.666667
+          },
+          {
+            "value": "insufficient_charge",
+            "count": 1,
+            "share": 0.333333
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "PRESSURE_DRIVE_EDGE",
+            "count": 6,
+            "share": 0.857143
+          },
+          {
+            "value": "PRESSURE_DRIVE_MID",
+            "count": 1,
+            "share": 0.142857
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "BALANCED",
+            "count": 6,
+            "share": 0.857143
+          },
+          {
+            "value": "CONSERVATIVE",
+            "count": 1,
+            "share": 0.142857
+          }
+        ],
+        "mean_ttl_ticks": 10.0,
+        "mean_surface_quality_score": 4.127691
+      },
+      "window_contract_diagnosis": [
+        "T6_DECAY_TOO_STRICT"
+      ]
+    },
+    {
+      "doctrine_id": "EXPANSION_RELEASE_SHORT",
+      "runtime_status": "ACTIVE_RUNTIME",
+      "tier1_survivor": true,
+      "cluster_size": 12,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "EXPANSION_RELEASE_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "EXPANSION_RELEASE_SHORT",
+        "trade_count": 5,
+        "aborted_count": 0,
+        "result_count": 5,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+          "TRANSITION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|LARGE"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "MEDIUM"
+        ],
+        "win_rate": 0.6,
+        "expectancy_pips": 1.19,
+        "net_pnl_pips": 5.95,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TTL_EXIT": 2,
+          "STOP_HIT": 2,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "trend_continuation"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": true,
+        "layered_trade_count": 2,
+        "layered_expectancy_pips": 0.2,
+        "layered_net_pnl_pips": 0.4,
+        "trade_count_delta": -3,
+        "expectancy_delta_pips": -0.99,
+        "net_pnl_delta_pips": -5.55
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [
+          {
+            "value": "EXPANSION",
+            "count": 5,
+            "share": 1.0
+          }
+        ],
+        "observed_regime_count": 1,
+        "mean_volatility_percentile": 0.859236,
+        "regime_modifier_contract": {
+          "EXPANSION": {
+            "target_multiplier": 1.06,
+            "stop_multiplier": 0.96,
+            "ttl_multiplier": 0.9
+          }
+        },
+        "regime_profit_summary": [
+          {
+            "regime_state": "EXPANSION",
+            "candidate_count": 5,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.2,
+            "net_pnl_pips": 0.4
+          }
+        ]
+      },
+      "t3_session_layer": {
+        "observed_session_states": [
+          {
+            "value": "STABLE",
+            "count": 4,
+            "share": 0.8
+          },
+          {
+            "value": "INJECTING",
+            "count": 1,
+            "share": 0.2
+          }
+        ],
+        "observed_session_count": 2,
+        "mean_session_activity_ratio": 1.16918,
+        "session_modifier_contract": {
+          "STABLE": {
+            "target_multiplier": 1.0,
+            "stop_multiplier": 1.0,
+            "ttl_multiplier": 1.0
+          },
+          "INJECTING": {
+            "target_multiplier": 1.04,
+            "stop_multiplier": 0.97,
+            "ttl_multiplier": 0.92
+          }
+        },
+        "session_profit_summary": [
+          {
+            "session_state": "STABLE",
+            "candidate_count": 4,
+            "filled_count": 2,
+            "win_rate": 0.5,
+            "expectancy_pips": 0.2,
+            "net_pnl_pips": 0.4
+          },
+          {
+            "session_state": "INJECTING",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ]
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [
+          {
+            "value": "GBP_USD",
+            "count": 3,
+            "share": 0.6
+          },
+          {
+            "value": "EUR_USD",
+            "count": 2,
+            "share": 0.4
+          }
+        ],
+        "instrument_multiplier_range": {
+          "min": 1.538853,
+          "max": 1.598154
+        },
+        "mean_energy_floor": 1.850117,
+        "mean_kill_switch_energy_floor": 1.229957
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 4,
+        "profitable_pocket_count": 1,
+        "profitable_pocket_share": 0.25,
+        "best_pockets": [
+          {
+            "pocket_id": "STABLE|EXPANSION|EXPANSION_RELEASE_HOLD|MEDIUM",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "EXPANSION_RELEASE_HOLD",
+            "target_distance_bucket": "MEDIUM",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 1.0,
+            "expectancy_pips": 2.15,
+            "net_pnl_pips": 2.15
+          },
+          {
+            "pocket_id": "INJECTING|EXPANSION|EXPANSION_RELEASE_LAUNCH|LARGE",
+            "session_state": "INJECTING",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 1,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          },
+          {
+            "pocket_id": "STABLE|EXPANSION|EXPANSION_RELEASE_HOLD|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "EXPANSION_RELEASE_HOLD",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 2,
+            "filled_count": 0,
+            "win_rate": 0.0,
+            "expectancy_pips": 0.0,
+            "net_pnl_pips": 0.0
+          }
+        ],
+        "worst_pockets": [
+          {
+            "pocket_id": "STABLE|EXPANSION|EXPANSION_RELEASE_LAUNCH|LARGE",
+            "session_state": "STABLE",
+            "regime_state": "EXPANSION",
+            "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+            "target_distance_bucket": "LARGE",
+            "candidate_count": 1,
+            "filled_count": 1,
+            "win_rate": 0.0,
+            "expectancy_pips": -1.75,
+            "net_pnl_pips": -1.75
+          }
+        ]
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 5,
+        "ready_count": 2,
+        "aborted_count": 3,
+        "invalid_count": 0,
+        "ready_rate": 0.4,
+        "abort_reason_breakdown": [
+          {
+            "value": "insufficient_charge",
+            "count": 2,
+            "share": 0.666667
+          },
+          {
+            "value": "kill_switch_decay",
+            "count": 1,
+            "share": 0.333333
+          }
+        ],
+        "dominant_route_operating_modes": [
+          {
+            "value": "EXPANSION_RELEASE_HOLD",
+            "count": 3,
+            "share": 0.6
+          },
+          {
+            "value": "EXPANSION_RELEASE_LAUNCH",
+            "count": 2,
+            "share": 0.4
+          }
+        ],
+        "dominant_adjustment_options": [
+          {
+            "value": "BALANCED",
+            "count": 5,
+            "share": 1.0
+          }
+        ],
+        "mean_ttl_ticks": 11.8,
+        "mean_surface_quality_score": 4.460413
+      },
+      "window_contract_diagnosis": [
+        "T6_CHARGE_TOO_STRICT",
+        "T6_DECAY_TOO_STRICT",
+        "WINDOW_EXISTS_BUT_IS_NOISY"
+      ]
+    },
+    {
+      "doctrine_id": "COILED_TRANSITION_SHORT",
+      "runtime_status": "RETIRED_DISABLED",
+      "tier1_survivor": false,
+      "cluster_size": 1,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "SHORT",
+        "pattern_match_state": "COILED_TRANSITION_SHORT",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "ANY",
+        "trigger_demand": "GENERIC_DIRECTIONAL_CONFIRMATION",
+        "allowed_route_classes": [],
+        "invalid_route_classes": [],
+        "extraction_intent": "GENERAL_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "COILED_TRANSITION_SHORT",
+        "trade_count": 0,
+        "aborted_count": 0,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "viable": false
+      },
+      "layered_outcome": {
+        "layered_profitable": false,
+        "layered_trade_count": 0,
+        "layered_expectancy_pips": 0.0,
+        "layered_net_pnl_pips": 0.0,
+        "trade_count_delta": 0,
+        "expectancy_delta_pips": 0.0,
+        "net_pnl_delta_pips": 0.0
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS"
+      ]
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_LONG_REVERSAL_SCALP",
+      "runtime_status": "RETIRED_DISABLED",
+      "tier1_survivor": true,
+      "cluster_size": 14,
+      "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+      "support_contract": {
+        "direction_group": "LONG",
+        "pattern_match_state": "FAILED_PUSH_LONG_REVERSAL_SCALP",
+        "minimum_score_to_assign": 5,
+        "minimum_support_hits": 2,
+        "assignment_policy": "pattern_state_then_support_signature"
+      },
+      "runtime_contract": {
+        "required_zone": "MID_ZONE",
+        "trigger_demand": "REVERSAL_CONFIRMATION",
+        "allowed_route_classes": [
+          "REVERSAL_SNAP",
+          "REVERSAL_CONFIRM",
+          "CAPTURE_BALANCED"
+        ],
+        "invalid_route_classes": [
+          "MIXED_FAMILY_SURFACES"
+        ],
+        "extraction_intent": "FAILED_PUSH_REVERSAL_SCALP_CAPTURE"
+      },
+      "tier1_extraction_summary": {
+        "strategy_id": "FAILED_PUSH_LONG_REVERSAL_SCALP",
+        "trade_count": 3,
+        "aborted_count": 0,
+        "result_count": 3,
+        "distance_expression_count": 1,
+        "target_distance_bucket_count": 1,
+        "distance_expression_ids": [
+          "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|LARGE"
+        ],
+        "target_distance_buckets": [
+          "LARGE"
+        ],
+        "win_rate": 0.666667,
+        "expectancy_pips": 2.45,
+        "net_pnl_pips": 7.35,
+        "viable": true,
+        "abort_reason_counts": {},
+        "exit_reason_counts": {
+          "TARGET_HIT": 2,
+          "STOP_HIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "whipsaw_spike_fade"
+        ]
+      },
+      "layered_outcome": {
+        "layered_profitable": false,
+        "layered_trade_count": 0,
+        "layered_expectancy_pips": 0.0,
+        "layered_net_pnl_pips": 0.0,
+        "trade_count_delta": -3,
+        "expectancy_delta_pips": -2.45,
+        "net_pnl_delta_pips": -7.35
+      },
+      "t2_regime_layer": {
+        "observed_regime_states": [],
+        "observed_regime_count": 0,
+        "mean_volatility_percentile": 0.0,
+        "regime_modifier_contract": {},
+        "regime_profit_summary": []
+      },
+      "t3_session_layer": {
+        "observed_session_states": [],
+        "observed_session_count": 0,
+        "mean_session_activity_ratio": 0.0,
+        "session_modifier_contract": {},
+        "session_profit_summary": []
+      },
+      "t4_instrument_layer": {
+        "observed_instruments": [],
+        "instrument_multiplier_range": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mean_energy_floor": 0.0,
+        "mean_kill_switch_energy_floor": 0.0
+      },
+      "t5_convergence_matrix": {
+        "pocket_count": 0,
+        "profitable_pocket_count": 0,
+        "profitable_pocket_share": 0.0,
+        "best_pockets": [],
+        "worst_pockets": []
+      },
+      "t6_volumetric_trigger_trap": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "aborted_count": 0,
+        "invalid_count": 0,
+        "ready_rate": 0.0,
+        "abort_reason_breakdown": [],
+        "dominant_route_operating_modes": [],
+        "dominant_adjustment_options": [],
+        "mean_ttl_ticks": 0.0,
+        "mean_surface_quality_score": 0.0
+      },
+      "window_contract_diagnosis": [
+        "NO_CONTEXT_ROWS"
+      ]
+    }
+  ]
+}

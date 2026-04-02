@@ -1,0 +1,1720 @@
+{
+  "artifact_id": "V2_TRIGGER_REJECT_SURFACE_MAP",
+  "generated_at_utc": "2026-04-01T21:27:52.763097Z",
+  "total_profile_count": 2982,
+  "trigger_reject_count": 1371,
+  "trigger_reject_share": 0.459759,
+  "scenario_reject_counts": {
+    "trend_continuation": 245,
+    "panic_reversal": 163,
+    "chop_mean_reversion": 293,
+    "spread_widening": 225,
+    "whipsaw_spike_fade": 190,
+    "slow_grind_break": 255
+  },
+  "surface_type_counts": {
+    "COMPRESSION": 519,
+    "TRENDING": 498,
+    "BALANCED": 280,
+    "OSCILLATION": 74
+  },
+  "location_relation_counts": {
+    "MID_DRIFT": 584,
+    "CEILING_PRESSURE": 292,
+    "CEILING_REJECTION": 166,
+    "FLOOR_PRESSURE": 144,
+    "MID_BALANCE": 98,
+    "FLOOR_REBOUND": 87
+  },
+  "direction_counts": {
+    "LONG": 621,
+    "SHORT": 617,
+    "NEUTRAL": 133
+  },
+  "simple_surface_counts": {
+    "COMPRESSION|CEILING_PRESSURE|LONG": 144,
+    "TRENDING|MID_DRIFT|LONG": 137,
+    "COMPRESSION|CEILING_REJECTION|SHORT": 132,
+    "TRENDING|MID_DRIFT|SHORT": 125,
+    "BALANCED|MID_DRIFT|SHORT": 98,
+    "BALANCED|MID_DRIFT|LONG": 93,
+    "COMPRESSION|MID_DRIFT|SHORT": 59,
+    "TRENDING|FLOOR_PRESSURE|SHORT": 51,
+    "COMPRESSION|FLOOR_REBOUND|LONG": 47,
+    "COMPRESSION|FLOOR_PRESSURE|SHORT": 47,
+    "TRENDING|CEILING_PRESSURE|LONG": 43,
+    "COMPRESSION|MID_DRIFT|LONG": 40,
+    "OSCILLATION|CEILING_PRESSURE|NEUTRAL": 38,
+    "TRENDING|FLOOR_REBOUND|LONG": 37,
+    "TRENDING|MID_BALANCE|SHORT": 34,
+    "TRENDING|CEILING_REJECTION|SHORT": 33,
+    "COMPRESSION|CEILING_PRESSURE|NEUTRAL": 32,
+    "TRENDING|MID_BALANCE|LONG": 25,
+    "BALANCED|CEILING_PRESSURE|LONG": 25,
+    "OSCILLATION|FLOOR_PRESSURE|NEUTRAL": 19
+  },
+  "ready_adjacent_simple_surfaces": {
+    "TRENDING|MID_DRIFT|LONG": 112,
+    "TRENDING|MID_DRIFT|SHORT": 111,
+    "BALANCED|MID_DRIFT|SHORT": 80,
+    "BALANCED|MID_DRIFT|LONG": 68,
+    "COMPRESSION|CEILING_PRESSURE|LONG": 66,
+    "COMPRESSION|CEILING_REJECTION|SHORT": 65,
+    "TRENDING|FLOOR_PRESSURE|SHORT": 47,
+    "COMPRESSION|MID_DRIFT|SHORT": 45,
+    "COMPRESSION|FLOOR_REBOUND|LONG": 41,
+    "TRENDING|CEILING_PRESSURE|LONG": 38,
+    "TRENDING|FLOOR_REBOUND|LONG": 36,
+    "COMPRESSION|FLOOR_PRESSURE|SHORT": 33,
+    "TRENDING|CEILING_REJECTION|SHORT": 32,
+    "TRENDING|MID_BALANCE|SHORT": 31,
+    "COMPRESSION|MID_DRIFT|LONG": 30,
+    "TRENDING|MID_BALANCE|LONG": 24,
+    "BALANCED|CEILING_PRESSURE|LONG": 20,
+    "BALANCED|MID_BALANCE|LONG": 12,
+    "BALANCED|FLOOR_PRESSURE|SHORT": 11,
+    "BALANCED|MID_BALANCE|SHORT": 9
+  },
+  "top_promising_clusters": [
+    {
+      "cluster_id": "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "FLOOR_PRESSURE",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 41,
+      "scenario_count": 3,
+      "ready_adjacent_count": 37,
+      "ready_adjacent_share": 0.902439,
+      "conservative_share": 0.780488,
+      "aggressive_share": 0.195122,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.829268,
+      "avg_distance_multiple": 8.463055,
+      "avg_path_multiple": 8.078383,
+      "avg_economic_score": 0.684808,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 35,
+        "UNMATCHED": 6
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 19,
+        "EXTENDED": 17,
+        "SMALL": 2,
+        "NON_COVERING": 1,
+        "MEDIUM": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:289",
+          "economic_score": 0.877968,
+          "distance_multiple": 15.908421,
+          "path_multiple": 15.908421,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:407",
+          "economic_score": 0.822105,
+          "distance_multiple": 6.789474,
+          "path_multiple": 6.789474,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:293",
+          "economic_score": 0.820842,
+          "distance_multiple": 11.787368,
+          "path_multiple": 11.787368,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "CEILING_PRESSURE",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 41,
+      "scenario_count": 6,
+      "ready_adjacent_count": 32,
+      "ready_adjacent_share": 0.780488,
+      "conservative_share": 0.317073,
+      "aggressive_share": 0.658537,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.609756,
+      "avg_distance_multiple": 3.78082,
+      "avg_path_multiple": 3.78082,
+      "avg_economic_score": 0.580215,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "COMPRESSION_PRESSURE_LIFT_LONG": 41
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 22,
+        "LARGE": 15,
+        "SMALL": 3,
+        "MICRO": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:191",
+          "economic_score": 0.8,
+          "distance_multiple": 6.838947,
+          "path_multiple": 6.838947,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:513",
+          "economic_score": 0.761404,
+          "distance_multiple": 5.105263,
+          "path_multiple": 5.105263,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:177",
+          "economic_score": 0.741404,
+          "distance_multiple": 4.789474,
+          "path_multiple": 4.789474,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "CEILING_PRESSURE",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 31,
+      "scenario_count": 6,
+      "ready_adjacent_count": 27,
+      "ready_adjacent_share": 0.870968,
+      "conservative_share": 0.677419,
+      "aggressive_share": 0.322581,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.612903,
+      "avg_distance_multiple": 5.323124,
+      "avg_path_multiple": 4.969983,
+      "avg_economic_score": 0.617496,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_LONG": 25,
+        "UNMATCHED": 6
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 18,
+        "MEDIUM": 5,
+        "EXTENDED": 5,
+        "MICRO": 3
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:234",
+          "economic_score": 0.847368,
+          "distance_multiple": 8.157895,
+          "path_multiple": 8.157895,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:515",
+          "economic_score": 0.8,
+          "distance_multiple": 5.736842,
+          "path_multiple": 5.736842,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:275",
+          "economic_score": 0.797193,
+          "distance_multiple": 7.157895,
+          "path_multiple": 7.157895,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "BALANCED|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "BALANCED",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 25,
+      "scenario_count": 5,
+      "ready_adjacent_count": 21,
+      "ready_adjacent_share": 0.84,
+      "conservative_share": 0.52,
+      "aggressive_share": 0.48,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.6,
+      "avg_distance_multiple": 3.823158,
+      "avg_path_multiple": 3.823158,
+      "avg_economic_score": 0.640956,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "FLOW_DRIFT_LONG": 25
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 16,
+        "LARGE": 8,
+        "EXTENDED": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:67",
+          "economic_score": 0.838947,
+          "distance_multiple": 4.052632,
+          "path_multiple": 4.052632,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:397",
+          "economic_score": 0.796491,
+          "distance_multiple": 5.210526,
+          "path_multiple": 5.210526,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:396",
+          "economic_score": 0.791228,
+          "distance_multiple": 4.578947,
+          "path_multiple": 4.578947,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|FLOOR_REBOUND|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "FLOOR_REBOUND",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 13,
+      "scenario_count": 2,
+      "ready_adjacent_count": 13,
+      "ready_adjacent_share": 1.0,
+      "conservative_share": 0.692308,
+      "aggressive_share": 0.307692,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.461538,
+      "avg_distance_multiple": 4.67189,
+      "avg_path_multiple": 4.67189,
+      "avg_economic_score": 0.700233,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "UNMATCHED": 13
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 7,
+        "MEDIUM": 6
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:142",
+          "economic_score": 0.796491,
+          "distance_multiple": 4.473684,
+          "path_multiple": 4.473684,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:97",
+          "economic_score": 0.768421,
+          "distance_multiple": 4.157895,
+          "path_multiple": 4.157895,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:533",
+          "economic_score": 0.725263,
+          "distance_multiple": 7.421053,
+          "path_multiple": 7.421053,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "FLOOR_PRESSURE",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 12,
+      "scenario_count": 2,
+      "ready_adjacent_count": 10,
+      "ready_adjacent_share": 0.833333,
+      "conservative_share": 0.416667,
+      "aggressive_share": 0.583333,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.666667,
+      "avg_distance_multiple": 4.403096,
+      "avg_path_multiple": 4.403096,
+      "avg_economic_score": 0.602738,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "COMPRESSION_PRESSURE_DROP_SHORT": 12
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 7,
+        "MEDIUM": 5
+      },
+      "sample_profiles": [
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:253",
+          "economic_score": 0.747059,
+          "distance_multiple": 4.294118,
+          "path_multiple": 4.294118,
+          "book_toxicity_proxy": 0.875,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:532",
+          "economic_score": 0.738246,
+          "distance_multiple": 7.526316,
+          "path_multiple": 7.526316,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:163",
+          "economic_score": 0.704561,
+          "distance_multiple": 5.631579,
+          "path_multiple": 5.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "STANDARD_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 9,
+      "scenario_count": 4,
+      "ready_adjacent_count": 9,
+      "ready_adjacent_share": 1.0,
+      "conservative_share": 0.666667,
+      "aggressive_share": 0.333333,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.555556,
+      "avg_distance_multiple": 4.45442,
+      "avg_path_multiple": 4.45442,
+      "avg_economic_score": 0.752294,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "UNMATCHED": 9
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 6,
+        "MEDIUM": 3
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:460",
+          "economic_score": 0.860702,
+          "distance_multiple": 3.631579,
+          "path_multiple": 3.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:163",
+          "economic_score": 0.852632,
+          "distance_multiple": 4.052632,
+          "path_multiple": 4.052632,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:148",
+          "economic_score": 0.83193,
+          "distance_multiple": 6.894737,
+          "path_multiple": 6.894737,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "STANDARD_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 9,
+      "scenario_count": 4,
+      "ready_adjacent_count": 8,
+      "ready_adjacent_share": 0.888889,
+      "conservative_share": 0.444444,
+      "aggressive_share": 0.555556,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.888889,
+      "avg_distance_multiple": 4.020032,
+      "avg_path_multiple": 4.020032,
+      "avg_economic_score": 0.704027,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "UNMATCHED": 9
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 4,
+        "MEDIUM": 4,
+        "SMALL": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:459",
+          "economic_score": 0.835789,
+          "distance_multiple": 4.578947,
+          "path_multiple": 4.578947,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:332",
+          "economic_score": 0.818947,
+          "distance_multiple": 5.315789,
+          "path_multiple": 5.315789,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:164",
+          "economic_score": 0.744912,
+          "distance_multiple": 3.315789,
+          "path_multiple": 3.315789,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "CEILING_PRESSURE",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 8,
+      "scenario_count": 4,
+      "ready_adjacent_count": 8,
+      "ready_adjacent_share": 1.0,
+      "conservative_share": 0.5,
+      "aggressive_share": 0.5,
+      "clean_book_share": 1.0,
+      "aligned_share": 1.0,
+      "avg_distance_multiple": 5.96329,
+      "avg_path_multiple": 5.96329,
+      "avg_economic_score": 0.671065,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "COMPRESSION_RELEASE_LONG": 8
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 7,
+        "EXTENDED": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:193",
+          "economic_score": 0.813432,
+          "distance_multiple": 10.601053,
+          "path_multiple": 10.601053,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:171",
+          "economic_score": 0.722807,
+          "distance_multiple": 7.0,
+          "path_multiple": 7.0,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:321",
+          "economic_score": 0.715789,
+          "distance_multiple": 4.368421,
+          "path_multiple": 4.368421,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 9,
+      "scenario_count": 3,
+      "ready_adjacent_count": 8,
+      "ready_adjacent_share": 0.888889,
+      "conservative_share": 0.333333,
+      "aggressive_share": 0.666667,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.666667,
+      "avg_distance_multiple": 4.671579,
+      "avg_path_multiple": 4.671579,
+      "avg_economic_score": 0.64296,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_LONG": 9
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 6,
+        "MEDIUM": 3
+      },
+      "sample_profiles": [
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:215",
+          "economic_score": 0.735789,
+          "distance_multiple": 5.421053,
+          "path_multiple": 5.421053,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:232",
+          "economic_score": 0.72,
+          "distance_multiple": 4.263158,
+          "path_multiple": 4.263158,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:63",
+          "economic_score": 0.697895,
+          "distance_multiple": 4.789474,
+          "path_multiple": 4.789474,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 9,
+      "scenario_count": 4,
+      "ready_adjacent_count": 7,
+      "ready_adjacent_share": 0.777778,
+      "conservative_share": 0.555556,
+      "aggressive_share": 0.444444,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.777778,
+      "avg_distance_multiple": 3.280702,
+      "avg_path_multiple": 3.280702,
+      "avg_economic_score": 0.669747,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "UNMATCHED": 9
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 5,
+        "LARGE": 2,
+        "SMALL": 2
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:456",
+          "economic_score": 0.847018,
+          "distance_multiple": 5.631579,
+          "path_multiple": 5.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:284",
+          "economic_score": 0.777193,
+          "distance_multiple": 3.526316,
+          "path_multiple": 3.526316,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:429",
+          "economic_score": 0.748421,
+          "distance_multiple": 3.631579,
+          "path_multiple": 3.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "FLOOR_PRESSURE",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 9,
+      "scenario_count": 3,
+      "ready_adjacent_count": 6,
+      "ready_adjacent_share": 0.666667,
+      "conservative_share": 0.444444,
+      "aggressive_share": 0.555556,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.555556,
+      "avg_distance_multiple": 3.589474,
+      "avg_path_multiple": 3.589474,
+      "avg_economic_score": 0.586581,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "COMPRESSION_PRESSURE_DROP_SHORT": 9
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 6,
+        "LARGE": 3
+      },
+      "sample_profiles": [
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:248",
+          "economic_score": 0.724211,
+          "distance_multiple": 4.263158,
+          "path_multiple": 4.263158,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:214",
+          "economic_score": 0.694386,
+          "distance_multiple": 3.842105,
+          "path_multiple": 3.842105,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:491",
+          "economic_score": 0.660702,
+          "distance_multiple": 3.842105,
+          "path_multiple": 3.842105,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|MID_DRIFT|SHORT|SCALP_DISTANCE|COILED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "COILED",
+      "energy_state": "DRIFT",
+      "count": 8,
+      "scenario_count": 4,
+      "ready_adjacent_count": 4,
+      "ready_adjacent_share": 0.5,
+      "conservative_share": 0.625,
+      "aggressive_share": 0.375,
+      "clean_book_share": 1.0,
+      "aligned_share": 1.0,
+      "avg_distance_multiple": 2.099944,
+      "avg_path_multiple": 2.099944,
+      "avg_economic_score": 0.563107,
+      "worth_covering": true,
+      "top_pattern_match_states": {
+        "COILED_COMPRESSION_SHORT": 8
+      },
+      "top_target_distance_buckets": {
+        "SMALL": 3,
+        "MEDIUM": 3,
+        "LARGE": 1,
+        "MICRO": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:186",
+          "economic_score": 0.785263,
+          "distance_multiple": 4.473684,
+          "path_multiple": 4.473684,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "slow_grind_break",
+          "profile_id": "EUR_USD:348",
+          "economic_score": 0.643158,
+          "distance_multiple": 2.578947,
+          "path_multiple": 2.578947,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:44",
+          "economic_score": 0.565263,
+          "distance_multiple": 1.631579,
+          "path_multiple": 1.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    }
+  ],
+  "top_junk_clusters": [
+    {
+      "cluster_id": "BALANCED|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "BALANCED",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 29,
+      "scenario_count": 5,
+      "ready_adjacent_count": 27,
+      "ready_adjacent_share": 0.931034,
+      "conservative_share": 0.517241,
+      "aggressive_share": 0.482759,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.344828,
+      "avg_distance_multiple": 4.381125,
+      "avg_path_multiple": 4.381125,
+      "avg_economic_score": 0.64807,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "FLOW_DRIFT_SHORT": 29
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 14,
+        "MEDIUM": 14,
+        "SMALL": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:352",
+          "economic_score": 0.826316,
+          "distance_multiple": 6.0,
+          "path_multiple": 6.0,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:35",
+          "economic_score": 0.794386,
+          "distance_multiple": 4.473684,
+          "path_multiple": 4.473684,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:29",
+          "economic_score": 0.770175,
+          "distance_multiple": 5.157895,
+          "path_multiple": 5.157895,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_REJECTION|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "CEILING_REJECTION",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 32,
+      "scenario_count": 6,
+      "ready_adjacent_count": 26,
+      "ready_adjacent_share": 0.8125,
+      "conservative_share": 0.375,
+      "aggressive_share": 0.625,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.3125,
+      "avg_distance_multiple": 3.744145,
+      "avg_path_multiple": 3.744145,
+      "avg_economic_score": 0.63703,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "UNMATCHED": 32
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 19,
+        "LARGE": 9,
+        "SMALL": 4
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:94",
+          "economic_score": 0.844618,
+          "distance_multiple": 6.707368,
+          "path_multiple": 6.707368,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:380",
+          "economic_score": 0.824561,
+          "distance_multiple": 5.631579,
+          "path_multiple": 5.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:315",
+          "economic_score": 0.790877,
+          "distance_multiple": 4.789474,
+          "path_multiple": 4.789474,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 23,
+      "scenario_count": 5,
+      "ready_adjacent_count": 22,
+      "ready_adjacent_share": 0.956522,
+      "conservative_share": 0.565217,
+      "aggressive_share": 0.434783,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.26087,
+      "avg_distance_multiple": 4.363844,
+      "avg_path_multiple": 4.363844,
+      "avg_economic_score": 0.662639,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 23
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 14,
+        "MEDIUM": 9
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:554",
+          "economic_score": 0.808421,
+          "distance_multiple": 5.105263,
+          "path_multiple": 5.105263,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:387",
+          "economic_score": 0.785614,
+          "distance_multiple": 4.368421,
+          "path_multiple": 4.368421,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:187",
+          "economic_score": 0.770175,
+          "distance_multiple": 5.789474,
+          "path_multiple": 5.789474,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 22,
+      "scenario_count": 4,
+      "ready_adjacent_count": 19,
+      "ready_adjacent_share": 0.863636,
+      "conservative_share": 0.5,
+      "aggressive_share": 0.409091,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.318182,
+      "avg_distance_multiple": 5.002392,
+      "avg_path_multiple": 4.937799,
+      "avg_economic_score": 0.629246,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_LONG": 19,
+        "UNMATCHED": 3
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 17,
+        "NON_COVERING": 2,
+        "SMALL": 1,
+        "EXTENDED": 1,
+        "MEDIUM": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:581",
+          "economic_score": 0.894737,
+          "distance_multiple": 7.157895,
+          "path_multiple": 7.157895,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:375",
+          "economic_score": 0.79193,
+          "distance_multiple": 7.578947,
+          "path_multiple": 7.578947,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:329",
+          "economic_score": 0.778947,
+          "distance_multiple": 4.578947,
+          "path_multiple": 4.578947,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 19,
+      "scenario_count": 4,
+      "ready_adjacent_count": 18,
+      "ready_adjacent_share": 0.947368,
+      "conservative_share": 0.578947,
+      "aggressive_share": 0.368421,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.210526,
+      "avg_distance_multiple": 5.019391,
+      "avg_path_multiple": 5.019391,
+      "avg_economic_score": 0.666186,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 18,
+        "UNMATCHED": 1
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 15,
+        "MEDIUM": 2,
+        "NON_COVERING": 1,
+        "EXTENDED": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:268",
+          "economic_score": 0.874035,
+          "distance_multiple": 5.736842,
+          "path_multiple": 5.736842,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:282",
+          "economic_score": 0.789825,
+          "distance_multiple": 4.684211,
+          "path_multiple": 4.684211,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:487",
+          "economic_score": 0.773333,
+          "distance_multiple": 5.421053,
+          "path_multiple": 5.421053,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "CEILING_PRESSURE",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 31,
+      "scenario_count": 6,
+      "ready_adjacent_count": 18,
+      "ready_adjacent_share": 0.580645,
+      "conservative_share": 0.451613,
+      "aggressive_share": 0.451613,
+      "clean_book_share": 0.935484,
+      "aligned_share": 0.548387,
+      "avg_distance_multiple": 3.499257,
+      "avg_path_multiple": 3.499257,
+      "avg_economic_score": 0.510594,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "COMPRESSION_PRESSURE_LIFT_LONG": 31
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 12,
+        "MEDIUM": 9,
+        "SMALL": 6,
+        "MICRO": 3,
+        "EXTENDED": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:188",
+          "economic_score": 0.822579,
+          "distance_multiple": 13.545263,
+          "path_multiple": 13.545263,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:427",
+          "economic_score": 0.744561,
+          "distance_multiple": 4.263158,
+          "path_multiple": 4.263158,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:97",
+          "economic_score": 0.701404,
+          "distance_multiple": 4.263158,
+          "path_multiple": 4.263158,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        }
+      ]
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_REJECTION|SHORT|SCALP_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "COMPRESSION",
+      "location_relation_id": "CEILING_REJECTION",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 33,
+      "scenario_count": 5,
+      "ready_adjacent_count": 17,
+      "ready_adjacent_share": 0.515152,
+      "conservative_share": 0.181818,
+      "aggressive_share": 0.727273,
+      "clean_book_share": 0.909091,
+      "aligned_share": 0.30303,
+      "avg_distance_multiple": 2.406223,
+      "avg_path_multiple": 2.406223,
+      "avg_economic_score": 0.5177,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "UNMATCHED": 33
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 17,
+        "SMALL": 7,
+        "MICRO": 6,
+        "LARGE": 3
+      },
+      "sample_profiles": [
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:166",
+          "economic_score": 0.789474,
+          "distance_multiple": 3.631579,
+          "path_multiple": 3.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:392",
+          "economic_score": 0.72,
+          "distance_multiple": 4.473684,
+          "path_multiple": 4.473684,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "slow_grind_break",
+          "profile_id": "EUR_USD:456",
+          "economic_score": 0.72,
+          "distance_multiple": 4.263158,
+          "path_multiple": 4.263158,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|FLOOR_REBOUND|LONG|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "FLOOR_REBOUND",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "PRESSURED",
+      "energy_state": "IGNITION",
+      "count": 16,
+      "scenario_count": 3,
+      "ready_adjacent_count": 16,
+      "ready_adjacent_share": 1.0,
+      "conservative_share": 0.9375,
+      "aggressive_share": 0.0625,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.0,
+      "avg_distance_multiple": 16.132829,
+      "avg_path_multiple": 5.649737,
+      "avg_economic_score": 0.732897,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_LONG": 12,
+        "EXPANSION_RELEASE_LONG": 4
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 7,
+        "EXTENDED": 7,
+        "MEDIUM": 2
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:325",
+          "economic_score": 0.86,
+          "distance_multiple": 15.126316,
+          "path_multiple": 15.126316,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:321",
+          "economic_score": 0.853881,
+          "distance_multiple": 10.506316,
+          "path_multiple": 10.506316,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:75",
+          "economic_score": 0.843158,
+          "distance_multiple": 7.105263,
+          "path_multiple": 7.105263,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 23,
+      "scenario_count": 5,
+      "ready_adjacent_count": 16,
+      "ready_adjacent_share": 0.695652,
+      "conservative_share": 0.434783,
+      "aggressive_share": 0.565217,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.130435,
+      "avg_distance_multiple": 4.299771,
+      "avg_path_multiple": 4.299771,
+      "avg_economic_score": 0.587368,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_LONG": 23
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 12,
+        "MEDIUM": 7,
+        "SMALL": 3,
+        "EXTENDED": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:444",
+          "economic_score": 0.781053,
+          "distance_multiple": 5.0,
+          "path_multiple": 5.0,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "whipsaw_spike_fade",
+          "profile_id": "EUR_USD:393",
+          "economic_score": 0.725263,
+          "distance_multiple": 5.526316,
+          "path_multiple": 5.526316,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:392",
+          "economic_score": 0.716842,
+          "distance_multiple": 5.526316,
+          "path_multiple": 5.526316,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|LONG|STANDARD_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "LONG",
+      "distance_mode": "STANDARD_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 16,
+      "scenario_count": 3,
+      "ready_adjacent_count": 15,
+      "ready_adjacent_share": 0.9375,
+      "conservative_share": 0.9375,
+      "aggressive_share": 0.0625,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.25,
+      "avg_distance_multiple": 9.971316,
+      "avg_path_multiple": 9.743487,
+      "avg_economic_score": 0.752194,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_LONG": 14,
+        "UNMATCHED": 2
+      },
+      "top_target_distance_buckets": {
+        "EXTENDED": 11,
+        "LARGE": 3,
+        "MEDIUM": 1,
+        "MICRO": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:278",
+          "economic_score": 0.92,
+          "distance_multiple": 14.047368,
+          "path_multiple": 14.047368,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:39",
+          "economic_score": 0.86,
+          "distance_multiple": 16.731579,
+          "path_multiple": 16.731579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:19",
+          "economic_score": 0.86,
+          "distance_multiple": 15.610526,
+          "path_multiple": 15.610526,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|CEILING_REJECTION|SHORT|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "CEILING_REJECTION",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "PRESSURED",
+      "energy_state": "IGNITION",
+      "count": 15,
+      "scenario_count": 5,
+      "ready_adjacent_count": 15,
+      "ready_adjacent_share": 1.0,
+      "conservative_share": 0.866667,
+      "aggressive_share": 0.133333,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.0,
+      "avg_distance_multiple": 5.256561,
+      "avg_path_multiple": 4.926737,
+      "avg_economic_score": 0.728892,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 13,
+        "EXPANSION_RELEASE_SHORT": 2
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 6,
+        "LARGE": 6,
+        "EXTENDED": 3
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:181",
+          "economic_score": 0.86,
+          "distance_multiple": 12.322105,
+          "path_multiple": 12.322105,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:420",
+          "economic_score": 0.86,
+          "distance_multiple": 9.105263,
+          "path_multiple": 9.105263,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:309",
+          "economic_score": 0.86,
+          "distance_multiple": 8.052632,
+          "path_multiple": 8.052632,
+          "book_toxicity_proxy": 0.363636,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|IGNITION",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "STANDARD_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "IGNITION",
+      "count": 16,
+      "scenario_count": 4,
+      "ready_adjacent_count": 15,
+      "ready_adjacent_share": 0.9375,
+      "conservative_share": 0.8125,
+      "aggressive_share": 0.1875,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.125,
+      "avg_distance_multiple": 8.776316,
+      "avg_path_multiple": 8.616118,
+      "avg_economic_score": 0.712457,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 14,
+        "UNMATCHED": 2
+      },
+      "top_target_distance_buckets": {
+        "EXTENDED": 10,
+        "LARGE": 3,
+        "MEDIUM": 2,
+        "MICRO": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:313",
+          "economic_score": 0.92,
+          "distance_multiple": 12.423158,
+          "path_multiple": 12.423158,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.666667
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:443",
+          "economic_score": 0.869474,
+          "distance_multiple": 5.0,
+          "path_multiple": 5.0,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:148",
+          "economic_score": 0.86,
+          "distance_multiple": 14.202105,
+          "path_multiple": 14.202105,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "BALANCED|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "BALANCED",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "LONG",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 21,
+      "scenario_count": 5,
+      "ready_adjacent_count": 14,
+      "ready_adjacent_share": 0.666667,
+      "conservative_share": 0.428571,
+      "aggressive_share": 0.571429,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.142857,
+      "avg_distance_multiple": 3.230576,
+      "avg_path_multiple": 3.230576,
+      "avg_economic_score": 0.558747,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "UNMATCHED": 21
+      },
+      "top_target_distance_buckets": {
+        "MEDIUM": 15,
+        "LARGE": 4,
+        "SMALL": 2
+      },
+      "sample_profiles": [
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:15",
+          "economic_score": 0.762105,
+          "distance_multiple": 5.473684,
+          "path_multiple": 5.473684,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:410",
+          "economic_score": 0.685263,
+          "distance_multiple": 4.368421,
+          "path_multiple": 4.368421,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.333333
+        },
+        {
+          "scenario": "chop_mean_reversion",
+          "profile_id": "GBP_USD:92",
+          "economic_score": 0.646316,
+          "distance_multiple": 3.210526,
+          "path_multiple": 3.210526,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|DRIFT",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "STANDARD_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DRIFT",
+      "count": 11,
+      "scenario_count": 3,
+      "ready_adjacent_count": 11,
+      "ready_adjacent_share": 1.0,
+      "conservative_share": 0.545455,
+      "aggressive_share": 0.454545,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.181818,
+      "avg_distance_multiple": 8.665167,
+      "avg_path_multiple": 8.665167,
+      "avg_economic_score": 0.752681,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 11
+      },
+      "top_target_distance_buckets": {
+        "EXTENDED": 6,
+        "LARGE": 5
+      },
+      "sample_profiles": [
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:174",
+          "economic_score": 0.86,
+          "distance_multiple": 14.68,
+          "path_multiple": 14.68,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:88",
+          "economic_score": 0.86,
+          "distance_multiple": 10.568421,
+          "path_multiple": 10.568421,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "panic_reversal",
+          "profile_id": "USD_JPY:267",
+          "economic_score": 0.853881,
+          "distance_multiple": 9.255789,
+          "path_multiple": 9.255789,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DORMANT",
+      "surface_type": "TRENDING",
+      "location_relation_id": "MID_DRIFT",
+      "direction_group": "SHORT",
+      "distance_mode": "SCALP_DISTANCE",
+      "precursor_state": "BALANCED",
+      "energy_state": "DORMANT",
+      "count": 12,
+      "scenario_count": 5,
+      "ready_adjacent_count": 11,
+      "ready_adjacent_share": 0.916667,
+      "conservative_share": 0.666667,
+      "aggressive_share": 0.333333,
+      "clean_book_share": 1.0,
+      "aligned_share": 0.083333,
+      "avg_distance_multiple": 4.864035,
+      "avg_path_multiple": 4.864035,
+      "avg_economic_score": 0.68614,
+      "worth_covering": false,
+      "top_pattern_match_states": {
+        "TRANSITION_RELEASE_SHORT": 12
+      },
+      "top_target_distance_buckets": {
+        "LARGE": 6,
+        "MEDIUM": 5,
+        "EXTENDED": 1
+      },
+      "sample_profiles": [
+        {
+          "scenario": "spread_widening",
+          "profile_id": "EUR_USD:455",
+          "economic_score": 0.86,
+          "distance_multiple": 5.631579,
+          "path_multiple": 5.631579,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:332",
+          "economic_score": 0.826316,
+          "distance_multiple": 6.526316,
+          "path_multiple": 6.526316,
+          "book_toxicity_proxy": 1.333333,
+          "direction_alignment_score": 0.0
+        },
+        {
+          "scenario": "trend_continuation",
+          "profile_id": "EUR_USD:156",
+          "economic_score": 0.80386,
+          "distance_multiple": 5.315789,
+          "path_multiple": 5.315789,
+          "book_toxicity_proxy": 1.0,
+          "direction_alignment_score": 0.0
+        }
+      ]
+    }
+  ]
+}

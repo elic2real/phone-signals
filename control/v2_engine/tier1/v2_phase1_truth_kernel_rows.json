@@ -1,0 +1,4122 @@
+{
+  "artifact_id": "V2_PHASE1_TRUTH_KERNEL_ROWS",
+  "generated_at_utc": "2026-04-02T13:59:23.348699Z",
+  "kernels_by_scenario": {
+    "trend_continuation": [
+      {
+        "profile_id": "EUR_USD:3",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "EXPANSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "EXPANSION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|SHORT",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|STRONG|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "UNSPECIFIED",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "EUR_USD:28",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "TRANSITION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|EXTREME|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "EUR_USD:53",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "COMPRESSION|MID_ZONE|TIGHT|SHORT",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "LATE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:78",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "EXPLOIT",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIVE",
+          "energy_family_id": "DRIVE|BUILD|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:103",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:128",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:153",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|EXTREME|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:178",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:203",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "TRANSITION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "EUR_USD:228",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:253",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|STRONG|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:278",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "TRANSITION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|EXTREME|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|BUILD|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      }
+    ],
+    "panic_reversal": [
+      {
+        "profile_id": "USD_JPY:3",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|SHORT",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|BUILD|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "UNSPECIFIED",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "USD_JPY:28",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "EXPANSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "EXPANSION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|STRONG|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "USD_JPY:53",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|BUILD|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "USD_JPY:78",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|COMPRESSED|LONG",
+          "location_relation_id": "MID_BALANCE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "LATE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "USD_JPY:103",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "USD_JPY:128",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "USD_JPY:153",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "TRANSITION|MID_ZONE|COMPRESSED|SHORT",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SHARP",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_SHORT",
+          "pattern_match_state": "TRANSITION_RELEASE_SHORT",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "USD_JPY:178",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "COMPRESSION|MID_ZONE|COMPRESSED|LONG",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "USD_JPY:203",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "TRANSITION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "USD_JPY:228",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "TRANSITION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "USD_JPY:253",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "TRANSITION|MID_ZONE|COMPRESSED|LONG",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|BUILD|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
+          "pattern_match_state": "FLOW_DRIFT_LONG",
+          "trigger_state": "TREND_DRIFT_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|TREND_DRIFT_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "USD_JPY:278",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+      }
+    ],
+    "chop_mean_reversion": [
+      {
+        "profile_id": "EUR_USD:3",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|SHORT",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "UNSPECIFIED",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:28",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:53",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "STRONG_SELL",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:78",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "COMPRESSION|MID_ZONE|COMPRESSED|NEUTRAL",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:103",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:128",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:153",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "COMPRESSION|MID_ZONE|COMPRESSED|NEUTRAL",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:178",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|COMPRESSED|LONG",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_FLOW_LONG",
+          "pattern_match_state": "FLOW_DRIFT_LONG",
+          "trigger_state": "TREND_DRIFT_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|TREND_DRIFT_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "EUR_USD:203",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:228",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "TRANSITION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "TRANSITION|MID_ZONE|COMPRESSED|LONG",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COILED_TRANSITION_LONG",
+          "pattern_match_state": "COILED_TRANSITION_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:253",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|BALANCED|LONG",
+          "location_relation_id": "MID_BALANCE",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:278",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|NEUTRAL",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
+          "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|NO_CONFIDENT_TRIGGER"
+      }
+    ],
+    "spread_widening": [
+      {
+        "profile_id": "EUR_USD:3",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|SHORT",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "UNSPECIFIED",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:28",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|EXTREME|WIDE|LONG",
+          "lifecycle_stage": "EXPLOIT",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIVE",
+          "energy_family_id": "DRIVE|BUILD|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:53",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "COMPRESSION|MID_ZONE|COMPRESSED|SHORT",
+          "location_relation_id": "MID_BALANCE",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "LATE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:78",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:103",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|BUILD|SHARP",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:128",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "EXPLOIT",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIVE",
+          "energy_family_id": "DRIVE|BUILD|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:153",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|BALANCED|LONG",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_PRESSURE_LONG",
+          "pattern_match_state": "PRESSURE_DRIVE_LONG",
+          "trigger_state": "RECLAIM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|RECLAIM"
+      },
+      {
+        "profile_id": "EUR_USD:178",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "EXPLOIT",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIVE",
+          "energy_family_id": "DRIVE|BUILD|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:203",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "BALANCED|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|BUILD|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_PRESSURE_LONG",
+          "pattern_match_state": "PRESSURE_DRIVE_LONG",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:228",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "TOXIC",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "TOXIC_THIN"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:253",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|MODERATE|WIDE|LONG",
+          "lifecycle_stage": "WATCH",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LIFT_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:278",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH"
+      }
+    ],
+    "whipsaw_spike_fade": [
+      {
+        "profile_id": "EUR_USD:3",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "PARTIAL",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|SHORT",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "UNSPECIFIED",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:28",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|NEUTRAL",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:53",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "OSCILLATION|NEAR_FLOOR|BALANCED|NEUTRAL",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_SELL",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
+          "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BEARISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:78",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "COMPRESSION|NEAR_FLOOR|COMPRESSED|NEUTRAL",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_SELL",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BEARISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:103",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|BALANCED|NEUTRAL",
+          "location_relation_id": "MID_BALANCE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BEARISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:128",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|NEUTRAL",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:153",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|NEUTRAL",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_SELL",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:178",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "OSCILLATION|NEAR_FLOOR|BALANCED|NEUTRAL",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_SELL",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|EXTREME|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
+          "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BEARISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:203",
+        "movement_kernel": {
+          "movement_state": "NOISE",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "COMPRESSION|NEAR_FLOOR|TIGHT|NEUTRAL",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
+          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BEARISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:228",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "EXTENDED"
+        },
+        "structure_kernel": {
+          "surface_type": "TRENDING",
+          "market_pattern_state": "EXPANSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "EXPANSION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|EXTREME|WIDE|LONG",
+          "lifecycle_stage": "RELEASE",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "IGNITION",
+          "energy_family_id": "IGNITION|SURGE|SMOOTH",
+          "impulse_band": "SURGE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
+          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
+          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+      },
+      {
+        "profile_id": "EUR_USD:253",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:278",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "LARGE"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_FLOOR",
+          "topology_family_id": "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT",
+          "location_relation_id": "FLOOR_PRESSURE",
+          "level_type_long": "PRIOR_LOW",
+          "level_type_short": "PRIOR_LOW"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "STRONG_SELL",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|EXTREME|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|BUILD|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BEARISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|CONTINUATION_PUSH"
+      }
+    ],
+    "slow_grind_break": [
+      {
+        "profile_id": "EUR_USD:3",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_THIN",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "NON_COVERING"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "SESSION_OPEN",
+          "level_type_short": "SESSION_OPEN"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|SHORT",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "UNSPECIFIED",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:28",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:53",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|COMPRESSED|SHORT",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "SHORT",
+          "vector_bias": "DOWN",
+          "order_flow_band": "MILD_SELL",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "LATE",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "AGGRESSIVE_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:78",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": false,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "SETUP",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "NON_OPPORTUNITY"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:103",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "BALANCED",
+          "precursor_family_id": "BALANCED|LIGHT|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LIFT_LONG",
+          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
+          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|COMPRESSION_PRESSURE_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:128",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "NON_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WEAK",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "HARD"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "QUALIFIED_PATH"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "SWEEP_READY"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:153",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "BALANCED",
+          "market_pattern_state": "BALANCED",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "BALANCED|MID_ZONE|BALANCED|NEUTRAL",
+          "location_relation_id": "MID_BALANCE",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "NEUTRAL",
+          "vector_bias": "FLAT",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "MISALIGNED",
+          "structural_room_band": "TIGHT"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "LATE",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "OPENING",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_NONE",
+          "pattern_match_state": "UNMATCHED",
+          "trigger_state": "NO_CONFIDENT_TRIGGER"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+      },
+      {
+        "profile_id": "EUR_USD:178",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "MILD_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WORKABLE",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "NEUTRAL",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:203",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|BUILD|SMOOTH",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+      },
+      {
+        "profile_id": "EUR_USD:228",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "SMALL"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "ROUND_NUMBER",
+          "level_type_short": "ROUND_NUMBER"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "BALANCED",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|LIGHT|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "LIGHT"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|BUILD|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "WEAK",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "ONE_BAR_CONFIRM"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "REFERENCE_LEVEL",
+          "liquidity_map_kernel": "BALANCED_BOOK"
+        },
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+      },
+      {
+        "profile_id": "EUR_USD:253",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "WORKABLE",
+          "target_distance_bucket": "MICRO"
+        },
+        "structure_kernel": {
+          "surface_type": "COMPRESSION",
+          "market_pattern_state": "COMPRESSION",
+          "zone_state": "MID_ZONE",
+          "topology_family_id": "COMPRESSION|MID_ZONE|COMPRESSED|LONG",
+          "location_relation_id": "MID_DRIFT",
+          "level_type_long": "VWAP",
+          "level_type_short": "VWAP"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "WORKABLE"
+        },
+        "precursor_kernel": {
+          "precursor_state": "COILED",
+          "precursor_family_id": "COILED|MODERATE|TIGHT|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "MODERATE"
+        },
+        "energy_kernel": {
+          "energy_state": "DRIFT",
+          "energy_family_id": "DRIFT|FADE|SHARP",
+          "impulse_band": "BUILD",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
+          "pattern_match_state": "COILED_COMPRESSION_LONG",
+          "trigger_state": "FAILED_PUSH_REVERSE"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "MID_VOID",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|FAILED_PUSH_REVERSE"
+      },
+      {
+        "profile_id": "EUR_USD:278",
+        "movement_kernel": {
+          "movement_state": "MOVE_DETECTED",
+          "cost_covering_state": "COST_COVERING",
+          "path_covering_state": "PATH_COVERING",
+          "extractable": true,
+          "displacement_band": "STRONG",
+          "target_distance_bucket": "MEDIUM"
+        },
+        "structure_kernel": {
+          "surface_type": "OSCILLATION",
+          "market_pattern_state": "OSCILLATION",
+          "zone_state": "NEAR_CEILING",
+          "topology_family_id": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+          "location_relation_id": "CEILING_PRESSURE",
+          "level_type_long": "PRIOR_HIGH",
+          "level_type_short": "PRIOR_HIGH"
+        },
+        "direction_kernel": {
+          "direction_group": "LONG",
+          "vector_bias": "UP",
+          "order_flow_band": "STRONG_BUY",
+          "direction_alignment_band": "ALIGNED",
+          "structural_room_band": "OPEN"
+        },
+        "precursor_kernel": {
+          "precursor_state": "PRESSURED",
+          "precursor_family_id": "PRESSURED|HEAVY|WIDE|LONG",
+          "lifecycle_stage": "PATTERN_HARVEST",
+          "pressure_band": "HEAVY"
+        },
+        "energy_kernel": {
+          "energy_state": "DORMANT",
+          "energy_family_id": "DORMANT|FADE|SMOOTH",
+          "impulse_band": "FADE",
+          "compression_energy_band": "LOW",
+          "rejection_velocity_band": "SOFT"
+        },
+        "quality_kernel": {
+          "book_quality_band": "CLEAN",
+          "session_progress_band": "MID",
+          "order_flow_alignment_band": "STRONG",
+          "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
+        },
+        "event_kernel": {
+          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
+          "trigger_state": "CONTINUATION_PUSH"
+        },
+        "global_slots": {
+          "macro_bias_kernel": "BULLISH",
+          "htf_zone_kernel": "EDGE_REFERENCE",
+          "liquidity_map_kernel": "FLOW_IMBALANCED"
+        },
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH"
+      }
+    ]
+  }
+}

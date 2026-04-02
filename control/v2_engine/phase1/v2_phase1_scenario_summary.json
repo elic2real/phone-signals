@@ -1,0 +1,566 @@
+{
+  "artifact_id": "V2_PHASE1_SCENARIO_SUMMARY",
+  "generated_at_utc": "2026-04-02T13:59:25.044205Z",
+  "boundary_lock_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_boundary_lock.json",
+  "scenarios": [
+    {
+      "scenario": "trend_continuation",
+      "seed": 20260401,
+      "tick_input_count": 650,
+      "tick_kept_count": 650,
+      "tick_dropped_count": 0,
+      "drop_reasons": {},
+      "profile_count": 647,
+      "extractable_count": 647,
+      "conservative_opportunity_count": 614,
+      "aggressive_path_opportunity_count": 33,
+      "pattern_qualified_opportunity_count": 363,
+      "movement_detected_count": 647,
+      "cost_covering_count": 614,
+      "energy_states": {
+        "IGNITION": 423,
+        "DRIVE": 60,
+        "DRIFT": 101,
+        "DORMANT": 63
+      },
+      "zone_states": {
+        "NEAR_CEILING": 629,
+        "MID_ZONE": 18
+      },
+      "direction_groups": {
+        "LONG": 431,
+        "SHORT": 200,
+        "NEUTRAL": 16
+      },
+      "target_distance_buckets": {
+        "MEDIUM": 5,
+        "LARGE": 37,
+        "EXTENDED": 605
+      },
+      "top_precursor_families": {
+        "BALANCED|MODERATE|WIDE|LONG": 229,
+        "PRESSURED|HEAVY|WIDE|LONG": 177,
+        "PRESSURED|EXTREME|WIDE|LONG": 154,
+        "BALANCED|LIGHT|WIDE|LONG": 85,
+        "COILED|EXTREME|TIGHT|SHORT": 1,
+        "PRESSURED|EXTREME|WIDE|SHORT": 1
+      },
+      "top_topology_families": {
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG": 127,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG": 100,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT": 70,
+        "TRANSITION|NEAR_CEILING|COMPRESSED|LONG": 61,
+        "TRANSITION|NEAR_CEILING|BALANCED|LONG": 60,
+        "COMPRESSION|NEAR_CEILING|TIGHT|SHORT": 55,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG": 20,
+        "TRANSITION|NEAR_CEILING|COMPRESSED|SHORT": 20
+      },
+      "top_distance_families": {
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED": 124,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED": 96,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|EXTENDED": 67,
+        "TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED": 60,
+        "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED": 57,
+        "COMPRESSION|NEAR_CEILING|TIGHT|SHORT|CEILING_REJECTION|SHORT|EXTENDED": 51,
+        "TRANSITION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|EXTENDED": 20,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED": 18
+      },
+      "lifecycle_stages": {
+        "RELEASE": 423,
+        "EXPLOIT": 60,
+        "RUN_EXTENSION": 2,
+        "PATTERN_HARVEST": 121,
+        "LATE": 41
+      },
+      "opportunity_confidence_tiers": {
+        "QUALIFIED_CONSERVATIVE": 358,
+        "CONSERVATIVE": 256,
+        "AGGRESSIVE_PATH": 28,
+        "QUALIFIED_PATH": 5
+      },
+      "top_extraction_signatures": {
+        "COMPRESSION_PRESSURE_LIFT_LONG|LONG|EXTENDED": 176,
+        "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED": 97,
+        "COMPRESSION_RELEASE_SHORT|SHORT|EXTENDED": 96,
+        "COMPRESSION_RELEASE_LONG|LONG|EXTENDED": 46,
+        "TRANSITION_RELEASE_SHORT|SHORT|EXTENDED": 34,
+        "COMPRESSION|SHORT|EXTENDED": 33,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|EXTENDED": 30,
+        "PRESSURE_DRIVE_LONG|LONG|EXTENDED": 26
+      },
+      "compression_present": true,
+      "expansion_present": true
+    },
+    {
+      "scenario": "panic_reversal",
+      "seed": 20260402,
+      "tick_input_count": 1300,
+      "tick_kept_count": 1300,
+      "tick_dropped_count": 0,
+      "drop_reasons": {},
+      "profile_count": 1297,
+      "extractable_count": 1292,
+      "conservative_opportunity_count": 1114,
+      "aggressive_path_opportunity_count": 178,
+      "pattern_qualified_opportunity_count": 533,
+      "movement_detected_count": 1297,
+      "cost_covering_count": 1114,
+      "energy_states": {
+        "DRIFT": 261,
+        "DORMANT": 168,
+        "IGNITION": 750,
+        "DRIVE": 118
+      },
+      "zone_states": {
+        "NEAR_CEILING": 414,
+        "NEAR_FLOOR": 344,
+        "MID_ZONE": 539
+      },
+      "direction_groups": {
+        "LONG": 675,
+        "SHORT": 622
+      },
+      "target_distance_buckets": {
+        "MICRO": 2,
+        "SMALL": 4,
+        "NON_COVERING": 5,
+        "MEDIUM": 18,
+        "LARGE": 179,
+        "EXTENDED": 1089
+      },
+      "top_precursor_families": {
+        "BALANCED|MODERATE|WIDE|LONG": 590,
+        "BALANCED|LIGHT|WIDE|LONG": 355,
+        "PRESSURED|HEAVY|WIDE|LONG": 215,
+        "PRESSURED|EXTREME|WIDE|LONG": 135,
+        "COILED|LIGHT|TIGHT|SHORT": 1,
+        "COILED|MODERATE|TIGHT|SHORT": 1
+      },
+      "top_topology_families": {
+        "TRANSITION|MID_ZONE|BALANCED|SHORT": 107,
+        "TRANSITION|MID_ZONE|BALANCED|LONG": 102,
+        "TRANSITION|NEAR_CEILING|BALANCED|LONG": 68,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG": 59,
+        "COMPRESSION|MID_ZONE|COMPRESSED|LONG": 54,
+        "TRANSITION|MID_ZONE|COMPRESSED|SHORT": 52,
+        "TRANSITION|MID_ZONE|COMPRESSED|LONG": 51,
+        "TRANSITION|NEAR_FLOOR|BALANCED|SHORT": 47
+      },
+      "top_distance_families": {
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED": 79,
+        "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED": 67,
+        "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED": 62,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED": 52,
+        "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED": 45,
+        "TRANSITION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|EXTENDED": 41,
+        "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|EXTENDED": 39,
+        "COMPRESSION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED": 36
+      },
+      "lifecycle_stages": {
+        "PATTERN_HARVEST": 339,
+        "WATCH": 1,
+        "SCAN": 4,
+        "HARVEST": 1,
+        "RELEASE": 748,
+        "EXPLOIT": 115,
+        "LATE": 89
+      },
+      "opportunity_confidence_tiers": {
+        "AGGRESSIVE_PATH": 148,
+        "QUALIFIED_CONSERVATIVE": 503,
+        "NON_OPPORTUNITY": 5,
+        "QUALIFIED_PATH": 30,
+        "CONSERVATIVE": 611
+      },
+      "top_extraction_signatures": {
+        "TRANSITION_RELEASE_SHORT|SHORT|EXTENDED": 175,
+        "TRANSITION_RELEASE_LONG|LONG|EXTENDED": 166,
+        "FLOW_DRIFT_SHORT|SHORT|EXTENDED": 77,
+        "COMPRESSION_RELEASE_LONG|LONG|EXTENDED": 76,
+        "COMPRESSION_RELEASE_SHORT|SHORT|EXTENDED": 75,
+        "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED": 68,
+        "FLOW_DRIFT_LONG|LONG|EXTENDED": 59,
+        "TRANSITION_RELEASE_SHORT_STANDARD|SHORT|EXTENDED": 53
+      },
+      "compression_present": true,
+      "expansion_present": true
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "seed": 20260403,
+      "tick_input_count": 650,
+      "tick_kept_count": 650,
+      "tick_dropped_count": 0,
+      "drop_reasons": {},
+      "profile_count": 647,
+      "extractable_count": 566,
+      "conservative_opportunity_count": 264,
+      "aggressive_path_opportunity_count": 302,
+      "pattern_qualified_opportunity_count": 363,
+      "movement_detected_count": 647,
+      "cost_covering_count": 264,
+      "energy_states": {
+        "DORMANT": 357,
+        "DRIFT": 269,
+        "DRIVE": 17,
+        "IGNITION": 4
+      },
+      "zone_states": {
+        "NEAR_CEILING": 275,
+        "MID_ZONE": 296,
+        "NEAR_FLOOR": 76
+      },
+      "direction_groups": {
+        "LONG": 320,
+        "SHORT": 274,
+        "NEUTRAL": 53
+      },
+      "target_distance_buckets": {
+        "NON_COVERING": 10,
+        "MICRO": 144,
+        "SMALL": 303,
+        "MEDIUM": 190
+      },
+      "top_precursor_families": {
+        "COILED|MODERATE|TIGHT|LONG": 186,
+        "COILED|LIGHT|TIGHT|LONG": 170,
+        "BALANCED|MODERATE|WIDE|LONG": 84,
+        "PRESSURED|HEAVY|WIDE|LONG": 71,
+        "PRESSURED|EXTREME|WIDE|LONG": 60,
+        "COILED|HEAVY|TIGHT|LONG": 28,
+        "BALANCED|MODERATE|TIGHT|LONG": 14,
+        "BALANCED|LIGHT|WIDE|LONG": 12
+      },
+      "top_topology_families": {
+        "BALANCED|MID_ZONE|BALANCED|SHORT": 61,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG": 61,
+        "BALANCED|MID_ZONE|BALANCED|LONG": 43,
+        "OSCILLATION|NEAR_CEILING|OPEN|LONG": 40,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG": 38,
+        "COMPRESSION|MID_ZONE|COMPRESSED|SHORT": 29,
+        "COMPRESSION|MID_ZONE|COMPRESSED|LONG": 27,
+        "OSCILLATION|NEAR_CEILING|BALANCED|SHORT": 26
+      },
+      "top_distance_families": {
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM": 29,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|SMALL": 24,
+        "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|SMALL": 22,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL": 21,
+        "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM": 21,
+        "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|SMALL": 15,
+        "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|SMALL": 14,
+        "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|SMALL": 14
+      },
+      "lifecycle_stages": {
+        "SETUP": 80,
+        "PATTERN_HARVEST": 477,
+        "EXPLOIT": 17,
+        "LATE": 68,
+        "RELEASE": 4,
+        "WATCH": 1
+      },
+      "opportunity_confidence_tiers": {
+        "NON_OPPORTUNITY": 81,
+        "QUALIFIED_PATH": 174,
+        "QUALIFIED_CONSERVATIVE": 189,
+        "CONSERVATIVE": 75,
+        "AGGRESSIVE_PATH": 128
+      },
+      "top_extraction_signatures": {
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM": 50,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|SMALL": 43,
+        "COILED_COMPRESSION_LONG|LONG|SMALL": 39,
+        "OSCILLATION_EDGE_SHORT_SCALP|SHORT|SMALL": 29,
+        "COILED_COMPRESSION_SHORT|SHORT|SMALL": 25,
+        "COILED_COMPRESSION_SHORT|SHORT|MICRO": 23,
+        "OSCILLATION_EDGE_SHORT_SCALP|SHORT|MEDIUM": 23,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MICRO": 20
+      },
+      "compression_present": true,
+      "expansion_present": true
+    },
+    {
+      "scenario": "spread_widening",
+      "seed": 20260404,
+      "tick_input_count": 650,
+      "tick_kept_count": 650,
+      "tick_dropped_count": 0,
+      "drop_reasons": {},
+      "profile_count": 647,
+      "extractable_count": 621,
+      "conservative_opportunity_count": 461,
+      "aggressive_path_opportunity_count": 160,
+      "pattern_qualified_opportunity_count": 341,
+      "movement_detected_count": 647,
+      "cost_covering_count": 461,
+      "energy_states": {
+        "DRIFT": 240,
+        "DORMANT": 224,
+        "DRIVE": 83,
+        "IGNITION": 100
+      },
+      "zone_states": {
+        "NEAR_CEILING": 531,
+        "MID_ZONE": 116
+      },
+      "direction_groups": {
+        "LONG": 386,
+        "SHORT": 233,
+        "NEUTRAL": 28
+      },
+      "target_distance_buckets": {
+        "NON_COVERING": 2,
+        "MICRO": 42,
+        "SMALL": 66,
+        "MEDIUM": 213,
+        "LARGE": 320,
+        "EXTENDED": 4
+      },
+      "top_precursor_families": {
+        "BALANCED|MODERATE|WIDE|LONG": 244,
+        "PRESSURED|HEAVY|WIDE|LONG": 131,
+        "BALANCED|LIGHT|WIDE|LONG": 120,
+        "PRESSURED|EXTREME|WIDE|LONG": 96,
+        "COILED|LIGHT|TIGHT|LONG": 23,
+        "COILED|MODERATE|TIGHT|LONG": 18,
+        "BALANCED|LIGHT|TIGHT|LONG": 4,
+        "BALANCED|MODERATE|TIGHT|LONG": 3
+      },
+      "top_topology_families": {
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG": 87,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG": 68,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG": 55,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT": 53,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG": 44,
+        "OSCILLATION|NEAR_CEILING|BALANCED|SHORT": 36,
+        "COMPRESSION|MID_ZONE|COMPRESSED|SHORT": 32,
+        "TRANSITION|NEAR_CEILING|BALANCED|LONG": 30
+      },
+      "top_distance_families": {
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE": 47,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE": 35,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|LARGE": 31,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM": 30,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE": 26,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM": 25,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM": 24,
+        "OSCILLATION|NEAR_CEILING|BALANCED|SHORT|CEILING_REJECTION|SHORT|LARGE": 22
+      },
+      "lifecycle_stages": {
+        "SETUP": 16,
+        "PATTERN_HARVEST": 349,
+        "HARVEST": 2,
+        "EXPLOIT": 83,
+        "RELEASE": 100,
+        "LATE": 87,
+        "WATCH": 10
+      },
+      "opportunity_confidence_tiers": {
+        "NON_OPPORTUNITY": 26,
+        "QUALIFIED_CONSERVATIVE": 286,
+        "AGGRESSIVE_PATH": 105,
+        "QUALIFIED_PATH": 55,
+        "CONSERVATIVE": 175
+      },
+      "top_extraction_signatures": {
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|LARGE": 64,
+        "COMPRESSION_PRESSURE_LIFT_LONG|LONG|LARGE": 51,
+        "COMPRESSION_PRESSURE_LIFT_LONG|LONG|MEDIUM": 47,
+        "OSCILLATION_EDGE_SHORT_SCALP|SHORT|LARGE": 42,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM": 36,
+        "COMPRESSION|SHORT|LARGE": 31,
+        "COMPRESSION|SHORT|MEDIUM": 28,
+        "COMPRESSION_RELEASE_SHORT|SHORT|LARGE": 19
+      },
+      "compression_present": true,
+      "expansion_present": true
+    },
+    {
+      "scenario": "whipsaw_spike_fade",
+      "seed": 20260405,
+      "tick_input_count": 700,
+      "tick_kept_count": 700,
+      "tick_dropped_count": 0,
+      "drop_reasons": {},
+      "profile_count": 697,
+      "extractable_count": 68,
+      "conservative_opportunity_count": 50,
+      "aggressive_path_opportunity_count": 18,
+      "pattern_qualified_opportunity_count": 47,
+      "movement_detected_count": 71,
+      "cost_covering_count": 50,
+      "energy_states": {
+        "DORMANT": 647,
+        "IGNITION": 10,
+        "DRIFT": 40
+      },
+      "zone_states": {
+        "NEAR_CEILING": 131,
+        "MID_ZONE": 45,
+        "NEAR_FLOOR": 153,
+        "UNDEFINED": 368
+      },
+      "direction_groups": {
+        "LONG": 35,
+        "NEUTRAL": 606,
+        "SHORT": 56
+      },
+      "target_distance_buckets": {
+        "NON_COVERING": 627,
+        "MEDIUM": 7,
+        "LARGE": 29,
+        "EXTENDED": 12,
+        "MICRO": 7,
+        "SMALL": 15
+      },
+      "top_precursor_families": {
+        "COILED|LIGHT|TIGHT|LONG": 469,
+        "COILED|EXTREME|TIGHT|LONG": 173,
+        "PRESSURED|EXTREME|WIDE|LONG": 47,
+        "COILED|MODERATE|TIGHT|LONG": 3,
+        "PRESSURED|HEAVY|WIDE|LONG": 2,
+        "BALANCED|MODERATE|WIDE|LONG": 1,
+        "COILED|EXTREME|TIGHT|SHORT": 1,
+        "COILED|LIGHT|TIGHT|SHORT": 1
+      },
+      "top_topology_families": {
+        "COMPRESSION|UNDEFINED|TIGHT|NEUTRAL": 368,
+        "COMPRESSION|NEAR_FLOOR|TIGHT|NEUTRAL": 76,
+        "COMPRESSION|NEAR_CEILING|TIGHT|NEUTRAL": 29,
+        "COMPRESSION|NEAR_FLOOR|COMPRESSED|NEUTRAL": 19,
+        "COMPRESSION|MID_ZONE|COMPRESSED|NEUTRAL": 18,
+        "COMPRESSION|NEAR_CEILING|TIGHT|SHORT": 18,
+        "OSCILLATION|NEAR_FLOOR|BALANCED|NEUTRAL": 18,
+        "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT": 18
+      },
+      "top_distance_families": {
+        "COMPRESSION|UNDEFINED|TIGHT|NEUTRAL|UNDEFINED|NEUTRAL|NON_COVERING": 368,
+        "COMPRESSION|NEAR_FLOOR|TIGHT|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING": 75,
+        "COMPRESSION|NEAR_CEILING|TIGHT|NEUTRAL|CEILING_PRESSURE|NEUTRAL|NON_COVERING": 28,
+        "OSCILLATION|NEAR_FLOOR|BALANCED|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING": 18,
+        "COMPRESSION|NEAR_FLOOR|COMPRESSED|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING": 16,
+        "COMPRESSION|MID_ZONE|COMPRESSED|NEUTRAL|MID_DRIFT|NEUTRAL|NON_COVERING": 15,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|NEUTRAL|CEILING_PRESSURE|NEUTRAL|NON_COVERING": 15,
+        "OSCILLATION|NEAR_CEILING|BALANCED|NEUTRAL|CEILING_PRESSURE|NEUTRAL|NON_COVERING": 15
+      },
+      "lifecycle_stages": {
+        "SETUP": 629,
+        "RELEASE": 10,
+        "PATTERN_HARVEST": 46,
+        "LATE": 12
+      },
+      "opportunity_confidence_tiers": {
+        "NON_OPPORTUNITY": 629,
+        "QUALIFIED_CONSERVATIVE": 30,
+        "CONSERVATIVE": 20,
+        "QUALIFIED_PATH": 17,
+        "AGGRESSIVE_PATH": 1
+      },
+      "top_extraction_signatures": {
+        "COILED_COMPRESSION_NEUTRAL|NEUTRAL|NON_COVERING": 519,
+        "INTENTIONAL_REJECT_NO_DIRECTION|NEUTRAL|NON_COVERING": 63,
+        "BALANCED|NEUTRAL|NON_COVERING": 14,
+        "OSCILLATION_PRESSURE_BUILD_SHORT|SHORT|LARGE": 13,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|NON_COVERING": 10,
+        "OSCILLATION_PRESSURE_BUILD_SHORT|SHORT|NON_COVERING": 10,
+        "COMPRESSION|SHORT|LARGE": 9,
+        "COILED_COMPRESSION_SHORT|SHORT|SMALL": 8
+      },
+      "compression_present": true,
+      "expansion_present": true
+    },
+    {
+      "scenario": "slow_grind_break",
+      "seed": 20260406,
+      "tick_input_count": 650,
+      "tick_kept_count": 650,
+      "tick_dropped_count": 0,
+      "drop_reasons": {},
+      "profile_count": 647,
+      "extractable_count": 615,
+      "conservative_opportunity_count": 395,
+      "aggressive_path_opportunity_count": 220,
+      "pattern_qualified_opportunity_count": 441,
+      "movement_detected_count": 647,
+      "cost_covering_count": 395,
+      "energy_states": {
+        "DORMANT": 295,
+        "DRIFT": 297,
+        "DRIVE": 30,
+        "IGNITION": 25
+      },
+      "zone_states": {
+        "NEAR_CEILING": 551,
+        "MID_ZONE": 96
+      },
+      "direction_groups": {
+        "LONG": 380,
+        "NEUTRAL": 48,
+        "SHORT": 219
+      },
+      "target_distance_buckets": {
+        "NON_COVERING": 4,
+        "MICRO": 72,
+        "SMALL": 178,
+        "MEDIUM": 349,
+        "LARGE": 44
+      },
+      "top_precursor_families": {
+        "BALANCED|MODERATE|WIDE|LONG": 134,
+        "PRESSURED|HEAVY|WIDE|LONG": 124,
+        "PRESSURED|EXTREME|WIDE|LONG": 114,
+        "COILED|LIGHT|TIGHT|LONG": 108,
+        "COILED|MODERATE|TIGHT|LONG": 91,
+        "BALANCED|LIGHT|WIDE|LONG": 34,
+        "COILED|HEAVY|TIGHT|LONG": 20,
+        "BALANCED|MODERATE|TIGHT|LONG": 8
+      },
+      "top_topology_families": {
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG": 88,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG": 84,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG": 76,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG": 65,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT": 59,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|SHORT": 35,
+        "COMPRESSION|NEAR_CEILING|TIGHT|SHORT": 29,
+        "OSCILLATION|NEAR_CEILING|BALANCED|SHORT": 29
+      },
+      "top_distance_families": {
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM": 61,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM": 46,
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM": 44,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|MEDIUM": 38,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL": 31,
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|SHORT|CEILING_REJECTION|SHORT|MEDIUM": 28,
+        "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM": 26,
+        "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL": 19
+      },
+      "lifecycle_stages": {
+        "SETUP": 32,
+        "PATTERN_HARVEST": 484,
+        "EXPLOIT": 30,
+        "LATE": 76,
+        "RELEASE": 25
+      },
+      "opportunity_confidence_tiers": {
+        "NON_OPPORTUNITY": 32,
+        "QUALIFIED_PATH": 140,
+        "QUALIFIED_CONSERVATIVE": 301,
+        "AGGRESSIVE_PATH": 80,
+        "CONSERVATIVE": 94
+      },
+      "top_extraction_signatures": {
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM": 95,
+        "COMPRESSION_PRESSURE_LIFT_LONG|LONG|MEDIUM": 61,
+        "OSCILLATION_EDGE_SHORT_SCALP|SHORT|MEDIUM": 50,
+        "COMPRESSION|SHORT|MEDIUM": 41,
+        "COILED_COMPRESSION_LONG|LONG|SMALL": 34,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|SMALL": 31,
+        "COILED_COMPRESSION_LONG|LONG|MEDIUM": 27,
+        "OSCILLATION_PRESSURE_BUILD_LONG|LONG|LARGE": 27
+      },
+      "compression_present": true,
+      "expansion_present": true
+    }
+  ]
+}

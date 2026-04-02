@@ -1,0 +1,150 @@
+{
+  "artifact_id": "V2_TRACK1_INSTANTIATION_PASS_REPORT",
+  "generated_at_utc": "2026-04-02T00:44:12.998390Z",
+  "doctrine_count": 6,
+  "doctrines": [
+    {
+      "doctrine_id": "EXPANSION_RELEASE_LONG",
+      "prior_failure_class": "INSTANTIATION",
+      "current_status": "CLEANLY_INSTANTIATED",
+      "identity_binding_status": "DOCTRINE_LOCAL_IDENTITY_BOUND",
+      "phase1_residue_status": "RESIDUE_PRESENT",
+      "phase2_naming_status": "NORMALIZED",
+      "phase4_abort_status": {
+        "candidate_count": 10,
+        "ready_count": 3,
+        "filled_count": 3,
+        "abort_reason_counts": {
+          "insufficient_charge": 5,
+          "kill_switch_decay": 2
+        }
+      },
+      "route_operating_modes": [
+        "EXPANSION_RELEASE_HOLD",
+        "EXPANSION_RELEASE_LAUNCH"
+      ],
+      "survivor_rule_count": 21,
+      "runtime_status": "ACTIVE_RUNTIME",
+      "next_action": "PROMOTE_TO_TRACK2_OR_PHASE5_PROOF"
+    },
+    {
+      "doctrine_id": "EXPANSION_RELEASE_SHORT",
+      "prior_failure_class": "INSTANTIATION",
+      "current_status": "CLEANLY_INSTANTIATED",
+      "identity_binding_status": "DOCTRINE_LOCAL_IDENTITY_BOUND",
+      "phase1_residue_status": "CLEAR",
+      "phase2_naming_status": "NORMALIZED",
+      "phase4_abort_status": {
+        "candidate_count": 5,
+        "ready_count": 1,
+        "filled_count": 1,
+        "abort_reason_counts": {
+          "insufficient_charge": 3,
+          "kill_switch_decay": 1
+        }
+      },
+      "route_operating_modes": [
+        "EXPANSION_RELEASE_HOLD",
+        "EXPANSION_RELEASE_LAUNCH"
+      ],
+      "survivor_rule_count": 15,
+      "runtime_status": "ACTIVE_RUNTIME",
+      "next_action": "PROMOTE_TO_TRACK2_OR_PHASE5_PROOF"
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_LONG",
+      "prior_failure_class": "INSTANTIATION",
+      "current_status": "CLEANLY_INSTANTIATED",
+      "identity_binding_status": "DOCTRINE_LOCAL_IDENTITY_BOUND",
+      "phase1_residue_status": "RESIDUE_PRESENT",
+      "phase2_naming_status": "NORMALIZED",
+      "phase4_abort_status": {
+        "candidate_count": 3,
+        "ready_count": 1,
+        "filled_count": 1,
+        "abort_reason_counts": {
+          "insufficient_charge": 2
+        }
+      },
+      "route_operating_modes": [
+        "PRESSURE_DRIVE_HOLD",
+        "PRESSURE_DRIVE_MID"
+      ],
+      "survivor_rule_count": 13,
+      "runtime_status": "ACTIVE_RUNTIME",
+      "next_action": "PROMOTE_TO_TRACK2_OR_PHASE5_PROOF"
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_SHORT",
+      "prior_failure_class": "INSTANTIATION",
+      "current_status": "CLEANLY_INSTANTIATED",
+      "identity_binding_status": "DOCTRINE_LOCAL_IDENTITY_BOUND",
+      "phase1_residue_status": "CLEAR",
+      "phase2_naming_status": "NORMALIZED",
+      "phase4_abort_status": {
+        "candidate_count": 7,
+        "ready_count": 4,
+        "filled_count": 4,
+        "abort_reason_counts": {
+          "kill_switch_decay": 2,
+          "insufficient_charge": 1
+        }
+      },
+      "route_operating_modes": [
+        "PRESSURE_DRIVE_EDGE",
+        "PRESSURE_DRIVE_HOLD",
+        "PRESSURE_DRIVE_MID"
+      ],
+      "survivor_rule_count": 18,
+      "runtime_status": "ACTIVE_RUNTIME",
+      "next_action": "PROMOTE_TO_TRACK2_OR_PHASE5_PROOF"
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+      "prior_failure_class": "INSTANTIATION",
+      "current_status": "CLEANLY_INSTANTIATED",
+      "identity_binding_status": "DOCTRINE_LOCAL_IDENTITY_BOUND",
+      "phase1_residue_status": "RESIDUE_PRESENT",
+      "phase2_naming_status": "NORMALIZED",
+      "phase4_abort_status": {
+        "candidate_count": 5,
+        "ready_count": 5,
+        "filled_count": 5,
+        "abort_reason_counts": {}
+      },
+      "route_operating_modes": [
+        "FAILED_PUSH_REJECTION"
+      ],
+      "survivor_rule_count": 9,
+      "runtime_status": "ACTIVE_RUNTIME",
+      "next_action": "PROMOTE_TO_TRACK2_OR_PHASE5_PROOF"
+    },
+    {
+      "doctrine_id": "COILED_TRANSITION_SHORT",
+      "prior_failure_class": "INSTANTIATION",
+      "current_status": "RETIRE_AS_STRUCTURALLY_INVALID",
+      "identity_binding_status": "UNBOUND_NO_SURVIVOR_ROUTE",
+      "phase1_residue_status": "RESIDUE_PRESENT",
+      "phase2_naming_status": "NORMALIZED",
+      "phase4_abort_status": {
+        "candidate_count": 0,
+        "ready_count": 0,
+        "filled_count": 0,
+        "abort_reason_counts": {}
+      },
+      "route_operating_modes": [],
+      "survivor_rule_count": 0,
+      "runtime_status": "ACTIVE_RUNTIME",
+      "next_action": "REVIEW_FOR_RETIREMENT_OR_RECOMPOSITION"
+    }
+  ],
+  "status_counts": {
+    "CLEANLY_INSTANTIATED": 5,
+    "RETIRE_AS_STRUCTURALLY_INVALID": 1
+  },
+  "notes": [
+    "This report replays the Track 1 doctrines directly, including frozen research-only doctrines, to separate identity failures from runtime filtering.",
+    "CLEANLY_INSTANTIATED means the doctrine now produces ready or filled trigger candidates under deterministic replay.",
+    "REQUIRES_LOCAL_RULE_REBIND means the doctrine has a route identity but still fails on local zone or entry-shape binding."
+  ]
+}
