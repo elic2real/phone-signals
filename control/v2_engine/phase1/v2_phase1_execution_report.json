@@ -1,0 +1,45 @@
+{
+  "artifact_id": "V2_PHASE1_EXECUTION_REPORT",
+  "generated_at_utc": "2026-04-02T13:59:25.044205Z",
+  "status": "FAIL",
+  "determinism_lock": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_determinism_lock.json",
+  "boundary_lock": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_boundary_lock.json",
+  "phase_contract": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_phase_contracts.json",
+  "config": {
+    "spread_anomaly_multiplier": 3.0,
+    "jump_sigma_multiplier": 6.0,
+    "displacement_window": 8,
+    "compression_short_window": 12,
+    "compression_long_window": 48,
+    "velocity_window": 5,
+    "acceleration_window": 3,
+    "commission_pips": 0.1,
+    "slippage_pips": 0.05,
+    "epsilon": 1e-09
+  },
+  "phase_contract_required_outputs": [
+    "control/v2_engine/phase1/v2_phase1_execution_report.json",
+    "control/v2_engine/phase1/v2_phase1_sample_profiles.json",
+    "control/v2_engine/phase1/v2_phase1_scenario_summary.json",
+    "control/v2_engine/phase1/v2_phase1_discovery_map.json"
+  ],
+  "pass_gates": {
+    "all_scenarios_produced_sanitized_output": true,
+    "no_unhandled_nan_or_inf": true,
+    "spread_anomaly_detected": false,
+    "compression_present": true,
+    "expansion_present": true
+  },
+  "scenario_count": 6,
+  "notes": [
+    "Phase 1 remains physics-only and carries no pnl fields in profile payloads.",
+    "T1 clustering remains unimplemented by design in this phase.",
+    "Phase 1 now ends with direction-aware distance discovery, but no doctrine formalization is performed here.",
+    "The distance buckets in Phase 1 are discovered movement classes, not strategy targets.",
+    "extractable_count now represents raw Tier 0 discovered opportunities; pattern_qualified_opportunity_count tracks the subset that matches known recognition grammar.",
+    "Tier 0 now also emits precursor families, topology families, distance families, lifecycle states, and grouped opportunity hierarchy fields for downstream doctrine building.",
+    "Opportunity reporting is now split into conservative, aggressive-path, and pattern-qualified layers for sanity checking.",
+    "Phase 1 sample payloads now also carry non-breaking Tier 1 truth-kernel annotations.",
+    "Phase 1 now publishes explicit Tier 0 sublayer artifacts for event discovery, independent market mapping, opportunity fit, and handoff."
+  ]
+}

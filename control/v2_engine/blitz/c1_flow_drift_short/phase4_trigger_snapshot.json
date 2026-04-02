@@ -1,0 +1,2912 @@
+{
+  "artifact_id": "V2_PHASE4_TRIGGER_REPORT",
+  "generated_at_utc": "2026-04-01T23:06:14.688838Z",
+  "candidate_count": 29,
+  "ready_count": 13,
+  "aborted_count": 16,
+  "invalid_count": 0,
+  "abort_ratio": 0.551724,
+  "performance_gate": {
+    "minimum_ready_candidates": 5,
+    "maximum_abort_ratio": 0.95
+  },
+  "rows": [
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "tier1_segment_type": "ENERGY",
+      "tier1_segment_value": "DORMANT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:55",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 55,
+      "anchor_index": 55,
+      "ttl_end_index": 64,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 3.051786,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.274048,
+        "expected_ttl_sec": 30.456,
+        "stop_distance_pips": 1.615667
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.274048,
+          "stop_distance": 1.615667,
+          "ttl_ticks": 30.456
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+          "segment_type": "ENERGY",
+          "segment_value": "DORMANT",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 14
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "COMPRESSION",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+      "tier1_segment_type": "LIFECYCLE",
+      "tier1_segment_value": "PATTERN_HARVEST",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.08483,
+      "target_price": 1.084731,
+      "stop_price": 1.084925,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:58",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 58,
+      "anchor_index": 58,
+      "ttl_end_index": 67,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 3.34375,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.0736,
+        "expected_ttl_sec": 20.68,
+        "stop_distance_pips": 1.41312
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.0736,
+          "stop_distance": 1.41312,
+          "ttl_ticks": 20.68
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+          "segment_type": "LIFECYCLE",
+          "segment_value": "PATTERN_HARVEST",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "tier1_segment_type": "ENERGY",
+      "tier1_segment_value": "DORMANT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:135",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 135,
+      "anchor_index": 135,
+      "ttl_end_index": 144,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 2.764662,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.6416,
+        "expected_ttl_sec": 28.2,
+        "stop_distance_pips": 1.2236
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.6416,
+          "stop_distance": 1.2236,
+          "ttl_ticks": 28.2
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+          "segment_type": "ENERGY",
+          "segment_value": "DORMANT",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.089769,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "tier1_segment_type": "ENERGY",
+      "tier1_segment_value": "DORMANT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:139",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 139,
+      "anchor_index": 139,
+      "ttl_end_index": 148,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 2.446992,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.6416,
+        "expected_ttl_sec": 28.2,
+        "stop_distance_pips": 1.2236
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.6416,
+          "stop_distance": 1.2236,
+          "ttl_ticks": 28.2
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+          "segment_type": "ENERGY",
+          "segment_value": "DORMANT",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "tier1_segment_type": "ENERGY",
+      "tier1_segment_value": "DORMANT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:322",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 322,
+      "anchor_index": 322,
+      "ttl_end_index": 331,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 3.092623,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.6416,
+        "expected_ttl_sec": 28.2,
+        "stop_distance_pips": 1.2236
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.6416,
+          "stop_distance": 1.2236,
+          "ttl_ticks": 28.2
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+          "segment_type": "ENERGY",
+          "segment_value": "DORMANT",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "tier1_segment_type": "ENERGY",
+      "tier1_segment_value": "DORMANT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:374",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 374,
+      "anchor_index": 374,
+      "ttl_end_index": 383,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 2.9,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.89504,
+        "expected_ttl_sec": 25.38,
+        "stop_distance_pips": 1.235836
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.89504,
+          "stop_distance": 1.235836,
+          "ttl_ticks": 25.38
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+          "segment_type": "ENERGY",
+          "segment_value": "DORMANT",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 11
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "trend_continuation",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.08357,
+      "target_price": 1.083471,
+      "stop_price": 1.083665,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:402",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 402,
+      "anchor_index": 402,
+      "ttl_end_index": 406,
+      "ttl_ticks": 4,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 4.890805,
+      "projection_axis": {
+        "expected_target_distance_pips": 3.7584,
+        "expected_ttl_sec": 7.52,
+        "stop_distance_pips": 2.56128
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 3.7584,
+          "stop_distance": 2.56128,
+          "ttl_ticks": 7.52
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.50336,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|CAPTURE_BALANCED",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 110.46469,
+      "target_price": 110.4515,
+      "stop_price": 110.47419,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:7",
+      "distance_expression_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 7,
+      "anchor_index": 7,
+      "ttl_end_index": 19,
+      "ttl_ticks": 12,
+      "tier1_route_operating_mode": "DRIFT_CONFIRM",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "CONFIRM_BALANCED",
+      "selected_adjustment_option_label": "Confirm balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.541604,
+      "surface_quality_score": 3.95,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.459627,
+        "expected_ttl_sec": 27.918,
+        "stop_distance_pips": 1.747517
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.459627,
+          "stop_distance": 1.747517,
+          "ttl_ticks": 27.918
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_BALANCED",
+          "target_multiplier": 0.8,
+          "stop_multiplier": 0.6,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|CAPTURE_BALANCED",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_CONFIRM"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.967702,
+          "stop_distance": 1.04851,
+          "ttl_ticks": 28
+        },
+        "adjustment_option": {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 1.0368,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.08,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.31899,
+          "stop_distance": 0.95,
+          "ttl_ticks": 12
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 0.96,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "COMPRESSION",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:13",
+      "distance_expression_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 13,
+      "anchor_index": 13,
+      "ttl_end_index": 24,
+      "ttl_ticks": 11,
+      "tier1_route_operating_mode": "DRIFT_CONFIRM",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "CONFIRM_BALANCED",
+      "selected_adjustment_option_label": "Confirm balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.541604,
+      "surface_quality_score": 3.15,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.604828,
+        "expected_ttl_sec": 35.0244,
+        "stop_distance_pips": 1.163154
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.604828,
+          "stop_distance": 1.163154,
+          "ttl_ticks": 35.0244
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_BALANCED",
+          "target_multiplier": 0.8,
+          "stop_multiplier": 0.6,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_CONFIRM"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.283862,
+          "stop_distance": 0.95,
+          "ttl_ticks": 35
+        },
+        "adjustment_option": {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 1.0368,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.08,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.06134,
+          "stop_distance": 0.95,
+          "ttl_ticks": 11
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 0.96,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "COMPRESSION",
+        "session_state": "INJECTING",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "ABORTED",
+      "reason": "kill_switch_decay",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:100",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 100,
+      "anchor_index": 100,
+      "ttl_end_index": 105,
+      "ttl_ticks": 5,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 4.837857,
+      "projection_axis": {
+        "expected_target_distance_pips": 5.75232,
+        "expected_ttl_sec": 9.4,
+        "stop_distance_pips": 3.15008
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 5.75232,
+          "stop_distance": 3.15008,
+          "ttl_ticks": 9.4
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 2.300928,
+          "stop_distance": 0.95,
+          "ttl_ticks": 5
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.468912,
+          "stop_distance": 0.95,
+          "ttl_ticks": 5
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "ABORTED",
+      "reason": "kill_switch_decay",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:102",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 102,
+      "anchor_index": 102,
+      "ttl_end_index": 111,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 3.192594,
+      "projection_axis": {
+        "expected_target_distance_pips": 5.780441,
+        "expected_ttl_sec": 25.1262,
+        "stop_distance_pips": 3.545939
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 5.780441,
+          "stop_distance": 3.545939,
+          "ttl_ticks": 25.1262
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 2.312176,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.476093,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "COMPRESSION",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 110.17612,
+      "target_price": 110.123721,
+      "stop_price": 110.19753,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:104",
+      "distance_expression_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 104,
+      "anchor_index": 104,
+      "ttl_end_index": 113,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_CONFIRM",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "CONFIRM_BALANCED",
+      "selected_adjustment_option_label": "Confirm balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.541604,
+      "surface_quality_score": 4.780944,
+      "projection_axis": {
+        "expected_target_distance_pips": 9.207216,
+        "expected_ttl_sec": 9.4,
+        "stop_distance_pips": 5.84016
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 9.207216,
+          "stop_distance": 5.84016,
+          "ttl_ticks": 9.4
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_BALANCED",
+          "target_multiplier": 0.8,
+          "stop_multiplier": 0.6,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_CONFIRM"
+        },
+        "doctrine_shape": {
+          "target_distance": 7.365773,
+          "stop_distance": 3.504096,
+          "ttl_ticks": 9
+        },
+        "adjustment_option": {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 1.0368,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.08,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 5.239874,
+          "stop_distance": 2.141003,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 0.96,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 110.02651,
+      "target_price": 110.01454,
+      "stop_price": 110.03601,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:155",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 155,
+      "anchor_index": 155,
+      "ttl_end_index": 159,
+      "ttl_ticks": 4,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 4.978581,
+      "projection_axis": {
+        "expected_target_distance_pips": 5.181097,
+        "expected_ttl_sec": 8.648,
+        "stop_distance_pips": 3.29317
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 5.181097,
+          "stop_distance": 3.29317,
+          "ttl_ticks": 8.648
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 2.072439,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.197041,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "INJECTING",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 108.84096,
+      "target_price": 108.799041,
+      "stop_price": 108.856667,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:250",
+      "distance_expression_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 250,
+      "anchor_index": 250,
+      "ttl_end_index": 262,
+      "ttl_ticks": 12,
+      "tier1_route_operating_mode": "DRIFT_CONFIRM",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "CONFIRM_BALANCED",
+      "selected_adjustment_option_label": "Confirm balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.541604,
+      "surface_quality_score": 3.105088,
+      "projection_axis": {
+        "expected_target_distance_pips": 7.81704,
+        "expected_ttl_sec": 27.918,
+        "stop_distance_pips": 4.46292
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 7.81704,
+          "stop_distance": 4.46292,
+          "ttl_ticks": 27.918
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_BALANCED",
+          "target_multiplier": 0.8,
+          "stop_multiplier": 0.6,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_CONFIRM"
+        },
+        "doctrine_shape": {
+          "target_distance": 6.253632,
+          "stop_distance": 2.677752,
+          "ttl_ticks": 28
+        },
+        "adjustment_option": {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 1.0368,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.08,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 4.191935,
+          "stop_distance": 1.570662,
+          "ttl_ticks": 12
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 0.96,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "COMPRESSION",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "ABORTED",
+      "reason": "kill_switch_decay",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:253",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 253,
+      "anchor_index": 253,
+      "ttl_end_index": 257,
+      "ttl_ticks": 4,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 4.612779,
+      "projection_axis": {
+        "expected_target_distance_pips": 8.730712,
+        "expected_ttl_sec": 7.614,
+        "stop_distance_pips": 5.789787
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 8.730712,
+          "stop_distance": 5.789787,
+          "ttl_ticks": 7.614
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 3.492285,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 2.017144,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "EXPANSION",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 108.80212,
+      "target_price": 108.787435,
+      "stop_price": 108.81162,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:255",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 255,
+      "anchor_index": 255,
+      "ttl_end_index": 263,
+      "ttl_ticks": 8,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 4.725817,
+      "projection_axis": {
+        "expected_target_distance_pips": 5.75064,
+        "expected_ttl_sec": 16.45,
+        "stop_distance_pips": 3.14916
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 5.75064,
+          "stop_distance": 3.14916,
+          "ttl_ticks": 16.45
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 2.300256,
+          "stop_distance": 0.95,
+          "ttl_ticks": 8
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.468483,
+          "stop_distance": 0.95,
+          "ttl_ticks": 8
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "ABORTED",
+      "reason": "kill_switch_decay",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:287",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 287,
+      "anchor_index": 287,
+      "ttl_end_index": 291,
+      "ttl_ticks": 4,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 4.787146,
+      "projection_axis": {
+        "expected_target_distance_pips": 8.222412,
+        "expected_ttl_sec": 8.46,
+        "stop_distance_pips": 4.536115
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 8.222412,
+          "stop_distance": 4.536115,
+          "ttl_ticks": 8.46
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 3.288965,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.899706,
+          "stop_distance": 0.95,
+          "ttl_ticks": 4
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "EXPANSION",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "panic_reversal",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "USD_JPY:288",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "target_distance_bucket": "EXTENDED",
+      "source_anchor_index": 288,
+      "anchor_index": 288,
+      "ttl_end_index": 297,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.581056,
+      "surface_quality_score": 3.230341,
+      "projection_axis": {
+        "expected_target_distance_pips": 3.65904,
+        "expected_ttl_sec": 25.85,
+        "stop_distance_pips": 2.00376
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 3.65904,
+          "stop_distance": 2.00376,
+          "ttl_ticks": 25.85
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_SCALP",
+          "target_multiplier": 0.4,
+          "stop_multiplier": 0.16,
+          "ttl_multiplier": 0.5,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.463616,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.25
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+      "tier1_segment_type": "PRECURSOR",
+      "tier1_segment_value": "BALANCED",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.26567,
+      "target_price": 1.265511,
+      "stop_price": 1.265765,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:72",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 72,
+      "anchor_index": 72,
+      "ttl_end_index": 86,
+      "ttl_ticks": 14,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 5.0,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.944,
+        "expected_ttl_sec": 13.16,
+        "stop_distance_pips": 1.3248
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.944,
+          "stop_distance": 1.3248,
+          "ttl_ticks": 13.16
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+          "segment_type": "PRECURSOR",
+          "segment_value": "BALANCED",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.944,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.590095,
+          "stop_distance": 0.95,
+          "ttl_ticks": 14
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+      "tier1_segment_type": "ENERGY",
+      "tier1_segment_value": "DORMANT",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:90",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 90,
+      "anchor_index": 90,
+      "ttl_end_index": 99,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 3.025,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.43648,
+        "expected_ttl_sec": 25.38,
+        "stop_distance_pips": 1.67256
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.43648,
+          "stop_distance": 1.67256,
+          "ttl_ticks": 25.38
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|ENERGY|DORMANT|CAPTURE_SCALP",
+          "segment_type": "ENERGY",
+          "segment_value": "DORMANT",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 11
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+      "tier1_segment_type": "PRECURSOR",
+      "tier1_segment_value": "BALANCED",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:114",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 114,
+      "anchor_index": 114,
+      "ttl_end_index": 128,
+      "ttl_ticks": 14,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 3.070652,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.779392,
+        "expected_ttl_sec": 18.612,
+        "stop_distance_pips": 1.635392
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.779392,
+          "stop_distance": 1.635392,
+          "ttl_ticks": 18.612
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+          "segment_type": "PRECURSOR",
+          "segment_value": "BALANCED",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 2.779392,
+          "stop_distance": 0.95,
+          "ttl_ticks": 19
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 2.273404,
+          "stop_distance": 0.95,
+          "ttl_ticks": 14
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+      "tier1_segment_type": "PRECURSOR",
+      "tier1_segment_value": "BALANCED",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:247",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 247,
+      "anchor_index": 247,
+      "ttl_end_index": 261,
+      "ttl_ticks": 14,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 2.899083,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.779392,
+        "expected_ttl_sec": 18.612,
+        "stop_distance_pips": 1.635392
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.779392,
+          "stop_distance": 1.635392,
+          "ttl_ticks": 18.612
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+          "segment_type": "PRECURSOR",
+          "segment_value": "BALANCED",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 2.779392,
+          "stop_distance": 0.95,
+          "ttl_ticks": 19
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 2.273404,
+          "stop_distance": 0.95,
+          "ttl_ticks": 14
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+      "tier1_segment_type": "LIFECYCLE",
+      "tier1_segment_value": "PATTERN_HARVEST",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.26418,
+      "target_price": 1.264081,
+      "stop_price": 1.264275,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:394",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 394,
+      "anchor_index": 394,
+      "ttl_end_index": 403,
+      "ttl_ticks": 9,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 3.1875,
+      "projection_axis": {
+        "expected_target_distance_pips": 2.4192,
+        "expected_ttl_sec": 20.68,
+        "stop_distance_pips": 1.64864
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 2.4192,
+          "stop_distance": 1.64864,
+          "ttl_ticks": 20.68
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+          "segment_type": "LIFECYCLE",
+          "segment_value": "PATTERN_HARVEST",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 0.95,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 9
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+      "tier1_segment_type": "LIFECYCLE",
+      "tier1_segment_value": "PATTERN_HARVEST",
+      "tier1_variant_id": "CAPTURE_SCALP",
+      "status": "ABORTED",
+      "reason": "kill_switch_decay",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:410",
+      "distance_expression_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 410,
+      "anchor_index": 410,
+      "ttl_end_index": 418,
+      "ttl_ticks": 8,
+      "tier1_route_operating_mode": "DRIFT_HARVEST",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "selected_adjustment_option_label": "Harvest balanced",
+      "selected_adjustment_option_status": "PROBATIONARY",
+      "kill_switch_energy_floor": 0.464844,
+      "surface_quality_score": 2.972973,
+      "projection_axis": {
+        "expected_target_distance_pips": 3.47424,
+        "expected_ttl_sec": 18.612,
+        "stop_distance_pips": 2.04424
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 3.47424,
+          "stop_distance": 2.04424,
+          "ttl_ticks": 18.612
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_SCALP",
+          "target_multiplier": 0.35,
+          "stop_multiplier": 0.18,
+          "ttl_multiplier": 0.45,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|LIFECYCLE|PATTERN_HARVEST|CAPTURE_SCALP",
+          "segment_type": "LIFECYCLE",
+          "segment_value": "PATTERN_HARVEST",
+          "route_operating_mode": "DRIFT_HARVEST"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.215984,
+          "stop_distance": 0.95,
+          "ttl_ticks": 8
+        },
+        "adjustment_option": {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.945,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.05,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 0.985981,
+          "stop_distance": 0.95,
+          "ttl_ticks": 8
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "BLEEDING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+      "tier1_segment_type": "PRECURSOR",
+      "tier1_segment_value": "BALANCED",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.26558,
+      "target_price": 1.265347,
+      "stop_price": 1.265675,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:477",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 477,
+      "anchor_index": 477,
+      "ttl_end_index": 490,
+      "ttl_ticks": 13,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 4.488506,
+      "projection_axis": {
+        "expected_target_distance_pips": 3.983904,
+        "expected_ttl_sec": 11.844,
+        "stop_distance_pips": 2.458829
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 3.983904,
+          "stop_distance": 2.458829,
+          "ttl_ticks": 11.844
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+          "segment_type": "PRECURSOR",
+          "segment_value": "BALANCED",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 3.983904,
+          "stop_distance": 0.95,
+          "ttl_ticks": 12
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 2.331656,
+          "stop_distance": 0.95,
+          "ttl_ticks": 13
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "EXPANSION",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "chop_mean_reversion",
+      "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|CAPTURE_BALANCED",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "CAPTURE_BALANCED",
+      "status": "ABORTED",
+      "reason": "insufficient_charge",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "GBP_USD:488",
+      "distance_expression_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 488,
+      "anchor_index": 488,
+      "ttl_end_index": 499,
+      "ttl_ticks": 11,
+      "tier1_route_operating_mode": "DRIFT_CONFIRM",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "CONFIRM_BALANCED",
+      "selected_adjustment_option_label": "Confirm balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.433283,
+      "surface_quality_score": 3.09898,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.543104,
+        "expected_ttl_sec": 30.456,
+        "stop_distance_pips": 1.199128
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.543104,
+          "stop_distance": 1.199128,
+          "ttl_ticks": 30.456
+        },
+        "variant_projection": {
+          "variant_id": "CAPTURE_BALANCED",
+          "target_multiplier": 0.8,
+          "stop_multiplier": 0.6,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|CAPTURE_BALANCED",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_CONFIRM"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.234483,
+          "stop_distance": 0.95,
+          "ttl_ticks": 30
+        },
+        "adjustment_option": {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 1.0368,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.08,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.06134,
+          "stop_distance": 0.95,
+          "ttl_ticks": 11
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 0.96,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "COMPRESSION",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "whipsaw_spike_fade",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|DRIFT_REACCEL",
+      "tier1_segment_type": "BASE",
+      "tier1_segment_value": "ALL",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.08594,
+      "target_price": 1.085658,
+      "stop_price": 1.086035,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:59",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 59,
+      "anchor_index": 59,
+      "ttl_end_index": 73,
+      "ttl_ticks": 14,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 3.395833,
+      "projection_axis": {
+        "expected_target_distance_pips": 3.234816,
+        "expected_ttl_sec": 19.0256,
+        "stop_distance_pips": 1.96328
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 3.234816,
+          "stop_distance": 1.96328,
+          "ttl_ticks": 19.0256
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|DRIFT_REACCEL",
+          "segment_type": "BASE",
+          "segment_value": "ALL",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 3.234816,
+          "stop_distance": 0.95,
+          "ttl_ticks": 19
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 2.819644,
+          "stop_distance": 0.95,
+          "ttl_ticks": 14
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "INJECTING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "whipsaw_spike_fade",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+      "tier1_segment_type": "PRECURSOR",
+      "tier1_segment_value": "BALANCED",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.08654,
+      "target_price": 1.086208,
+      "stop_price": 1.086635,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:174",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 174,
+      "anchor_index": 174,
+      "ttl_end_index": 186,
+      "ttl_ticks": 12,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 4.55,
+      "projection_axis": {
+        "expected_target_distance_pips": 5.238605,
+        "expected_ttl_sec": 10.89648,
+        "stop_distance_pips": 2.638648
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 5.238605,
+          "stop_distance": 2.638648,
+          "ttl_ticks": 10.89648
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+          "segment_type": "PRECURSOR",
+          "segment_value": "BALANCED",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 5.238605,
+          "stop_distance": 0.95,
+          "ttl_ticks": 11
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 3.319181,
+          "stop_distance": 0.95,
+          "ttl_ticks": 12
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "EXPANSION",
+        "session_state": "INJECTING",
+        "instrument_multiplier": 1.0
+      }
+    },
+    {
+      "scenario": "whipsaw_spike_fade",
+      "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+      "tier1_segment_type": "PRECURSOR",
+      "tier1_segment_value": "BALANCED",
+      "tier1_variant_id": "DRIFT_REACCEL",
+      "status": "READY",
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "entry_price": 1.08556,
+      "target_price": 1.085405,
+      "stop_price": 1.085655,
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "cluster_id": "FLOW_DRIFT_SHORT",
+      "direction": "SHORT",
+      "profile_id": "EUR_USD:306",
+      "distance_expression_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "target_distance_bucket": "LARGE",
+      "source_anchor_index": 306,
+      "anchor_index": 306,
+      "ttl_end_index": 320,
+      "ttl_ticks": 14,
+      "tier1_route_operating_mode": "DRIFT_REACCEL",
+      "tier1_entry_offset_ticks": 0,
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "selected_adjustment_option_label": "Reaccel balanced",
+      "selected_adjustment_option_status": "LIVE",
+      "kill_switch_energy_floor": 0.4196,
+      "surface_quality_score": 3.397727,
+      "projection_axis": {
+        "expected_target_distance_pips": 1.9008,
+        "expected_ttl_sec": 20.68,
+        "stop_distance_pips": 1.29536
+      },
+      "trigger_policy_layers": {
+        "context_projection": {
+          "target_distance": 1.9008,
+          "stop_distance": 1.29536,
+          "ttl_ticks": 20.68
+        },
+        "variant_projection": {
+          "variant_id": "DRIFT_REACCEL",
+          "target_multiplier": 1.0,
+          "stop_multiplier": 0.3,
+          "ttl_multiplier": 1.0,
+          "entry_offset_ticks": 0,
+          "route_id": "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE|PRECURSOR|BALANCED|DRIFT_REACCEL",
+          "segment_type": "PRECURSOR",
+          "segment_value": "BALANCED",
+          "route_operating_mode": "DRIFT_REACCEL"
+        },
+        "doctrine_shape": {
+          "target_distance": 1.9008,
+          "stop_distance": 0.95,
+          "ttl_ticks": 21
+        },
+        "adjustment_option": {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.1,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "blitz_mutation": {
+            "applied": true,
+            "ttl_scale_multiplier": 1.1,
+            "ttl_scale_delta": 0.0,
+            "ttl_min_delta": 0,
+            "ttl_max_delta": 0
+          }
+        },
+        "final_projection": {
+          "target_distance": 1.554759,
+          "stop_distance": 0.95,
+          "ttl_ticks": 14
+        }
+      },
+      "adjustment_option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ],
+      "context": {
+        "regime_state": "BALANCED",
+        "session_state": "STABLE",
+        "instrument_multiplier": 1.0
+      }
+    }
+  ]
+}

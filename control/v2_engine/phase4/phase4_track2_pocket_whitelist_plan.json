@@ -1,0 +1,303 @@
+{
+  "artifact_id": "V2_PHASE4_TRACK2_POCKET_WHITELIST_PLAN",
+  "generated_at_utc": "2026-04-02T12:23:49.381778Z",
+  "doctrines": {
+    "COILED_COMPRESSION_SHORT": {
+      "allowed_pockets": [
+        {
+          "session_state": "STABLE",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "COIL_BREAK",
+          "target_distance_bucket": "MEDIUM"
+        }
+      ],
+      "notes": [
+        "Only the expansion coil-break medium pocket has positive evidence so far."
+      ]
+    },
+    "COMPRESSION_PRESSURE_DROP_SHORT": {
+      "allowed_pockets": [
+        {
+          "session_state": "STABLE",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_DROP_CAPTURE",
+          "target_distance_bucket": "EXTENDED"
+        }
+      ],
+      "notes": [
+        "The short pressure-drop doctrine only earns its place in the stable expansion capture pocket."
+      ]
+    },
+    "FAILED_PUSH_LONG_REVERSAL_SCALP": {
+      "allowed_pockets": [],
+      "notes": [
+        "No profitable pocket survived deterministic replay; this doctrine is effectively disabled by whitelist until new evidence appears."
+      ]
+    },
+    "FAILED_PUSH_SHORT_REVERSAL_SCALP": {
+      "allowed_pockets": [
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "FAILED_PUSH_REJECTION",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "FAILED_PUSH_REJECTION",
+          "target_distance_bucket": "LARGE"
+        }
+      ],
+      "notes": [
+        "Keep only the stable reversal pockets that remain positive after replay; injecting expansion rejection is currently contaminating the doctrine."
+      ]
+    },
+    "EXPANSION_RELEASE_LONG": {
+      "allowed_pockets": [
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+          "target_distance_bucket": "MICRO"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "EXPANSION_RELEASE_LAUNCH",
+          "target_distance_bucket": "MEDIUM"
+        }
+      ],
+      "notes": [
+        "Keep expansion-release long on launch-only pockets for now; the hold window is currently the losing contamination path."
+      ]
+    },
+    "OSCILLATION_EDGE_LONG_SCALP": {
+      "allowed_pockets": [
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "HARD_REBOUND",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "SOFT_REBOUND",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "HARD_REBOUND",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "BLEEDING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "SOFT_REBOUND",
+          "target_distance_bucket": "LARGE"
+        }
+      ],
+      "notes": [
+        "Allow only the rebound pockets that have shown positive expectancy in replay."
+      ]
+    },
+    "OSCILLATION_PRESSURE_BUILD_SHORT": {
+      "allowed_pockets": [
+        {
+          "session_state": "STABLE",
+          "regime_state": "COMPRESSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "BLEEDING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "BLEEDING",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "COMPRESSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "EXTENDED"
+        }
+      ],
+      "notes": [
+        "Only the positive pressure-build capture pockets remain eligible."
+      ]
+    },
+    "OSCILLATION_EDGE_SHORT_SCALP": {
+      "allowed_pockets": [
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "HARD_REJECTION",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "COMPRESSION",
+          "route_operating_mode": "HARD_REJECTION",
+          "target_distance_bucket": "SMALL"
+        }
+      ],
+      "notes": [
+        "Dynamic whitelist recovered from tier3 profitable pocket coverage: 2/6 pockets positive."
+      ]
+    },
+    "OSCILLATION_PRESSURE_BUILD_LONG": {
+      "allowed_pockets": [
+        {
+          "session_state": "INJECTING",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_BUILD_SWING",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_SWING",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "SMALL"
+        },
+        {
+          "session_state": "BLEEDING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "PRESSURE_BUILD_CAPTURE",
+          "target_distance_bucket": "MEDIUM"
+        }
+      ],
+      "notes": [
+        "Dynamic whitelist recovered from tier3 profitable pocket coverage: 9/27 pockets positive."
+      ]
+    },
+    "TRANSITION_RELEASE_SHORT_STANDARD": {
+      "allowed_pockets": [
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "IGNITION_RELEASE_FAST",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "RELEASE_CONFIRM",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "RELEASE_CONFIRM",
+          "target_distance_bucket": "SMALL"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "IGNITION_RELEASE_FAST",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "RELEASE_EXTENSION",
+          "target_distance_bucket": "MEDIUM"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "RELEASE_CONFIRM",
+          "target_distance_bucket": "SMALL"
+        },
+        {
+          "session_state": "BLEEDING",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "RELEASE_CONFIRM",
+          "target_distance_bucket": "EXTENDED"
+        },
+        {
+          "session_state": "INJECTING",
+          "regime_state": "EXPANSION",
+          "route_operating_mode": "IGNITION_RELEASE_FAST",
+          "target_distance_bucket": "LARGE"
+        },
+        {
+          "session_state": "STABLE",
+          "regime_state": "BALANCED",
+          "route_operating_mode": "RELEASE_EXTENSION",
+          "target_distance_bucket": "LARGE"
+        }
+      ],
+      "notes": [
+        "Dynamic whitelist recovered from tier3 profitable pocket coverage: 9/22 pockets positive."
+      ]
+    }
+  }
+}

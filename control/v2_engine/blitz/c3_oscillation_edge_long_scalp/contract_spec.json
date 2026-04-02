@@ -1,0 +1,12 @@
+{
+  "contract_id": "C3_OSCILLATION_EDGE_LONG_SCALP",
+  "namespace": "c3_oscillation_edge_long_scalp",
+  "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+  "tier_target": "PHASE2_ADMISSION_PLUS_T2_REGIME_ONLY",
+  "baseline_source": "phase2_research_only_until_runtime_admission",
+  "success_contract": {
+    "sharpe_ratio_gain_min": 0.15,
+    "sortino_ratio_gain_min": 0.15
+  },
+  "fail_action": "BLACKLIST_FROM_RUNTIME_AND_STOP_DOWNSTREAM_TUNING"
+}

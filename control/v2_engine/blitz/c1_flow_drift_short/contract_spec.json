@@ -1,0 +1,13 @@
+{
+  "contract_id": "C1_FLOW_DRIFT_SHORT",
+  "namespace": "c1_flow_drift_short",
+  "doctrine_id": "FLOW_DRIFT_SHORT",
+  "tier_target": "T6_DECAY_ONLY",
+  "baseline_source": "phase5_runtime",
+  "success_contract": {
+    "capture_rate_delta_min": 0.12,
+    "expectancy_pips_min": 0.9,
+    "win_rate_drawdown_max": 0.02
+  },
+  "fail_action": "REVERT_T6_DECAY_AND_FREEZE_T6_FOR_DOCTRINE"
+}

@@ -1,0 +1,349 @@
+{
+  "artifact_id": "V2_TRIGGER_STATE_EXPANSION_PLAN",
+  "generated_at_utc": "2026-04-01T21:15:32.995381Z",
+  "total_reject_no_trigger_profiles": 1691,
+  "promising_clusters_selected": 12,
+  "do_not_expand_rule": "Do not create trigger states for clusters below the economic worth floor or with weak clean-book / alignment support.",
+  "next_questions_answered": {
+    "what_surfaces_are_falling_into_reject_no_trigger": [
+      "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|IGNITION",
+      "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DORMANT",
+      "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "TRENDING|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "COMPRESSION|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "TRENDING|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DORMANT",
+      "TRENDING|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|DRIFT"
+    ],
+    "which_are_economically_worth_covering": [
+      "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|IGNITION",
+      "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DORMANT",
+      "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "TRENDING|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "COMPRESSION|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "TRENDING|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DORMANT",
+      "TRENDING|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|DRIFT"
+    ],
+    "what_new_trigger_states_cover_them_without_collapsing_precision": [
+      "TREND_PRESSURE_CONTINUATION_SHORT",
+      "TREND_PRESSURE_CONTINUATION_LONG",
+      "COMPRESSION_PRESSURE_PUSH",
+      "TREND_PRESSURE_CONTINUATION_SHORT",
+      "COMPRESSION_PRESSURE_PUSH",
+      "TREND_PRESSURE_CONTINUATION_LONG",
+      "TREND_DRIFT_CONTINUATION_LONG",
+      "COMPRESSION_PRESSURE_DROP_CONFIRM",
+      "TREND_DRIFT_CONTINUATION_SHORT",
+      "TREND_DRIFT_CONTINUATION_SHORT",
+      "BALANCED_DRIFT_CONTINUATION_LONG",
+      "COMPRESSION_PRESSURE_PUSH"
+    ]
+  },
+  "plan": [
+    {
+      "cluster_id": "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|IGNITION",
+      "count": 76,
+      "ready_adjacent_count": 70,
+      "avg_economic_score": 0.70284,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_PRESSURE_CONTINUATION_SHORT",
+      "rationale": "Trending floor-pressure shorts are economically strong and need a pressure-continuation trigger rather than falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "FLOOR_PRESSURE",
+        "direction_group": "SHORT",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "IGNITION",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 8.404017,
+        "minimum_path_multiple": 7.636288
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "count": 71,
+      "ready_adjacent_count": 60,
+      "avg_economic_score": 0.652246,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
+      "rationale": "Trending ceiling-pressure longs are economically strong and need a pressure-continuation trigger rather than falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "CEILING_PRESSURE",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "IGNITION",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 5.397791,
+        "minimum_path_multiple": 4.686153
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "count": 64,
+      "ready_adjacent_count": 51,
+      "avg_economic_score": 0.606618,
+      "priority": "HIGH",
+      "proposed_trigger_state": "COMPRESSION_PRESSURE_PUSH",
+      "rationale": "Compression pressure at the ceiling is economically active and currently lacks a dedicated push trigger.",
+      "initial_gates": {
+        "surface_type": "COMPRESSION",
+        "location_relation_id": "CEILING_PRESSURE",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "DRIFT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 3.754954,
+        "minimum_path_multiple": 3.754954
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "TRENDING|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "count": 34,
+      "ready_adjacent_count": 34,
+      "avg_economic_score": 0.720659,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_PRESSURE_CONTINUATION_SHORT",
+      "rationale": "Trending floor-pressure shorts are economically strong and need a pressure-continuation trigger rather than falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "FLOOR_PRESSURE",
+        "direction_group": "SHORT",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "PRESSURED",
+        "energy_state": "IGNITION",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 24.905871,
+        "minimum_path_multiple": 5.007605
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|BALANCED|DORMANT",
+      "count": 58,
+      "ready_adjacent_count": 33,
+      "avg_economic_score": 0.525335,
+      "priority": "HIGH",
+      "proposed_trigger_state": "COMPRESSION_PRESSURE_PUSH",
+      "rationale": "Compression pressure at the ceiling is economically active and currently lacks a dedicated push trigger.",
+      "initial_gates": {
+        "surface_type": "COMPRESSION",
+        "location_relation_id": "CEILING_PRESSURE",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "DORMANT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 3.777888,
+        "minimum_path_multiple": 3.777888
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "TRENDING|CEILING_PRESSURE|LONG|SCALP_DISTANCE|PRESSURED|IGNITION",
+      "count": 27,
+      "ready_adjacent_count": 27,
+      "avg_economic_score": 0.740579,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
+      "rationale": "Trending ceiling-pressure longs are economically strong and need a pressure-continuation trigger rather than falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "CEILING_PRESSURE",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "PRESSURED",
+        "energy_state": "IGNITION",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 5.757817,
+        "minimum_path_multiple": 4.470916
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|IGNITION",
+      "count": 30,
+      "ready_adjacent_count": 27,
+      "avg_economic_score": 0.683073,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_DRIFT_CONTINUATION_LONG",
+      "rationale": "Trending mid-drift surfaces are economic and need continuation confirmation instead of falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "MID_DRIFT",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "IGNITION",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 5.22807,
+        "minimum_path_multiple": 5.180702
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "COMPRESSION|FLOOR_PRESSURE|SHORT|SCALP_DISTANCE|BALANCED|DRIFT",
+      "count": 25,
+      "ready_adjacent_count": 22,
+      "avg_economic_score": 0.636572,
+      "priority": "HIGH",
+      "proposed_trigger_state": "COMPRESSION_PRESSURE_DROP_CONFIRM",
+      "rationale": "Compression floor pressure on the short side is active and needs a directional confirmation trigger.",
+      "initial_gates": {
+        "surface_type": "COMPRESSION",
+        "location_relation_id": "FLOOR_PRESSURE",
+        "direction_group": "SHORT",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "DRIFT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 4.334563,
+        "minimum_path_multiple": 4.334563
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|SCALP_DISTANCE|BALANCED|DORMANT",
+      "count": 24,
+      "ready_adjacent_count": 20,
+      "avg_economic_score": 0.658026,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_DRIFT_CONTINUATION_SHORT",
+      "rationale": "Trending mid-drift surfaces are economic and need continuation confirmation instead of falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "MID_DRIFT",
+        "direction_group": "SHORT",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "DORMANT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 4.412281,
+        "minimum_path_multiple": 4.412281
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "TRENDING|MID_DRIFT|SHORT|STANDARD_DISTANCE|BALANCED|DRIFT",
+      "count": 17,
+      "ready_adjacent_count": 17,
+      "avg_economic_score": 0.777225,
+      "priority": "HIGH",
+      "proposed_trigger_state": "TREND_DRIFT_CONTINUATION_SHORT",
+      "rationale": "Trending mid-drift surfaces are economic and need continuation confirmation instead of falling through to no-trigger.",
+      "initial_gates": {
+        "surface_type": "TRENDING",
+        "location_relation_id": "MID_DRIFT",
+        "direction_group": "SHORT",
+        "distance_mode": "STANDARD_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "DRIFT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 7.703715,
+        "minimum_path_multiple": 7.703715
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "BALANCED|MID_DRIFT|LONG|SCALP_DISTANCE|BALANCED|DRIFT",
+      "count": 20,
+      "ready_adjacent_count": 16,
+      "avg_economic_score": 0.623353,
+      "priority": "HIGH",
+      "proposed_trigger_state": "BALANCED_DRIFT_CONTINUATION_LONG",
+      "rationale": "Balanced mid-drift surfaces are economically valid and need a controlled continuation trigger rather than broad pressure inference.",
+      "initial_gates": {
+        "surface_type": "BALANCED",
+        "location_relation_id": "MID_DRIFT",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "BALANCED",
+        "energy_state": "DRIFT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 3.755263,
+        "minimum_path_multiple": 3.755263
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    },
+    {
+      "cluster_id": "COMPRESSION|CEILING_PRESSURE|LONG|SCALP_DISTANCE|PRESSURED|DORMANT",
+      "count": 28,
+      "ready_adjacent_count": 15,
+      "avg_economic_score": 0.528585,
+      "priority": "HIGH",
+      "proposed_trigger_state": "COMPRESSION_PRESSURE_PUSH",
+      "rationale": "Compression pressure at the ceiling is economically active and currently lacks a dedicated push trigger.",
+      "initial_gates": {
+        "surface_type": "COMPRESSION",
+        "location_relation_id": "CEILING_PRESSURE",
+        "direction_group": "LONG",
+        "distance_mode": "SCALP_DISTANCE",
+        "precursor_state": "PRESSURED",
+        "energy_state": "DORMANT",
+        "minimum_clean_book_share": 0.7,
+        "minimum_aligned_share": 0.55,
+        "minimum_distance_multiple": 2.266392,
+        "minimum_path_multiple": 2.266392
+      },
+      "expected_benefit": {
+        "objective": "Reduce REJECT_NO_TRIGGER without arming junk.",
+        "economic_reason": "Cluster already clears extractable-business checks and mostly fails only because no trigger fires."
+      }
+    }
+  ]
+}

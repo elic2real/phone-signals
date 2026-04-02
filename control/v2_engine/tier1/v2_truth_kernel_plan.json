@@ -1,0 +1,1279 @@
+{
+  "artifact_id": "V2_TIER1_GLOBAL_TRUTH_KERNEL_PLAN",
+  "generated_at_utc": "2026-04-02T00:23:03.589023Z",
+  "insertion_point": {
+    "current_state": "Doctrine creation currently happens too early inside Phase 1 through _match_pattern, _trigger_state, and _doctrine_family_id.",
+    "target_state": "Tier 1 should first emit a canonical truth-kernel bundle, and doctrine creation should become a composition step on top of those primitives.",
+    "code_anchors": [
+      "tools/v2_phase1_physics_engine.py::_match_pattern",
+      "tools/v2_phase1_physics_engine.py::_trigger_state",
+      "tools/v2_phase1_physics_engine.py::_doctrine_family_id"
+    ]
+  },
+  "why_this_layer_is_needed": [
+    "The current stack fuses local sensing and doctrine naming too early, which makes blurry doctrines hard to instantiate cleanly.",
+    "A global primitive layer will make detection and connection explicit before doctrine composition, instead of burying them inside doctrine-specific if chains.",
+    "This also creates a proper insertion point for missing macro-bias and higher-timeframe zone truth without rewriting every doctrine separately."
+  ],
+  "truth_kernel_groups": [
+    {
+      "group": "MOVEMENT_KERNEL",
+      "purpose": "Raw move validity and extractability.",
+      "fields": [
+        "movement_state",
+        "cost_covering_state",
+        "path_covering_state",
+        "extractable",
+        "displacement_band",
+        "target_distance_bucket"
+      ]
+    },
+    {
+      "group": "STRUCTURE_KERNEL",
+      "purpose": "Where price is sitting in the local map.",
+      "fields": [
+        "surface_type",
+        "market_pattern_state",
+        "zone_state",
+        "topology_family_id",
+        "location_relation_id",
+        "level_type_long",
+        "level_type_short"
+      ]
+    },
+    {
+      "group": "DIRECTION_KERNEL",
+      "purpose": "Directional truth and structural room.",
+      "fields": [
+        "direction_group",
+        "vector_bias",
+        "order_flow_band",
+        "direction_alignment_band",
+        "structural_room_band"
+      ]
+    },
+    {
+      "group": "PRECURSOR_KERNEL",
+      "purpose": "Lead-in condition and lifecycle truth.",
+      "fields": [
+        "precursor_state",
+        "precursor_family_id",
+        "lifecycle_stage",
+        "pressure_band"
+      ]
+    },
+    {
+      "group": "ENERGY_KERNEL",
+      "purpose": "Kinetic state and event force.",
+      "fields": [
+        "energy_state",
+        "energy_family_id",
+        "impulse_band",
+        "compression_energy_band",
+        "rejection_velocity_band"
+      ]
+    },
+    {
+      "group": "QUALITY_KERNEL",
+      "purpose": "Execution quality and surface quality before doctrine composition.",
+      "fields": [
+        "book_quality_band",
+        "session_progress_band",
+        "order_flow_alignment_band",
+        "opportunity_confidence_tier"
+      ]
+    },
+    {
+      "group": "EVENT_KERNEL",
+      "purpose": "Canonical event truth, still doctrine-agnostic.",
+      "fields": [
+        "live_recognition_state",
+        "pattern_match_state",
+        "trigger_state"
+      ]
+    },
+    {
+      "group": "GLOBAL_SLOTS",
+      "purpose": "Reserved truth slots currently missing from the live stack.",
+      "fields": [
+        "macro_bias_kernel",
+        "htf_zone_kernel",
+        "liquidity_map_kernel"
+      ]
+    }
+  ],
+  "current_global_gaps": [
+    "No explicit H1/H4 macro-bias primitive is carried through the current entry stack.",
+    "No explicit higher-timeframe zone/liquidity primitive is carried through the current entry stack.",
+    "Tier 2 context currently modifies local projection, but it does not solve the missing upstream macro truth."
+  ],
+  "doctrine_composition_rule": {
+    "current": "Raw local conditions are turned directly into doctrine ids.",
+    "target": "Doctrines must become named bundles of truth-kernel primitives plus doctrine-specific support contracts.",
+    "example": {
+      "current_doctrine": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "future_composition": [
+        "STRUCTURE_KERNEL.surface_type=TRENDING",
+        "STRUCTURE_KERNEL.zone_state=NEAR_FLOOR",
+        "DIRECTION_KERNEL.direction_group=SHORT",
+        "PRECURSOR_KERNEL.precursor_state in {PRESSURED,BALANCED}",
+        "ENERGY_KERNEL.energy_state in {IGNITION,DRIVE}",
+        "EVENT_KERNEL.trigger_state in {CONTINUATION_PUSH,TREND_PRESSURE_CONTINUATION_SHORT}",
+        "GLOBAL_SLOTS.macro_bias_kernel=ALIGNED_SHORT or UNSPECIFIED during migration"
+      ]
+    }
+  },
+  "implementation_waves": [
+    {
+      "wave": 1,
+      "name": "Non-breaking primitive extraction",
+      "goal": "Emit truth kernels from current Phase 1 profiles without changing strategy output.",
+      "deliverables": [
+        "tools/v2_tier1_truth_kernel.py",
+        "control/v2_engine/tier1/v2_truth_kernel_inventory.json",
+        "control/v2_engine/tier1/v2_truth_kernel_plan.json"
+      ]
+    },
+    {
+      "wave": 2,
+      "name": "Doctrine composer migration",
+      "goal": "Refactor doctrine creation so _doctrine_family_id composes from truth kernels instead of raw overlapping conditions.",
+      "deliverables": [
+        "canonical truth kernel bundle attached to each Phase 1 profile",
+        "doctrine composition table replacing nested doctrine-specific chains where possible"
+      ]
+    },
+    {
+      "wave": 3,
+      "name": "Global truth expansion",
+      "goal": "Add real upstream macro-bias, HTF zone, and liquidity primitives before doctrine composition.",
+      "deliverables": [
+        "macro bias kernel contract",
+        "htf zone kernel contract",
+        "liquidity map kernel contract"
+      ]
+    },
+    {
+      "wave": 4,
+      "name": "Failure-class rerun",
+      "goal": "Re-run the 16 failing doctrines through the new primitive-first composer and reclassify failures.",
+      "deliverables": [
+        "updated structural failure map",
+        "updated doctrine layer contracts",
+        "delta report on instantiation recovery"
+      ]
+    }
+  ],
+  "first_code_changes_after_planning": [
+    "Move doctrine-agnostic event truth out of _doctrine_family_id and into the truth-kernel bundle.",
+    "Make Phase 1 profiles publish the truth-kernel signature before any doctrine id is assigned.",
+    "Teach Phase 2 clustering to consume truth-kernel primitives as first-class assignment features.",
+    "Only after that, retune Track 1 instantiation failures and Track 2 mixed-window failures."
+  ],
+  "success_criteria": [
+    "A doctrine can be explained as a composition of primitives instead of a handwritten branch chain.",
+    "The same primitive bundle can support multiple doctrines without ambiguous fallback into generic capture.",
+    "Instantiation failures should drop because route identity is derived from canonical primitives first.",
+    "Macro-bias and HTF-zone truth become additive global slots instead of ad hoc doctrine exceptions."
+  ],
+  "failure_map_context": {
+    "locked_summary": {
+      "INSTANTIATION": 9,
+      "MIXED_WINDOW": 5,
+      "SYMMETRY": 0,
+      "TRIGGER_OVERKILL": 0
+    },
+    "repair_message": "The truth-kernel layer is the correct upstream repair because most current failures are instantiation or mixed-window problems, not pure trigger defects."
+  },
+  "current_inventory": {
+    "sample_profile_count": 72,
+    "scenario_summary_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase1\\v2_phase1_scenario_summary.json",
+    "dominant_kernel_signatures": [
+      {
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|SHORT|BALANCED|DRIFT|RETEST_HOLD",
+        "count": 4,
+        "share": 0.055556,
+        "example_profile_ids": [
+          "EUR_USD:203",
+          "EUR_USD:28",
+          "EUR_USD:53"
+        ]
+      },
+      {
+        "kernel_signature": "TRENDING|NEAR_FLOOR|SHORT|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_SHORT",
+        "count": 4,
+        "share": 0.055556,
+        "example_profile_ids": [
+          "GBP_USD:128",
+          "USD_JPY:203",
+          "USD_JPY:3"
+        ]
+      },
+      {
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|SHORT|BALANCED|DORMANT|RETEST_HOLD",
+        "count": 4,
+        "share": 0.055556,
+        "example_profile_ids": [
+          "EUR_USD:153",
+          "EUR_USD:278",
+          "EUR_USD:278"
+        ]
+      },
+      {
+        "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|TREND_DRIFT_CONTINUATION_LONG",
+        "count": 3,
+        "share": 0.041667,
+        "example_profile_ids": [
+          "EUR_USD:103",
+          "EUR_USD:128",
+          "GBP_USD:253"
+        ]
+      },
+      {
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH",
+        "count": 3,
+        "share": 0.041667,
+        "example_profile_ids": [
+          "EUR_USD:153",
+          "EUR_USD:228",
+          "EUR_USD:28"
+        ]
+      },
+      {
+        "kernel_signature": "BALANCED|MID_ZONE|SHORT|BALANCED|DRIFT|FAILED_PUSH_REVERSE",
+        "count": 2,
+        "share": 0.027778,
+        "example_profile_ids": [
+          "EUR_USD:53",
+          "EUR_USD:53"
+        ]
+      },
+      {
+        "kernel_signature": "TRENDING|MID_ZONE|SHORT|COILED|DRIFT|CONTINUATION_PUSH",
+        "count": 2,
+        "share": 0.027778,
+        "example_profile_ids": [
+          "EUR_USD:3",
+          "EUR_USD:78"
+        ]
+      },
+      {
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "count": 1,
+        "share": 0.013889,
+        "example_profile_ids": [
+          "EUR_USD:3"
+        ]
+      },
+      {
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DORMANT|RETEST_HOLD",
+        "count": 1,
+        "share": 0.013889,
+        "example_profile_ids": [
+          "EUR_USD:78"
+        ]
+      },
+      {
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|CONTINUATION_PUSH",
+        "count": 1,
+        "share": 0.013889,
+        "example_profile_ids": [
+          "EUR_USD:128"
+        ]
+      },
+      {
+        "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|IGNITION|TREND_DRIFT_CONTINUATION_LONG",
+        "count": 1,
+        "share": 0.013889,
+        "example_profile_ids": [
+          "EUR_USD:153"
+        ]
+      },
+      {
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|DRIVE|CONTINUATION_PUSH",
+        "count": 1,
+        "share": 0.013889,
+        "example_profile_ids": [
+          "EUR_USD:178"
+        ]
+      }
+    ],
+    "primitive_fields": [
+      {
+        "field": "direction_kernel.direction_alignment_band",
+        "top_values": [
+          {
+            "value": "ALIGNED",
+            "count": 36,
+            "share": 0.5
+          },
+          {
+            "value": "PARTIAL",
+            "count": 20,
+            "share": 0.277778
+          },
+          {
+            "value": "MISALIGNED",
+            "count": 16,
+            "share": 0.222222
+          }
+        ]
+      },
+      {
+        "field": "direction_kernel.direction_group",
+        "top_values": [
+          {
+            "value": "LONG",
+            "count": 36,
+            "share": 0.5
+          },
+          {
+            "value": "SHORT",
+            "count": 31,
+            "share": 0.430556
+          },
+          {
+            "value": "NEUTRAL",
+            "count": 5,
+            "share": 0.069444
+          }
+        ]
+      },
+      {
+        "field": "direction_kernel.order_flow_band",
+        "top_values": [
+          {
+            "value": "STRONG_BUY",
+            "count": 20,
+            "share": 0.277778
+          },
+          {
+            "value": "MILD_BUY",
+            "count": 14,
+            "share": 0.194444
+          },
+          {
+            "value": "STRONG_SELL",
+            "count": 13,
+            "share": 0.180556
+          },
+          {
+            "value": "MILD_SELL",
+            "count": 13,
+            "share": 0.180556
+          },
+          {
+            "value": "BALANCED",
+            "count": 12,
+            "share": 0.166667
+          }
+        ]
+      },
+      {
+        "field": "direction_kernel.structural_room_band",
+        "top_values": [
+          {
+            "value": "OPEN",
+            "count": 34,
+            "share": 0.472222
+          },
+          {
+            "value": "WORKABLE",
+            "count": 30,
+            "share": 0.416667
+          },
+          {
+            "value": "TIGHT",
+            "count": 8,
+            "share": 0.111111
+          }
+        ]
+      },
+      {
+        "field": "direction_kernel.vector_bias",
+        "top_values": [
+          {
+            "value": "UP",
+            "count": 36,
+            "share": 0.5
+          },
+          {
+            "value": "DOWN",
+            "count": 31,
+            "share": 0.430556
+          },
+          {
+            "value": "FLAT",
+            "count": 5,
+            "share": 0.069444
+          }
+        ]
+      },
+      {
+        "field": "energy_kernel.compression_energy_band",
+        "top_values": [
+          {
+            "value": "LOW",
+            "count": 72,
+            "share": 1.0
+          }
+        ]
+      },
+      {
+        "field": "energy_kernel.energy_family_id",
+        "top_values": [
+          {
+            "value": "DORMANT|FADE|SMOOTH",
+            "count": 15,
+            "share": 0.208333
+          },
+          {
+            "value": "DRIFT|FADE|SHARP",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "DORMANT|FADE|SHARP",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "IGNITION|STRONG|SHARP",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "DRIFT|FADE|SMOOTH",
+            "count": 7,
+            "share": 0.097222
+          },
+          {
+            "value": "IGNITION|SURGE|SHARP",
+            "count": 5,
+            "share": 0.069444
+          },
+          {
+            "value": "DRIVE|BUILD|SMOOTH",
+            "count": 5,
+            "share": 0.069444
+          },
+          {
+            "value": "DRIVE|BUILD|SHARP",
+            "count": 4,
+            "share": 0.055556
+          }
+        ]
+      },
+      {
+        "field": "energy_kernel.energy_state",
+        "top_values": [
+          {
+            "value": "DORMANT",
+            "count": 23,
+            "share": 0.319444
+          },
+          {
+            "value": "DRIFT",
+            "count": 21,
+            "share": 0.291667
+          },
+          {
+            "value": "IGNITION",
+            "count": 18,
+            "share": 0.25
+          },
+          {
+            "value": "DRIVE",
+            "count": 10,
+            "share": 0.138889
+          }
+        ]
+      },
+      {
+        "field": "energy_kernel.impulse_band",
+        "top_values": [
+          {
+            "value": "SURGE",
+            "count": 28,
+            "share": 0.388889
+          },
+          {
+            "value": "FADE",
+            "count": 25,
+            "share": 0.347222
+          },
+          {
+            "value": "BUILD",
+            "count": 19,
+            "share": 0.263889
+          }
+        ]
+      },
+      {
+        "field": "energy_kernel.rejection_velocity_band",
+        "top_values": [
+          {
+            "value": "SOFT",
+            "count": 44,
+            "share": 0.611111
+          },
+          {
+            "value": "HARD",
+            "count": 28,
+            "share": 0.388889
+          }
+        ]
+      },
+      {
+        "field": "event_kernel.live_recognition_state",
+        "top_values": [
+          {
+            "value": "RECOGNIZE_NONE",
+            "count": 13,
+            "share": 0.180556
+          },
+          {
+            "value": "RECOGNIZE_TRANSITION_LONG",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "RECOGNIZE_OSCILLATION_SHORT_EDGE",
+            "count": 10,
+            "share": 0.138889
+          },
+          {
+            "value": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
+            "count": 6,
+            "share": 0.083333
+          },
+          {
+            "value": "RECOGNIZE_TRANSITION_SHORT",
+            "count": 5,
+            "share": 0.069444
+          },
+          {
+            "value": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "RECOGNIZE_COILED_TRANSITION_LONG",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "RECOGNIZE_OSCILLATION_LONG_EDGE",
+            "count": 2,
+            "share": 0.027778
+          }
+        ]
+      },
+      {
+        "field": "event_kernel.pattern_match_state",
+        "top_values": [
+          {
+            "value": "UNMATCHED",
+            "count": 13,
+            "share": 0.180556
+          },
+          {
+            "value": "OSCILLATION_EDGE_SHORT_SCALP",
+            "count": 10,
+            "share": 0.138889
+          },
+          {
+            "value": "FLOW_DRIFT_LONG",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "OSCILLATION_PRESSURE_BUILD_LONG",
+            "count": 6,
+            "share": 0.083333
+          },
+          {
+            "value": "OSCILLATION_PRESSURE_BUILD_SHORT",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "TRANSITION_RELEASE_LONG",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "TRANSITION_RELEASE_SHORT_STANDARD",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "FLOW_DRIFT_SHORT",
+            "count": 3,
+            "share": 0.041667
+          }
+        ]
+      },
+      {
+        "field": "event_kernel.trigger_state",
+        "top_values": [
+          {
+            "value": "NO_CONFIDENT_TRIGGER",
+            "count": 18,
+            "share": 0.25
+          },
+          {
+            "value": "RETEST_HOLD",
+            "count": 15,
+            "share": 0.208333
+          },
+          {
+            "value": "CONTINUATION_PUSH",
+            "count": 14,
+            "share": 0.194444
+          },
+          {
+            "value": "TREND_DRIFT_CONTINUATION_LONG",
+            "count": 6,
+            "share": 0.083333
+          },
+          {
+            "value": "TREND_PRESSURE_CONTINUATION_SHORT",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "TREND_PRESSURE_CONTINUATION_LONG",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "FAILED_PUSH_REVERSE",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "COMPRESSION_PRESSURE_DROP_CONFIRM",
+            "count": 2,
+            "share": 0.027778
+          }
+        ]
+      },
+      {
+        "field": "global_slots.htf_zone_kernel",
+        "top_values": [
+          {
+            "value": "EDGE_REFERENCE",
+            "count": 23,
+            "share": 0.319444
+          },
+          {
+            "value": "REFERENCE_LEVEL",
+            "count": 20,
+            "share": 0.277778
+          },
+          {
+            "value": "HTF_RESISTANCE",
+            "count": 12,
+            "share": 0.166667
+          },
+          {
+            "value": "MID_VOID",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "HTF_SUPPORT",
+            "count": 6,
+            "share": 0.083333
+          }
+        ]
+      },
+      {
+        "field": "global_slots.liquidity_map_kernel",
+        "top_values": [
+          {
+            "value": "SWEEP_READY",
+            "count": 28,
+            "share": 0.388889
+          },
+          {
+            "value": "FLOW_IMBALANCED",
+            "count": 24,
+            "share": 0.333333
+          },
+          {
+            "value": "BALANCED_BOOK",
+            "count": 19,
+            "share": 0.263889
+          },
+          {
+            "value": "TOXIC_THIN",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "global_slots.macro_bias_kernel",
+        "top_values": [
+          {
+            "value": "NEUTRAL",
+            "count": 38,
+            "share": 0.527778
+          },
+          {
+            "value": "BULLISH",
+            "count": 17,
+            "share": 0.236111
+          },
+          {
+            "value": "BEARISH",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "UNSPECIFIED",
+            "count": 6,
+            "share": 0.083333
+          }
+        ]
+      },
+      {
+        "field": "movement_kernel.cost_covering_state",
+        "top_values": [
+          {
+            "value": "COST_COVERING",
+            "count": 50,
+            "share": 0.694444
+          },
+          {
+            "value": "NON_COVERING",
+            "count": 22,
+            "share": 0.305556
+          }
+        ]
+      },
+      {
+        "field": "movement_kernel.displacement_band",
+        "top_values": [
+          {
+            "value": "STRONG",
+            "count": 32,
+            "share": 0.444444
+          },
+          {
+            "value": "WEAK",
+            "count": 22,
+            "share": 0.305556
+          },
+          {
+            "value": "WORKABLE",
+            "count": 18,
+            "share": 0.25
+          }
+        ]
+      },
+      {
+        "field": "movement_kernel.extractable",
+        "top_values": [
+          {
+            "value": "True",
+            "count": 68,
+            "share": 0.944444
+          },
+          {
+            "value": "False",
+            "count": 4,
+            "share": 0.055556
+          }
+        ]
+      },
+      {
+        "field": "movement_kernel.movement_state",
+        "top_values": [
+          {
+            "value": "MOVE_DETECTED",
+            "count": 72,
+            "share": 1.0
+          }
+        ]
+      },
+      {
+        "field": "movement_kernel.path_covering_state",
+        "top_values": [
+          {
+            "value": "PATH_COVERING",
+            "count": 67,
+            "share": 0.930556
+          },
+          {
+            "value": "PATH_THIN",
+            "count": 5,
+            "share": 0.069444
+          }
+        ]
+      },
+      {
+        "field": "movement_kernel.target_distance_bucket",
+        "top_values": [
+          {
+            "value": "LARGE",
+            "count": 28,
+            "share": 0.388889
+          },
+          {
+            "value": "MEDIUM",
+            "count": 19,
+            "share": 0.263889
+          },
+          {
+            "value": "EXTENDED",
+            "count": 10,
+            "share": 0.138889
+          },
+          {
+            "value": "MICRO",
+            "count": 7,
+            "share": 0.097222
+          },
+          {
+            "value": "SMALL",
+            "count": 7,
+            "share": 0.097222
+          },
+          {
+            "value": "NON_COVERING",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "precursor_kernel.lifecycle_stage",
+        "top_values": [
+          {
+            "value": "PATTERN_HARVEST",
+            "count": 31,
+            "share": 0.430556
+          },
+          {
+            "value": "RELEASE",
+            "count": 18,
+            "share": 0.25
+          },
+          {
+            "value": "EXPLOIT",
+            "count": 10,
+            "share": 0.138889
+          },
+          {
+            "value": "LATE",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "SETUP",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "WATCH",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "HARVEST",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "precursor_kernel.precursor_family_id",
+        "top_values": [
+          {
+            "value": "BALANCED|MODERATE|WIDE|LONG",
+            "count": 24,
+            "share": 0.333333
+          },
+          {
+            "value": "BALANCED|LIGHT|WIDE|LONG",
+            "count": 15,
+            "share": 0.208333
+          },
+          {
+            "value": "PRESSURED|HEAVY|WIDE|LONG",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "PRESSURED|EXTREME|WIDE|LONG",
+            "count": 7,
+            "share": 0.097222
+          },
+          {
+            "value": "COILED|EXTREME|TIGHT|SHORT",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "COILED|MODERATE|TIGHT|LONG",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "COILED|LIGHT|TIGHT|LONG",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "PRESSURED|EXTREME|WIDE|SHORT",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "precursor_kernel.precursor_state",
+        "top_values": [
+          {
+            "value": "BALANCED",
+            "count": 41,
+            "share": 0.569444
+          },
+          {
+            "value": "PRESSURED",
+            "count": 20,
+            "share": 0.277778
+          },
+          {
+            "value": "COILED",
+            "count": 11,
+            "share": 0.152778
+          }
+        ]
+      },
+      {
+        "field": "precursor_kernel.pressure_band",
+        "top_values": [
+          {
+            "value": "MODERATE",
+            "count": 30,
+            "share": 0.416667
+          },
+          {
+            "value": "HEAVY",
+            "count": 23,
+            "share": 0.319444
+          },
+          {
+            "value": "LIGHT",
+            "count": 19,
+            "share": 0.263889
+          }
+        ]
+      },
+      {
+        "field": "quality_kernel.book_quality_band",
+        "top_values": [
+          {
+            "value": "CLEAN",
+            "count": 71,
+            "share": 0.986111
+          },
+          {
+            "value": "TOXIC",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "quality_kernel.opportunity_confidence_tier",
+        "top_values": [
+          {
+            "value": "QUALIFIED_CONSERVATIVE",
+            "count": 33,
+            "share": 0.458333
+          },
+          {
+            "value": "CONSERVATIVE",
+            "count": 17,
+            "share": 0.236111
+          },
+          {
+            "value": "AGGRESSIVE_PATH",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "QUALIFIED_PATH",
+            "count": 7,
+            "share": 0.097222
+          },
+          {
+            "value": "NON_OPPORTUNITY",
+            "count": 4,
+            "share": 0.055556
+          }
+        ]
+      },
+      {
+        "field": "quality_kernel.order_flow_alignment_band",
+        "top_values": [
+          {
+            "value": "STRONG",
+            "count": 49,
+            "share": 0.680556
+          },
+          {
+            "value": "WEAK",
+            "count": 13,
+            "share": 0.180556
+          },
+          {
+            "value": "WORKABLE",
+            "count": 10,
+            "share": 0.138889
+          }
+        ]
+      },
+      {
+        "field": "quality_kernel.session_progress_band",
+        "top_values": [
+          {
+            "value": "MID",
+            "count": 38,
+            "share": 0.527778
+          },
+          {
+            "value": "OPENING",
+            "count": 33,
+            "share": 0.458333
+          },
+          {
+            "value": "LATE",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.level_type_long",
+        "top_values": [
+          {
+            "value": "PRIOR_HIGH",
+            "count": 24,
+            "share": 0.333333
+          },
+          {
+            "value": "ROUND_NUMBER",
+            "count": 23,
+            "share": 0.319444
+          },
+          {
+            "value": "VWAP",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "PRIOR_LOW",
+            "count": 9,
+            "share": 0.125
+          },
+          {
+            "value": "SESSION_OPEN",
+            "count": 5,
+            "share": 0.069444
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.level_type_short",
+        "top_values": [
+          {
+            "value": "PRIOR_HIGH",
+            "count": 24,
+            "share": 0.333333
+          },
+          {
+            "value": "ROUND_NUMBER",
+            "count": 23,
+            "share": 0.319444
+          },
+          {
+            "value": "VWAP",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "PRIOR_LOW",
+            "count": 9,
+            "share": 0.125
+          },
+          {
+            "value": "SESSION_OPEN",
+            "count": 5,
+            "share": 0.069444
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.location_relation_id",
+        "top_values": [
+          {
+            "value": "MID_DRIFT",
+            "count": 21,
+            "share": 0.291667
+          },
+          {
+            "value": "CEILING_PRESSURE",
+            "count": 20,
+            "share": 0.277778
+          },
+          {
+            "value": "CEILING_REJECTION",
+            "count": 12,
+            "share": 0.166667
+          },
+          {
+            "value": "FLOOR_PRESSURE",
+            "count": 12,
+            "share": 0.166667
+          },
+          {
+            "value": "FLOOR_REBOUND",
+            "count": 6,
+            "share": 0.083333
+          },
+          {
+            "value": "MID_BALANCE",
+            "count": 1,
+            "share": 0.013889
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.market_pattern_state",
+        "top_values": [
+          {
+            "value": "OSCILLATION",
+            "count": 25,
+            "share": 0.347222
+          },
+          {
+            "value": "TRANSITION",
+            "count": 20,
+            "share": 0.277778
+          },
+          {
+            "value": "COMPRESSION",
+            "count": 15,
+            "share": 0.208333
+          },
+          {
+            "value": "BALANCED",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "EXPANSION",
+            "count": 4,
+            "share": 0.055556
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.surface_type",
+        "top_values": [
+          {
+            "value": "OSCILLATION",
+            "count": 25,
+            "share": 0.347222
+          },
+          {
+            "value": "TRENDING",
+            "count": 24,
+            "share": 0.333333
+          },
+          {
+            "value": "COMPRESSION",
+            "count": 15,
+            "share": 0.208333
+          },
+          {
+            "value": "BALANCED",
+            "count": 8,
+            "share": 0.111111
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.topology_family_id",
+        "top_values": [
+          {
+            "value": "OSCILLATION|NEAR_CEILING|BALANCED|SHORT",
+            "count": 6,
+            "share": 0.083333
+          },
+          {
+            "value": "TRANSITION|MID_ZONE|BALANCED|LONG",
+            "count": 4,
+            "share": 0.055556
+          },
+          {
+            "value": "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT",
+            "count": 3,
+            "share": 0.041667
+          },
+          {
+            "value": "TRANSITION|MID_ZONE|COMPRESSED|LONG",
+            "count": 3,
+            "share": 0.041667
+          },
+          {
+            "value": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+            "count": 3,
+            "share": 0.041667
+          },
+          {
+            "value": "BALANCED|MID_ZONE|BALANCED|SHORT",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "TRANSITION|NEAR_CEILING|COMPRESSED|LONG",
+            "count": 2,
+            "share": 0.027778
+          },
+          {
+            "value": "COMPRESSION|NEAR_FLOOR|COMPRESSED|SHORT",
+            "count": 2,
+            "share": 0.027778
+          }
+        ]
+      },
+      {
+        "field": "structure_kernel.zone_state",
+        "top_values": [
+          {
+            "value": "NEAR_CEILING",
+            "count": 32,
+            "share": 0.444444
+          },
+          {
+            "value": "MID_ZONE",
+            "count": 22,
+            "share": 0.305556
+          },
+          {
+            "value": "NEAR_FLOOR",
+            "count": 18,
+            "share": 0.25
+          }
+        ]
+      }
+    ]
+  }
+}

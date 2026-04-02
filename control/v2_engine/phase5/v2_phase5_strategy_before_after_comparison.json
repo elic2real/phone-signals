@@ -1,0 +1,1228 @@
+{
+  "artifact_id": "V2_PHASE5_STRATEGY_BEFORE_AFTER_COMPARISON",
+  "generated_at_utc": "2026-04-02T12:23:49.409657Z",
+  "baseline_report": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report.json",
+  "current_report": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report.json",
+  "strategy_comparisons": [
+    {
+      "strategy_id": "COILED_COMPRESSION_LONG",
+      "before": {
+        "strategy_id": "COILED_COMPRESSION_LONG",
+        "trade_count": 67,
+        "aborted_count": 28,
+        "result_count": 95,
+        "distance_expression_count": 14,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|SMALL",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|SMALL",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_BALANCE|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_BALANCE|LONG|MICRO",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "win_rate": 0.58209,
+        "expectancy_pips": 0.717164,
+        "net_pnl_pips": 48.05,
+        "viable": true,
+        "abort_reason_counts": {
+          "zone_misaligned": 10,
+          "kill_switch_decay": 6,
+          "duplicate_trigger_suppressed": 3,
+          "insufficient_charge": 9
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 22,
+          "TTL_EXIT": 34,
+          "TARGET_HIT": 11
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "slow_grind_break",
+          "spread_widening",
+          "whipsaw_spike_fade"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "after": {
+        "strategy_id": "COILED_COMPRESSION_LONG",
+        "trade_count": 67,
+        "aborted_count": 28,
+        "result_count": 95,
+        "distance_expression_count": 14,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|SMALL",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|SMALL",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_BALANCE|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_BALANCE|LONG|MICRO",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|MEDIUM",
+          "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "win_rate": 0.58209,
+        "expectancy_pips": 0.717164,
+        "net_pnl_pips": 48.05,
+        "viable": true,
+        "abort_reason_counts": {
+          "zone_misaligned": 10,
+          "kill_switch_decay": 6,
+          "duplicate_trigger_suppressed": 3,
+          "insufficient_charge": 9
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 22,
+          "TTL_EXIT": 34,
+          "TARGET_HIT": 11
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "slow_grind_break",
+          "spread_widening",
+          "whipsaw_spike_fade"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "before": {
+        "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+        "trade_count": 95,
+        "aborted_count": 68,
+        "result_count": 163,
+        "distance_expression_count": 9,
+        "target_distance_bucket_count": 5,
+        "distance_expression_ids": [
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "win_rate": 0.694737,
+        "expectancy_pips": 3.164084,
+        "net_pnl_pips": 300.588,
+        "viable": true,
+        "abort_reason_counts": {
+          "duplicate_trigger_suppressed": 1,
+          "insufficient_charge": 67
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 57,
+          "STOP_HIT": 28,
+          "TTL_EXIT": 10
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "after": {
+        "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+        "trade_count": 95,
+        "aborted_count": 68,
+        "result_count": 163,
+        "distance_expression_count": 9,
+        "target_distance_bucket_count": 5,
+        "distance_expression_ids": [
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MICRO",
+          "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "win_rate": 0.694737,
+        "expectancy_pips": 3.164084,
+        "net_pnl_pips": 300.588,
+        "viable": true,
+        "abort_reason_counts": {
+          "duplicate_trigger_suppressed": 1,
+          "insufficient_charge": 67
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 57,
+          "STOP_HIT": 28,
+          "TTL_EXIT": 10
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "COMPRESSION_RELEASE_LONG",
+      "before": {
+        "strategy_id": "COMPRESSION_RELEASE_LONG",
+        "trade_count": 4,
+        "aborted_count": 9,
+        "result_count": 13,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|EXTENDED",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|LARGE",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 5.46575,
+        "net_pnl_pips": 21.863,
+        "viable": false,
+        "abort_reason_counts": {
+          "insufficient_charge": 6,
+          "zone_misaligned": 2,
+          "kill_switch_decay": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 3,
+          "TTL_EXIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "panic_reversal",
+          "spread_widening"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "COMPRESSION_RELEASE_LONG",
+        "trade_count": 4,
+        "aborted_count": 9,
+        "result_count": 13,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|EXTENDED",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|LARGE",
+          "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 5.46575,
+        "net_pnl_pips": 21.863,
+        "viable": false,
+        "abort_reason_counts": {
+          "insufficient_charge": 6,
+          "zone_misaligned": 2,
+          "kill_switch_decay": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 3,
+          "TTL_EXIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "panic_reversal",
+          "spread_widening"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "EXPANSION_RELEASE_LONG",
+      "before": {
+        "strategy_id": "EXPANSION_RELEASE_LONG",
+        "trade_count": 2,
+        "aborted_count": 12,
+        "result_count": 14,
+        "distance_expression_count": 2,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_BALANCE|LONG|EXTENDED",
+          "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "MEDIUM"
+        ],
+        "win_rate": 0.5,
+        "expectancy_pips": 0.115,
+        "net_pnl_pips": 0.23,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 12
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 1,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "EXPANSION_RELEASE_LONG",
+        "trade_count": 2,
+        "aborted_count": 12,
+        "result_count": 14,
+        "distance_expression_count": 2,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_BALANCE|LONG|EXTENDED",
+          "TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "MEDIUM"
+        ],
+        "win_rate": 0.5,
+        "expectancy_pips": 0.115,
+        "net_pnl_pips": 0.23,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 12
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 1,
+          "TARGET_HIT": 1
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+      "before": {
+        "strategy_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+        "trade_count": 0,
+        "aborted_count": 11,
+        "result_count": 11,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 11
+        },
+        "exit_reason_counts": {},
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+        "trade_count": 0,
+        "aborted_count": 11,
+        "result_count": 11,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 11
+        },
+        "exit_reason_counts": {},
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "before": {
+        "strategy_id": "FLOW_DRIFT_LONG",
+        "trade_count": 26,
+        "aborted_count": 27,
+        "result_count": 53,
+        "distance_expression_count": 8,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|SMALL",
+          "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|LARGE",
+          "TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|LARGE",
+          "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.461538,
+        "expectancy_pips": 1.128115,
+        "net_pnl_pips": 29.331,
+        "viable": true,
+        "abort_reason_counts": {
+          "option_pruned": 6,
+          "insufficient_charge": 20,
+          "kill_switch_decay": 1
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 14,
+          "TARGET_HIT": 12
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "after": {
+        "strategy_id": "FLOW_DRIFT_LONG",
+        "trade_count": 26,
+        "aborted_count": 27,
+        "result_count": 53,
+        "distance_expression_count": 8,
+        "target_distance_bucket_count": 4,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|SMALL",
+          "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED",
+          "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|LARGE",
+          "TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|LARGE",
+          "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.461538,
+        "expectancy_pips": 1.128115,
+        "net_pnl_pips": 29.331,
+        "viable": true,
+        "abort_reason_counts": {
+          "option_pruned": 6,
+          "insufficient_charge": 20,
+          "kill_switch_decay": 1
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 14,
+          "TARGET_HIT": 12
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "before": {
+        "strategy_id": "FLOW_DRIFT_SHORT",
+        "trade_count": 15,
+        "aborted_count": 17,
+        "result_count": 32,
+        "distance_expression_count": 6,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|LARGE",
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|SMALL",
+          "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "TRANSITION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|LARGE",
+          "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "SMALL"
+        ],
+        "win_rate": 0.533333,
+        "expectancy_pips": 0.7704,
+        "net_pnl_pips": 11.556,
+        "viable": true,
+        "abort_reason_counts": {
+          "zone_misaligned": 3,
+          "insufficient_charge": 10,
+          "kill_switch_decay": 4
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 7,
+          "STOP_HIT": 6,
+          "TTL_EXIT": 2
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "after": {
+        "strategy_id": "FLOW_DRIFT_SHORT",
+        "trade_count": 15,
+        "aborted_count": 17,
+        "result_count": 32,
+        "distance_expression_count": 6,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|LARGE",
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|SMALL",
+          "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+          "TRANSITION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|LARGE",
+          "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "SMALL"
+        ],
+        "win_rate": 0.533333,
+        "expectancy_pips": 0.7704,
+        "net_pnl_pips": 11.556,
+        "viable": true,
+        "abort_reason_counts": {
+          "zone_misaligned": 3,
+          "insufficient_charge": 10,
+          "kill_switch_decay": 4
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 7,
+          "STOP_HIT": 6,
+          "TTL_EXIT": 2
+        },
+        "scenario_count": 4,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "before": {
+        "strategy_id": "OSCILLATION_EDGE_LONG_SCALP",
+        "trade_count": 0,
+        "aborted_count": 20,
+        "result_count": 20,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 20
+        },
+        "exit_reason_counts": {},
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "OSCILLATION_EDGE_LONG_SCALP",
+        "trade_count": 0,
+        "aborted_count": 20,
+        "result_count": 20,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 20
+        },
+        "exit_reason_counts": {},
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "OSCILLATION_EDGE_SHORT_SCALP",
+      "before": {
+        "strategy_id": "OSCILLATION_EDGE_SHORT_SCALP",
+        "trade_count": 0,
+        "aborted_count": 27,
+        "result_count": 27,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0,
+        "viable": false,
+        "abort_reason_counts": {
+          "option_pruned": 16,
+          "pocket_not_whitelisted": 11
+        },
+        "exit_reason_counts": {},
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "OSCILLATION_EDGE_SHORT_SCALP",
+        "trade_count": 0,
+        "aborted_count": 27,
+        "result_count": 27,
+        "distance_expression_count": 0,
+        "target_distance_bucket_count": 0,
+        "distance_expression_ids": [],
+        "target_distance_buckets": [],
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0,
+        "viable": false,
+        "abort_reason_counts": {
+          "option_pruned": 16,
+          "pocket_not_whitelisted": 11
+        },
+        "exit_reason_counts": {},
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+      "before": {
+        "strategy_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+        "trade_count": 104,
+        "aborted_count": 260,
+        "result_count": 364,
+        "distance_expression_count": 5,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.375,
+        "expectancy_pips": -0.295038,
+        "net_pnl_pips": -30.684,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 238,
+          "insufficient_charge": 17,
+          "kill_switch_decay": 4,
+          "duplicate_trigger_suppressed": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 29,
+          "STOP_HIT": 60,
+          "TTL_EXIT": 15
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+        "trade_count": 104,
+        "aborted_count": 260,
+        "result_count": 364,
+        "distance_expression_count": 5,
+        "target_distance_bucket_count": 3,
+        "distance_expression_ids": [
+          "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+          "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|SMALL"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "win_rate": 0.375,
+        "expectancy_pips": -0.295038,
+        "net_pnl_pips": -30.684,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 238,
+          "insufficient_charge": 17,
+          "kill_switch_decay": 4,
+          "duplicate_trigger_suppressed": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 29,
+          "STOP_HIT": 60,
+          "TTL_EXIT": 15
+        },
+        "scenario_count": 6,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation",
+          "whipsaw_spike_fade"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "PRESSURE_DRIVE_LONG",
+      "before": {
+        "strategy_id": "PRESSURE_DRIVE_LONG",
+        "trade_count": 16,
+        "aborted_count": 9,
+        "result_count": 25,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "BALANCED|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "BALANCED|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "BALANCED|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "MEDIUM"
+        ],
+        "win_rate": 0.625,
+        "expectancy_pips": 2.68275,
+        "net_pnl_pips": 42.924,
+        "viable": true,
+        "abort_reason_counts": {
+          "insufficient_charge": 2,
+          "duplicate_trigger_suppressed": 1,
+          "option_pruned": 6
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 5,
+          "TTL_EXIT": 5,
+          "STOP_HIT": 6
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "after": {
+        "strategy_id": "PRESSURE_DRIVE_LONG",
+        "trade_count": 16,
+        "aborted_count": 9,
+        "result_count": 25,
+        "distance_expression_count": 3,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "BALANCED|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+          "BALANCED|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+          "BALANCED|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "MEDIUM"
+        ],
+        "win_rate": 0.625,
+        "expectancy_pips": 2.68275,
+        "net_pnl_pips": 42.924,
+        "viable": true,
+        "abort_reason_counts": {
+          "insufficient_charge": 2,
+          "duplicate_trigger_suppressed": 1,
+          "option_pruned": 6
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 5,
+          "TTL_EXIT": 5,
+          "STOP_HIT": 6
+        },
+        "scenario_count": 5,
+        "scenarios": [
+          "chop_mean_reversion",
+          "panic_reversal",
+          "slow_grind_break",
+          "spread_widening",
+          "trend_continuation"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": true
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "PRESSURE_DRIVE_SHORT",
+      "before": {
+        "strategy_id": "PRESSURE_DRIVE_SHORT",
+        "trade_count": 3,
+        "aborted_count": 1,
+        "result_count": 4,
+        "distance_expression_count": 2,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|SMALL",
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_BALANCE|SHORT|LARGE"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "SMALL"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 1.516667,
+        "net_pnl_pips": 4.55,
+        "viable": false,
+        "abort_reason_counts": {
+          "insufficient_charge": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 2,
+          "TTL_EXIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "whipsaw_spike_fade"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "PRESSURE_DRIVE_SHORT",
+        "trade_count": 3,
+        "aborted_count": 1,
+        "result_count": 4,
+        "distance_expression_count": 2,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|SMALL",
+          "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_BALANCE|SHORT|LARGE"
+        ],
+        "target_distance_buckets": [
+          "LARGE",
+          "SMALL"
+        ],
+        "win_rate": 1.0,
+        "expectancy_pips": 1.516667,
+        "net_pnl_pips": 4.55,
+        "viable": false,
+        "abort_reason_counts": {
+          "insufficient_charge": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 2,
+          "TTL_EXIT": 1
+        },
+        "scenario_count": 2,
+        "scenarios": [
+          "chop_mean_reversion",
+          "whipsaw_spike_fade"
+        ],
+        "base_viable": true,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_EXTENDED",
+      "before": {
+        "strategy_id": "TRANSITION_RELEASE_SHORT_EXTENDED",
+        "trade_count": 2,
+        "aborted_count": 1,
+        "result_count": 3,
+        "distance_expression_count": 1,
+        "target_distance_bucket_count": 1,
+        "distance_expression_ids": [
+          "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_BALANCE|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED"
+        ],
+        "win_rate": 0.5,
+        "expectancy_pips": 1.287,
+        "net_pnl_pips": 2.574,
+        "viable": false,
+        "abort_reason_counts": {
+          "kill_switch_decay": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 1,
+          "STOP_HIT": 1
+        },
+        "scenario_count": 1,
+        "scenarios": [
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "TRANSITION_RELEASE_SHORT_EXTENDED",
+        "trade_count": 2,
+        "aborted_count": 1,
+        "result_count": 3,
+        "distance_expression_count": 1,
+        "target_distance_bucket_count": 1,
+        "distance_expression_ids": [
+          "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_BALANCE|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED"
+        ],
+        "win_rate": 0.5,
+        "expectancy_pips": 1.287,
+        "net_pnl_pips": 2.574,
+        "viable": false,
+        "abort_reason_counts": {
+          "kill_switch_decay": 1
+        },
+        "exit_reason_counts": {
+          "TARGET_HIT": 1,
+          "STOP_HIT": 1
+        },
+        "scenario_count": 1,
+        "scenarios": [
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "before": {
+        "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+        "trade_count": 5,
+        "aborted_count": 47,
+        "result_count": 52,
+        "distance_expression_count": 4,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "TRANSITION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "TRANSITION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "win_rate": 0.4,
+        "expectancy_pips": -1.1336,
+        "net_pnl_pips": -5.668,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 40,
+          "insufficient_charge": 5,
+          "kill_switch_decay": 2
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 3,
+          "TTL_EXIT": 2
+        },
+        "scenario_count": 1,
+        "scenarios": [
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "after": {
+        "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+        "trade_count": 5,
+        "aborted_count": 47,
+        "result_count": 52,
+        "distance_expression_count": 4,
+        "target_distance_bucket_count": 2,
+        "distance_expression_ids": [
+          "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+          "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "TRANSITION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+          "TRANSITION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED"
+        ],
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "win_rate": 0.4,
+        "expectancy_pips": -1.1336,
+        "net_pnl_pips": -5.668,
+        "viable": false,
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 40,
+          "insufficient_charge": 5,
+          "kill_switch_decay": 2
+        },
+        "exit_reason_counts": {
+          "STOP_HIT": 3,
+          "TTL_EXIT": 2
+        },
+        "scenario_count": 1,
+        "scenarios": [
+          "panic_reversal"
+        ],
+        "base_viable": false,
+        "phase5_gate_passed": false
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      }
+    }
+  ]
+}

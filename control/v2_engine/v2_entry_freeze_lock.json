@@ -1,0 +1,156 @@
+{
+  "artifact_id": "V2_ENTRY_FREEZE_LOCK",
+  "generated_at_utc": "2026-04-02T12:30:00Z",
+  "status": "FROZEN",
+  "purpose": "Freeze the improved profitable Tier 0 through Tier 6 entry baseline after doctrine-local control layer upgrades were applied to Phase 4.",
+  "canonical_root": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean",
+  "canonical_runner": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\tools\\run_v2_entry_stack.py",
+  "registry_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_entry_strategy_registry.json",
+  "phase5_report_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report.json",
+  "phase4_option_lock_plan_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase4\\phase4_option_lock_plan.json",
+  "wrapper_control_freeze_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_wrapper_control_freeze_lock.json",
+  "selected_strategy_ids": [
+    "COMPRESSION_PRESSURE_LIFT_LONG",
+    "PRESSURE_DRIVE_LONG",
+    "FLOW_DRIFT_LONG",
+    "FLOW_DRIFT_SHORT",
+    "COILED_COMPRESSION_LONG"
+  ],
+  "selected_strategies": [
+    {
+      "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "trade_count": 95,
+      "expectancy_pips": 3.164084,
+      "net_pnl_pips": 300.588,
+      "phase5_gate_passed": true
+    },
+    {
+      "strategy_id": "PRESSURE_DRIVE_LONG",
+      "trade_count": 16,
+      "expectancy_pips": 2.68275,
+      "net_pnl_pips": 42.924,
+      "phase5_gate_passed": true
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "trade_count": 26,
+      "expectancy_pips": 1.128115,
+      "net_pnl_pips": 29.331,
+      "phase5_gate_passed": true
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "trade_count": 15,
+      "expectancy_pips": 0.7704,
+      "net_pnl_pips": 11.556,
+      "phase5_gate_passed": true
+    },
+    {
+      "strategy_id": "COILED_COMPRESSION_LONG",
+      "trade_count": 67,
+      "expectancy_pips": 0.717164,
+      "net_pnl_pips": 48.05,
+      "phase5_gate_passed": true
+    }
+  ],
+  "locked_option_settings": {
+    "COILED_COMPRESSION_LONG": {
+      "live_options": [
+        {
+          "route_operating_mode": "COIL_EXPAND",
+          "option_id": "BALANCED"
+        },
+        {
+          "route_operating_mode": "COIL_EXPAND",
+          "option_id": "CONSERVATIVE"
+        }
+      ],
+      "probationary_options": [
+        {
+          "route_operating_mode": "COIL_BREAK",
+          "option_id": "CONSERVATIVE"
+        }
+      ]
+    },
+    "COMPRESSION_PRESSURE_LIFT_LONG": {
+      "live_options": [
+        {
+          "route_operating_mode": "PRESSURE_EXTENSION_QUALIFIED",
+          "option_id": "EXT_BALANCED"
+        },
+        {
+          "route_operating_mode": "PRESSURE_LIFT_CAPTURE",
+          "option_id": "CAPTURE_FAST"
+        }
+      ],
+      "probationary_options": [
+        {
+          "route_operating_mode": "COMPRESSION_SWING",
+          "option_id": "SWING_TIGHT"
+        }
+      ]
+    },
+    "FLOW_DRIFT_LONG": {
+      "live_options": [
+        {
+          "route_operating_mode": "LONG_DRIFT_CONFIRM",
+          "option_id": "LONG_CONFIRM_BALANCED"
+        },
+        {
+          "route_operating_mode": "LONG_DRIFT_REACCEL",
+          "option_id": "LONG_REACCEL_TIGHT"
+        }
+      ],
+      "probationary_options": [
+        {
+          "route_operating_mode": "LONG_DRIFT_REACCEL",
+          "option_id": "LONG_REACCEL_BALANCED"
+        }
+      ]
+    },
+    "FLOW_DRIFT_SHORT": {
+      "live_options": [
+        {
+          "route_operating_mode": "DRIFT_REACCEL",
+          "option_id": "REACCEL_BALANCED"
+        },
+        {
+          "route_operating_mode": "DRIFT_CONFIRM",
+          "option_id": "CONFIRM_BALANCED"
+        }
+      ],
+      "probationary_options": [
+        {
+          "route_operating_mode": "DRIFT_HARVEST",
+          "option_id": "HARVEST_BALANCED"
+        }
+      ]
+    },
+    "PRESSURE_DRIVE_LONG": {
+      "live_options": [
+        {
+          "route_operating_mode": "PRESSURE_DRIVE_EDGE",
+          "option_id": "CONSERVATIVE"
+        },
+        {
+          "route_operating_mode": "PRESSURE_DRIVE_EDGE",
+          "option_id": "BALANCED"
+        }
+      ],
+      "probationary_options": []
+    }
+  },
+  "excluded_previous_survivor_ids": [
+    "OSCILLATION_EDGE_SHORT_SCALP",
+    "TRANSITION_RELEASE_SHORT_STANDARD"
+  ],
+  "exclusion_notes": [
+    "OSCILLATION_EDGE_SHORT_SCALP is now fully filtered by saved pocket and option controls and is not part of the frozen profitable baseline.",
+    "TRANSITION_RELEASE_SHORT_STANDARD remains conflicted in doctrine-local reports and negative in the improved rerun, so it stays excluded."
+  ],
+  "upgrade_notes": [
+    "Phase 4 now reads dynamic profitable-pocket evidence from tier3 coverage artifacts.",
+    "Phase 4 now applies modest doctrine-local T6 charge and decay relief when the doctrine layer explicitly diagnoses over-strict trigger gating.",
+    "This freeze is the first baseline that reflects the saved doctrine-local control layer instead of leaving it as passive reporting."
+  ]
+}

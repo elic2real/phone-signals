@@ -1,0 +1,190 @@
+{
+  "artifact": "entry_aee_contract",
+  "version": "1.0.0",
+  "created_date": "2026-03-31",
+  "status": "ACTIVE_FOR_INTEGRATION",
+  "purpose": "Canonical handoff object between entry and AEE. Entry declares trade type; AEE must consume exactly the same object model without inference drift.",
+  "scope": {
+    "phase": "integration_and_proof",
+    "non_goals": [
+      "no kernel recovery",
+      "no architecture redesign",
+      "no pair/pocket rediscovery"
+    ]
+  },
+  "canonical_trade_packet": {
+    "required_fields": {
+      "trade_id": { "type": "string", "required": true },
+      "doctrine_family_id": { "type": "string", "required": true },
+      "doctrine_variant_id": { "type": "string", "required": true },
+      "entry_pocket_id": { "type": "string", "required": true },
+      "regime_id": { "type": "string", "required": true },
+      "pair": { "type": "string", "required": true, "pattern": "^[A-Z]{3}_[A-Z]{3}$" },
+      "session": { "type": "string", "required": true },
+      "direction": { "type": "string", "required": true, "enum": ["LONG", "SHORT"] },
+      "trade_horizon": { "type": "string", "required": true, "enum": ["SHORT_TERM", "LONG_TERM"] },
+      "trade_role": { "type": "string", "required": true, "enum": ["HARVEST", "RUNNER", "HYBRID"] },
+      "target_bucket_pips": { "type": "number", "required": true, "minimum": 1 },
+      "target_profile": { "type": "string", "required": true, "enum": ["MICRO", "STANDARD", "EXTENSION"] },
+      "doctrine_id": { "type": "string", "required": false },
+      "variant": { "type": "string", "required": false },
+      "surface_type": { "type": "string", "required": false },
+      "trigger_state": { "type": "string", "required": false },
+      "distance_mode": { "type": "string", "required": false },
+      "expected_progress_profile": { "type": "string", "required": true },
+      "entry_zone_id": { "type": "string", "required": true },
+      "entry_band_id": { "type": "string", "required": true },
+      "invalidation_type": { "type": "string", "required": true },
+      "timeout_profile": { "type": "string", "required": true },
+      "friction_profile": { "type": "string", "required": true },
+      "aee_params": { "type": "object", "required": false },
+      "payload_validated": { "type": "boolean", "required": false },
+      "doctrine_match_result": { "type": "string", "required": false }
+    },
+    "optional_fields": {
+      "packet_version": { "type": "string", "default": "1.0.0" },
+      "opened_at_utc": { "type": "string", "format": "date-time" },
+      "entry_price": { "type": "number" },
+      "risk_units": { "type": "number" }
+    }
+  },
+  "entry_output_contract": {
+    "rule": "Entry must emit canonical_trade_packet before trade is admitted to AEE management.",
+    "timing": "trade open finalization",
+    "immutability": [
+      "trade_horizon",
+      "trade_role",
+      "target_bucket_pips",
+      "target_profile",
+      "entry_pocket_id",
+      "doctrine_family_id",
+      "doctrine_variant_id"
+    ],
+    "rationale": "AEE must not reclassify core identity after open. Tactical adaptation is allowed, identity reinvention is forbidden."
+  },
+  "aee_input_contract": {
+    "rule": "AEE must read and use canonical_trade_packet as authoritative context.",
+    "forbidden_behavior": [
+      "inferring horizon from pnl-only heuristics",
+      "inferring trade_role without packet field",
+      "remapping pocket through fuzzy lookup",
+      "running management with missing doctrine identity"
+    ],
+    "required_consumption_fields": [
+      "doctrine_family_id",
+      "doctrine_variant_id",
+      "entry_pocket_id",
+      "trade_horizon",
+      "trade_role",
+      "target_bucket_pips",
+      "target_profile",
+      "doctrine_id",
+      "variant",
+      "surface_type",
+      "trigger_state",
+      "distance_mode",
+      "timeout_profile",
+      "friction_profile",
+      "aee_params"
+    ]
+  },
+  "short_vs_long_horizon_profiles": {
+    "SHORT_TERM": {
+      "intent": "quick completion",
+      "management_bias": [
+        "tighter timeout",
+        "tighter giveback tolerance",
+        "faster capture",
+        "lower extension tolerance"
+      ]
+    },
+    "LONG_TERM": {
+      "intent": "broader completion window",
+      "management_bias": [
+        "higher path-noise tolerance",
+        "greater extension allowance",
+        "more runner behavior",
+        "slower decay judgment"
+      ]
+    }
+  },
+  "role_profiles": {
+    "HARVEST": {
+      "intent": "capture planned target efficiently",
+      "aee_priority": "protect realized output over extension"
+    },
+    "RUNNER": {
+      "intent": "exploit continuation beyond base target",
+      "aee_priority": "protect productive runner with veto before intervention"
+    },
+    "HYBRID": {
+      "intent": "harvest then optional extension",
+      "aee_priority": "stage-based transition governed by packet + state"
+    }
+  },
+  "pocket_alignment_rules": {
+    "primary_rule": "aee_pocket_id == entry_pocket_id",
+    "allowed_derivation_rule": "If management sub-pocket is needed, it must be deterministically derived from entry_pocket_id and trade_role.",
+    "deterministic_derivation_example": {
+      "entry_pocket_id": "CONTINUATION__USDJPY__NY__LONG__SHORT_TERM",
+      "trade_role": "HARVEST",
+      "aee_management_profile_id": "CONTINUATION__USDJPY__NY__LONG__SHORT_TERM__HARVEST"
+    },
+    "forbidden": [
+      "entry pocket A -> aee pocket B through fuzzy mapper",
+      "missing derivation trace",
+      "runtime-only pocket substitution without packet update"
+    ]
+  },
+  "validation_rules": {
+    "reject_management_if_missing_any": [
+      "entry_pocket_id",
+      "trade_horizon",
+      "trade_role",
+      "target_bucket_pips",
+      "target_profile",
+      "doctrine_family_id",
+      "doctrine_variant_id"
+    ],
+    "reject_on_invalid_enum": [
+      "direction",
+      "trade_horizon",
+      "trade_role",
+      "target_profile"
+    ],
+    "reject_on_pocket_mismatch": "If aee_pocket_id differs from entry_pocket_id and no deterministic derivation record exists.",
+    "on_reject_action": [
+      "emit ENTRY_AEE_CONTRACT_VIOLATION event",
+      "skip challenger execution",
+      "fallback to current_runtime with explicit reason",
+      "mark trade as contract_invalid for audit"
+    ]
+  },
+  "logging_requirements": {
+    "event_name": "ENTRY_AEE_CONTRACT_AUDIT",
+    "required_fields": [
+      "trade_id",
+      "contract_version",
+      "contract_valid",
+      "missing_fields",
+      "entry_pocket_id",
+      "aee_pocket_id",
+      "derivation_used",
+      "trade_horizon",
+      "trade_role",
+      "target_profile",
+      "engine_path"
+    ]
+  },
+  "integration_links": {
+    "kernel_plan": "control/kernel_recovery/kernel_runtime_integration_plan.json",
+    "kernel_lock": "control/kernel_recovery/global_truth_kernel_lock.json",
+    "challenger_toggle": "AEE_KERNEL_CHALLENGER"
+  },
+  "acceptance_criteria": [
+    "100% of managed trades carry canonical_trade_packet",
+    "0 unresolved pocket mismatches",
+    "0 horizon/role inference without packet declaration",
+    "contract audit logs available for every trade"
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "artifact_id": "V2_PHASE5_BACKBONE_PROFIT_LEAK_REPORT",
+  "generated_at_utc": "2026-04-02T12:23:49.417126Z",
+  "rows": [
+    {
+      "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "before": {
+        "trade_count": 95,
+        "aborted_count": 68,
+        "expectancy_pips": 3.164084,
+        "net_pnl_pips": 300.588,
+        "avg_trade_value_pips": 3.164084,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "abort_reason_counts": {
+          "duplicate_trigger_suppressed": 1,
+          "insufficient_charge": 67
+        }
+      },
+      "after": {
+        "trade_count": 95,
+        "aborted_count": 68,
+        "expectancy_pips": 3.164084,
+        "net_pnl_pips": 300.588,
+        "avg_trade_value_pips": 3.164084,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "MICRO",
+          "SMALL"
+        ],
+        "abort_reason_counts": {
+          "duplicate_trigger_suppressed": 1,
+          "insufficient_charge": 67
+        }
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      },
+      "profit_leak_tags": [],
+      "after_top_variant_routes": [
+        {
+          "tier1_variant_id": "CAPTURE_EXTENSION",
+          "tier1_route_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED|EPISODE_POSITION|EARLY|CAPTURE_EXTENSION",
+          "trade_count": 11,
+          "aborted_count": 0,
+          "expectancy_pips": 9.162182,
+          "net_pnl_pips": 100.784,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "CAPTURE_EXTENSION",
+          "tier1_route_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED|ENERGY|DRIVE|CAPTURE_EXTENSION",
+          "trade_count": 7,
+          "aborted_count": 1,
+          "expectancy_pips": 8.507143,
+          "net_pnl_pips": 59.55,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "COMPRESSION_SWING",
+          "tier1_route_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED|LIFECYCLE|PATTERN_HARVEST|COMPRESSION_SWING",
+          "trade_count": 11,
+          "aborted_count": 1,
+          "expectancy_pips": 3.286364,
+          "net_pnl_pips": 36.15,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "CAPTURE_EXTENSION",
+          "tier1_route_id": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED|ENERGY|DRIVE|CAPTURE_EXTENSION",
+          "trade_count": 12,
+          "aborted_count": 0,
+          "expectancy_pips": 3.255417,
+          "net_pnl_pips": 39.065,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "CAPTURE_EXTENSION",
+          "tier1_route_id": "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE|EPISODE_POSITION|SINGLE|CAPTURE_EXTENSION",
+          "trade_count": 6,
+          "aborted_count": 0,
+          "expectancy_pips": 3.239833,
+          "net_pnl_pips": 19.439,
+          "phase5_gate_passed": true
+        }
+      ]
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "before": {
+        "trade_count": 26,
+        "aborted_count": 27,
+        "expectancy_pips": 1.128115,
+        "net_pnl_pips": 29.331,
+        "avg_trade_value_pips": 1.128115,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "abort_reason_counts": {
+          "option_pruned": 6,
+          "insufficient_charge": 20,
+          "kill_switch_decay": 1
+        }
+      },
+      "after": {
+        "trade_count": 26,
+        "aborted_count": 27,
+        "expectancy_pips": 1.128115,
+        "net_pnl_pips": 29.331,
+        "avg_trade_value_pips": 1.128115,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "MEDIUM",
+          "SMALL"
+        ],
+        "abort_reason_counts": {
+          "option_pruned": 6,
+          "insufficient_charge": 20,
+          "kill_switch_decay": 1
+        }
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      },
+      "profit_leak_tags": [],
+      "after_top_variant_routes": [
+        {
+          "tier1_variant_id": "DRIFT_CONFIRM",
+          "tier1_route_id": "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED|BASE|ALL|DRIFT_CONFIRM",
+          "trade_count": 1,
+          "aborted_count": 1,
+          "expectancy_pips": 7.618,
+          "net_pnl_pips": 7.618,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "CAPTURE_BALANCED",
+          "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|EXTENDED|BASE|ALL|CAPTURE_BALANCED",
+          "trade_count": 1,
+          "aborted_count": 1,
+          "expectancy_pips": 6.436,
+          "net_pnl_pips": 6.436,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "DRIFT_REACCEL",
+          "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|EXTENDED|PRECURSOR|PRESSURED|DRIFT_REACCEL",
+          "trade_count": 6,
+          "aborted_count": 2,
+          "expectancy_pips": 2.929167,
+          "net_pnl_pips": 17.575,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "CAPTURE_NEAR",
+          "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|LARGE|BASE|ALL|CAPTURE_NEAR",
+          "trade_count": 5,
+          "aborted_count": 1,
+          "expectancy_pips": 1.167,
+          "net_pnl_pips": 5.835,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "DRIFT_SCALP",
+          "tier1_route_id": "TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|LARGE|BASE|ALL|DRIFT_SCALP",
+          "trade_count": 3,
+          "aborted_count": 1,
+          "expectancy_pips": 0.163667,
+          "net_pnl_pips": 0.491,
+          "phase5_gate_passed": false
+        }
+      ]
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "before": {
+        "trade_count": 15,
+        "aborted_count": 17,
+        "expectancy_pips": 0.7704,
+        "net_pnl_pips": 11.556,
+        "avg_trade_value_pips": 0.7704,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "SMALL"
+        ],
+        "abort_reason_counts": {
+          "zone_misaligned": 3,
+          "insufficient_charge": 10,
+          "kill_switch_decay": 4
+        }
+      },
+      "after": {
+        "trade_count": 15,
+        "aborted_count": 17,
+        "expectancy_pips": 0.7704,
+        "net_pnl_pips": 11.556,
+        "avg_trade_value_pips": 0.7704,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE",
+          "SMALL"
+        ],
+        "abort_reason_counts": {
+          "zone_misaligned": 3,
+          "insufficient_charge": 10,
+          "kill_switch_decay": 4
+        }
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      },
+      "profit_leak_tags": [],
+      "after_top_variant_routes": [
+        {
+          "tier1_variant_id": "DRIFT_SCALP",
+          "tier1_route_id": "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_SCALP",
+          "trade_count": 2,
+          "aborted_count": 5,
+          "expectancy_pips": 2.438,
+          "net_pnl_pips": 4.876,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "DRIFT_STEP",
+          "tier1_route_id": "TRANSITION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|LARGE|BASE|ALL|DRIFT_STEP",
+          "trade_count": 1,
+          "aborted_count": 1,
+          "expectancy_pips": 2.267,
+          "net_pnl_pips": 2.267,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "CAPTURE_BALANCED",
+          "tier1_route_id": "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED|ENERGY|DRIVE|CAPTURE_BALANCED",
+          "trade_count": 6,
+          "aborted_count": 0,
+          "expectancy_pips": 1.6745,
+          "net_pnl_pips": 10.047,
+          "phase5_gate_passed": true
+        },
+        {
+          "tier1_variant_id": "DRIFT_REACCEL",
+          "tier1_route_id": "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|SMALL|BASE|ALL|DRIFT_REACCEL",
+          "trade_count": 1,
+          "aborted_count": 4,
+          "expectancy_pips": 0.85,
+          "net_pnl_pips": 0.85,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "DRIFT_STEP",
+          "tier1_route_id": "BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|EXTENDED|BASE|ALL|DRIFT_STEP",
+          "trade_count": 0,
+          "aborted_count": 2,
+          "expectancy_pips": 0.0,
+          "net_pnl_pips": 0,
+          "phase5_gate_passed": false
+        }
+      ]
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "before": {
+        "trade_count": 5,
+        "aborted_count": 47,
+        "expectancy_pips": -1.1336,
+        "net_pnl_pips": -5.668,
+        "avg_trade_value_pips": -1.1336,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 40,
+          "insufficient_charge": 5,
+          "kill_switch_decay": 2
+        }
+      },
+      "after": {
+        "trade_count": 5,
+        "aborted_count": 47,
+        "expectancy_pips": -1.1336,
+        "net_pnl_pips": -5.668,
+        "avg_trade_value_pips": -1.1336,
+        "target_distance_buckets": [
+          "EXTENDED",
+          "LARGE"
+        ],
+        "abort_reason_counts": {
+          "pocket_not_whitelisted": 40,
+          "insufficient_charge": 5,
+          "kill_switch_decay": 2
+        }
+      },
+      "delta": {
+        "trade_count": 0,
+        "aborted_count": 0,
+        "win_rate": 0.0,
+        "expectancy_pips": 0.0,
+        "net_pnl_pips": 0.0,
+        "phase5_gate_passed": false
+      },
+      "profit_leak_tags": [],
+      "after_top_variant_routes": [
+        {
+          "tier1_variant_id": "CAPTURE_SNAP",
+          "tier1_route_id": "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED|PRECURSOR|BALANCED|CAPTURE_SNAP",
+          "trade_count": 1,
+          "aborted_count": 11,
+          "expectancy_pips": 1.166,
+          "net_pnl_pips": 1.166,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "CAPTURE_EXTENSION",
+          "tier1_route_id": "EXPANSION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED|BASE|ALL|CAPTURE_EXTENSION",
+          "trade_count": 0,
+          "aborted_count": 7,
+          "expectancy_pips": 0.0,
+          "net_pnl_pips": 0,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "CAPTURE_EXTENSION",
+          "tier1_route_id": "TRANSITION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED|PRECURSOR|PRESSURED|CAPTURE_EXTENSION",
+          "trade_count": 0,
+          "aborted_count": 14,
+          "expectancy_pips": 0.0,
+          "net_pnl_pips": 0,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "CAPTURE_FULL",
+          "tier1_route_id": "TRANSITION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED|ENERGY|IGNITION|CAPTURE_FULL",
+          "trade_count": 0,
+          "aborted_count": 2,
+          "expectancy_pips": 0.0,
+          "net_pnl_pips": 0,
+          "phase5_gate_passed": false
+        },
+        {
+          "tier1_variant_id": "CAPTURE_FULL",
+          "tier1_route_id": "TRANSITION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED|BASE|ALL|CAPTURE_FULL",
+          "trade_count": 2,
+          "aborted_count": 4,
+          "expectancy_pips": -1.028,
+          "net_pnl_pips": -2.056,
+          "phase5_gate_passed": false
+        }
+      ]
+    }
+  ]
+}

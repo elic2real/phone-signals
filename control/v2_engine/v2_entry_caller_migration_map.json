@@ -1,0 +1,40 @@
+{
+  "artifact_id": "V2_ENTRY_CALLER_MIGRATION_MAP",
+  "status": "ACTIVE_PARTIAL",
+  "canonical_targets": {
+    "entry_registry": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\engine\\entry\\doctrine_entry_registry.py",
+    "entry_packet_builder": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\engine\\entry\\entry_packet_builder.py",
+    "trade_gateway": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\engine\\in_between\\trade_gateway_engine.py",
+    "aee_runtime_manager": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\engine\\aee\\runtime_manager.py"
+  },
+  "callers": [
+    {
+      "path": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\phone_bot.py",
+      "current_surface": "local check_economic_viability and runtime entry gating",
+      "migration_target": "engine/in_between/economic_engine.py",
+      "status": "PARTIAL",
+      "reason": "runtime economic gate now delegates to canonical gateway economics, but full packet ownership is still pending"
+    },
+    {
+      "path": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\github_repo\\phone_bot.py",
+      "current_surface": "canonical live runtime entry with local economic gate",
+      "migration_target": "engine/in_between/trade_gateway_engine.py",
+      "status": "PARTIAL",
+      "reason": "live runtime economic gate now delegates to canonical gateway economics, but full gateway packet handoff before AEE is still pending"
+    },
+    {
+      "path": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\tools\\runtime_to_replay_bridge.py",
+      "current_surface": "manual setup and doctrine family normalization from logs",
+      "migration_target": "engine/in_between/intent_normalizer.py",
+      "status": "MIGRATED",
+      "reason": "bridge now builds canonical gateway packets instead of reconstructing doctrine identity ad hoc"
+    },
+    {
+      "path": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\runtime_stack_contract.json",
+      "current_surface": "legacy runtime entry and bridge pointers",
+      "migration_target": "control/v2_engine/v2_entry_to_aee_contract.json",
+      "status": "PENDING",
+      "reason": "control-layer runtime contract should reference canonical packet surfaces after caller migration"
+    }
+  ]
+}

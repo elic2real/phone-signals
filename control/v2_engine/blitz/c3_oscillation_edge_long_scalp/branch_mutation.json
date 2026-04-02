@@ -1,0 +1,22 @@
+{
+  "phase2_survivor_override": {
+    "OSCILLATION_EDGE_LONG_SCALP": {
+      "allow_relaxed_fragile_scalp_lane": true,
+      "minimum_cluster_size": 12,
+      "minimum_trade_count": 3,
+      "minimum_selected_expression_count": 1,
+      "minimum_positive_route_count": 1,
+      "minimum_positive_route_trade_count": 3,
+      "minimum_positive_route_expectancy_pips": 0.0
+    }
+  },
+  "regime_filter": {
+    "OSCILLATION_EDGE_LONG_SCALP": {
+      "exclude_regime_states": [
+        "EXPANSION"
+      ],
+      "max_volatility_percentile": 0.67,
+      "max_anchor_velocity_pips_per_sec": 0.35
+    }
+  }
+}

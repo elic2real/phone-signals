@@ -1,0 +1,72 @@
+{
+  "artifact_id": "V2_PARALLEL_EXTRACTION_BLITZ_PROTOCOL",
+  "version": "1.0",
+  "generated_policy": "MANUAL_REPO_NATIVE",
+  "shared_harness": {
+    "dataset_fixture_source": "control/v2_engine/v2_determinism_lock.json",
+    "baseline_report": "control/v2_engine/phase5/v2_phase5_evaluation_report.before_wave1.json",
+    "phase5_rows_report": "control/v2_engine/phase5/phase5_evaluation_rows.json",
+    "is_scenarios": [
+      "trend_continuation",
+      "panic_reversal",
+      "chop_mean_reversion",
+      "spread_widening"
+    ],
+    "oos_scenarios": [
+      "whipsaw_spike_fade",
+      "slow_grind_break"
+    ],
+    "metric_set": [
+      "expectancy_pips",
+      "win_rate",
+      "profit_factor",
+      "sharpe",
+      "sortino",
+      "capture_rate",
+      "net_pnl_pips"
+    ],
+    "portfolio_gate": {
+      "correlation_threshold": 0.85,
+      "minimum_positive_oos_strategies": 1
+    }
+  },
+  "contracts": [
+    {
+      "contract_id": "C1_FLOW_DRIFT_SHORT",
+      "namespace": "c1_flow_drift_short",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "tier_target": "T6_DECAY_ONLY",
+      "baseline_source": "phase5_runtime",
+      "success_contract": {
+        "capture_rate_delta_min": 0.12,
+        "expectancy_pips_min": 0.9,
+        "win_rate_drawdown_max": 0.02
+      },
+      "fail_action": "REVERT_T6_DECAY_AND_FREEZE_T6_FOR_DOCTRINE"
+    },
+    {
+      "contract_id": "C2_TRANSITION_RELEASE_SHORT_STANDARD",
+      "namespace": "c2_transition_release_short_standard",
+      "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "tier_target": "T1_CONFIRMATION_VS_DIRECT_ONLY",
+      "baseline_source": "phase5_runtime",
+      "success_contract": {
+        "net_pnl_ratio_min": 0.9,
+        "profit_factor_min": 1.5
+      },
+      "fail_action": "BURN_CONFIRMATION_EXTENSION_BRANCH_AND_REVERT_TO_STANDARD_EXTRACTION"
+    },
+    {
+      "contract_id": "C3_OSCILLATION_EDGE_LONG_SCALP",
+      "namespace": "c3_oscillation_edge_long_scalp",
+      "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "tier_target": "PHASE2_ADMISSION_PLUS_T2_REGIME_ONLY",
+      "baseline_source": "phase2_research_only_until_runtime_admission",
+      "success_contract": {
+        "sharpe_ratio_gain_min": 0.15,
+        "sortino_ratio_gain_min": 0.15
+      },
+      "fail_action": "BLACKLIST_FROM_RUNTIME_AND_STOP_DOWNSTREAM_TUNING"
+    }
+  ]
+}

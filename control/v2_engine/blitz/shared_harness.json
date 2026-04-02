@@ -1,0 +1,39 @@
+{
+  "artifact_id": "V2_BLITZ_SHARED_HARNESS",
+  "generated_at_utc": "2026-04-01T23:06:11.800186Z",
+  "dataset_fixture": {
+    "seed": 20260401,
+    "scenario_source": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\v2_determinism_lock.json",
+    "scenario_names": [
+      "trend_continuation",
+      "panic_reversal",
+      "chop_mean_reversion",
+      "spread_widening",
+      "whipsaw_spike_fade",
+      "slow_grind_break"
+    ],
+    "max_profiles_per_scenario": 12,
+    "profile_stride": 25
+  },
+  "is_window": [
+    "trend_continuation",
+    "panic_reversal",
+    "chop_mean_reversion",
+    "spread_widening"
+  ],
+  "oos_window": [
+    "whipsaw_spike_fade",
+    "slow_grind_break"
+  ],
+  "metric_set": [
+    "expectancy_pips",
+    "win_rate",
+    "profit_factor",
+    "sharpe",
+    "sortino",
+    "capture_rate",
+    "net_pnl_pips"
+  ],
+  "baseline_report": "control/v2_engine/phase5/v2_phase5_evaluation_report.before_wave1.json",
+  "phase5_rows_report": "control/v2_engine/phase5/phase5_evaluation_rows.json"
+}

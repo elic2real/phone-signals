@@ -1,0 +1,709 @@
+{
+  "row_count": 723,
+  "unique_rr_values": [
+    [
+      1.333333,
+      702
+    ],
+    [
+      1.2,
+      15
+    ],
+    [
+      1.333334,
+      3
+    ],
+    [
+      1.288421,
+      2
+    ],
+    [
+      1.250526,
+      1
+    ]
+  ],
+  "unique_ttl_values": [
+    [
+      22.0,
+      320
+    ],
+    [
+      30.0,
+      188
+    ],
+    [
+      8.0,
+      91
+    ],
+    [
+      14.0,
+      56
+    ],
+    [
+      10.0,
+      32
+    ],
+    [
+      27.5,
+      22
+    ],
+    [
+      37.5,
+      8
+    ],
+    [
+      17.5,
+      6
+    ]
+  ],
+  "doctrines": [
+    {
+      "doctrine_id": "COMPRESSION_PRESSURE_DROP_SHORT",
+      "viable": false,
+      "row_count": 21,
+      "rr_values": [
+        [
+          1.333333,
+          21
+        ]
+      ],
+      "ttl_values": [
+        [
+          22.0,
+          12
+        ],
+        [
+          30.0,
+          6
+        ],
+        [
+          27.5,
+          2
+        ],
+        [
+          8.0,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 19,
+        "EXPANSION": 2
+      },
+      "session_mix": {
+        "STABLE": 10,
+        "BLEEDING": 10,
+        "INJECTING": 1
+      },
+      "target_range": [
+        1.35,
+        8.749125
+      ],
+      "stop_range": [
+        1.0125,
+        6.561844
+      ]
+    },
+    {
+      "doctrine_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "viable": true,
+      "row_count": 121,
+      "rr_values": [
+        [
+          1.333333,
+          121
+        ]
+      ],
+      "ttl_values": [
+        [
+          30.0,
+          55
+        ],
+        [
+          22.0,
+          51
+        ],
+        [
+          14.0,
+          11
+        ],
+        [
+          8.0,
+          4
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 84,
+        "EXPANSION": 37
+      },
+      "session_mix": {
+        "STABLE": 63,
+        "BLEEDING": 36,
+        "INJECTING": 22
+      },
+      "target_range": [
+        1.71,
+        6.93
+      ],
+      "stop_range": [
+        1.2825,
+        5.1975
+      ]
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_LONG_REVERSAL_SCALP",
+      "viable": false,
+      "row_count": 3,
+      "rr_values": [
+        [
+          1.333333,
+          3
+        ]
+      ],
+      "ttl_values": [
+        [
+          30.0,
+          3
+        ]
+      ],
+      "regime_mix": {
+        "COMPRESSION": 2,
+        "BALANCED": 1
+      },
+      "session_mix": {
+        "STABLE": 2,
+        "INJECTING": 1
+      },
+      "target_range": [
+        1.71,
+        2.61
+      ],
+      "stop_range": [
+        1.2825,
+        1.9575
+      ]
+    },
+    {
+      "doctrine_id": "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+      "viable": null,
+      "row_count": 5,
+      "rr_values": [
+        [
+          1.333333,
+          5
+        ]
+      ],
+      "ttl_values": [
+        [
+          14.0,
+          4
+        ],
+        [
+          8.0,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "EXPANSION": 3,
+        "BALANCED": 2
+      },
+      "session_mix": {
+        "INJECTING": 2,
+        "STABLE": 3
+      },
+      "target_range": [
+        3.36,
+        5.715
+      ],
+      "stop_range": [
+        2.52,
+        4.28625
+      ]
+    },
+    {
+      "doctrine_id": "FLOW_DRIFT_LONG",
+      "viable": true,
+      "row_count": 24,
+      "rr_values": [
+        [
+          1.333333,
+          24
+        ]
+      ],
+      "ttl_values": [
+        [
+          22.0,
+          16
+        ],
+        [
+          8.0,
+          5
+        ],
+        [
+          10.0,
+          2
+        ],
+        [
+          27.5,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 17,
+        "EXPANSION": 7
+      },
+      "session_mix": {
+        "BLEEDING": 3,
+        "STABLE": 16,
+        "INJECTING": 5
+      },
+      "target_range": [
+        1.8,
+        10.47825
+      ],
+      "stop_range": [
+        1.35,
+        7.858688
+      ]
+    },
+    {
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "viable": true,
+      "row_count": 29,
+      "rr_values": [
+        [
+          1.333333,
+          29
+        ]
+      ],
+      "ttl_values": [
+        [
+          30.0,
+          7
+        ],
+        [
+          22.0,
+          7
+        ],
+        [
+          10.0,
+          5
+        ],
+        [
+          27.5,
+          4
+        ],
+        [
+          14.0,
+          3
+        ],
+        [
+          8.0,
+          1
+        ],
+        [
+          37.5,
+          1
+        ],
+        [
+          17.5,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "COMPRESSION": 6,
+        "BALANCED": 19,
+        "EXPANSION": 4
+      },
+      "session_mix": {
+        "STABLE": 18,
+        "BLEEDING": 7,
+        "INJECTING": 4
+      },
+      "target_range": [
+        1.71,
+        9.59085
+      ],
+      "stop_range": [
+        1.2825,
+        7.193137
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "viable": true,
+      "row_count": 62,
+      "rr_values": [
+        [
+          1.333333,
+          59
+        ],
+        [
+          1.2,
+          2
+        ],
+        [
+          1.288421,
+          1
+        ]
+      ],
+      "ttl_values": [
+        [
+          22.0,
+          36
+        ],
+        [
+          30.0,
+          20
+        ],
+        [
+          14.0,
+          3
+        ],
+        [
+          27.5,
+          2
+        ],
+        [
+          37.5,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 51,
+        "EXPANSION": 8,
+        "COMPRESSION": 3
+      },
+      "session_mix": {
+        "STABLE": 37,
+        "BLEEDING": 19,
+        "INJECTING": 6
+      },
+      "target_range": [
+        1.425,
+        6.795
+      ],
+      "stop_range": [
+        1.1475,
+        5.09625
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_EDGE_SHORT_SCALP",
+      "viable": true,
+      "row_count": 26,
+      "rr_values": [
+        [
+          1.333333,
+          24
+        ],
+        [
+          1.2,
+          2
+        ]
+      ],
+      "ttl_values": [
+        [
+          22.0,
+          18
+        ],
+        [
+          30.0,
+          5
+        ],
+        [
+          27.5,
+          2
+        ],
+        [
+          14.0,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 23,
+        "COMPRESSION": 2,
+        "EXPANSION": 1
+      },
+      "session_mix": {
+        "STABLE": 12,
+        "INJECTING": 6,
+        "BLEEDING": 8
+      },
+      "target_range": [
+        1.425,
+        7.420875
+      ],
+      "stop_range": [
+        1.1875,
+        5.565656
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+      "viable": true,
+      "row_count": 198,
+      "rr_values": [
+        [
+          1.333333,
+          190
+        ],
+        [
+          1.2,
+          6
+        ],
+        [
+          1.250526,
+          1
+        ],
+        [
+          1.288421,
+          1
+        ]
+      ],
+      "ttl_values": [
+        [
+          22.0,
+          123
+        ],
+        [
+          30.0,
+          62
+        ],
+        [
+          14.0,
+          13
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 151,
+        "COMPRESSION": 15,
+        "EXPANSION": 32
+      },
+      "session_mix": {
+        "STABLE": 104,
+        "INJECTING": 42,
+        "BLEEDING": 52
+      },
+      "target_range": [
+        1.425,
+        6.66
+      ],
+      "stop_range": [
+        1.1875,
+        4.995
+      ]
+    },
+    {
+      "doctrine_id": "OSCILLATION_PRESSURE_BUILD_SHORT",
+      "viable": false,
+      "row_count": 110,
+      "rr_values": [
+        [
+          1.333333,
+          107
+        ],
+        [
+          1.2,
+          2
+        ],
+        [
+          1.333334,
+          1
+        ]
+      ],
+      "ttl_values": [
+        [
+          22.0,
+          57
+        ],
+        [
+          30.0,
+          30
+        ],
+        [
+          27.5,
+          11
+        ],
+        [
+          37.5,
+          6
+        ],
+        [
+          14.0,
+          4
+        ],
+        [
+          8.0,
+          1
+        ],
+        [
+          17.5,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 79,
+        "COMPRESSION": 23,
+        "EXPANSION": 8
+      },
+      "session_mix": {
+        "STABLE": 56,
+        "BLEEDING": 38,
+        "INJECTING": 16
+      },
+      "target_range": [
+        1.35,
+        7.98875
+      ],
+      "stop_range": [
+        1.0125,
+        5.991562
+      ]
+    },
+    {
+      "doctrine_id": "PRESSURE_DRIVE_SHORT",
+      "viable": null,
+      "row_count": 6,
+      "rr_values": [
+        [
+          1.333333,
+          6
+        ]
+      ],
+      "ttl_values": [
+        [
+          14.0,
+          2
+        ],
+        [
+          17.5,
+          2
+        ],
+        [
+          8.0,
+          1
+        ],
+        [
+          10.0,
+          1
+        ]
+      ],
+      "regime_mix": {
+        "EXPANSION": 2,
+        "BALANCED": 4
+      },
+      "session_mix": {
+        "STABLE": 4,
+        "BLEEDING": 2
+      },
+      "target_range": [
+        3.36,
+        8.36675
+      ],
+      "stop_range": [
+        2.52,
+        6.275062
+      ]
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_LONG_STANDARD",
+      "viable": false,
+      "row_count": 65,
+      "rr_values": [
+        [
+          1.333333,
+          64
+        ],
+        [
+          1.2,
+          1
+        ]
+      ],
+      "ttl_values": [
+        [
+          8.0,
+          49
+        ],
+        [
+          14.0,
+          11
+        ],
+        [
+          10.0,
+          5
+        ]
+      ],
+      "regime_mix": {
+        "EXPANSION": 25,
+        "BALANCED": 40
+      },
+      "session_mix": {
+        "INJECTING": 26,
+        "STABLE": 33,
+        "BLEEDING": 6
+      },
+      "target_range": [
+        1.425,
+        10.47825
+      ],
+      "stop_range": [
+        1.1875,
+        7.858688
+      ]
+    },
+    {
+      "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "viable": true,
+      "row_count": 53,
+      "rr_values": [
+        [
+          1.333333,
+          49
+        ],
+        [
+          1.2,
+          2
+        ],
+        [
+          1.333334,
+          2
+        ]
+      ],
+      "ttl_values": [
+        [
+          8.0,
+          28
+        ],
+        [
+          10.0,
+          19
+        ],
+        [
+          14.0,
+          4
+        ],
+        [
+          17.5,
+          2
+        ]
+      ],
+      "regime_mix": {
+        "BALANCED": 33,
+        "EXPANSION": 20
+      },
+      "session_mix": {
+        "STABLE": 31,
+        "INJECTING": 16,
+        "BLEEDING": 6
+      },
+      "target_range": [
+        1.425,
+        10.829
+      ],
+      "stop_range": [
+        1.1875,
+        8.12175
+      ]
+    }
+  ]
+}

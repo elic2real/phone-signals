@@ -1,0 +1,92 @@
+{
+  "artifact_id": "V2_PHASE4_ADJUSTMENT_OPTION_REPORT",
+  "generated_at_utc": "2026-04-01T23:06:14.701361Z",
+  "option_routes": [
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "route_operating_mode": "DRIFT_CONFIRM",
+      "selected_adjustment_option_id": "CONFIRM_BALANCED",
+      "result_count": 5,
+      "ready_count": 3,
+      "aborted_count": 2,
+      "ready_share": 0.6
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "route_operating_mode": "DRIFT_HARVEST",
+      "selected_adjustment_option_id": "HARVEST_BALANCED",
+      "result_count": 17,
+      "ready_count": 5,
+      "aborted_count": 12,
+      "ready_share": 0.294118
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "route_operating_mode": "DRIFT_REACCEL",
+      "selected_adjustment_option_id": "REACCEL_BALANCED",
+      "result_count": 7,
+      "ready_count": 5,
+      "aborted_count": 2,
+      "ready_share": 0.714286
+    }
+  ],
+  "option_ladders": [
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "route_operating_mode": "DRIFT_CONFIRM",
+      "option_ladder": [
+        {
+          "option_id": "CONFIRM_BALANCED",
+          "label": "Confirm balanced",
+          "energy_floor_multiplier": 0.95,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.8,
+          "target_scale": 0.98,
+          "stop_scale": 0.94,
+          "ttl_scale": 0.96,
+          "ttl_min": 5,
+          "ttl_max": 12,
+          "option_status": "LIVE"
+        }
+      ]
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "route_operating_mode": "DRIFT_HARVEST",
+      "option_ladder": [
+        {
+          "option_id": "HARVEST_BALANCED",
+          "label": "Harvest balanced",
+          "energy_floor_multiplier": 0.98,
+          "confirmation_window_delta": 0,
+          "confirmation_ratio": 0.82,
+          "target_scale": 0.95,
+          "stop_scale": 0.92,
+          "ttl_scale": 0.9,
+          "ttl_min": 4,
+          "ttl_max": 10,
+          "option_status": "PROBATIONARY"
+        }
+      ]
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "route_operating_mode": "DRIFT_REACCEL",
+      "option_ladder": [
+        {
+          "option_id": "REACCEL_BALANCED",
+          "label": "Reaccel balanced",
+          "energy_floor_multiplier": 0.92,
+          "confirmation_window_delta": 1,
+          "confirmation_ratio": 0.78,
+          "target_scale": 1.05,
+          "stop_scale": 0.95,
+          "ttl_scale": 1.0,
+          "ttl_min": 6,
+          "ttl_max": 14,
+          "option_status": "LIVE"
+        }
+      ]
+    }
+  ]
+}

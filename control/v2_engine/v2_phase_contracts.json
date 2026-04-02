@@ -1,0 +1,186 @@
+{
+  "artifact_id": "V2_PHASE_CONTRACTS",
+  "version": "1.1",
+  "phases": [
+    {
+      "phase": "PHASE_1",
+      "name": "Tier 0 Physics Engine",
+      "required_outputs": [
+        "control/v2_engine/phase1/v2_phase1_execution_report.json",
+        "control/v2_engine/phase1/v2_phase1_sample_profiles.json",
+        "control/v2_engine/phase1/v2_phase1_scenario_summary.json",
+        "control/v2_engine/phase1/v2_phase1_discovery_map.json"
+      ],
+      "pass_gates": [
+        "all scenarios produce sanitized output",
+        "no unhandled NaN or Infinity in synthesized profiles",
+        "at least one spread anomaly is detected in spread stress scenarios",
+        "at least one compression state and one expansion state are observed across the run"
+      ],
+      "input_schema": {
+        "tick_fields": [
+          "instrument",
+          "ts",
+          "bid",
+          "ask"
+        ],
+        "optional_fields": [
+          "mid",
+          "volume"
+        ]
+      },
+      "output_schema": {
+        "profile_fields": [
+          "profile_id",
+          "displacement_score",
+          "net_displacement_pips",
+          "friction_threshold_pips",
+          "usable_available_pips",
+          "extractable",
+          "pattern_qualified_opportunity",
+          "distance_to_floor_pips",
+          "distance_to_ceiling_pips",
+          "compression_ratio",
+          "velocity_pips_per_sec",
+          "acceleration_pips_per_sec2",
+          "energy_state",
+          "zone_state",
+          "time_in_zone_sec",
+          "tick_cadence_sec",
+          "velocity_pips_per_bar",
+          "acceleration_pips_per_bar",
+          "impulse_ratio",
+          "direction_group",
+          "discovered_distance_pips",
+          "target_distance_bucket",
+          "extraction_signature",
+          "precursor_family_id",
+          "topology_family_id",
+          "location_relation_id",
+          "distance_family_id",
+          "energy_family_id",
+          "lifecycle_stage",
+          "parent_pattern_id",
+          "parent_episode_id",
+          "opportunity_episode_id",
+          "overlap_group_id",
+          "episode_position",
+          "data_confidence",
+          "pattern_match_state",
+          "live_recognition_state"
+        ]
+      }
+    },
+    {
+      "phase": "PHASE_1B",
+      "name": "Tier 1 Global Truth Kernel",
+      "required_outputs": [
+        "control/v2_engine/tier1/v2_truth_kernel_plan.json",
+        "control/v2_engine/tier1/v2_truth_kernel_inventory.json",
+        "control/v2_engine/tier1/v2_phase1_truth_kernel_rows.json"
+      ],
+      "pass_gates": [
+        "truth primitives are emitted before doctrine composition",
+        "movement, structure, direction, precursor, energy, quality, and event kernels are explicitly defined",
+        "global slots for macro bias, htf zone, and liquidity map are reserved even if unimplemented",
+        "doctrine creation is documented as a composition step on top of truth kernels"
+      ],
+      "output_schema": {
+        "truth_kernel_fields": [
+          "movement_kernel",
+          "structure_kernel",
+          "direction_kernel",
+          "precursor_kernel",
+          "energy_kernel",
+          "quality_kernel",
+          "event_kernel",
+          "global_slots",
+          "kernel_signature"
+        ]
+      }
+    },
+    {
+      "phase": "PHASE_2",
+      "name": "Doctrine Formalization And Support Contracts",
+      "required_outputs": [
+        "control/v2_engine/phase2/v2_phase2_cluster_report.json"
+      ],
+      "pass_gates": [
+        "doctrine ids are deterministic",
+        "long and short doctrine logic remain separated",
+        "raw opportunity coverage is published before doctrine performance filtering",
+        "each doctrine preserves multi-distance expressions",
+        "each doctrine publishes a support contract for assignment",
+        "each doctrine is run through a global unrestricted extraction simulation",
+        "only profitable doctrine survivors are allowed into Tier 2",
+        "no asset or pnl fields are used in doctrine features"
+      ],
+      "output_schema": {
+        "doctrine_fields": [
+          "doctrine_id",
+          "doctrine_source",
+          "pattern_match_state",
+          "direction_group",
+          "support_contract",
+          "support_core_topology_family_ids",
+          "support_core_location_relation_ids",
+          "support_core_precursor_states",
+          "support_core_energy_states",
+          "support_signatures",
+          "allowed_target_distance_buckets",
+          "allowed_distance_families",
+          "distance_expression_count",
+          "distance_expressions",
+          "tier1_extraction_summary",
+          "tier1_survivor"
+        ]
+      }
+    },
+    {
+      "phase": "PHASE_3",
+      "name": "Context Modifiers And Projection Axis",
+      "required_outputs": [
+        "control/v2_engine/phase3/v2_phase3_context_report.json"
+      ],
+      "pass_gates": [
+        "regime modifier exists",
+        "session modifier exists",
+        "instrument calibration exists",
+        "projection axis exists",
+        "doctrine-aware projection layer exists"
+      ]
+    },
+    {
+      "phase": "PHASE_4",
+      "name": "Convergence Matrix And Trigger Trap",
+      "required_outputs": [
+        "control/v2_engine/phase4/v2_phase4_trigger_report.json"
+      ],
+      "pass_gates": [
+        "trigger traps have ttl",
+        "trigger traps have energy minimum",
+        "abort logic is active",
+        "doctrine-aware trigger geometry exists",
+        "doctrine-aware target stop ttl policy exists"
+      ]
+    },
+    {
+      "phase": "PHASE_5",
+      "name": "Evaluation Firewall",
+      "required_outputs": [
+        "control/v2_engine/phase5/v2_phase5_evaluation_report.json",
+        "control/v2_engine/v2_entry_strategy_registry.json",
+        "control/v2_engine/v2_canonical_stack.json",
+        "control/v2_engine/v2_entry_to_aee_contract.json",
+        "control/v2_engine/v2_legacy_surface_registry.json",
+        "control/v2_engine/v2_performance_gate.json"
+      ],
+      "pass_gates": [
+        "evaluation remains one-way",
+        "at least one viable strategy survives",
+        "canonical path contract is published",
+        "final strategies clear the minimum performance gate"
+      ]
+    }
+  ]
+}

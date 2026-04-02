@@ -1,0 +1,12 @@
+{
+  "contract_id": "C2_TRANSITION_RELEASE_SHORT_STANDARD",
+  "namespace": "c2_transition_release_short_standard",
+  "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+  "tier_target": "T1_CONFIRMATION_VS_DIRECT_ONLY",
+  "baseline_source": "phase5_runtime",
+  "success_contract": {
+    "net_pnl_ratio_min": 0.9,
+    "profit_factor_min": 1.5
+  },
+  "fail_action": "BURN_CONFIRMATION_EXTENSION_BRANCH_AND_REVERT_TO_STANDARD_EXTRACTION"
+}

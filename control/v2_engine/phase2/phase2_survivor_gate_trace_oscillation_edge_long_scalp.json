@@ -1,0 +1,30 @@
+{
+  "artifact_id": "V2_PHASE2_SURVIVOR_GATE_TRACE",
+  "generated_at_utc": "2026-04-02T12:23:49.424400Z",
+  "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+  "actual": {
+    "cluster_size": 59,
+    "trade_count": 20,
+    "win_rate": 0.55,
+    "expectancy_pips": 0.67635,
+    "net_pnl_pips": 13.527,
+    "selected_expression_count": 10
+  },
+  "thresholds": {
+    "cluster_size": 4,
+    "trade_count": 3,
+    "win_rate": 0.45,
+    "expectancy_pips": 0.01,
+    "net_pnl_pips": 0.01,
+    "selected_expression_count": 1
+  },
+  "gate_results": {
+    "cluster_size": true,
+    "trade_count": true,
+    "win_rate": true,
+    "expectancy_pips": true,
+    "net_pnl_pips": true,
+    "selected_expression_count": true
+  },
+  "diagnosis": "Low-count scalp family fails generic survivor economics despite sufficient cluster size and trade count."
+}

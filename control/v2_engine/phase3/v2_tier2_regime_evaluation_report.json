@@ -1,0 +1,127 @@
+{
+  "artifact_id": "V2_TIER2_REGIME_EVALUATION_REPORT",
+  "generated_at_utc": "2026-04-01T23:12:03.708965Z",
+  "tier": "TIER_2",
+  "row_count": 106,
+  "active_doctrine_count": 3,
+  "promotion_registry_status": "READY",
+  "promoted_strategy_ids": [
+    "FLOW_DRIFT_LONG",
+    "FLOW_DRIFT_SHORT",
+    "TRANSITION_RELEASE_SHORT_STANDARD"
+  ],
+  "deferred_active_runtime_ids": [
+    "COMPRESSION_PRESSURE_LIFT_LONG",
+    "OSCILLATION_EDGE_SHORT_SCALP",
+    "OSCILLATION_PRESSURE_BUILD_LONG"
+  ],
+  "regime_summary": {
+    "BALANCED": {
+      "trade_count": 30,
+      "win_rate": 0.633333,
+      "expectancy_pips": 1.488067,
+      "net_pnl_pips": 44.642
+    },
+    "COMPRESSION": {
+      "trade_count": 2,
+      "win_rate": 1.0,
+      "expectancy_pips": 2.766,
+      "net_pnl_pips": 5.532
+    },
+    "EXPANSION": {
+      "trade_count": 14,
+      "win_rate": 0.5,
+      "expectancy_pips": 0.05,
+      "net_pnl_pips": 0.7
+    }
+  },
+  "best_regime_by_strategy": [
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "best_regime_state": "BALANCED",
+      "best_regime_expectancy_pips": 2.429867,
+      "worst_regime_state": "EXPANSION",
+      "worst_regime_expectancy_pips": -0.3625,
+      "regime_edge_spread_pips": 2.792367
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "best_regime_state": "COMPRESSION",
+      "best_regime_expectancy_pips": 2.766,
+      "worst_regime_state": "BALANCED",
+      "worst_regime_expectancy_pips": 0.273778,
+      "regime_edge_spread_pips": 2.492222
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "best_regime_state": "BALANCED",
+      "best_regime_expectancy_pips": 0.955,
+      "worst_regime_state": "EXPANSION",
+      "worst_regime_expectancy_pips": 0.25,
+      "regime_edge_spread_pips": 0.705
+    }
+  ],
+  "strategy_regime_summary": [
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "regime_state": "BALANCED",
+      "trade_count": 6,
+      "win_rate": 0.5,
+      "expectancy_pips": 0.955,
+      "net_pnl_pips": 5.73
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "regime_state": "EXPANSION",
+      "trade_count": 4,
+      "win_rate": 0.5,
+      "expectancy_pips": 0.25,
+      "net_pnl_pips": 1.0
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "regime_state": "COMPRESSION",
+      "trade_count": 2,
+      "win_rate": 1.0,
+      "expectancy_pips": 2.766,
+      "net_pnl_pips": 5.532
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "regime_state": "EXPANSION",
+      "trade_count": 2,
+      "win_rate": 0.5,
+      "expectancy_pips": 1.3,
+      "net_pnl_pips": 2.6
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "regime_state": "BALANCED",
+      "trade_count": 9,
+      "win_rate": 0.444444,
+      "expectancy_pips": 0.273778,
+      "net_pnl_pips": 2.464
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "regime_state": "BALANCED",
+      "trade_count": 15,
+      "win_rate": 0.8,
+      "expectancy_pips": 2.429867,
+      "net_pnl_pips": 36.448
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "regime_state": "EXPANSION",
+      "trade_count": 8,
+      "win_rate": 0.5,
+      "expectancy_pips": -0.3625,
+      "net_pnl_pips": -2.9
+    }
+  ],
+  "notes": [
+    "Tier 2 evaluation measures strategy behavior by regime_state after Tier 1 doctrine assignment.",
+    "This is still pnl-blind inside discovery; pnl is applied only in the evaluation step used for this audit.",
+    "Tier 2 now inherits only the locked Tier 1 promoted set instead of dragging frozen research-only survivors upward."
+  ]
+}

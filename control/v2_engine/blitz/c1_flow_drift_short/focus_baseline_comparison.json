@@ -1,0 +1,95 @@
+{
+  "artifact_id": "V2_FOCUSED_BASELINE_COMPARISON",
+  "generated_at_utc": "2026-04-01T23:06:14.712070Z",
+  "strategy_id": "FLOW_DRIFT_SHORT",
+  "baseline_report": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report.before_wave1.json",
+  "current_report": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report_flow_drift_short.json",
+  "before": {
+    "strategy_id": "FLOW_DRIFT_SHORT",
+    "trade_count": 17,
+    "aborted_count": 12,
+    "result_count": 29,
+    "distance_expression_count": 5,
+    "target_distance_bucket_count": 2,
+    "distance_expression_ids": [
+      "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+    ],
+    "target_distance_buckets": [
+      "EXTENDED",
+      "LARGE"
+    ],
+    "win_rate": 0.470588,
+    "expectancy_pips": 1.011353,
+    "net_pnl_pips": 17.193,
+    "viable": true,
+    "abort_reason_counts": {
+      "insufficient_charge": 11,
+      "kill_switch_decay": 1
+    },
+    "exit_reason_counts": {
+      "TTL_EXIT": 1,
+      "TARGET_HIT": 8,
+      "STOP_HIT": 8
+    },
+    "scenario_count": 4,
+    "scenarios": [
+      "chop_mean_reversion",
+      "panic_reversal",
+      "trend_continuation",
+      "whipsaw_spike_fade"
+    ],
+    "base_viable": true,
+    "phase5_gate_passed": true
+  },
+  "after": {
+    "strategy_id": "FLOW_DRIFT_SHORT",
+    "trade_count": 13,
+    "aborted_count": 16,
+    "result_count": 29,
+    "distance_expression_count": 5,
+    "target_distance_bucket_count": 2,
+    "distance_expression_ids": [
+      "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+      "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+    ],
+    "target_distance_buckets": [
+      "EXTENDED",
+      "LARGE"
+    ],
+    "win_rate": 0.461538,
+    "expectancy_pips": 0.753538,
+    "net_pnl_pips": 9.796,
+    "viable": true,
+    "abort_reason_counts": {
+      "insufficient_charge": 11,
+      "kill_switch_decay": 5
+    },
+    "exit_reason_counts": {
+      "TTL_EXIT": 2,
+      "TARGET_HIT": 6,
+      "STOP_HIT": 5
+    },
+    "scenario_count": 4,
+    "scenarios": [
+      "chop_mean_reversion",
+      "panic_reversal",
+      "trend_continuation",
+      "whipsaw_spike_fade"
+    ],
+    "base_viable": true,
+    "phase5_gate_passed": true
+  },
+  "delta": {
+    "trade_count": -4,
+    "win_rate": -0.00905,
+    "expectancy_pips": -0.257815,
+    "net_pnl_pips": -7.397
+  }
+}

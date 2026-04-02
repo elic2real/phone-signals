@@ -1,0 +1,109 @@
+{
+  "artifact_id": "V2_FOCUSED_BASELINE_COMPARISON",
+  "generated_at_utc": "2026-04-02T02:35:46.378625Z",
+  "strategy_id": "COILED_COMPRESSION_LONG",
+  "baseline_report": "control\\v2_engine\\phase5\\v2_phase5_evaluation_report.before_coiled_charge_fix.json",
+  "current_report": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report_coiled_compression_long.json",
+  "before": {
+    "strategy_id": "COILED_COMPRESSION_LONG",
+    "trade_count": 26,
+    "aborted_count": 25,
+    "result_count": 51,
+    "distance_expression_count": 8,
+    "target_distance_bucket_count": 4,
+    "distance_expression_ids": [
+      "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|MEDIUM",
+      "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+      "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|MEDIUM",
+      "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
+      "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+      "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE",
+      "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+      "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL"
+    ],
+    "target_distance_buckets": [
+      "LARGE",
+      "MEDIUM",
+      "MICRO",
+      "SMALL"
+    ],
+    "win_rate": 0.653846,
+    "expectancy_pips": 1.288462,
+    "net_pnl_pips": 33.5,
+    "viable": true,
+    "abort_reason_counts": {
+      "insufficient_charge": 20,
+      "kill_switch_decay": 4,
+      "zone_misaligned": 1
+    },
+    "exit_reason_counts": {
+      "TTL_EXIT": 10,
+      "TARGET_HIT": 8,
+      "STOP_HIT": 8
+    },
+    "scenario_count": 5,
+    "scenarios": [
+      "chop_mean_reversion",
+      "slow_grind_break",
+      "spread_widening",
+      "trend_continuation",
+      "whipsaw_spike_fade"
+    ],
+    "base_viable": true,
+    "phase5_gate_passed": true
+  },
+  "after": {
+    "strategy_id": "COILED_COMPRESSION_LONG",
+    "trade_count": 31,
+    "aborted_count": 20,
+    "result_count": 51,
+    "distance_expression_count": 8,
+    "target_distance_bucket_count": 4,
+    "distance_expression_ids": [
+      "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|MEDIUM",
+      "COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+      "COMPRESSION|MID_ZONE|TIGHT|LONG|MID_DRIFT|LONG|MEDIUM",
+      "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
+      "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
+      "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|LARGE",
+      "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+      "COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL"
+    ],
+    "target_distance_buckets": [
+      "LARGE",
+      "MEDIUM",
+      "MICRO",
+      "SMALL"
+    ],
+    "win_rate": 0.645161,
+    "expectancy_pips": 1.275806,
+    "net_pnl_pips": 39.55,
+    "viable": true,
+    "abort_reason_counts": {
+      "insufficient_charge": 14,
+      "kill_switch_decay": 5,
+      "zone_misaligned": 1
+    },
+    "exit_reason_counts": {
+      "TTL_EXIT": 10,
+      "TARGET_HIT": 11,
+      "STOP_HIT": 10
+    },
+    "scenario_count": 5,
+    "scenarios": [
+      "chop_mean_reversion",
+      "slow_grind_break",
+      "spread_widening",
+      "trend_continuation",
+      "whipsaw_spike_fade"
+    ],
+    "base_viable": true,
+    "phase5_gate_passed": true
+  },
+  "delta": {
+    "trade_count": 5,
+    "win_rate": -0.008685,
+    "expectancy_pips": -0.012656,
+    "net_pnl_pips": 6.05
+  }
+}

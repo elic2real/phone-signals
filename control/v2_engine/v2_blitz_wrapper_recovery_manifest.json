@@ -1,0 +1,167 @@
+{
+  "artifact_id": "V2_BLITZ_WRAPPER_RECOVERY_MANIFEST",
+  "generated_at_local": "2026-04-02",
+  "status": "WRAPPER_FOUND_AND_MIRRORED",
+  "canonical_repo_root": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean",
+  "wrapper_repo_root": "C:\\Users\\mawil\\phone_signals\\phone-signals",
+  "primary_conclusion": "The strongest surviving testing/control wrapper is the V2 parallel extraction blitz harness. It survived most completely in the sibling repo and has now been mirrored into publish-clean as a local recovery surface.",
+  "wrapper_owner": {
+    "runner_script": "C:\\Users\\mawil\\phone_signals\\phone-signals\\tools\\run_v2_parallel_extraction_blitz.py",
+    "runner_script_mirror": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\tools\\run_v2_parallel_extraction_blitz.py",
+    "entry_stack_runner": "C:\\Users\\mawil\\phone_signals\\phone-signals\\tools\\run_v2_entry_stack.py",
+    "phase4_hook": "C:\\Users\\mawil\\phone_signals\\phone-signals\\tools\\v2_phase4_trigger_engine.py",
+    "env_var": "V2_BLITZ_CONFIG"
+  },
+  "wrapper_protocol": {
+    "protocol_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\blitz_protocol.json",
+    "protocol_file_mirror": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\blitz\\blitz_protocol.json",
+    "run_summary_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\blitz_run_summary.json",
+    "run_summary_file_mirror": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\blitz\\blitz_run_summary.json",
+    "shared_harness_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\shared_harness.json",
+    "shared_harness_file_mirror": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\blitz\\shared_harness.json",
+    "baseline_report": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase5\\v2_phase5_evaluation_report.before_wave1.json",
+    "phase5_rows_report": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase5\\phase5_evaluation_rows.json"
+  },
+  "mirror_status": {
+    "publish_clean_blitz_file_count": 47,
+    "runner_script_mirrored": true,
+    "note": "The mirrored tree is recovery evidence. The original sibling repo tree remains the provenance source."
+  },
+  "contracts": [
+    {
+      "contract_id": "C1_FLOW_DRIFT_SHORT",
+      "namespace": "c1_flow_drift_short",
+      "doctrine_id": "FLOW_DRIFT_SHORT",
+      "tier_target": "T6_DECAY_ONLY",
+      "mutation_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\manual_focus\\flow_drift_short_mutation.json",
+      "contract_decision_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\contract_decision.json",
+      "branch_mutation_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\branch_mutation.json",
+      "is_report_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\is_report.json",
+      "oos_report_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\oos_report.json",
+      "status": "FAIL_IS",
+      "mutation_summary": "TTL scale increase on DRIFT_REACCEL, DRIFT_CONFIRM, DRIFT_HARVEST.",
+      "is_summary": {
+        "trade_count": 10,
+        "capture_rate": 0.384615,
+        "expectancy_pips": 0.9746,
+        "net_pnl_pips": 9.746,
+        "profit_factor": 2.465564
+      },
+      "oos_summary": {
+        "trade_count": 3,
+        "capture_rate": 1.0,
+        "expectancy_pips": 0.016667,
+        "net_pnl_pips": 0.05
+      }
+    },
+    {
+      "contract_id": "C2_TRANSITION_RELEASE_SHORT_STANDARD",
+      "namespace": "c2_transition_release_short_standard",
+      "doctrine_id": "TRANSITION_RELEASE_SHORT_STANDARD",
+      "tier_target": "T1_CONFIRMATION_VS_DIRECT_ONLY",
+      "mutation_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\manual_focus\\transition_release_short_standard_mutation.json",
+      "contract_decision_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\contract_decision.json",
+      "branch_mutation_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\branch_mutation.json",
+      "is_report_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\is_report.json",
+      "oos_report_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\oos_report.json",
+      "status": "FAIL_IS",
+      "mutation_summary": "Mode bias toward IGNITION_RELEASE_FAST and variant bias toward TRANSITION_FRONT_RUN / CAPTURE_NEAR.",
+      "is_summary": {
+        "trade_count": 20,
+        "capture_rate": 0.416667,
+        "expectancy_pips": 1.5206,
+        "net_pnl_pips": 30.412,
+        "profit_factor": 3.585615
+      },
+      "oos_summary": {
+        "trade_count": 0,
+        "aborted_count": 5,
+        "capture_rate": 0.0,
+        "net_pnl_pips": 0.0
+      }
+    },
+    {
+      "contract_id": "C3_OSCILLATION_EDGE_LONG_SCALP",
+      "namespace": "c3_oscillation_edge_long_scalp",
+      "doctrine_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "tier_target": "PHASE2_ADMISSION_PLUS_T2_REGIME_ONLY",
+      "contract_decision_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\contract_decision.json",
+      "branch_mutation_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\branch_mutation.json",
+      "phase2_snapshot_file": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\phase2_runtime_snapshot.json",
+      "status": "BLOCKED_BY_PHASE2_ADMISSION",
+      "mutation_summary": "Relax fragile scalp lane admission and apply regime filter exclusions.",
+      "phase2_snapshot_summary": {
+        "tier1_survivor": false,
+        "cluster_size": 120,
+        "doctrine_operating_tier": "FRAGILE",
+        "net_pnl_pips": -1.816,
+        "viable": false
+      }
+    }
+  ],
+  "full_wrapper_artifact_tree": [
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\blitz_protocol.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\blitz_run_summary.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\shared_harness.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\portfolio_gate_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\manual_focus\\flow_drift_short_mutation.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\manual_focus\\transition_release_short_standard_mutation.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\baseline_reference.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\branch_mutation.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\branch_run_metadata.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\contract_decision.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\contract_spec.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\focus_baseline_comparison.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\focused_phase5_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\focused_phase5_rows.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\is_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\oos_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\phase2_runtime_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\phase4_adjustment_option_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\phase4_trigger_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c1_flow_drift_short\\portfolio_conflict_flags.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\baseline_reference.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\branch_mutation.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\branch_run_metadata.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\contract_decision.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\contract_spec.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\focus_baseline_comparison.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\focused_phase5_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\focused_phase5_rows.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\is_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\oos_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\phase2_runtime_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\phase4_adjustment_option_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\phase4_trigger_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c2_transition_release_short_standard\\portfolio_conflict_flags.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\baseline_reference.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\branch_mutation.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\branch_run_metadata.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\contract_decision.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\contract_spec.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\focused_phase5_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\focused_phase5_rows.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\is_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\oos_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\phase2_runtime_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\phase4_adjustment_option_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\phase4_trigger_snapshot.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\blitz\\c3_oscillation_edge_long_scalp\\portfolio_conflict_flags.json"
+  ],
+  "publish_clean_companion_artifacts": [
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase2\\phase2_doctrine_operating_model.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase4\\phase4_option_lock_plan.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase4\\phase4_backbone_lock_correction_plan.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase5\\phase5_backbone_profit_leak_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase5\\phase5_doctrine_option_rerun_summary.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\tier3\\v2_tier3_pocket_coverage_report.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\tier3\\v2_doctrine_layer_contracts.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\tier3\\v2_layer_salvage_audit.json",
+    "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\tier3\\v2_structural_failure_map.json"
+  ],
+  "missing_from_publish_clean": [
+    "No active V2_BLITZ_CONFIG file is loaded in the current shell.",
+    "The original provenance and first-write locations remain in the sibling repo wrapper tree."
+  ],
+  "recommended_next_move": "Mirror the blitz artifact tree into publish-clean as a read-only recovery surface, then port the surviving mutation grammar and contract logic into canonical config/schema instead of keeping it as an orphan wrapper."
+}

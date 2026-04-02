@@ -1,0 +1,208 @@
+{
+  "artifact_id": "V2_TRIGGER_STATE_PATCH_WAVE2_RERUN_SUMMARY",
+  "stack_status": "PASS",
+  "selected_strategy_ids": [
+    "FLOW_DRIFT_SHORT",
+    "FLOW_DRIFT_LONG",
+    "OSCILLATION_PRESSURE_BUILD_LONG"
+  ],
+  "payload_status_after": {
+    "REJECT_NO_TRIGGER": 1371,
+    "READY": 1415,
+    "REJECT_NO_DOCTRINE_MATCH": 179,
+    "REJECT_FAR_DISTANCE": 4,
+    "DEFER_TOXIC_BOOK": 13
+  },
+  "wave2_trigger_counts_after": {
+    "TREND_PRESSURE_CONTINUATION_SHORT": 79,
+    "TREND_PRESSURE_CONTINUATION_LONG": 93,
+    "COMPRESSION_PRESSURE_PUSH": 142,
+    "COMPRESSION_PRESSURE_DROP_CONFIRM": 35
+  },
+  "phase2_survivor_ids_after": [
+    "OSCILLATION_PRESSURE_BUILD_LONG",
+    "OSCILLATION_EDGE_SHORT_SCALP",
+    "OSCILLATION_PRESSURE_BUILD_SHORT",
+    "COMPRESSION_PRESSURE_LIFT_LONG",
+    "OSCILLATION_EDGE_LONG_SCALP",
+    "TRANSITION_RELEASE_LONG_STANDARD",
+    "TRANSITION_RELEASE_SHORT_STANDARD",
+    "FLOW_DRIFT_SHORT",
+    "FLOW_DRIFT_LONG",
+    "COMPRESSION_PRESSURE_DROP_SHORT",
+    "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+    "FAILED_PUSH_LONG_REVERSAL_SCALP",
+    "PRESSURE_DRIVE_SHORT"
+  ],
+  "phase5_top_strategies_after": [
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "trade_count": 19,
+      "aborted_count": 0,
+      "distance_expression_count": 5,
+      "target_distance_bucket_count": 2,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|BALANCED|SHORT|MID_DRIFT|SHORT|LARGE",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|EXTENDED",
+        "TRANSITION|MID_ZONE|OPEN|SHORT|MID_DRIFT|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE"
+      ],
+      "win_rate": 0.526316,
+      "expectancy_pips": 1.589053,
+      "net_pnl_pips": 30.192,
+      "viable": true
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "trade_count": 11,
+      "aborted_count": 0,
+      "distance_expression_count": 5,
+      "target_distance_bucket_count": 4,
+      "distance_expression_ids": [
+        "BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|MEDIUM",
+        "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|LARGE",
+        "TRANSITION|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|SMALL",
+        "TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MEDIUM",
+        "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|EXTENDED"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.454545,
+      "expectancy_pips": 0.440818,
+      "net_pnl_pips": 4.849,
+      "viable": true
+    },
+    {
+      "strategy_id": "OSCILLATION_PRESSURE_BUILD_LONG",
+      "trade_count": 153,
+      "aborted_count": 0,
+      "distance_expression_count": 8,
+      "target_distance_bucket_count": 4,
+      "distance_expression_ids": [
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
+        "OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
+        "OSCILLATION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+        "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|LARGE",
+        "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
+        "OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|SMALL"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.54902,
+      "expectancy_pips": 0.241503,
+      "net_pnl_pips": 36.95,
+      "viable": true
+    },
+    {
+      "strategy_id": "OSCILLATION_EDGE_SHORT_SCALP",
+      "trade_count": 13,
+      "aborted_count": 0,
+      "distance_expression_count": 3,
+      "target_distance_bucket_count": 3,
+      "distance_expression_ids": [
+        "OSCILLATION|NEAR_CEILING|OPEN|SHORT|CEILING_REJECTION|SHORT|EXTENDED",
+        "OSCILLATION|NEAR_CEILING|OPEN|SHORT|CEILING_REJECTION|SHORT|LARGE",
+        "OSCILLATION|NEAR_CEILING|OPEN|SHORT|CEILING_REJECTION|SHORT|SMALL"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "SMALL"
+      ],
+      "win_rate": 0.461538,
+      "expectancy_pips": 0.046615,
+      "net_pnl_pips": 0.606,
+      "viable": true
+    },
+    {
+      "strategy_id": "OSCILLATION_PRESSURE_BUILD_SHORT",
+      "trade_count": 78,
+      "aborted_count": 0,
+      "distance_expression_count": 8,
+      "target_distance_bucket_count": 3,
+      "distance_expression_ids": [
+        "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+        "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+        "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|SHORT|FLOOR_PRESSURE|SHORT|MEDIUM",
+        "OSCILLATION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
+        "OSCILLATION|NEAR_FLOOR|OPEN|SHORT|FLOOR_PRESSURE|SHORT|LARGE"
+      ],
+      "target_distance_buckets": [
+        "EXTENDED",
+        "LARGE",
+        "MEDIUM"
+      ],
+      "win_rate": 0.397436,
+      "expectancy_pips": -0.227885,
+      "net_pnl_pips": -17.775,
+      "viable": false
+    },
+    {
+      "strategy_id": "OSCILLATION_EDGE_LONG_SCALP",
+      "trade_count": 38,
+      "aborted_count": 0,
+      "distance_expression_count": 6,
+      "target_distance_bucket_count": 3,
+      "distance_expression_ids": [
+        "OSCILLATION|NEAR_FLOOR|BALANCED|LONG|FLOOR_REBOUND|LONG|LARGE",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|LARGE",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|MEDIUM",
+        "OSCILLATION|NEAR_FLOOR|COMPRESSED|LONG|FLOOR_REBOUND|LONG|SMALL",
+        "OSCILLATION|NEAR_FLOOR|OPEN|LONG|FLOOR_REBOUND|LONG|LARGE",
+        "OSCILLATION|NEAR_FLOOR|OPEN|LONG|FLOOR_REBOUND|LONG|MEDIUM"
+      ],
+      "target_distance_buckets": [
+        "LARGE",
+        "MEDIUM",
+        "SMALL"
+      ],
+      "win_rate": 0.289474,
+      "expectancy_pips": -0.944474,
+      "net_pnl_pips": -35.89,
+      "viable": false
+    },
+    {
+      "strategy_id": "FAILED_PUSH_LONG_REVERSAL_SCALP",
+      "trade_count": 2,
+      "aborted_count": 0,
+      "distance_expression_count": 1,
+      "target_distance_bucket_count": 1,
+      "distance_expression_ids": [
+        "TRANSITION|MID_ZONE|OPEN|LONG|MID_DRIFT|LONG|LARGE"
+      ],
+      "target_distance_buckets": [
+        "LARGE"
+      ],
+      "win_rate": 0.0,
+      "expectancy_pips": -1.5,
+      "net_pnl_pips": -3.0,
+      "viable": false
+    }
+  ],
+  "summary": {
+    "reject_no_trigger_before": 1674,
+    "reject_no_trigger_after": 1371,
+    "promising_reject_mass_captured": 255,
+    "junk_captured_accidentally": 48,
+    "phase5_passed_before": 4,
+    "phase5_passed_after": 4
+  }
+}
