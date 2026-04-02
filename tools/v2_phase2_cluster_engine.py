@@ -94,16 +94,173 @@ def _payload_ready(profile: Dict[str, Any]) -> bool:
     return str(profile.get("payload_status", "") or "") == "READY"
 
 
+def _profile_value(profile: Dict[str, Any], key: str, default: str = "") -> str:
+    direct = str(profile.get(key, "") or "").upper()
+    if direct:
+        return direct
+    kernel = _truth_kernel(profile)
+    structure_fields = {
+        "surface_type": "surface_type",
+        "market_pattern_state": "market_pattern_state",
+        "zone_state": "zone_state",
+        "topology_family_id": "topology_family_id",
+        "location_relation_id": "location_relation_id",
+    }
+    precursor_fields = {
+        "precursor_state": "precursor_state",
+        "precursor_family_id": "precursor_family_id",
+        "lifecycle_stage": "lifecycle_stage",
+    }
+    energy_fields = {
+        "energy_state": "energy_state",
+        "energy_family_id": "energy_family_id",
+    }
+    event_fields = {
+        "fit_state": "fit_state",
+        "distance_mode": "distance_mode",
+    }
+    direction_fields = {
+        "direction_group": "direction_group",
+        "vector_bias": "vector_bias",
+    }
+    if key in structure_fields:
+        return str(((kernel.get("structure_kernel", {}) or {}).get(structure_fields[key], default) or default)).upper()
+    if key in precursor_fields:
+        return str(((kernel.get("precursor_kernel", {}) or {}).get(precursor_fields[key], default) or default)).upper()
+    if key in energy_fields:
+        return str(((kernel.get("energy_kernel", {}) or {}).get(energy_fields[key], default) or default)).upper()
+    if key in event_fields:
+        return str(((kernel.get("event_kernel", {}) or {}).get(event_fields[key], default) or default)).upper()
+    if key in direction_fields:
+        return str(((kernel.get("direction_kernel", {}) or {}).get(direction_fields[key], default) or default)).upper()
+    return default
+
+
+def _topology_prefix(profile: Dict[str, Any]) -> str:
+    topology = _profile_value(profile, "topology_family_id")
+    if topology:
+        return topology.split("|", 1)[0]
+    market_pattern_state = _profile_value(profile, "market_pattern_state")
+    if market_pattern_state:
+        return market_pattern_state
+    return _profile_value(profile, "surface_type")
+
+
+def _neutral_doctrine_seed(profile: Dict[str, Any]) -> Tuple[str, str]:
+    direction = _direction_group(profile)
+    if direction not in {"LONG", "SHORT"}:
+        return "", ""
+
+    fit_state = _profile_value(profile, "fit_state", "UNKNOWN")
+    if fit_state not in {"STRUCTURED_FIT", "PATH_FIT"}:
+        return "", ""
+
+    topology_prefix = _topology_prefix(profile)
+    surface_type = _profile_value(profile, "surface_type")
+    zone_state = _profile_value(profile, "zone_state")
+    location_relation_id = _profile_value(profile, "location_relation_id")
+    precursor_state = _profile_value(profile, "precursor_state")
+    energy_state = _profile_value(profile, "energy_state")
+    target_distance_bucket = str(profile.get("target_distance_bucket", "") or "").upper()
+
+    if topology_prefix == "OSCILLATION":
+        if direction == "SHORT":
+            if zone_state == "NEAR_CEILING" and location_relation_id == "CEILING_REJECTION":
+                return "OSCILLATION_EDGE_SHORT_SCALP", "NEUTRAL_RULE"
+            if zone_state in {"NEAR_FLOOR", "MID_ZONE"} and location_relation_id in {"FLOOR_PRESSURE", "MID_DRIFT", "MID_BALANCE"}:
+                return "OSCILLATION_PRESSURE_BUILD_SHORT", "NEUTRAL_RULE"
+        if direction == "LONG":
+            if zone_state == "NEAR_FLOOR" and location_relation_id in {"FLOOR_REBOUND", "FLOOR_PRESSURE"}:
+                return "OSCILLATION_EDGE_LONG_SCALP", "NEUTRAL_RULE"
+            if zone_state == "NEAR_CEILING" and location_relation_id == "CEILING_PRESSURE":
+                return "OSCILLATION_PRESSURE_BUILD_LONG", "NEUTRAL_RULE"
+
+    if topology_prefix == "COMPRESSION":
+        if direction == "LONG":
+            if zone_state == "NEAR_CEILING" and location_relation_id == "CEILING_PRESSURE":
+                if precursor_state == "COILED" and energy_state in {"DRIFT", "DORMANT"} and target_distance_bucket in {"MICRO", "SMALL", "MEDIUM"}:
+                    return "COILED_COMPRESSION_LONG", "NEUTRAL_RULE"
+                if energy_state in {"IGNITION", "DRIVE", "DRIFT", "DORMANT"}:
+                    return "COMPRESSION_PRESSURE_LIFT_LONG", "NEUTRAL_RULE"
+            if zone_state in {"MID_ZONE", "NEAR_FLOOR"} and location_relation_id in {"MID_DRIFT", "MID_BALANCE", "FLOOR_REBOUND"}:
+                if energy_state in {"IGNITION", "DRIVE"}:
+                    return "COMPRESSION_RELEASE_LONG", "NEUTRAL_RULE"
+        if direction == "SHORT":
+            if zone_state == "NEAR_FLOOR" and location_relation_id == "FLOOR_PRESSURE":
+                if energy_state in {"IGNITION", "DRIVE"}:
+                    return "COMPRESSION_PRESSURE_DROP_SHORT", "NEUTRAL_RULE"
+            if zone_state == "NEAR_CEILING" and location_relation_id == "CEILING_REJECTION":
+                if precursor_state == "COILED" and energy_state in {"DRIFT", "DORMANT"} and target_distance_bucket in {"MICRO", "SMALL", "MEDIUM"}:
+                    return "COILED_COMPRESSION_SHORT", "NEUTRAL_RULE"
+                if energy_state in {"IGNITION", "DRIVE"}:
+                    return "COMPRESSION_RELEASE_SHORT", "NEUTRAL_RULE"
+            if zone_state == "MID_ZONE" and location_relation_id in {"MID_DRIFT", "MID_BALANCE"}:
+                if energy_state in {"IGNITION", "DRIVE"}:
+                    return "COMPRESSION_RELEASE_SHORT", "NEUTRAL_RULE"
+
+    if direction == "LONG":
+        if surface_type == "BALANCED" and precursor_state == "PRESSURED":
+            if zone_state in {"NEAR_CEILING", "MID_ZONE"} and location_relation_id in {"CEILING_PRESSURE", "MID_DRIFT", "MID_BALANCE"}:
+                if energy_state in {"IGNITION", "DORMANT", "DRIVE", "DRIFT"}:
+                    return "PRESSURE_DRIVE_LONG", "NEUTRAL_RULE"
+        if zone_state == "MID_ZONE" and location_relation_id == "MID_DRIFT":
+            if topology_prefix in {"TRANSITION", "BALANCED"} and energy_state in {"IGNITION", "DRIFT", "DRIVE"}:
+                return "FLOW_DRIFT_LONG", "NEUTRAL_RULE"
+        if topology_prefix in {"TRANSITION", "EXPANSION"} or surface_type == "TRENDING":
+            if zone_state == "MID_ZONE" and location_relation_id == "MID_BALANCE":
+                if energy_state in {"IGNITION", "DRIVE"}:
+                    return "EXPANSION_RELEASE_LONG", "NEUTRAL_RULE"
+            if zone_state == "NEAR_CEILING" and location_relation_id == "CEILING_PRESSURE":
+                if energy_state in {"IGNITION", "DRIVE", "DRIFT"}:
+                    return "TRANSITION_RELEASE_LONG_STANDARD", "NEUTRAL_RULE"
+        if surface_type == "BALANCED" and precursor_state == "BALANCED":
+            if zone_state == "MID_ZONE" and location_relation_id in {"MID_DRIFT", "MID_BALANCE"}:
+                if target_distance_bucket in {"LARGE", "EXTENDED"} and energy_state in {"DORMANT", "IGNITION", "DRIVE"}:
+                    return "FAILED_BREAK_LONG_RECLAIM_STANDARD", "NEUTRAL_RULE"
+
+    if direction == "SHORT":
+        if surface_type == "BALANCED" and precursor_state == "PRESSURED":
+            if zone_state in {"MID_ZONE", "NEAR_FLOOR"} and location_relation_id in {"MID_DRIFT", "MID_BALANCE", "FLOOR_PRESSURE"}:
+                if energy_state in {"IGNITION", "DORMANT", "DRIVE", "DRIFT"}:
+                    return "PRESSURE_DRIVE_SHORT", "NEUTRAL_RULE"
+        if topology_prefix in {"TRANSITION", "BALANCED"} and zone_state == "MID_ZONE":
+            if location_relation_id in {"MID_DRIFT", "MID_BALANCE"} and target_distance_bucket in {"LARGE", "EXTENDED"}:
+                if energy_state in {"IGNITION", "DRIFT"}:
+                    return "TRANSITION_RELEASE_SHORT_EXTENDED", "NEUTRAL_RULE"
+        if topology_prefix in {"TRANSITION", "EXPANSION"} or surface_type == "TRENDING":
+            if zone_state == "NEAR_FLOOR" and location_relation_id == "FLOOR_PRESSURE":
+                if energy_state in {"IGNITION", "DRIVE", "DRIFT"}:
+                    return "TRANSITION_RELEASE_SHORT_STANDARD", "NEUTRAL_RULE"
+        if zone_state == "MID_ZONE" and location_relation_id == "MID_DRIFT":
+            if topology_prefix in {"TRANSITION", "BALANCED"} and energy_state in {"IGNITION", "DRIFT", "DORMANT", "DRIVE"}:
+                return "FLOW_DRIFT_SHORT", "NEUTRAL_RULE"
+
+    return "", ""
+
+
 def _doctrine_state(profile: Dict[str, Any]) -> Tuple[str, str]:
+    legacy_fallback_allowlist = {
+        "FAILED_PUSH_SHORT_REVERSAL_SCALP",
+        "FAILED_PUSH_LONG_REVERSAL_SCALP",
+        "EXPANSION_RELEASE_SHORT",
+    }
+    neutral_doctrine_id, neutral_source = _neutral_doctrine_seed(profile)
+    if _payload_ready(profile) and neutral_doctrine_id:
+        return neutral_doctrine_id, neutral_source
     doctrine_family_id = str(profile.get("doctrine_family_id", "") or "").upper()
-    if _payload_ready(profile) and doctrine_family_id and doctrine_family_id not in {"NO_DOCTRINE_MATCH", "DEFERRED_TOXIC_BOOK"}:
+    if (
+        _payload_ready(profile)
+        and doctrine_family_id
+        and doctrine_family_id not in {"NO_DOCTRINE_MATCH", "DEFERRED_TOXIC_BOOK"}
+        and doctrine_family_id in legacy_fallback_allowlist
+    ):
         return doctrine_family_id, "PAYLOAD_MATCHED"
     return "NO_DOCTRINE_MATCH", "REJECTED"
 
 
-def _doctrine_name(pattern_match_state: str, direction: str) -> str:
+def _doctrine_name(doctrine_state: str, direction: str) -> str:
     del direction
-    return str(pattern_match_state or "NO_DOCTRINE_MATCH").upper()
+    return str(doctrine_state or "NO_DOCTRINE_MATCH").upper()
 
 
 def _sorted_counter_keys(counter: Counter[str], limit: int | None = None) -> List[str]:
@@ -320,12 +477,14 @@ def fit_phase2_clusters(profiles: List[Dict[str, Any]], seed: int) -> Dict[str, 
             {
                 "cluster_id": doctrine_id,
                 "doctrine_id": doctrine_id,
+                "doctrine_state": doctrine_state,
                 "direction_group": direction,
                 "pattern_match_state": doctrine_state,
+                "legacy_pattern_match_state": doctrine_state,
                 "doctrine_source": doctrine_source,
                 "cluster_size": len(rows),
                 "episode_count": len(member_episode_ids),
-                "match_mode": "PATTERN_MATCH_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
+                "match_mode": "DOCTRINE_STATE_PRIMARY_WITH_SUPPORT_CONTRACT",
                 "average_abs_velocity": round(avg_velocity, 6),
                 "average_abs_acceleration": round(avg_acceleration, 6),
                 "average_compression_ratio": round(avg_compression, 6),
@@ -337,10 +496,12 @@ def fit_phase2_clusters(profiles: List[Dict[str, Any]], seed: int) -> Dict[str, 
                 "dominant_zone_state": max(zone_counts, key=zone_counts.get),
                 "support_contract": {
                     "direction_group": direction,
+                    "doctrine_state": doctrine_state,
                     "pattern_match_state": doctrine_state,
+                    "legacy_pattern_match_state": doctrine_state,
                     "minimum_score_to_assign": 5,
                     "minimum_support_hits": 2,
-                    "assignment_policy": "pattern_state_then_support_signature",
+                    "assignment_policy": "doctrine_state_then_support_signature",
                 },
                 "support_core_topology_family_ids": support_core_topologies,
                 "support_core_location_relation_ids": support_core_locations,
@@ -382,6 +543,7 @@ def fit_phase2_clusters(profiles: List[Dict[str, Any]], seed: int) -> Dict[str, 
             "representative_count": len(representatives),
             "doctrine_count": len(doctrines),
             "doctrine_source_counts": dict(doctrine_source_counts),
+            "primary_identity_field": "doctrine_state",
         },
     }
 
@@ -395,7 +557,8 @@ def assign_profile_to_cluster(profile: Dict[str, Any], clusters: List[Dict[str, 
     eligible = [
         doctrine
         for doctrine in clusters
-        if doctrine.get("direction_group") == direction and doctrine.get("pattern_match_state") == doctrine_state
+        if doctrine.get("direction_group") == direction
+        and str(doctrine.get("doctrine_state", doctrine.get("pattern_match_state", "")) or "").upper() == doctrine_state
     ]
     if not eligible:
         return None

@@ -16,7 +16,7 @@ try:
     from github_repo import tick_generator as synthetic_ticks  # noqa: E402
 except ImportError:
     import tick_generator as synthetic_ticks  # type: ignore[no-redef]  # noqa: E402
-from tools.v2_phase1_physics_engine import Phase1Config, build_phase1_profiles, sanitize_ticks, summarize_profiles  # noqa: E402
+from tools.v2_phase1_physics_engine import Phase1Config, build_phase1_stack, sanitize_ticks, summarize_profiles  # noqa: E402
 from tools.v2_phase2_cluster_engine import assign_profile_to_cluster, fit_phase2_clusters  # noqa: E402
 from tools.v2_phase2_extraction_engine import _route_matches_profile, evaluate_phase2_doctrines  # noqa: E402
 from tools.v2_phase3_context_engine import build_context_snapshot  # noqa: E402
@@ -67,10 +67,18 @@ def sample_profiles(rows: List[Dict[str, Any]], stride: int, limit: int) -> List
     return sampled
 
 
-def _annotate_truth_kernels(profiles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _annotate_truth_kernels(profiles: List[Dict[str, Any]], tier0_handoff_rows: List[Dict[str, Any]] | None = None) -> List[Dict[str, Any]]:
+    handoff_by_profile_id = {
+        str(row.get("profile_id", "") or ""): row
+        for row in list(tier0_handoff_rows or [])
+    }
     annotated: List[Dict[str, Any]] = []
     for profile in profiles:
-        kernel = build_truth_kernel(profile, profiles)
+        kernel = build_truth_kernel(
+            profile,
+            profiles,
+            handoff_by_profile_id.get(str(profile.get("profile_id", "") or "")),
+        )
         annotated.append(
             {
                 **profile,
@@ -1001,8 +1009,9 @@ def main() -> int:
         raw_ticks = scenario_ticks(name, base_seed + idx)
         sanitized = sanitize_ticks(raw_ticks, config)
         sanitized_ticks = [vars(tick) for tick in sanitized["ticks"]]
-        phase1_profiles = [vars(profile) for profile in build_phase1_profiles(sanitized["ticks"], config)]
-        profiles = _annotate_truth_kernels(phase1_profiles)
+        phase1_stack = build_phase1_stack(sanitized["ticks"], config)
+        phase1_profiles = [vars(profile) for profile in phase1_stack["profiles"]]
+        profiles = _annotate_truth_kernels(phase1_profiles, phase1_stack["tier0_handoff_rows"])
         sampled_profiles = sample_profiles(profiles, profile_stride, profile_limit)
         scenario_state[name] = {
             "raw_ticks": raw_ticks,
@@ -1011,7 +1020,7 @@ def main() -> int:
             "profiles": profiles,
         }
         all_profiles.extend(profiles)
-        phase1_summary = summarize_profiles([profile for profile in build_phase1_profiles(sanitized["ticks"], config)])
+        phase1_summary = summarize_profiles(list(phase1_stack["profiles"]))
         phase1_scenarios.append(
             {
                 "scenario": name,
@@ -1136,6 +1145,7 @@ def main() -> int:
             "survivor_ids": [row["doctrine_id"] for row in clusters],
             "frozen_survivor_count": len(frozen_survivors),
             "frozen_survivor_ids": [row["doctrine_id"] for row in frozen_survivors],
+            "uncaptured_doctrine_states": phase2_extraction.get("uncaptured_doctrine_states", phase2_extraction["uncaptured_pattern_match_states"]),
             "uncaptured_pattern_match_states": phase2_extraction["uncaptured_pattern_match_states"],
             "uncaptured_distance_families": phase2_extraction["uncaptured_distance_families"],
             "uncaptured_extraction_signatures": phase2_extraction["uncaptured_extraction_signatures"],

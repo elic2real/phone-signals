@@ -1,6 +1,6 @@
 {
   "artifact_id": "V2_TIER1_GLOBAL_TRUTH_KERNEL_PLAN",
-  "generated_at_utc": "2026-04-02T00:23:03.589023Z",
+  "generated_at_utc": "2026-04-02T16:32:37.504319Z",
   "insertion_point": {
     "current_state": "Doctrine creation currently happens too early inside Phase 1 through _match_pattern, _trigger_state, and _doctrine_family_id.",
     "target_state": "Tier 1 should first emit a canonical truth-kernel bundle, and doctrine creation should become a composition step on top of those primitives.",
@@ -85,11 +85,12 @@
     },
     {
       "group": "EVENT_KERNEL",
-      "purpose": "Canonical event truth, still doctrine-agnostic.",
+      "purpose": "Canonical handoff event truth, still doctrine-agnostic.",
       "fields": [
-        "live_recognition_state",
-        "pattern_match_state",
-        "trigger_state"
+        "fit_state",
+        "distance_mode",
+        "mapping_id",
+        "handoff_stage"
       ]
     },
     {
@@ -113,13 +114,14 @@
     "example": {
       "current_doctrine": "TRANSITION_RELEASE_SHORT_STANDARD",
       "future_composition": [
-        "STRUCTURE_KERNEL.surface_type=TRENDING",
-        "STRUCTURE_KERNEL.zone_state=NEAR_FLOOR",
+        "STRUCTURE_KERNEL.surface_type in {BALANCED,TRANSITION,TRENDING}",
+        "STRUCTURE_KERNEL.zone_state in {MID_ZONE,NEAR_FLOOR,NEAR_CEILING}",
         "DIRECTION_KERNEL.direction_group=SHORT",
         "PRECURSOR_KERNEL.precursor_state in {PRESSURED,BALANCED}",
-        "ENERGY_KERNEL.energy_state in {IGNITION,DRIVE}",
-        "EVENT_KERNEL.trigger_state in {CONTINUATION_PUSH,TREND_PRESSURE_CONTINUATION_SHORT}",
-        "GLOBAL_SLOTS.macro_bias_kernel=ALIGNED_SHORT or UNSPECIFIED during migration"
+        "ENERGY_KERNEL.energy_state in {IGNITION,DRIFT,DRIVE}",
+        "EVENT_KERNEL.fit_state in {STRUCTURED_FIT,PATH_FIT}",
+        "EVENT_KERNEL.distance_mode in {STANDARD_DISTANCE,EXTENDED_DISTANCE}",
+        "GLOBAL_SLOTS.macro_bias_kernel in {BEARISH,NEUTRAL,UNSPECIFIED} during migration"
       ]
     }
   },
@@ -165,10 +167,10 @@
     }
   ],
   "first_code_changes_after_planning": [
-    "Move doctrine-agnostic event truth out of _doctrine_family_id and into the truth-kernel bundle.",
-    "Make Phase 1 profiles publish the truth-kernel signature before any doctrine id is assigned.",
-    "Teach Phase 2 clustering to consume truth-kernel primitives as first-class assignment features.",
-    "Only after that, retune Track 1 instantiation failures and Track 2 mixed-window failures."
+    "Keep Phase 1 focused on neutral Tier 0 outputs and publish legacy interpretation only as migration residue.",
+    "Make Phase 1 sample payloads publish the truth-kernel signature and handoff event fields before any doctrine id is assigned in Phase 2.",
+    "Teach Phase 2 clustering to consume doctrine_state and truth-kernel primitives as first-class assignment features.",
+    "Only after that, retune instantiation failures and mixed-window failures."
   ],
   "success_criteria": [
     "A doctrine can be explained as a composition of primitives instead of a handwritten branch chain.",
@@ -187,114 +189,118 @@
   },
   "current_inventory": {
     "sample_profile_count": 72,
-    "scenario_summary_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals\\control\\v2_engine\\phase1\\v2_phase1_scenario_summary.json",
+    "scenario_summary_ref": "c:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase1\\v2_phase1_scenario_summary.json",
     "dominant_kernel_signatures": [
       {
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|SHORT|BALANCED|DRIFT|RETEST_HOLD",
-        "count": 4,
-        "share": 0.055556,
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
+        "count": 6,
+        "share": 0.083333,
         "example_profile_ids": [
-          "EUR_USD:203",
+          "EUR_USD:103",
+          "EUR_USD:128",
+          "EUR_USD:178"
+        ]
+      },
+      {
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
+        "count": 6,
+        "share": 0.083333,
+        "example_profile_ids": [
           "EUR_USD:28",
-          "EUR_USD:53"
-        ]
-      },
-      {
-        "kernel_signature": "TRENDING|NEAR_FLOOR|SHORT|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_SHORT",
-        "count": 4,
-        "share": 0.055556,
-        "example_profile_ids": [
-          "GBP_USD:128",
-          "USD_JPY:203",
-          "USD_JPY:3"
-        ]
-      },
-      {
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|SHORT|BALANCED|DORMANT|RETEST_HOLD",
-        "count": 4,
-        "share": 0.055556,
-        "example_profile_ids": [
-          "EUR_USD:153",
-          "EUR_USD:278",
+          "EUR_USD:203",
           "EUR_USD:278"
         ]
       },
       {
-        "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|TREND_DRIFT_CONTINUATION_LONG",
-        "count": 3,
-        "share": 0.041667,
-        "example_profile_ids": [
-          "EUR_USD:103",
-          "EUR_USD:128",
-          "GBP_USD:253"
-        ]
-      },
-      {
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH",
-        "count": 3,
-        "share": 0.041667,
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT",
+        "count": 5,
+        "share": 0.069444,
         "example_profile_ids": [
           "EUR_USD:153",
-          "EUR_USD:228",
+          "USD_JPY:278",
           "EUR_USD:28"
         ]
       },
       {
-        "kernel_signature": "BALANCED|MID_ZONE|SHORT|BALANCED|DRIFT|FAILED_PUSH_REVERSE",
-        "count": 2,
-        "share": 0.027778,
-        "example_profile_ids": [
-          "EUR_USD:53",
-          "EUR_USD:53"
-        ]
-      },
-      {
-        "kernel_signature": "TRENDING|MID_ZONE|SHORT|COILED|DRIFT|CONTINUATION_PUSH",
-        "count": 2,
-        "share": 0.027778,
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT",
+        "count": 4,
+        "share": 0.055556,
         "example_profile_ids": [
           "EUR_USD:3",
           "EUR_USD:78"
         ]
       },
       {
-        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
-        "count": 1,
-        "share": 0.013889,
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT",
+        "count": 3,
+        "share": 0.041667,
         "example_profile_ids": [
-          "EUR_USD:3"
+          "EUR_USD:128",
+          "EUR_USD:228"
         ]
       },
       {
-        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DORMANT|RETEST_HOLD",
-        "count": 1,
-        "share": 0.013889,
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT",
+        "count": 3,
+        "share": 0.041667,
         "example_profile_ids": [
-          "EUR_USD:78"
+          "EUR_USD:103",
+          "EUR_USD:178",
+          "EUR_USD:228"
         ]
       },
       {
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|CONTINUATION_PUSH",
-        "count": 1,
-        "share": 0.013889,
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT",
+        "count": 3,
+        "share": 0.041667,
         "example_profile_ids": [
-          "EUR_USD:128"
-        ]
-      },
-      {
-        "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|IGNITION|TREND_DRIFT_CONTINUATION_LONG",
-        "count": 1,
-        "share": 0.013889,
-        "example_profile_ids": [
+          "EUR_USD:28",
+          "EUR_USD:128",
           "EUR_USD:153"
         ]
       },
       {
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|DRIVE|CONTINUATION_PUSH",
-        "count": 1,
-        "share": 0.013889,
+        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT",
+        "count": 2,
+        "share": 0.027778,
         "example_profile_ids": [
+          "EUR_USD:78",
+          "EUR_USD:153"
+        ]
+      },
+      {
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT",
+        "count": 2,
+        "share": 0.027778,
+        "example_profile_ids": [
+          "EUR_USD:128",
           "EUR_USD:178"
+        ]
+      },
+      {
+        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT",
+        "count": 2,
+        "share": 0.027778,
+        "example_profile_ids": [
+          "EUR_USD:78",
+          "EUR_USD:203"
+        ]
+      },
+      {
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT",
+        "count": 2,
+        "share": 0.027778,
+        "example_profile_ids": [
+          "EUR_USD:278"
+        ]
+      },
+      {
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT",
+        "count": 2,
+        "share": 0.027778,
+        "example_profile_ids": [
+          "EUR_USD:78",
+          "EUR_USD:28"
         ]
       }
     ],
@@ -304,18 +310,18 @@
         "top_values": [
           {
             "value": "ALIGNED",
-            "count": 36,
-            "share": 0.5
-          },
-          {
-            "value": "PARTIAL",
-            "count": 20,
-            "share": 0.277778
+            "count": 44,
+            "share": 0.611111
           },
           {
             "value": "MISALIGNED",
             "count": 16,
             "share": 0.222222
+          },
+          {
+            "value": "PARTIAL",
+            "count": 12,
+            "share": 0.166667
           }
         ]
       },
@@ -324,18 +330,18 @@
         "top_values": [
           {
             "value": "LONG",
-            "count": 36,
-            "share": 0.5
-          },
-          {
-            "value": "SHORT",
-            "count": 31,
-            "share": 0.430556
+            "count": 53,
+            "share": 0.736111
           },
           {
             "value": "NEUTRAL",
-            "count": 5,
-            "share": 0.069444
+            "count": 12,
+            "share": 0.166667
+          },
+          {
+            "value": "SHORT",
+            "count": 7,
+            "share": 0.097222
           }
         ]
       },
@@ -344,28 +350,28 @@
         "top_values": [
           {
             "value": "STRONG_BUY",
-            "count": 20,
-            "share": 0.277778
+            "count": 30,
+            "share": 0.416667
+          },
+          {
+            "value": "BALANCED",
+            "count": 13,
+            "share": 0.180556
           },
           {
             "value": "MILD_BUY",
-            "count": 14,
-            "share": 0.194444
-          },
-          {
-            "value": "STRONG_SELL",
             "count": 13,
             "share": 0.180556
           },
           {
             "value": "MILD_SELL",
-            "count": 13,
-            "share": 0.180556
+            "count": 10,
+            "share": 0.138889
           },
           {
-            "value": "BALANCED",
-            "count": 12,
-            "share": 0.166667
+            "value": "STRONG_SELL",
+            "count": 6,
+            "share": 0.083333
           }
         ]
       },
@@ -374,18 +380,18 @@
         "top_values": [
           {
             "value": "OPEN",
-            "count": 34,
-            "share": 0.472222
-          },
-          {
-            "value": "WORKABLE",
-            "count": 30,
-            "share": 0.416667
+            "count": 36,
+            "share": 0.5
           },
           {
             "value": "TIGHT",
-            "count": 8,
-            "share": 0.111111
+            "count": 19,
+            "share": 0.263889
+          },
+          {
+            "value": "WORKABLE",
+            "count": 17,
+            "share": 0.236111
           }
         ]
       },
@@ -394,18 +400,18 @@
         "top_values": [
           {
             "value": "UP",
-            "count": 36,
-            "share": 0.5
-          },
-          {
-            "value": "DOWN",
-            "count": 31,
-            "share": 0.430556
+            "count": 53,
+            "share": 0.736111
           },
           {
             "value": "FLAT",
-            "count": 5,
-            "share": 0.069444
+            "count": 12,
+            "share": 0.166667
+          },
+          {
+            "value": "DOWN",
+            "count": 7,
+            "share": 0.097222
           }
         ]
       },
@@ -424,43 +430,43 @@
         "top_values": [
           {
             "value": "DORMANT|FADE|SMOOTH",
-            "count": 15,
-            "share": 0.208333
-          },
-          {
-            "value": "DRIFT|FADE|SHARP",
-            "count": 8,
-            "share": 0.111111
-          },
-          {
-            "value": "DORMANT|FADE|SHARP",
-            "count": 8,
-            "share": 0.111111
-          },
-          {
-            "value": "IGNITION|STRONG|SHARP",
-            "count": 8,
-            "share": 0.111111
+            "count": 28,
+            "share": 0.388889
           },
           {
             "value": "DRIFT|FADE|SMOOTH",
-            "count": 7,
-            "share": 0.097222
+            "count": 9,
+            "share": 0.125
           },
           {
             "value": "IGNITION|SURGE|SHARP",
-            "count": 5,
-            "share": 0.069444
+            "count": 9,
+            "share": 0.125
+          },
+          {
+            "value": "DRIFT|FADE|SHARP",
+            "count": 6,
+            "share": 0.083333
+          },
+          {
+            "value": "DRIFT|BUILD|SMOOTH",
+            "count": 3,
+            "share": 0.041667
           },
           {
             "value": "DRIVE|BUILD|SMOOTH",
-            "count": 5,
-            "share": 0.069444
+            "count": 3,
+            "share": 0.041667
           },
           {
-            "value": "DRIVE|BUILD|SHARP",
-            "count": 4,
-            "share": 0.055556
+            "value": "IGNITION|BUILD|SHARP",
+            "count": 3,
+            "share": 0.041667
+          },
+          {
+            "value": "IGNITION|STRONG|SHARP",
+            "count": 3,
+            "share": 0.041667
           }
         ]
       },
@@ -469,23 +475,23 @@
         "top_values": [
           {
             "value": "DORMANT",
-            "count": 23,
-            "share": 0.319444
+            "count": 29,
+            "share": 0.402778
           },
           {
             "value": "DRIFT",
-            "count": 21,
-            "share": 0.291667
+            "count": 20,
+            "share": 0.277778
           },
           {
             "value": "IGNITION",
-            "count": 18,
-            "share": 0.25
+            "count": 19,
+            "share": 0.263889
           },
           {
             "value": "DRIVE",
-            "count": 10,
-            "share": 0.138889
+            "count": 4,
+            "share": 0.055556
           }
         ]
       },
@@ -493,19 +499,19 @@
         "field": "energy_kernel.impulse_band",
         "top_values": [
           {
-            "value": "SURGE",
-            "count": 28,
-            "share": 0.388889
+            "value": "FADE",
+            "count": 29,
+            "share": 0.402778
           },
           {
-            "value": "FADE",
-            "count": 25,
-            "share": 0.347222
+            "value": "SURGE",
+            "count": 23,
+            "share": 0.319444
           },
           {
             "value": "BUILD",
-            "count": 19,
-            "share": 0.263889
+            "count": 20,
+            "share": 0.277778
           }
         ]
       },
@@ -514,148 +520,108 @@
         "top_values": [
           {
             "value": "SOFT",
-            "count": 44,
-            "share": 0.611111
+            "count": 64,
+            "share": 0.888889
           },
           {
             "value": "HARD",
-            "count": 28,
-            "share": 0.388889
-          }
-        ]
-      },
-      {
-        "field": "event_kernel.live_recognition_state",
-        "top_values": [
-          {
-            "value": "RECOGNIZE_NONE",
-            "count": 13,
-            "share": 0.180556
-          },
-          {
-            "value": "RECOGNIZE_TRANSITION_LONG",
-            "count": 11,
-            "share": 0.152778
-          },
-          {
-            "value": "RECOGNIZE_OSCILLATION_SHORT_EDGE",
-            "count": 10,
-            "share": 0.138889
-          },
-          {
-            "value": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "count": 6,
-            "share": 0.083333
-          },
-          {
-            "value": "RECOGNIZE_TRANSITION_SHORT",
-            "count": 5,
-            "share": 0.069444
-          },
-          {
-            "value": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-            "count": 4,
-            "share": 0.055556
-          },
-          {
-            "value": "RECOGNIZE_COILED_TRANSITION_LONG",
-            "count": 2,
-            "share": 0.027778
-          },
-          {
-            "value": "RECOGNIZE_OSCILLATION_LONG_EDGE",
-            "count": 2,
-            "share": 0.027778
-          }
-        ]
-      },
-      {
-        "field": "event_kernel.pattern_match_state",
-        "top_values": [
-          {
-            "value": "UNMATCHED",
-            "count": 13,
-            "share": 0.180556
-          },
-          {
-            "value": "OSCILLATION_EDGE_SHORT_SCALP",
-            "count": 10,
-            "share": 0.138889
-          },
-          {
-            "value": "FLOW_DRIFT_LONG",
             "count": 8,
             "share": 0.111111
+          }
+        ]
+      },
+      {
+        "field": "event_kernel.distance_mode",
+        "top_values": [
+          {
+            "value": "SCALP_DISTANCE",
+            "count": 66,
+            "share": 0.916667
           },
           {
-            "value": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "count": 6,
-            "share": 0.083333
+            "value": "EXTENDED_DISTANCE",
+            "count": 3,
+            "share": 0.041667
           },
           {
-            "value": "OSCILLATION_PRESSURE_BUILD_SHORT",
-            "count": 4,
-            "share": 0.055556
-          },
-          {
-            "value": "TRANSITION_RELEASE_LONG",
-            "count": 4,
-            "share": 0.055556
-          },
-          {
-            "value": "TRANSITION_RELEASE_SHORT_STANDARD",
-            "count": 4,
-            "share": 0.055556
-          },
-          {
-            "value": "FLOW_DRIFT_SHORT",
+            "value": "STANDARD_DISTANCE",
             "count": 3,
             "share": 0.041667
           }
         ]
       },
       {
-        "field": "event_kernel.trigger_state",
+        "field": "event_kernel.fit_state",
         "top_values": [
           {
-            "value": "NO_CONFIDENT_TRIGGER",
-            "count": 18,
-            "share": 0.25
+            "value": "STRUCTURED_FIT",
+            "count": 43,
+            "share": 0.597222
           },
           {
-            "value": "RETEST_HOLD",
-            "count": 15,
-            "share": 0.208333
+            "value": "NO_FIT",
+            "count": 17,
+            "share": 0.236111
           },
           {
-            "value": "CONTINUATION_PUSH",
-            "count": 14,
-            "share": 0.194444
+            "value": "PATH_FIT",
+            "count": 12,
+            "share": 0.166667
+          }
+        ]
+      },
+      {
+        "field": "event_kernel.handoff_stage",
+        "top_values": [
+          {
+            "value": "TIER0_HANDOFF",
+            "count": 72,
+            "share": 1.0
+          }
+        ]
+      },
+      {
+        "field": "event_kernel.mapping_id",
+        "top_values": [
+          {
+            "value": "EUR_USD:MAP:103",
+            "count": 5,
+            "share": 0.069444
           },
           {
-            "value": "TREND_DRIFT_CONTINUATION_LONG",
-            "count": 6,
-            "share": 0.083333
+            "value": "EUR_USD:MAP:128",
+            "count": 5,
+            "share": 0.069444
           },
           {
-            "value": "TREND_PRESSURE_CONTINUATION_SHORT",
-            "count": 4,
-            "share": 0.055556
+            "value": "EUR_USD:MAP:153",
+            "count": 5,
+            "share": 0.069444
           },
           {
-            "value": "TREND_PRESSURE_CONTINUATION_LONG",
-            "count": 4,
-            "share": 0.055556
+            "value": "EUR_USD:MAP:178",
+            "count": 5,
+            "share": 0.069444
           },
           {
-            "value": "FAILED_PUSH_REVERSE",
-            "count": 2,
-            "share": 0.027778
+            "value": "EUR_USD:MAP:203",
+            "count": 5,
+            "share": 0.069444
           },
           {
-            "value": "COMPRESSION_PRESSURE_DROP_CONFIRM",
-            "count": 2,
-            "share": 0.027778
+            "value": "EUR_USD:MAP:228",
+            "count": 5,
+            "share": 0.069444
+          },
+          {
+            "value": "EUR_USD:MAP:253",
+            "count": 5,
+            "share": 0.069444
+          },
+          {
+            "value": "EUR_USD:MAP:278",
+            "count": 5,
+            "share": 0.069444
           }
         ]
       },
@@ -664,28 +630,18 @@
         "top_values": [
           {
             "value": "EDGE_REFERENCE",
-            "count": 23,
-            "share": 0.319444
+            "count": 31,
+            "share": 0.430556
           },
           {
             "value": "REFERENCE_LEVEL",
-            "count": 20,
-            "share": 0.277778
-          },
-          {
-            "value": "HTF_RESISTANCE",
-            "count": 12,
-            "share": 0.166667
+            "count": 31,
+            "share": 0.430556
           },
           {
             "value": "MID_VOID",
-            "count": 11,
-            "share": 0.152778
-          },
-          {
-            "value": "HTF_SUPPORT",
-            "count": 6,
-            "share": 0.083333
+            "count": 10,
+            "share": 0.138889
           }
         ]
       },
@@ -693,19 +649,19 @@
         "field": "global_slots.liquidity_map_kernel",
         "top_values": [
           {
-            "value": "SWEEP_READY",
-            "count": 28,
-            "share": 0.388889
-          },
-          {
             "value": "FLOW_IMBALANCED",
-            "count": 24,
-            "share": 0.333333
+            "count": 34,
+            "share": 0.472222
           },
           {
             "value": "BALANCED_BOOK",
-            "count": 19,
-            "share": 0.263889
+            "count": 29,
+            "share": 0.402778
+          },
+          {
+            "value": "SWEEP_READY",
+            "count": 8,
+            "share": 0.111111
           },
           {
             "value": "TOXIC_THIN",
@@ -718,19 +674,19 @@
         "field": "global_slots.macro_bias_kernel",
         "top_values": [
           {
-            "value": "NEUTRAL",
-            "count": 38,
-            "share": 0.527778
+            "value": "BULLISH",
+            "count": 41,
+            "share": 0.569444
           },
           {
-            "value": "BULLISH",
-            "count": 17,
-            "share": 0.236111
+            "value": "NEUTRAL",
+            "count": 19,
+            "share": 0.263889
           },
           {
             "value": "BEARISH",
-            "count": 11,
-            "share": 0.152778
+            "count": 6,
+            "share": 0.083333
           },
           {
             "value": "UNSPECIFIED",
@@ -744,13 +700,13 @@
         "top_values": [
           {
             "value": "COST_COVERING",
-            "count": 50,
-            "share": 0.694444
+            "count": 43,
+            "share": 0.597222
           },
           {
             "value": "NON_COVERING",
-            "count": 22,
-            "share": 0.305556
+            "count": 29,
+            "share": 0.402778
           }
         ]
       },
@@ -759,18 +715,18 @@
         "top_values": [
           {
             "value": "STRONG",
-            "count": 32,
-            "share": 0.444444
+            "count": 34,
+            "share": 0.472222
           },
           {
             "value": "WEAK",
-            "count": 22,
-            "share": 0.305556
+            "count": 29,
+            "share": 0.402778
           },
           {
             "value": "WORKABLE",
-            "count": 18,
-            "share": 0.25
+            "count": 9,
+            "share": 0.125
           }
         ]
       },
@@ -779,13 +735,13 @@
         "top_values": [
           {
             "value": "True",
-            "count": 68,
-            "share": 0.944444
+            "count": 55,
+            "share": 0.763889
           },
           {
             "value": "False",
-            "count": 4,
-            "share": 0.055556
+            "count": 17,
+            "share": 0.236111
           }
         ]
       },
@@ -794,8 +750,13 @@
         "top_values": [
           {
             "value": "MOVE_DETECTED",
-            "count": 72,
-            "share": 1.0
+            "count": 63,
+            "share": 0.875
+          },
+          {
+            "value": "NOISE",
+            "count": 9,
+            "share": 0.125
           }
         ]
       },
@@ -804,13 +765,13 @@
         "top_values": [
           {
             "value": "PATH_COVERING",
-            "count": 67,
-            "share": 0.930556
+            "count": 57,
+            "share": 0.791667
           },
           {
             "value": "PATH_THIN",
-            "count": 5,
-            "share": 0.069444
+            "count": 15,
+            "share": 0.208333
           }
         ]
       },
@@ -818,34 +779,34 @@
         "field": "movement_kernel.target_distance_bucket",
         "top_values": [
           {
-            "value": "LARGE",
-            "count": 28,
-            "share": 0.388889
-          },
-          {
-            "value": "MEDIUM",
+            "value": "EXTENDED",
             "count": 19,
             "share": 0.263889
           },
           {
-            "value": "EXTENDED",
-            "count": 10,
-            "share": 0.138889
-          },
-          {
-            "value": "MICRO",
-            "count": 7,
-            "share": 0.097222
-          },
-          {
-            "value": "SMALL",
-            "count": 7,
-            "share": 0.097222
+            "value": "MEDIUM",
+            "count": 13,
+            "share": 0.180556
           },
           {
             "value": "NON_COVERING",
-            "count": 1,
-            "share": 0.013889
+            "count": 12,
+            "share": 0.166667
+          },
+          {
+            "value": "SMALL",
+            "count": 11,
+            "share": 0.152778
+          },
+          {
+            "value": "LARGE",
+            "count": 9,
+            "share": 0.125
+          },
+          {
+            "value": "MICRO",
+            "count": 8,
+            "share": 0.111111
           }
         ]
       },
@@ -854,36 +815,31 @@
         "top_values": [
           {
             "value": "PATTERN_HARVEST",
-            "count": 31,
-            "share": 0.430556
+            "count": 27,
+            "share": 0.375
           },
           {
             "value": "RELEASE",
-            "count": 18,
-            "share": 0.25
-          },
-          {
-            "value": "EXPLOIT",
-            "count": 10,
-            "share": 0.138889
-          },
-          {
-            "value": "LATE",
-            "count": 8,
-            "share": 0.111111
+            "count": 19,
+            "share": 0.263889
           },
           {
             "value": "SETUP",
-            "count": 2,
-            "share": 0.027778
+            "count": 16,
+            "share": 0.222222
+          },
+          {
+            "value": "LATE",
+            "count": 5,
+            "share": 0.069444
+          },
+          {
+            "value": "EXPLOIT",
+            "count": 4,
+            "share": 0.055556
           },
           {
             "value": "WATCH",
-            "count": 2,
-            "share": 0.027778
-          },
-          {
-            "value": "HARVEST",
             "count": 1,
             "share": 0.013889
           }
@@ -893,44 +849,44 @@
         "field": "precursor_kernel.precursor_family_id",
         "top_values": [
           {
-            "value": "BALANCED|MODERATE|WIDE|LONG",
-            "count": 24,
-            "share": 0.333333
+            "value": "PRESSURED|HEAVY|WIDE|LONG",
+            "count": 14,
+            "share": 0.194444
           },
           {
             "value": "BALANCED|LIGHT|WIDE|LONG",
-            "count": 15,
-            "share": 0.208333
+            "count": 12,
+            "share": 0.166667
           },
           {
-            "value": "PRESSURED|HEAVY|WIDE|LONG",
-            "count": 11,
-            "share": 0.152778
+            "value": "COILED|LIGHT|TIGHT|LONG",
+            "count": 12,
+            "share": 0.166667
           },
           {
-            "value": "PRESSURED|EXTREME|WIDE|LONG",
+            "value": "BALANCED|MODERATE|WIDE|LONG",
+            "count": 9,
+            "share": 0.125
+          },
+          {
+            "value": "COILED|MODERATE|TIGHT|LONG",
             "count": 7,
             "share": 0.097222
           },
           {
-            "value": "COILED|EXTREME|TIGHT|SHORT",
-            "count": 4,
-            "share": 0.055556
+            "value": "COILED|EXTREME|TIGHT|LONG",
+            "count": 6,
+            "share": 0.083333
           },
           {
-            "value": "COILED|MODERATE|TIGHT|LONG",
-            "count": 4,
-            "share": 0.055556
+            "value": "PRESSURED|EXTREME|WIDE|LONG",
+            "count": 6,
+            "share": 0.083333
           },
           {
-            "value": "COILED|LIGHT|TIGHT|LONG",
-            "count": 2,
-            "share": 0.027778
-          },
-          {
-            "value": "PRESSURED|EXTREME|WIDE|SHORT",
-            "count": 1,
-            "share": 0.013889
+            "value": "COILED|MODERATE|TIGHT|SHORT",
+            "count": 3,
+            "share": 0.041667
           }
         ]
       },
@@ -938,19 +894,19 @@
         "field": "precursor_kernel.precursor_state",
         "top_values": [
           {
+            "value": "COILED",
+            "count": 31,
+            "share": 0.430556
+          },
+          {
             "value": "BALANCED",
-            "count": 41,
-            "share": 0.569444
+            "count": 21,
+            "share": 0.291667
           },
           {
             "value": "PRESSURED",
             "count": 20,
             "share": 0.277778
-          },
-          {
-            "value": "COILED",
-            "count": 11,
-            "share": 0.152778
           }
         ]
       },
@@ -958,17 +914,17 @@
         "field": "precursor_kernel.pressure_band",
         "top_values": [
           {
-            "value": "MODERATE",
-            "count": 30,
-            "share": 0.416667
+            "value": "LIGHT",
+            "count": 29,
+            "share": 0.402778
           },
           {
             "value": "HEAVY",
-            "count": 23,
-            "share": 0.319444
+            "count": 24,
+            "share": 0.333333
           },
           {
-            "value": "LIGHT",
+            "value": "MODERATE",
             "count": 19,
             "share": 0.263889
           }
@@ -998,22 +954,22 @@
             "share": 0.458333
           },
           {
-            "value": "CONSERVATIVE",
+            "value": "NON_OPPORTUNITY",
             "count": 17,
             "share": 0.236111
           },
           {
+            "value": "CONSERVATIVE",
+            "count": 10,
+            "share": 0.138889
+          },
+          {
             "value": "AGGRESSIVE_PATH",
-            "count": 11,
-            "share": 0.152778
+            "count": 8,
+            "share": 0.111111
           },
           {
             "value": "QUALIFIED_PATH",
-            "count": 7,
-            "share": 0.097222
-          },
-          {
-            "value": "NON_OPPORTUNITY",
             "count": 4,
             "share": 0.055556
           }
@@ -1024,18 +980,18 @@
         "top_values": [
           {
             "value": "STRONG",
-            "count": 49,
-            "share": 0.680556
+            "count": 43,
+            "share": 0.597222
+          },
+          {
+            "value": "WORKABLE",
+            "count": 16,
+            "share": 0.222222
           },
           {
             "value": "WEAK",
             "count": 13,
             "share": 0.180556
-          },
-          {
-            "value": "WORKABLE",
-            "count": 10,
-            "share": 0.138889
           }
         ]
       },
@@ -1043,79 +999,14 @@
         "field": "quality_kernel.session_progress_band",
         "top_values": [
           {
-            "value": "MID",
-            "count": 38,
-            "share": 0.527778
-          },
-          {
             "value": "OPENING",
-            "count": 33,
-            "share": 0.458333
+            "count": 47,
+            "share": 0.652778
           },
           {
-            "value": "LATE",
-            "count": 1,
-            "share": 0.013889
-          }
-        ]
-      },
-      {
-        "field": "structure_kernel.level_type_long",
-        "top_values": [
-          {
-            "value": "PRIOR_HIGH",
-            "count": 24,
-            "share": 0.333333
-          },
-          {
-            "value": "ROUND_NUMBER",
-            "count": 23,
-            "share": 0.319444
-          },
-          {
-            "value": "VWAP",
-            "count": 11,
-            "share": 0.152778
-          },
-          {
-            "value": "PRIOR_LOW",
-            "count": 9,
-            "share": 0.125
-          },
-          {
-            "value": "SESSION_OPEN",
-            "count": 5,
-            "share": 0.069444
-          }
-        ]
-      },
-      {
-        "field": "structure_kernel.level_type_short",
-        "top_values": [
-          {
-            "value": "PRIOR_HIGH",
-            "count": 24,
-            "share": 0.333333
-          },
-          {
-            "value": "ROUND_NUMBER",
-            "count": 23,
-            "share": 0.319444
-          },
-          {
-            "value": "VWAP",
-            "count": 11,
-            "share": 0.152778
-          },
-          {
-            "value": "PRIOR_LOW",
-            "count": 9,
-            "share": 0.125
-          },
-          {
-            "value": "SESSION_OPEN",
-            "count": 5,
-            "share": 0.069444
+            "value": "MID",
+            "count": 25,
+            "share": 0.347222
           }
         ]
       },
@@ -1123,34 +1014,24 @@
         "field": "structure_kernel.location_relation_id",
         "top_values": [
           {
-            "value": "MID_DRIFT",
-            "count": 21,
-            "share": 0.291667
-          },
-          {
             "value": "CEILING_PRESSURE",
-            "count": 20,
-            "share": 0.277778
+            "count": 49,
+            "share": 0.680556
           },
           {
-            "value": "CEILING_REJECTION",
-            "count": 12,
-            "share": 0.166667
+            "value": "MID_DRIFT",
+            "count": 11,
+            "share": 0.152778
           },
           {
             "value": "FLOOR_PRESSURE",
-            "count": 12,
-            "share": 0.166667
-          },
-          {
-            "value": "FLOOR_REBOUND",
-            "count": 6,
-            "share": 0.083333
+            "count": 7,
+            "share": 0.097222
           },
           {
             "value": "MID_BALANCE",
-            "count": 1,
-            "share": 0.013889
+            "count": 5,
+            "share": 0.069444
           }
         ]
       },
@@ -1158,19 +1039,14 @@
         "field": "structure_kernel.market_pattern_state",
         "top_values": [
           {
-            "value": "OSCILLATION",
-            "count": 25,
-            "share": 0.347222
-          },
-          {
-            "value": "TRANSITION",
-            "count": 20,
-            "share": 0.277778
-          },
-          {
             "value": "COMPRESSION",
-            "count": 15,
-            "share": 0.208333
+            "count": 30,
+            "share": 0.416667
+          },
+          {
+            "value": "OSCILLATION",
+            "count": 23,
+            "share": 0.319444
           },
           {
             "value": "BALANCED",
@@ -1178,9 +1054,14 @@
             "share": 0.111111
           },
           {
+            "value": "TRANSITION",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
             "value": "EXPANSION",
-            "count": 4,
-            "share": 0.055556
+            "count": 3,
+            "share": 0.041667
           }
         ]
       },
@@ -1188,19 +1069,19 @@
         "field": "structure_kernel.surface_type",
         "top_values": [
           {
+            "value": "COMPRESSION",
+            "count": 30,
+            "share": 0.416667
+          },
+          {
             "value": "OSCILLATION",
-            "count": 25,
-            "share": 0.347222
+            "count": 23,
+            "share": 0.319444
           },
           {
             "value": "TRENDING",
-            "count": 24,
-            "share": 0.333333
-          },
-          {
-            "value": "COMPRESSION",
-            "count": 15,
-            "share": 0.208333
+            "count": 11,
+            "share": 0.152778
           },
           {
             "value": "BALANCED",
@@ -1213,14 +1094,29 @@
         "field": "structure_kernel.topology_family_id",
         "top_values": [
           {
-            "value": "OSCILLATION|NEAR_CEILING|BALANCED|SHORT",
+            "value": "COMPRESSION|NEAR_CEILING|COMPRESSED|LONG",
+            "count": 13,
+            "share": 0.180556
+          },
+          {
+            "value": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
+            "count": 9,
+            "share": 0.125
+          },
+          {
+            "value": "OSCILLATION|NEAR_CEILING|OPEN|LONG",
+            "count": 8,
+            "share": 0.111111
+          },
+          {
+            "value": "COMPRESSION|NEAR_CEILING|TIGHT|LONG",
             "count": 6,
             "share": 0.083333
           },
           {
-            "value": "TRANSITION|MID_ZONE|BALANCED|LONG",
-            "count": 4,
-            "share": 0.055556
+            "value": "EXPANSION|NEAR_CEILING|OPEN|LONG",
+            "count": 3,
+            "share": 0.041667
           },
           {
             "value": "OSCILLATION|NEAR_FLOOR|BALANCED|SHORT",
@@ -1228,27 +1124,12 @@
             "share": 0.041667
           },
           {
-            "value": "TRANSITION|MID_ZONE|COMPRESSED|LONG",
-            "count": 3,
-            "share": 0.041667
-          },
-          {
-            "value": "OSCILLATION|NEAR_CEILING|BALANCED|LONG",
-            "count": 3,
-            "share": 0.041667
-          },
-          {
-            "value": "BALANCED|MID_ZONE|BALANCED|SHORT",
-            "count": 2,
-            "share": 0.027778
-          },
-          {
             "value": "TRANSITION|NEAR_CEILING|COMPRESSED|LONG",
-            "count": 2,
-            "share": 0.027778
+            "count": 3,
+            "share": 0.041667
           },
           {
-            "value": "COMPRESSION|NEAR_FLOOR|COMPRESSED|SHORT",
+            "value": "BALANCED|MID_ZONE|BALANCED|LONG",
             "count": 2,
             "share": 0.027778
           }
@@ -1259,18 +1140,18 @@
         "top_values": [
           {
             "value": "NEAR_CEILING",
-            "count": 32,
-            "share": 0.444444
+            "count": 49,
+            "share": 0.680556
           },
           {
             "value": "MID_ZONE",
-            "count": 22,
-            "share": 0.305556
+            "count": 16,
+            "share": 0.222222
           },
           {
             "value": "NEAR_FLOOR",
-            "count": 18,
-            "share": 0.25
+            "count": 7,
+            "share": 0.097222
           }
         ]
       }

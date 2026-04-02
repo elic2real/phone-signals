@@ -1,0 +1,101 @@
+{
+  "artifact_id": "V2_STRUCTURAL_CLEANUP_LOCK",
+  "generated_at_utc": "2026-04-02T18:20:00Z",
+  "status": "LOCKED",
+  "purpose": "Freeze the first structurally cleaned V2 entry authority path after Tier 0 primary outputs, doctrine_state identity, and Tier 1 handoff kernels were aligned and rerun end to end.",
+  "canonical_root": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean",
+  "canonical_phase1_runner": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\tools\\run_v2_phase1.py",
+  "canonical_entry_runner": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\tools\\run_v2_entry_stack.py",
+  "phase1_execution_report_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase1\\v2_phase1_execution_report.json",
+  "phase1_discovery_map_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase1\\v2_phase1_discovery_map.json",
+  "tier1_inventory_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\tier1\\v2_truth_kernel_inventory.json",
+  "tier1_plan_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\tier1\\v2_truth_kernel_plan.json",
+  "phase2_cluster_report_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\phase2\\v2_phase2_cluster_report.json",
+  "entry_registry_ref": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_entry_strategy_registry.json",
+  "cleanup_contracts": {
+    "phase1_primary_outputs": [
+      "tier0_primary_counts",
+      "legacy_interpretation_summary"
+    ],
+    "phase2_primary_identity_field": "doctrine_state",
+    "tier1_event_kernel_fields": [
+      "fit_state",
+      "distance_mode",
+      "mapping_id",
+      "handoff_stage"
+    ],
+    "phase1_spread_gate_status": "PASS"
+  },
+  "phase1_pass_gates": {
+    "all_scenarios_produced_sanitized_output": true,
+    "no_unhandled_nan_or_inf": true,
+    "spread_anomaly_detected": true,
+    "compression_present": true,
+    "expansion_present": true
+  },
+  "selected_strategy_ids": [
+    "COMPRESSION_PRESSURE_LIFT_LONG",
+    "TRANSITION_RELEASE_SHORT_EXTENDED",
+    "PRESSURE_DRIVE_LONG",
+    "PRESSURE_DRIVE_SHORT",
+    "COMPRESSION_RELEASE_LONG",
+    "FLOW_DRIFT_SHORT",
+    "FLOW_DRIFT_LONG",
+    "COILED_COMPRESSION_LONG"
+  ],
+  "selected_strategies": [
+    {
+      "strategy_id": "COMPRESSION_PRESSURE_LIFT_LONG",
+      "trade_count": 71,
+      "expectancy_pips": 3.908282,
+      "net_pnl_pips": 277.488
+    },
+    {
+      "strategy_id": "TRANSITION_RELEASE_SHORT_EXTENDED",
+      "trade_count": 17,
+      "expectancy_pips": 3.026294,
+      "net_pnl_pips": 51.447
+    },
+    {
+      "strategy_id": "PRESSURE_DRIVE_LONG",
+      "trade_count": 16,
+      "expectancy_pips": 2.68275,
+      "net_pnl_pips": 42.924
+    },
+    {
+      "strategy_id": "PRESSURE_DRIVE_SHORT",
+      "trade_count": 7,
+      "expectancy_pips": 2.676714,
+      "net_pnl_pips": 18.737
+    },
+    {
+      "strategy_id": "COMPRESSION_RELEASE_LONG",
+      "trade_count": 7,
+      "expectancy_pips": 2.633857,
+      "net_pnl_pips": 18.437
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_SHORT",
+      "trade_count": 7,
+      "expectancy_pips": 2.006286,
+      "net_pnl_pips": 14.044
+    },
+    {
+      "strategy_id": "FLOW_DRIFT_LONG",
+      "trade_count": 17,
+      "expectancy_pips": 1.791941,
+      "net_pnl_pips": 30.463
+    },
+    {
+      "strategy_id": "COILED_COMPRESSION_LONG",
+      "trade_count": 61,
+      "expectancy_pips": 0.55,
+      "net_pnl_pips": 33.55
+    }
+  ],
+  "notes": [
+    "This lock supersedes older pre-clean freezes for structural-trust purposes.",
+    "Legacy Phase 1 interpretation fields still exist for migration compatibility, but they are no longer the primary authority path.",
+    "The next work should be optimization and deeper legacy removal, not foundational trust repair."
+  ]
+}
