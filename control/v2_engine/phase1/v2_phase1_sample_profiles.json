@@ -1,10 +1,11 @@
 {
   "artifact_id": "V2_PHASE1_SAMPLE_PROFILES",
-  "generated_at_utc": "2026-04-02T13:59:23.348699Z",
+  "generated_at_utc": "2026-04-02T16:48:44.319955Z",
   "profiles_by_scenario": {
     "trend_continuation": [
       {
         "profile_id": "EUR_USD:3",
+        "mapping_id": "EUR_USD:MAP:3",
         "anchor_index": 3,
         "gross_movement_pips": 3.0,
         "displacement_score": 3.157895,
@@ -45,6 +46,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.05,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|MEDIUM",
@@ -79,7 +81,7 @@
         "overlap_group_id": "EUR_USD|EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:3",
           "movement_kernel": {
@@ -126,20 +128,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:3",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "UNSPECIFIED",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:28",
+        "mapping_id": "EUR_USD:MAP:28",
         "anchor_index": 28,
         "gross_movement_pips": 19.8,
         "displacement_score": 19.368421,
@@ -180,6 +184,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 18.85,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED",
@@ -214,7 +219,7 @@
         "overlap_group_id": "EUR_USD|TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:28",
           "movement_kernel": {
@@ -261,20 +266,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:28",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:53",
+        "mapping_id": "EUR_USD:MAP:53",
         "anchor_index": 53,
         "gross_movement_pips": 10.7,
         "displacement_score": 1.368421,
@@ -315,6 +322,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "SHORT",
         "distance_mode": "EXTENDED_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 9.75,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION|SHORT|EXTENDED",
@@ -349,7 +357,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|MID_ZONE|TIGHT|SHORT|MID_DRIFT|SHORT|EXTENDED",
         "episode_position": "EARLY",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:53",
           "movement_kernel": {
@@ -396,20 +404,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "EXTENDED_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:53",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:78",
+        "mapping_id": "EUR_USD:MAP:78",
         "anchor_index": 78,
         "gross_movement_pips": 7.5,
         "displacement_score": 5.789474,
@@ -450,6 +460,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 6.55,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|LARGE",
@@ -484,7 +495,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:78",
           "movement_kernel": {
@@ -531,20 +542,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:78",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:103",
+        "mapping_id": "EUR_USD:MAP:103",
         "anchor_index": 103,
         "gross_movement_pips": 16.4,
         "displacement_score": 12.631579,
@@ -585,6 +598,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 15.45,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|EXTENDED",
@@ -619,7 +633,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "EARLY",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:103",
           "movement_kernel": {
@@ -666,20 +680,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:103",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:128",
+        "mapping_id": "EUR_USD:MAP:128",
         "anchor_index": 128,
         "gross_movement_pips": 13.7,
         "displacement_score": 5.789474,
@@ -720,6 +736,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 12.75,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|EXTENDED",
@@ -754,7 +771,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:128",
           "movement_kernel": {
@@ -801,20 +818,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:128",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:153",
+        "mapping_id": "EUR_USD:MAP:153",
         "anchor_index": 153,
         "gross_movement_pips": 10.1,
         "displacement_score": 8.947368,
@@ -855,6 +874,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 9.15,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|EXTENDED",
@@ -889,7 +909,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:153",
           "movement_kernel": {
@@ -936,20 +956,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:153",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:178",
+        "mapping_id": "EUR_USD:MAP:178",
         "anchor_index": 178,
         "gross_movement_pips": 15.7,
         "displacement_score": 9.789474,
@@ -990,6 +1012,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 14.75,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|EXTENDED",
@@ -1024,7 +1047,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "EARLY",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:178",
           "movement_kernel": {
@@ -1071,20 +1094,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:178",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:203",
+        "mapping_id": "EUR_USD:MAP:203",
         "anchor_index": 203,
         "gross_movement_pips": 23.2,
         "displacement_score": 16.842105,
@@ -1125,6 +1150,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 22.25,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED",
@@ -1159,7 +1185,7 @@
         "overlap_group_id": "EUR_USD|TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:203",
           "movement_kernel": {
@@ -1206,20 +1232,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:203",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:228",
+        "mapping_id": "EUR_USD:MAP:228",
         "anchor_index": 228,
         "gross_movement_pips": 12.0,
         "displacement_score": 8.842105,
@@ -1260,6 +1288,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 11.05,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|EXTENDED",
@@ -1294,7 +1323,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:228",
           "movement_kernel": {
@@ -1341,20 +1370,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:228",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:253",
+        "mapping_id": "EUR_USD:MAP:253",
         "anchor_index": 253,
         "gross_movement_pips": 11.0,
         "displacement_score": 9.052632,
@@ -1395,6 +1426,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 10.05,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|EXTENDED",
@@ -1429,7 +1461,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:253",
           "movement_kernel": {
@@ -1476,20 +1508,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:253",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:278",
+        "mapping_id": "EUR_USD:MAP:278",
         "anchor_index": 278,
         "gross_movement_pips": 23.4,
         "displacement_score": 19.157895,
@@ -1530,6 +1564,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 22.45,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED",
@@ -1564,7 +1599,7 @@
         "overlap_group_id": "EUR_USD|TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:278",
           "movement_kernel": {
@@ -1611,22 +1646,24 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:278",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       }
     ],
     "panic_reversal": [
       {
         "profile_id": "USD_JPY:3",
+        "mapping_id": "USD_JPY:MAP:3",
         "anchor_index": 3,
         "gross_movement_pips": 1.988,
         "displacement_score": 0.703158,
@@ -1667,6 +1704,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 0.802,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MICRO",
@@ -1701,7 +1739,7 @@
         "overlap_group_id": "USD_JPY|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MICRO",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:3",
           "movement_kernel": {
@@ -1748,20 +1786,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:3",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "UNSPECIFIED",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:28",
+        "mapping_id": "USD_JPY:MAP:28",
         "anchor_index": 28,
         "gross_movement_pips": 15.942,
         "displacement_score": 12.808421,
@@ -1802,6 +1842,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 11.218,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED",
@@ -1836,7 +1877,7 @@
         "overlap_group_id": "USD_JPY|EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:28",
           "movement_kernel": {
@@ -1883,20 +1924,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:28",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:53",
+        "mapping_id": "USD_JPY:MAP:53",
         "anchor_index": 53,
         "gross_movement_pips": 9.992,
         "displacement_score": 3.810526,
@@ -1937,6 +1980,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "SHORT",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 9.042,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_SHORT|SHORT|EXTENDED",
@@ -1971,7 +2015,7 @@
         "overlap_group_id": "USD_JPY|OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:53",
           "movement_kernel": {
@@ -2018,20 +2062,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:53",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:78",
+        "mapping_id": "USD_JPY:MAP:78",
         "anchor_index": 78,
         "gross_movement_pips": 6.296,
         "displacement_score": 0.330526,
@@ -2072,6 +2118,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "EXTENDED_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 5.346,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "BALANCED|LONG|LARGE",
@@ -2106,7 +2153,7 @@
         "overlap_group_id": "USD_JPY|BALANCED|MID_ZONE|COMPRESSED|LONG|MID_BALANCE|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:78",
           "movement_kernel": {
@@ -2153,20 +2200,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "EXTENDED_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:78",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|PATH_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:103",
+        "mapping_id": "USD_JPY:MAP:103",
         "anchor_index": 103,
         "gross_movement_pips": 13.034,
         "displacement_score": 6.578947,
@@ -2207,6 +2256,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 12.084,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_RELEASE_LONG|LONG|EXTENDED",
@@ -2241,7 +2291,7 @@
         "overlap_group_id": "USD_JPY|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:103",
           "movement_kernel": {
@@ -2288,20 +2338,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:103",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:128",
+        "mapping_id": "USD_JPY:MAP:128",
         "anchor_index": 128,
         "gross_movement_pips": 11.766,
         "displacement_score": 0.225263,
@@ -2342,6 +2394,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 10.816,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_RELEASE_LONG|LONG|EXTENDED",
@@ -2376,7 +2429,7 @@
         "overlap_group_id": "USD_JPY|COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|PATH_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:128",
           "movement_kernel": {
@@ -2423,20 +2476,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:128",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|PATH_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:153",
+        "mapping_id": "USD_JPY:MAP:153",
         "anchor_index": 153,
         "gross_movement_pips": 7.311,
         "displacement_score": 3.173684,
@@ -2477,6 +2532,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "SHORT",
         "distance_mode": "STANDARD_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 6.361,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "TRANSITION_RELEASE_SHORT|SHORT|LARGE",
@@ -2511,7 +2567,7 @@
         "overlap_group_id": "USD_JPY|TRANSITION|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:153",
           "movement_kernel": {
@@ -2558,20 +2614,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_SHORT",
-            "pattern_match_state": "TRANSITION_RELEASE_SHORT",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "STANDARD_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:153",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:178",
+        "mapping_id": "USD_JPY:MAP:178",
         "anchor_index": 178,
         "gross_movement_pips": 12.269,
         "displacement_score": 3.855789,
@@ -2612,6 +2670,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "STANDARD_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 11.319,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "COMPRESSION_RELEASE_LONG|LONG|EXTENDED",
@@ -2646,7 +2705,7 @@
         "overlap_group_id": "USD_JPY|COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:178",
           "movement_kernel": {
@@ -2693,20 +2752,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "STANDARD_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:178",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:203",
+        "mapping_id": "USD_JPY:MAP:203",
         "anchor_index": 203,
         "gross_movement_pips": 17.635,
         "displacement_score": 10.236842,
@@ -2747,6 +2808,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 16.685,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED",
@@ -2781,7 +2843,7 @@
         "overlap_group_id": "USD_JPY|TRANSITION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:203",
           "movement_kernel": {
@@ -2828,20 +2890,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:203",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:228",
+        "mapping_id": "USD_JPY:MAP:228",
         "anchor_index": 228,
         "gross_movement_pips": 10.629,
         "displacement_score": 2.984211,
@@ -2882,6 +2946,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 9.679,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG|LONG|EXTENDED",
@@ -2916,7 +2981,7 @@
         "overlap_group_id": "USD_JPY|TRANSITION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|CONTINUATION_PUSH",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:228",
           "movement_kernel": {
@@ -2963,20 +3028,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:228",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|CONTINUATION_PUSH"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:253",
+        "mapping_id": "USD_JPY:MAP:253",
         "anchor_index": 253,
         "gross_movement_pips": 7.769,
         "displacement_score": 3.129474,
@@ -3017,6 +3084,7 @@
         "trigger_state": "TREND_DRIFT_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "EXTENDED_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 6.819,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "FLOW_DRIFT_LONG|LONG|LARGE",
@@ -3051,7 +3119,7 @@
         "overlap_group_id": "USD_JPY|TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|TREND_DRIFT_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:253",
           "movement_kernel": {
@@ -3098,20 +3166,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-            "pattern_match_state": "FLOW_DRIFT_LONG",
-            "trigger_state": "TREND_DRIFT_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "EXTENDED_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:253",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|TREND_DRIFT_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "USD_JPY:278",
+        "mapping_id": "USD_JPY:MAP:278",
         "anchor_index": 278,
         "gross_movement_pips": 17.81,
         "displacement_score": 12.307368,
@@ -3152,6 +3222,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 16.86,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|EXTENDED",
@@ -3186,7 +3257,7 @@
         "overlap_group_id": "USD_JPY|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "USD_JPY:278",
           "movement_kernel": {
@@ -3233,22 +3304,24 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "USD_JPY:MAP:278",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
         }
       }
     ],
     "chop_mean_reversion": [
       {
         "profile_id": "EUR_USD:3",
+        "mapping_id": "EUR_USD:MAP:3",
         "anchor_index": 3,
         "gross_movement_pips": 0.5,
         "displacement_score": 0.105263,
@@ -3289,6 +3362,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|NON_COVERING",
@@ -3323,7 +3397,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:3",
           "movement_kernel": {
@@ -3370,20 +3444,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:3",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "UNSPECIFIED",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:28",
+        "mapping_id": "EUR_USD:MAP:28",
         "anchor_index": 28,
         "gross_movement_pips": 3.3,
         "displacement_score": 2.421053,
@@ -3424,6 +3500,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.35,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM",
@@ -3458,7 +3535,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:28",
           "movement_kernel": {
@@ -3505,20 +3582,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:28",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:53",
+        "mapping_id": "EUR_USD:MAP:53",
         "anchor_index": 53,
         "gross_movement_pips": 2.1,
         "displacement_score": 0.947368,
@@ -3559,6 +3638,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "SHORT",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.15,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_SHORT|SHORT|SMALL",
@@ -3593,7 +3673,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:53",
           "movement_kernel": {
@@ -3640,20 +3720,22 @@
             "opportunity_confidence_tier": "QUALIFIED_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:53",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:78",
+        "mapping_id": "EUR_USD:MAP:78",
         "anchor_index": 78,
         "gross_movement_pips": 1.3,
         "displacement_score": 0.105263,
@@ -3694,6 +3776,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.35,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|MICRO",
@@ -3728,7 +3811,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|MID_ZONE|COMPRESSED|NEUTRAL|MID_DRIFT|NEUTRAL|MICRO",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:78",
           "movement_kernel": {
@@ -3775,20 +3858,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:78",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:103",
+        "mapping_id": "EUR_USD:MAP:103",
         "anchor_index": 103,
         "gross_movement_pips": 2.7,
         "displacement_score": 1.157895,
@@ -3829,6 +3914,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 1.75,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|SMALL",
@@ -3863,7 +3949,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:103",
           "movement_kernel": {
@@ -3910,20 +3996,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:103",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:128",
+        "mapping_id": "EUR_USD:MAP:128",
         "anchor_index": 128,
         "gross_movement_pips": 2.3,
         "displacement_score": 0.105263,
@@ -3964,6 +4052,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.35,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|SMALL",
@@ -3998,7 +4087,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
         "episode_position": "EARLY",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:128",
           "movement_kernel": {
@@ -4045,20 +4134,22 @@
             "opportunity_confidence_tier": "QUALIFIED_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:128",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:153",
+        "mapping_id": "EUR_USD:MAP:153",
         "anchor_index": 153,
         "gross_movement_pips": 1.3,
         "displacement_score": 0.526316,
@@ -4099,6 +4190,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.35,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|MICRO",
@@ -4133,7 +4225,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|MID_ZONE|COMPRESSED|NEUTRAL|MID_DRIFT|NEUTRAL|MICRO",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:153",
           "movement_kernel": {
@@ -4180,20 +4272,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:153",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:178",
+        "mapping_id": "EUR_USD:MAP:178",
         "anchor_index": 178,
         "gross_movement_pips": 2.4,
         "displacement_score": 0.631579,
@@ -4234,6 +4328,7 @@
         "trigger_state": "TREND_DRIFT_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.45,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "FLOW_DRIFT_LONG|LONG|SMALL",
@@ -4268,7 +4363,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|SMALL",
         "episode_position": "LATE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|TREND_DRIFT_CONTINUATION_LONG",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:178",
           "movement_kernel": {
@@ -4315,20 +4410,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_FLOW_LONG",
-            "pattern_match_state": "FLOW_DRIFT_LONG",
-            "trigger_state": "TREND_DRIFT_CONTINUATION_LONG"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:178",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|TREND_DRIFT_CONTINUATION_LONG"
+          "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:203",
+        "mapping_id": "EUR_USD:MAP:203",
         "anchor_index": 203,
         "gross_movement_pips": 3.3,
         "displacement_score": 1.789474,
@@ -4369,6 +4466,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.35,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM",
@@ -4403,7 +4501,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:203",
           "movement_kernel": {
@@ -4450,20 +4548,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:203",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:228",
+        "mapping_id": "EUR_USD:MAP:228",
         "anchor_index": 228,
         "gross_movement_pips": 2.2,
         "displacement_score": 0.421053,
@@ -4504,6 +4604,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.25,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "COILED_TRANSITION_LONG|LONG|SMALL",
@@ -4538,7 +4639,7 @@
         "overlap_group_id": "EUR_USD|TRANSITION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:228",
           "movement_kernel": {
@@ -4585,20 +4686,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COILED_TRANSITION_LONG",
-            "pattern_match_state": "COILED_TRANSITION_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:228",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:253",
+        "mapping_id": "EUR_USD:MAP:253",
         "anchor_index": 253,
         "gross_movement_pips": 1.4,
         "displacement_score": 0.421053,
@@ -4639,6 +4742,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.45,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "BALANCED|LONG|MICRO",
@@ -4673,7 +4777,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|MID_ZONE|BALANCED|LONG|MID_BALANCE|LONG|MICRO",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:253",
           "movement_kernel": {
@@ -4720,20 +4824,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:253",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:278",
+        "mapping_id": "EUR_USD:MAP:278",
         "anchor_index": 278,
         "gross_movement_pips": 3.3,
         "displacement_score": 2.210526,
@@ -4774,6 +4880,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.35,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "INTENTIONAL_REJECT_NO_DIRECTION|NEUTRAL|MEDIUM",
@@ -4808,7 +4915,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|NEUTRAL|CEILING_PRESSURE|NEUTRAL|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:278",
           "movement_kernel": {
@@ -4855,22 +4962,24 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
-            "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:278",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|STRUCTURED_FIT"
         }
       }
     ],
     "spread_widening": [
       {
         "profile_id": "EUR_USD:3",
+        "mapping_id": "EUR_USD:MAP:3",
         "anchor_index": 3,
         "gross_movement_pips": 0.8,
         "displacement_score": 0.631579,
@@ -4911,6 +5020,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|NON_COVERING",
@@ -4945,7 +5055,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:3",
           "movement_kernel": {
@@ -4992,20 +5102,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:3",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "UNSPECIFIED",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:28",
+        "mapping_id": "EUR_USD:MAP:28",
         "anchor_index": 28,
         "gross_movement_pips": 6.7,
         "displacement_score": 6.0,
@@ -5046,6 +5158,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 5.75,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|LARGE",
@@ -5080,7 +5193,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:28",
           "movement_kernel": {
@@ -5127,20 +5240,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:28",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:53",
+        "mapping_id": "EUR_USD:MAP:53",
         "anchor_index": 53,
         "gross_movement_pips": 3.7,
         "displacement_score": 0.526316,
@@ -5181,6 +5296,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "SHORT",
         "distance_mode": "STANDARD_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 2.75,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "COMPRESSION|SHORT|MEDIUM",
@@ -5215,7 +5331,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|MID_ZONE|COMPRESSED|SHORT|MID_BALANCE|SHORT|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:53",
           "movement_kernel": {
@@ -5262,20 +5378,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "STANDARD_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:53",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:78",
+        "mapping_id": "EUR_USD:MAP:78",
         "anchor_index": 78,
         "gross_movement_pips": 2.6,
         "displacement_score": 1.052632,
@@ -5316,6 +5434,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 1.65,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|SMALL",
@@ -5350,7 +5469,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:78",
           "movement_kernel": {
@@ -5397,20 +5516,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:78",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:103",
+        "mapping_id": "EUR_USD:MAP:103",
         "anchor_index": 103,
         "gross_movement_pips": 5.4,
         "displacement_score": 3.578947,
@@ -5451,6 +5572,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 4.45,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "COMPRESSION_RELEASE_LONG|LONG|LARGE",
@@ -5485,7 +5607,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:103",
           "movement_kernel": {
@@ -5532,20 +5654,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:103",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:128",
+        "mapping_id": "EUR_USD:MAP:128",
         "anchor_index": 128,
         "gross_movement_pips": 4.6,
         "displacement_score": 1.052632,
@@ -5586,6 +5710,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 3.65,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|MEDIUM",
@@ -5620,7 +5745,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "EARLY",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:128",
           "movement_kernel": {
@@ -5667,20 +5792,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:128",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:153",
+        "mapping_id": "EUR_USD:MAP:153",
         "anchor_index": 153,
         "gross_movement_pips": 3.1,
         "displacement_score": 2.210526,
@@ -5721,6 +5848,7 @@
         "trigger_state": "RECLAIM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.15,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "PRESSURE_DRIVE_LONG|LONG|MEDIUM",
@@ -5755,7 +5883,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|MID_ZONE|BALANCED|LONG|MID_DRIFT|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|RECLAIM",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:153",
           "movement_kernel": {
@@ -5802,20 +5930,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_PRESSURE_LONG",
-            "pattern_match_state": "PRESSURE_DRIVE_LONG",
-            "trigger_state": "RECLAIM"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:153",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|RECLAIM"
+          "kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:178",
+        "mapping_id": "EUR_USD:MAP:178",
         "anchor_index": 178,
         "gross_movement_pips": 5.3,
         "displacement_score": 2.421053,
@@ -5856,6 +5986,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 4.35,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|LARGE",
@@ -5890,7 +6021,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:178",
           "movement_kernel": {
@@ -5937,20 +6068,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:178",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:203",
+        "mapping_id": "EUR_USD:MAP:203",
         "anchor_index": 203,
         "gross_movement_pips": 7.5,
         "displacement_score": 4.947368,
@@ -5991,6 +6124,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 6.55,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "PRESSURE_DRIVE_LONG|LONG|LARGE",
@@ -6025,7 +6159,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|LARGE",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:203",
           "movement_kernel": {
@@ -6072,20 +6206,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_PRESSURE_LONG",
-            "pattern_match_state": "PRESSURE_DRIVE_LONG",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:203",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:228",
+        "mapping_id": "EUR_USD:MAP:228",
         "anchor_index": 228,
         "gross_movement_pips": 4.2,
         "displacement_score": 0.851064,
@@ -6126,6 +6262,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.85,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|MICRO",
@@ -6160,7 +6297,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:228",
           "movement_kernel": {
@@ -6207,20 +6344,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:228",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "TOXIC_THIN"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:253",
+        "mapping_id": "EUR_USD:MAP:253",
         "anchor_index": 253,
         "gross_movement_pips": 3.5,
         "displacement_score": 0.893617,
@@ -6261,6 +6400,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 1.15,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|MICRO",
@@ -6295,7 +6435,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MICRO",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:253",
           "movement_kernel": {
@@ -6342,20 +6482,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LIFT_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:253",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:278",
+        "mapping_id": "EUR_USD:MAP:278",
         "anchor_index": 278,
         "gross_movement_pips": 7.7,
         "displacement_score": 2.340426,
@@ -6396,6 +6538,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 5.35,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM",
@@ -6430,7 +6573,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:278",
           "movement_kernel": {
@@ -6477,22 +6620,24 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:278",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT"
         }
       }
     ],
     "whipsaw_spike_fade": [
       {
         "profile_id": "EUR_USD:3",
+        "mapping_id": "EUR_USD:MAP:3",
         "anchor_index": 3,
         "gross_movement_pips": 0.1,
         "displacement_score": 0.105263,
@@ -6533,6 +6678,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|NON_COVERING",
@@ -6567,7 +6713,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:3",
           "movement_kernel": {
@@ -6614,20 +6760,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:3",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "UNSPECIFIED",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:28",
+        "mapping_id": "EUR_USD:MAP:28",
         "anchor_index": 28,
         "gross_movement_pips": 0.0,
         "displacement_score": 0.0,
@@ -6668,6 +6816,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|NON_COVERING",
@@ -6702,7 +6851,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|NEUTRAL|CEILING_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:28",
           "movement_kernel": {
@@ -6749,20 +6898,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:28",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:53",
+        "mapping_id": "EUR_USD:MAP:53",
         "anchor_index": 53,
         "gross_movement_pips": 0.1,
         "displacement_score": 0.105263,
@@ -6803,6 +6954,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "INTENTIONAL_REJECT_NO_DIRECTION|NEUTRAL|NON_COVERING",
@@ -6837,7 +6989,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_FLOOR|BALANCED|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:53",
           "movement_kernel": {
@@ -6884,20 +7036,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
-            "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:53",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BEARISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:78",
+        "mapping_id": "EUR_USD:MAP:78",
         "anchor_index": 78,
         "gross_movement_pips": 0.1,
         "displacement_score": 0.105263,
@@ -6938,6 +7092,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|NON_COVERING",
@@ -6972,7 +7127,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_FLOOR|COMPRESSED|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:78",
           "movement_kernel": {
@@ -7019,20 +7174,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:78",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BEARISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:103",
+        "mapping_id": "EUR_USD:MAP:103",
         "anchor_index": 103,
         "gross_movement_pips": 0.1,
         "displacement_score": 0.105263,
@@ -7073,6 +7230,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "BALANCED|NEUTRAL|NON_COVERING",
@@ -7107,7 +7265,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|MID_ZONE|BALANCED|NEUTRAL|MID_BALANCE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:103",
           "movement_kernel": {
@@ -7154,20 +7312,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:103",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BEARISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:128",
+        "mapping_id": "EUR_USD:MAP:128",
         "anchor_index": 128,
         "gross_movement_pips": 0.1,
         "displacement_score": 0.105263,
@@ -7208,6 +7368,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|NON_COVERING",
@@ -7242,7 +7403,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|NEUTRAL|CEILING_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:128",
           "movement_kernel": {
@@ -7289,20 +7450,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:128",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:153",
+        "mapping_id": "EUR_USD:MAP:153",
         "anchor_index": 153,
         "gross_movement_pips": 0.1,
         "displacement_score": 0.105263,
@@ -7343,6 +7506,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|NON_COVERING",
@@ -7377,7 +7541,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|TIGHT|NEUTRAL|CEILING_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:153",
           "movement_kernel": {
@@ -7424,20 +7588,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:153",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:178",
+        "mapping_id": "EUR_USD:MAP:178",
         "anchor_index": 178,
         "gross_movement_pips": 0.2,
         "displacement_score": 0.210526,
@@ -7478,6 +7644,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "INTENTIONAL_REJECT_NO_DIRECTION|NEUTRAL|NON_COVERING",
@@ -7512,7 +7679,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_FLOOR|BALANCED|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:178",
           "movement_kernel": {
@@ -7559,20 +7726,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
-            "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:178",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BEARISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:203",
+        "mapping_id": "EUR_USD:MAP:203",
         "anchor_index": 203,
         "gross_movement_pips": 0.0,
         "displacement_score": 0.0,
@@ -7613,6 +7782,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "COILED_COMPRESSION_NEUTRAL|NEUTRAL|NON_COVERING",
@@ -7647,7 +7817,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_FLOOR|TIGHT|NEUTRAL|FLOOR_PRESSURE|NEUTRAL|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:203",
           "movement_kernel": {
@@ -7694,20 +7864,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-            "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:203",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BEARISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:228",
+        "mapping_id": "EUR_USD:MAP:228",
         "anchor_index": 228,
         "gross_movement_pips": 28.0,
         "displacement_score": 29.473684,
@@ -7748,6 +7920,7 @@
         "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 27.05,
         "target_distance_bucket": "EXTENDED",
         "extraction_signature": "TRANSITION_RELEASE_LONG_STANDARD|LONG|EXTENDED",
@@ -7782,7 +7955,7 @@
         "overlap_group_id": "EUR_USD|EXPANSION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|EXTENDED",
         "episode_position": "LATE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG",
+        "truth_kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:228",
           "movement_kernel": {
@@ -7829,20 +8002,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
-            "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-            "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:228",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+          "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:253",
+        "mapping_id": "EUR_USD:MAP:253",
         "anchor_index": 253,
         "gross_movement_pips": 2.1,
         "displacement_score": 0.105263,
@@ -7883,6 +8058,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.15,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|SMALL",
@@ -7917,7 +8093,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:253",
           "movement_kernel": {
@@ -7964,20 +8140,22 @@
             "opportunity_confidence_tier": "QUALIFIED_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:253",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:278",
+        "mapping_id": "EUR_USD:MAP:278",
         "anchor_index": 278,
         "gross_movement_pips": 5.9,
         "displacement_score": 6.210526,
@@ -8018,6 +8196,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "SHORT",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 4.95,
         "target_distance_bucket": "LARGE",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_SHORT|SHORT|LARGE",
@@ -8052,7 +8231,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_FLOOR|BALANCED|SHORT|FLOOR_PRESSURE|SHORT|LARGE",
         "episode_position": "MID",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:278",
           "movement_kernel": {
@@ -8099,22 +8278,24 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:278",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BEARISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|STRUCTURED_FIT"
         }
       }
     ],
     "slow_grind_break": [
       {
         "profile_id": "EUR_USD:3",
+        "mapping_id": "EUR_USD:MAP:3",
         "anchor_index": 3,
         "gross_movement_pips": 0.6,
         "displacement_score": 0.421053,
@@ -8155,6 +8336,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.0,
         "target_distance_bucket": "NON_COVERING",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|NON_COVERING",
@@ -8189,7 +8371,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|NON_COVERING",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:3",
           "movement_kernel": {
@@ -8236,20 +8418,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:3",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "UNSPECIFIED",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:28",
+        "mapping_id": "EUR_USD:MAP:28",
         "anchor_index": 28,
         "gross_movement_pips": 4.2,
         "displacement_score": 3.578947,
@@ -8290,6 +8474,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 3.25,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM",
@@ -8324,7 +8509,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|OPEN|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:28",
           "movement_kernel": {
@@ -8371,20 +8556,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:28",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:53",
+        "mapping_id": "EUR_USD:MAP:53",
         "anchor_index": 53,
         "gross_movement_pips": 2.3,
         "displacement_score": 0.526316,
@@ -8425,6 +8612,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "SHORT",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.35,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "BALANCED|SHORT|SMALL",
@@ -8459,7 +8647,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|MID_ZONE|COMPRESSED|SHORT|MID_DRIFT|SHORT|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:53",
           "movement_kernel": {
@@ -8506,20 +8694,22 @@
             "opportunity_confidence_tier": "AGGRESSIVE_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:53",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:78",
+        "mapping_id": "EUR_USD:MAP:78",
         "anchor_index": 78,
         "gross_movement_pips": 1.6,
         "displacement_score": 0.421053,
@@ -8560,6 +8750,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "NO_FIT",
         "discovered_distance_pips": 0.65,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MICRO",
@@ -8594,7 +8785,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MICRO",
         "episode_position": "NONE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:78",
           "movement_kernel": {
@@ -8641,20 +8832,22 @@
             "opportunity_confidence_tier": "NON_OPPORTUNITY"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "NO_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:78",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:103",
+        "mapping_id": "EUR_USD:MAP:103",
         "anchor_index": 103,
         "gross_movement_pips": 3.3,
         "displacement_score": 2.0,
@@ -8695,6 +8888,7 @@
         "trigger_state": "COMPRESSION_PRESSURE_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.35,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "COMPRESSION_PRESSURE_LIFT_LONG|LONG|MEDIUM",
@@ -8729,7 +8923,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|COMPRESSION_PRESSURE_PUSH",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:103",
           "movement_kernel": {
@@ -8776,20 +8970,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LIFT_LONG",
-            "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-            "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:103",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|COMPRESSION_PRESSURE_PUSH"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:128",
+        "mapping_id": "EUR_USD:MAP:128",
         "anchor_index": 128,
         "gross_movement_pips": 2.8,
         "displacement_score": 0.421053,
@@ -8830,6 +9026,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "PATH_FIT",
         "discovered_distance_pips": 1.85,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|SMALL",
@@ -8864,7 +9061,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|TIGHT|LONG|CEILING_PRESSURE|LONG|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:128",
           "movement_kernel": {
@@ -8911,20 +9108,22 @@
             "opportunity_confidence_tier": "QUALIFIED_PATH"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "PATH_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:128",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "SWEEP_READY"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:153",
+        "mapping_id": "EUR_USD:MAP:153",
         "anchor_index": 153,
         "gross_movement_pips": 1.9,
         "displacement_score": 1.157895,
@@ -8965,6 +9164,7 @@
         "trigger_state": "NO_CONFIDENT_TRIGGER",
         "direction_group": "NEUTRAL",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 0.95,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "BALANCED|NEUTRAL|SMALL",
@@ -8999,7 +9199,7 @@
         "overlap_group_id": "EUR_USD|BALANCED|MID_ZONE|BALANCED|NEUTRAL|MID_BALANCE|NEUTRAL|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER",
+        "truth_kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:153",
           "movement_kernel": {
@@ -9046,20 +9246,22 @@
             "opportunity_confidence_tier": "CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_NONE",
-            "pattern_match_state": "UNMATCHED",
-            "trigger_state": "NO_CONFIDENT_TRIGGER"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:153",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+          "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:178",
+        "mapping_id": "EUR_USD:MAP:178",
         "anchor_index": 178,
         "gross_movement_pips": 3.3,
         "displacement_score": 1.368421,
@@ -9100,6 +9302,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 2.35,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|MEDIUM",
@@ -9134,7 +9337,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:178",
           "movement_kernel": {
@@ -9181,20 +9384,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:178",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "NEUTRAL",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:203",
+        "mapping_id": "EUR_USD:MAP:203",
         "anchor_index": 203,
         "gross_movement_pips": 4.6,
         "displacement_score": 2.947368,
@@ -9235,6 +9440,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 3.65,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM",
@@ -9269,7 +9475,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:203",
           "movement_kernel": {
@@ -9316,20 +9522,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:203",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:228",
+        "mapping_id": "EUR_USD:MAP:228",
         "anchor_index": 228,
         "gross_movement_pips": 2.5,
         "displacement_score": 1.157895,
@@ -9370,6 +9578,7 @@
         "trigger_state": "ONE_BAR_CONFIRM",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 1.55,
         "target_distance_bucket": "SMALL",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|SMALL",
@@ -9404,7 +9613,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|NEAR_CEILING|COMPRESSED|LONG|CEILING_PRESSURE|LONG|SMALL",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM",
+        "truth_kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:228",
           "movement_kernel": {
@@ -9451,20 +9660,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "ONE_BAR_CONFIRM"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:228",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "REFERENCE_LEVEL",
             "liquidity_map_kernel": "BALANCED_BOOK"
           },
-          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+          "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:253",
+        "mapping_id": "EUR_USD:MAP:253",
         "anchor_index": 253,
         "gross_movement_pips": 1.9,
         "displacement_score": 1.157895,
@@ -9505,6 +9716,7 @@
         "trigger_state": "FAILED_PUSH_REVERSE",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 0.95,
         "target_distance_bucket": "MICRO",
         "extraction_signature": "COILED_COMPRESSION_LONG|LONG|MICRO",
@@ -9539,7 +9751,7 @@
         "overlap_group_id": "EUR_USD|COMPRESSION|MID_ZONE|COMPRESSED|LONG|MID_DRIFT|LONG|MICRO",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|FAILED_PUSH_REVERSE",
+        "truth_kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:253",
           "movement_kernel": {
@@ -9586,20 +9798,22 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-            "pattern_match_state": "COILED_COMPRESSION_LONG",
-            "trigger_state": "FAILED_PUSH_REVERSE"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:253",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "MID_VOID",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|FAILED_PUSH_REVERSE"
+          "kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|STRUCTURED_FIT"
         }
       },
       {
         "profile_id": "EUR_USD:278",
+        "mapping_id": "EUR_USD:MAP:278",
         "anchor_index": 278,
         "gross_movement_pips": 4.6,
         "displacement_score": 3.368421,
@@ -9640,6 +9854,7 @@
         "trigger_state": "CONTINUATION_PUSH",
         "direction_group": "LONG",
         "distance_mode": "SCALP_DISTANCE",
+        "fit_state": "STRUCTURED_FIT",
         "discovered_distance_pips": 3.65,
         "target_distance_bucket": "MEDIUM",
         "extraction_signature": "OSCILLATION_PRESSURE_BUILD_LONG|LONG|MEDIUM",
@@ -9674,7 +9889,7 @@
         "overlap_group_id": "EUR_USD|OSCILLATION|NEAR_CEILING|BALANCED|LONG|CEILING_PRESSURE|LONG|MEDIUM",
         "episode_position": "SINGLE",
         "data_confidence": "DIRECT_QUOTE",
-        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH",
+        "truth_kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT",
         "truth_kernel": {
           "profile_id": "EUR_USD:278",
           "movement_kernel": {
@@ -9721,16 +9936,17 @@
             "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
           },
           "event_kernel": {
-            "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-            "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-            "trigger_state": "CONTINUATION_PUSH"
+            "fit_state": "STRUCTURED_FIT",
+            "distance_mode": "SCALP_DISTANCE",
+            "mapping_id": "EUR_USD:MAP:278",
+            "handoff_stage": "TIER0_HANDOFF"
           },
           "global_slots": {
             "macro_bias_kernel": "BULLISH",
             "htf_zone_kernel": "EDGE_REFERENCE",
             "liquidity_map_kernel": "FLOW_IMBALANCED"
           },
-          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH"
+          "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT"
         }
       }
     ]

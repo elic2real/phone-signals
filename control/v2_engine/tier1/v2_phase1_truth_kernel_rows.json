@@ -1,6 +1,6 @@
 {
   "artifact_id": "V2_PHASE1_TRUTH_KERNEL_ROWS",
-  "generated_at_utc": "2026-04-02T13:59:23.348699Z",
+  "generated_at_utc": "2026-04-02T16:48:44.319955Z",
   "kernels_by_scenario": {
     "trend_continuation": [
       {
@@ -49,16 +49,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:3",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "UNSPECIFIED",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|COILED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:28",
@@ -106,16 +107,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:28",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:53",
@@ -163,16 +165,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "EXTENDED_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:53",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:78",
@@ -220,16 +223,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:78",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:103",
@@ -277,16 +281,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:103",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:128",
@@ -334,16 +339,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:128",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:153",
@@ -391,16 +397,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:153",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:178",
@@ -448,16 +455,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:178",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:203",
@@ -505,16 +513,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:203",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:228",
@@ -562,16 +571,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:228",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:253",
@@ -619,16 +629,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:253",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:278",
@@ -676,16 +687,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:278",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       }
     ],
     "panic_reversal": [
@@ -735,16 +747,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:3",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "UNSPECIFIED",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
       },
       {
         "profile_id": "USD_JPY:28",
@@ -792,16 +805,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:28",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:53",
@@ -849,16 +863,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:53",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|BALANCED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:78",
@@ -906,16 +921,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "EXTENDED_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:78",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|BALANCED|DORMANT|PATH_FIT"
       },
       {
         "profile_id": "USD_JPY:103",
@@ -963,16 +979,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:103",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:128",
@@ -1020,16 +1037,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:128",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|PATH_FIT"
       },
       {
         "profile_id": "USD_JPY:153",
@@ -1077,16 +1095,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_SHORT",
-          "pattern_match_state": "TRANSITION_RELEASE_SHORT",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "STANDARD_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:153",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "TRENDING|MID_ZONE|SHORT|BALANCED|DORMANT|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:178",
@@ -1134,16 +1153,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "STANDARD_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:178",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|MID_ZONE|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:203",
@@ -1191,16 +1211,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:203",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:228",
@@ -1248,16 +1269,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:228",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|CONTINUATION_PUSH"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:253",
@@ -1305,16 +1327,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_TRANSITION_LONG",
-          "pattern_match_state": "FLOW_DRIFT_LONG",
-          "trigger_state": "TREND_DRIFT_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "EXTENDED_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:253",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|TREND_DRIFT_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|MID_ZONE|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "USD_JPY:278",
@@ -1362,16 +1385,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "USD_JPY:MAP:278",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
       }
     ],
     "chop_mean_reversion": [
@@ -1421,16 +1445,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:3",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "UNSPECIFIED",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:28",
@@ -1478,16 +1503,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:28",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:53",
@@ -1535,16 +1561,17 @@
           "opportunity_confidence_tier": "QUALIFIED_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:53",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|COILED|DORMANT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:78",
@@ -1592,16 +1619,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:78",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:103",
@@ -1649,16 +1677,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:103",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:128",
@@ -1706,16 +1735,17 @@
           "opportunity_confidence_tier": "QUALIFIED_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:128",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:153",
@@ -1763,16 +1793,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:153",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:178",
@@ -1820,16 +1851,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_FLOW_LONG",
-          "pattern_match_state": "FLOW_DRIFT_LONG",
-          "trigger_state": "TREND_DRIFT_CONTINUATION_LONG"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:178",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|TREND_DRIFT_CONTINUATION_LONG"
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DRIFT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:203",
@@ -1877,16 +1909,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:203",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:228",
@@ -1934,16 +1967,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COILED_TRANSITION_LONG",
-          "pattern_match_state": "COILED_TRANSITION_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:228",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "TRENDING|MID_ZONE|LONG|COILED|DRIFT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:253",
@@ -1991,16 +2025,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:253",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:278",
@@ -2048,16 +2083,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
-          "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:278",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|NEUTRAL|PRESSURED|DORMANT|STRUCTURED_FIT"
       }
     ],
     "spread_widening": [
@@ -2107,16 +2143,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:3",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "UNSPECIFIED",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DRIFT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:28",
@@ -2164,16 +2201,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:28",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIVE|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:53",
@@ -2221,16 +2259,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "STANDARD_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:53",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|MID_ZONE|SHORT|BALANCED|DORMANT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:78",
@@ -2278,16 +2317,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:78",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|BALANCED|DORMANT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:103",
@@ -2335,16 +2375,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_RELEASE_LONG",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:103",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:128",
@@ -2392,16 +2433,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:128",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:153",
@@ -2449,16 +2491,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_PRESSURE_LONG",
-          "pattern_match_state": "PRESSURE_DRIVE_LONG",
-          "trigger_state": "RECLAIM"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:153",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|RECLAIM"
+        "kernel_signature": "BALANCED|MID_ZONE|LONG|PRESSURED|DORMANT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:178",
@@ -2506,16 +2549,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_RELEASE_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:178",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIVE|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:203",
@@ -2563,16 +2607,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_PRESSURE_LONG",
-          "pattern_match_state": "PRESSURE_DRIVE_LONG",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:203",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "BALANCED|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:228",
@@ -2620,16 +2665,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:228",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "TOXIC_THIN"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:253",
@@ -2677,16 +2723,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LIFT_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:253",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:278",
@@ -2734,16 +2781,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:278",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT"
       }
     ],
     "whipsaw_spike_fade": [
@@ -2793,16 +2841,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:3",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "UNSPECIFIED",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:28",
@@ -2850,16 +2899,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:28",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:53",
@@ -2907,16 +2957,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
-          "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:53",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BEARISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:78",
@@ -2964,16 +3015,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:78",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BEARISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:103",
@@ -3021,16 +3073,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:103",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BEARISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:128",
@@ -3078,16 +3131,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:128",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:153",
@@ -3135,16 +3189,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:153",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:178",
@@ -3192,16 +3247,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_INTENTIONAL_REJECT_NO_DIRECTION",
-          "pattern_match_state": "INTENTIONAL_REJECT_NO_DIRECTION",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:178",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BEARISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:203",
@@ -3249,16 +3305,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_NEUTRAL",
-          "pattern_match_state": "COILED_COMPRESSION_NEUTRAL",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:203",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BEARISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "COMPRESSION|NEAR_FLOOR|NEUTRAL|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:228",
@@ -3306,16 +3363,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_EXPANSION_LONG",
-          "pattern_match_state": "TRANSITION_RELEASE_LONG_STANDARD",
-          "trigger_state": "TREND_PRESSURE_CONTINUATION_LONG"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:228",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|TREND_PRESSURE_CONTINUATION_LONG"
+        "kernel_signature": "TRENDING|NEAR_CEILING|LONG|PRESSURED|IGNITION|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:253",
@@ -3363,16 +3421,17 @@
           "opportunity_confidence_tier": "QUALIFIED_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:253",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DORMANT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:278",
@@ -3420,16 +3479,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_SHORT",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_SHORT",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:278",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BEARISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_FLOOR|SHORT|PRESSURED|DRIFT|STRUCTURED_FIT"
       }
     ],
     "slow_grind_break": [
@@ -3479,16 +3539,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:3",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "UNSPECIFIED",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:28",
@@ -3536,16 +3597,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:28",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:53",
@@ -3593,16 +3655,17 @@
           "opportunity_confidence_tier": "AGGRESSIVE_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:53",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "BALANCED|MID_ZONE|SHORT|COILED|DORMANT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:78",
@@ -3650,16 +3713,17 @@
           "opportunity_confidence_tier": "NON_OPPORTUNITY"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "NO_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:78",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|COILED|DORMANT|NO_FIT"
       },
       {
         "profile_id": "EUR_USD:103",
@@ -3707,16 +3771,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LIFT_LONG",
-          "pattern_match_state": "COMPRESSION_PRESSURE_LIFT_LONG",
-          "trigger_state": "COMPRESSION_PRESSURE_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:103",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|COMPRESSION_PRESSURE_PUSH"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|BALANCED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:128",
@@ -3764,16 +3829,17 @@
           "opportunity_confidence_tier": "QUALIFIED_PATH"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "PATH_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:128",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "SWEEP_READY"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|PATH_FIT"
       },
       {
         "profile_id": "EUR_USD:153",
@@ -3821,16 +3887,17 @@
           "opportunity_confidence_tier": "CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_NONE",
-          "pattern_match_state": "UNMATCHED",
-          "trigger_state": "NO_CONFIDENT_TRIGGER"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:153",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|NO_CONFIDENT_TRIGGER"
+        "kernel_signature": "BALANCED|MID_ZONE|NEUTRAL|COILED|DORMANT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:178",
@@ -3878,16 +3945,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:178",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "NEUTRAL",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:203",
@@ -3935,16 +4003,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:203",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:228",
@@ -3992,16 +4061,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "ONE_BAR_CONFIRM"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:228",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "REFERENCE_LEVEL",
           "liquidity_map_kernel": "BALANCED_BOOK"
         },
-        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|ONE_BAR_CONFIRM"
+        "kernel_signature": "COMPRESSION|NEAR_CEILING|LONG|COILED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:253",
@@ -4049,16 +4119,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_COMPRESSION_LONG",
-          "pattern_match_state": "COILED_COMPRESSION_LONG",
-          "trigger_state": "FAILED_PUSH_REVERSE"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:253",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "MID_VOID",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|FAILED_PUSH_REVERSE"
+        "kernel_signature": "COMPRESSION|MID_ZONE|LONG|COILED|DRIFT|STRUCTURED_FIT"
       },
       {
         "profile_id": "EUR_USD:278",
@@ -4106,16 +4177,17 @@
           "opportunity_confidence_tier": "QUALIFIED_CONSERVATIVE"
         },
         "event_kernel": {
-          "live_recognition_state": "RECOGNIZE_OSCILLATION_PRESSURE_LONG",
-          "pattern_match_state": "OSCILLATION_PRESSURE_BUILD_LONG",
-          "trigger_state": "CONTINUATION_PUSH"
+          "fit_state": "STRUCTURED_FIT",
+          "distance_mode": "SCALP_DISTANCE",
+          "mapping_id": "EUR_USD:MAP:278",
+          "handoff_stage": "TIER0_HANDOFF"
         },
         "global_slots": {
           "macro_bias_kernel": "BULLISH",
           "htf_zone_kernel": "EDGE_REFERENCE",
           "liquidity_map_kernel": "FLOW_IMBALANCED"
         },
-        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|CONTINUATION_PUSH"
+        "kernel_signature": "OSCILLATION|NEAR_CEILING|LONG|PRESSURED|DORMANT|STRUCTURED_FIT"
       }
     ]
   }

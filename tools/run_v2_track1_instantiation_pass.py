@@ -11,9 +11,12 @@ from typing import Any, Dict, List
 WORKSPACE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKSPACE))
 
-from github_repo import tick_generator as synthetic_ticks  # noqa: E402
+try:
+    from github_repo import tick_generator as synthetic_ticks  # noqa: E402
+except ImportError:
+    import tick_generator as synthetic_ticks  # type: ignore[no-redef]  # noqa: E402
 from tools.run_v2_entry_stack import _matching_survivor_routes, make_config, read_json, write_json  # noqa: E402
-from tools.v2_phase1_physics_engine import build_phase1_profiles, sanitize_ticks  # noqa: E402
+from tools.v2_phase1_physics_engine import build_phase1_stack, sanitize_ticks  # noqa: E402
 from tools.v2_phase2_cluster_engine import assign_profile_to_cluster  # noqa: E402
 from tools.v2_phase3_context_engine import build_context_snapshot  # noqa: E402
 from tools.v2_phase4_trigger_engine import build_trigger_candidate  # noqa: E402
@@ -41,17 +44,30 @@ GENERIC_ROUTE_MODES = {
 
 def scenario_ticks(name: str, seed: int) -> List[Dict[str, Any]]:
     random.seed(seed)
-    return synthetic_ticks.SCENARIO_REGISTRY[name]()
+    scenario_name = str(name or "").strip()
+    legacy_aliases = {
+        "chop_mean_reversion": "low_energy_range",
+    }
+    scenario_name = legacy_aliases.get(scenario_name, scenario_name)
+    return synthetic_ticks.SCENARIO_REGISTRY[scenario_name]()
 
 
 def _round(value: float) -> float:
     return round(float(value), 6)
 
 
-def _annotate_truth_kernels(profiles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _annotate_truth_kernels(profiles: List[Dict[str, Any]], tier0_handoff_rows: List[Dict[str, Any]] | None = None) -> List[Dict[str, Any]]:
+    handoff_by_profile_id = {
+        str(row.get("profile_id", "") or ""): row
+        for row in list(tier0_handoff_rows or [])
+    }
     annotated: List[Dict[str, Any]] = []
     for profile in profiles:
-        kernel = build_truth_kernel(profile, profiles)
+        kernel = build_truth_kernel(
+            profile,
+            profiles,
+            handoff_by_profile_id.get(str(profile.get("profile_id", "") or "")),
+        )
         annotated.append(
             {
                 **profile,
@@ -74,15 +90,16 @@ def _identity_binding_status(route_modes: List[str], survivor_rule_count: int) -
 
 
 def _phase1_residue_status(doctrine_id: str, cluster_report: Dict[str, Any]) -> str:
-    uncaptured = dict((cluster_report.get("tier1_extraction_summary", {}) or {}).get("uncaptured_pattern_match_states", {}) or {})
+    extraction_summary = cluster_report.get("tier1_extraction_summary", {}) or {}
+    uncaptured = dict(extraction_summary.get("uncaptured_doctrine_states", {}) or extraction_summary.get("uncaptured_pattern_match_states", {}) or {})
     residue = int(uncaptured.get(doctrine_id, 0) or 0)
     return "RESIDUE_PRESENT" if residue > 0 else "CLEAR"
 
 
 def _phase2_naming_status(cluster: Dict[str, Any], identity_binding_status: str) -> str:
     doctrine_id = str(cluster.get("doctrine_id", "") or "")
-    pattern_state = str(cluster.get("pattern_match_state", "") or "")
-    if doctrine_id != pattern_state:
+    doctrine_state = str(cluster.get("doctrine_state", cluster.get("pattern_match_state", "")) or "")
+    if doctrine_id != doctrine_state:
         return "REQUIRES_RENAME_NORMALIZATION"
     if identity_binding_status == "GENERIC_SHARED_ONLY":
         return "REQUIRES_LOCAL_RULE_REBIND"
@@ -139,8 +156,12 @@ def main() -> int:
         raw_ticks = scenario_ticks(name, base_seed + idx)
         sanitized = sanitize_ticks(raw_ticks, config)
         ticks = [vars(tick) for tick in sanitized["ticks"]]
-        profiles = [vars(profile) for profile in build_phase1_profiles(sanitized["ticks"], config)]
-        scenario_state[name] = {"ticks": ticks, "profiles": _annotate_truth_kernels(profiles)}
+        phase1_stack = build_phase1_stack(sanitized["ticks"], config)
+        profiles = [vars(profile) for profile in phase1_stack["profiles"]]
+        scenario_state[name] = {
+            "ticks": ticks,
+            "profiles": _annotate_truth_kernels(profiles, phase1_stack["tier0_handoff_rows"]),
+        }
 
     doctrine_rows: List[Dict[str, Any]] = []
     for doctrine_id in TRACK1_DOCTRINES:

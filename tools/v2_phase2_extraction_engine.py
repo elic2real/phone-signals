@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from typing import Any, Dict, List
 
-from tools.v2_phase2_cluster_engine import assign_profile_to_cluster
+from tools.v2_phase2_cluster_engine import _doctrine_state, assign_profile_to_cluster
 from tools.v2_phase5_evaluation_engine import evaluate_candidate, summarize_strategy_results
 
 
@@ -70,7 +70,9 @@ def _base_variant_specs() -> List[Dict[str, Any]]:
 
 
 def _variant_specs_for_doctrine(doctrine: Dict[str, Any]) -> List[Dict[str, Any]]:
-    doctrine_state = str(doctrine.get("doctrine_id", doctrine.get("pattern_match_state", "")) or "").upper()
+    doctrine_state = str(
+        doctrine.get("doctrine_state", doctrine.get("doctrine_id", doctrine.get("pattern_match_state", ""))) or ""
+    ).upper()
     variants = list(_base_variant_specs())
     if "RAW_COMPRESSION_CEILING_REJECTION_SHORT" in doctrine_state:
         variants.extend(
@@ -854,7 +856,7 @@ def evaluate_phase2_doctrines(
                 ),
             )
         ]
-    uncaptured_pattern_counts = Counter(str(row.get("pattern_match_state", "") or "UNMATCHED") for row in uncaptured_profiles)
+    uncaptured_doctrine_counts = Counter(_doctrine_state(row)[0] for row in uncaptured_profiles)
     uncaptured_distance_counts = Counter(str(row.get("distance_family_id", "") or "") for row in uncaptured_profiles)
     uncaptured_signature_counts = Counter(str(row.get("extraction_signature", "") or "") for row in uncaptured_profiles)
     return {
@@ -866,7 +868,8 @@ def evaluate_phase2_doctrines(
         "captured_profile_share": round(len(captured_profile_ids) / max(raw_opportunity_count, 1), 6),
         "uncaptured_profile_count": len(uncaptured_profiles),
         "uncaptured_profile_share": round(len(uncaptured_profiles) / max(raw_opportunity_count, 1), 6),
-        "uncaptured_pattern_match_states": dict(uncaptured_pattern_counts.most_common(20)),
+        "uncaptured_doctrine_states": dict(uncaptured_doctrine_counts.most_common(20)),
+        "uncaptured_pattern_match_states": dict(uncaptured_doctrine_counts.most_common(20)),
         "uncaptured_distance_families": dict(uncaptured_distance_counts.most_common(20)),
         "uncaptured_extraction_signatures": dict(uncaptured_signature_counts.most_common(20)),
         "candidates": candidates,

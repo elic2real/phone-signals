@@ -61,6 +61,7 @@ class SanitizedTick:
 @dataclass
 class Phase1Profile:
     profile_id: str
+    mapping_id: str
     anchor_index: int
     gross_movement_pips: float
     displacement_score: float
@@ -101,6 +102,7 @@ class Phase1Profile:
     trigger_state: str
     direction_group: str
     distance_mode: str
+    fit_state: str
     discovered_distance_pips: float
     target_distance_bucket: str
     extraction_signature: str
@@ -139,7 +141,21 @@ class Phase1Profile:
 
 def sanitize_ticks(raw_ticks: List[Dict[str, Any]], config: Phase1Config) -> Dict[str, Any]:
     if not raw_ticks:
-        return {"ticks": [], "summary": {"input_count": 0, "kept_count": 0, "dropped_count": 0, "drop_reasons": {}}}
+        return {
+            "ticks": [],
+            "summary": {
+                "input_count": 0,
+                "kept_count": 0,
+                "dropped_count": 0,
+                "drop_reasons": {},
+                "median_spread_pips": 0.0,
+                "median_mid_change": 0.0,
+                "max_spread_pips": 0.0,
+                "max_spread_ratio_to_median": 0.0,
+                "spread_stress_tick_count": 0,
+                "spread_stress_detected": False,
+            },
+        }
 
     enriched: List[Dict[str, Any]] = []
     for idx, row in enumerate(raw_ticks):
@@ -171,6 +187,9 @@ def sanitize_ticks(raw_ticks: List[Dict[str, Any]], config: Phase1Config) -> Dic
 
     valid = [row for row in enriched if "drop_reason" not in row]
     median_spread = _median((row["spread_pips"] for row in valid), default=0.0)
+    max_spread = max((float(row["spread_pips"]) for row in valid), default=0.0)
+    spread_stress_threshold = median_spread * max(1.0, config.spread_anomaly_multiplier - 0.5)
+    spread_stress_tick_count = sum(1 for row in valid if median_spread > 0.0 and float(row["spread_pips"]) >= spread_stress_threshold)
     mid_changes: List[float] = []
     prev_mid: float | None = None
     for row in valid:
@@ -223,6 +242,10 @@ def sanitize_ticks(raw_ticks: List[Dict[str, Any]], config: Phase1Config) -> Dic
             "dropped_count": len(raw_ticks) - len(kept),
             "median_spread_pips": median_spread,
             "median_mid_change": median_mid_change,
+            "max_spread_pips": max_spread,
+            "max_spread_ratio_to_median": round(max_spread / max(median_spread, config.epsilon), 6) if median_spread > 0.0 else 0.0,
+            "spread_stress_tick_count": spread_stress_tick_count,
+            "spread_stress_detected": bool(spread_stress_tick_count > 0),
             "drop_reasons": drop_reasons,
         },
     }
@@ -1541,29 +1564,57 @@ def _compile_tier0_handoff(
     mapping_row: Dict[str, Any],
     fit_row: Dict[str, Any],
     directional_pack: Dict[str, Any],
+    energy_state: str,
+    energy_family_id: str,
+    precursor_family_id: str,
 ) -> Dict[str, Any]:
     return {
         "profile_id": profile_id,
         "mapping_id": mapping_id,
+        "anchor_index": int(movement_row["anchor_index"]),
         "direction_group": movement_row["direction_group"],
+        "vector_bias": movement_row["vector_bias"],
         "discovered_distance_pips": movement_row["discovered_distance_pips"],
         "target_distance_bucket": movement_row["target_distance_bucket"],
         "movement_state": movement_row["movement_state"],
+        "displacement_score": movement_row["displacement_score"],
+        "tick_cadence_sec": movement_row["tick_cadence_sec"],
+        "velocity_pips_per_sec": movement_row["velocity_pips_per_sec"],
+        "acceleration_pips_per_sec2": movement_row["acceleration_pips_per_sec2"],
         "cost_covering_state": economics_row["cost_covering_state"],
         "path_covering_state": economics_row["path_covering_state"],
         "raw_opportunity": economics_row["raw_opportunity"],
+        "conservative_opportunity": economics_row["conservative_opportunity"],
+        "aggressive_path_opportunity": economics_row["aggressive_path_opportunity"],
         "opportunity_confidence_tier": economics_row["opportunity_confidence_tier"],
+        "friction_threshold_pips": economics_row["friction_threshold_pips"],
+        "usable_available_pips": economics_row["usable_available_pips"],
+        "path_discovery_pips": economics_row["path_discovery_pips"],
         "precursor_state": precursor_row["precursor_state"],
+        "precursor_family_id": precursor_family_id,
         "precursor_pressure_score": precursor_row["precursor_pressure_score"],
+        "precursor_width_pips": precursor_row["precursor_width_pips"],
+        "precursor_duration_bars": precursor_row["precursor_duration_bars"],
         "order_flow_imbalance": precursor_row["order_flow_imbalance"],
+        "order_flow_band": precursor_row["order_flow_band"],
         "compression_energy_score": precursor_row["compression_energy_score"],
         "rejection_velocity": precursor_row["rejection_velocity"],
         "book_toxicity_proxy": precursor_row["book_toxicity_proxy"],
         "direction_alignment_score": precursor_row["direction_alignment_score"],
+        "energy_state": energy_state,
+        "energy_family_id": energy_family_id,
         "market_pattern_state": mapping_row["market_pattern_state"],
         "surface_type": mapping_row["surface_type"],
         "zone_state": mapping_row["zone_state"],
         "location_relation_id": mapping_row["location_relation_id"],
+        "compression_ratio": mapping_row["compression_ratio"],
+        "boundary_width_pips": mapping_row["boundary_width_pips"],
+        "distance_to_floor_pips": mapping_row["distance_to_floor_pips"],
+        "distance_to_ceiling_pips": mapping_row["distance_to_ceiling_pips"],
+        "time_in_zone_sec": mapping_row["time_in_zone_sec"],
+        "topology_family_id": mapping_row["topology_family_id"],
+        "distance_family_id": mapping_row["distance_family_id"],
+        "lifecycle_stage": mapping_row["lifecycle_stage"],
         "distance_mode": fit_row["distance_mode"],
         "fit_state": fit_row["fit_state"],
         "session_elapsed_pct": mapping_row["session_elapsed_pct"],
@@ -1931,6 +1982,9 @@ def build_phase1_stack(ticks: List[SanitizedTick], config: Phase1Config) -> Dict
             mapping_row=mapping_row,
             fit_row=fit_row,
             directional_pack=directional_pack,
+            energy_state=energy_state,
+            energy_family_id=energy_family_id,
+            precursor_family_id=precursor_family_id,
         )
         event_discovery_rows.append({**movement_row, **economics_row, **precursor_row})
         market_mapping_rows.append(mapping_row)
@@ -1939,6 +1993,7 @@ def build_phase1_stack(ticks: List[SanitizedTick], config: Phase1Config) -> Dict
         profiles.append(
             Phase1Profile(
                 profile_id=profile_id,
+                mapping_id=mapping_id,
                 anchor_index=idx,
                 gross_movement_pips=round(gross_movement_pips, 6),
                 displacement_score=round(displacement_score, 6),
@@ -1979,6 +2034,7 @@ def build_phase1_stack(ticks: List[SanitizedTick], config: Phase1Config) -> Dict
                 trigger_state=trigger_state,
                 direction_group=direction_group,
                 distance_mode=distance_mode,
+                fit_state=fit_row["fit_state"],
                 discovered_distance_pips=round(discovered_distance_pips, 6),
                 target_distance_bucket=target_distance_bucket,
                 extraction_signature=extraction_signature,
@@ -2061,6 +2117,8 @@ def summarize_profiles(profiles: List[Phase1Profile]) -> Dict[str, Any]:
             "opportunity_confidence_tiers": {},
             "compression_present": False,
             "expansion_present": False,
+            "tier0_primary_counts": {},
+            "legacy_interpretation_summary": {},
         }
 
     energy_states: Dict[str, int] = {}
@@ -2145,6 +2203,40 @@ def summarize_profiles(profiles: List[Phase1Profile]) -> Dict[str, Any]:
         "opportunity_confidence_tiers": opportunity_confidence_tiers,
         "compression_present": compression_present,
         "expansion_present": expansion_present,
+        "tier0_primary_counts": {
+            "movement_states": dict(sorted((
+                (key, count) for key, count in {
+                    profile.movement_state: sum(1 for p in profiles if p.movement_state == profile.movement_state)
+                    for profile in profiles
+                }.items()
+            ), key=lambda item: (-item[1], item[0]))),
+            "cost_covering_states": dict(sorted((
+                (key, count) for key, count in {
+                    profile.cost_covering_state: sum(1 for p in profiles if p.cost_covering_state == profile.cost_covering_state)
+                    for profile in profiles
+                }.items()
+            ), key=lambda item: (-item[1], item[0]))),
+            "fit_states": dict(sorted((
+                (key, count) for key, count in {
+                    profile.fit_state: sum(1 for p in profiles if p.fit_state == profile.fit_state)
+                    for profile in profiles
+                }.items()
+            ), key=lambda item: (-item[1], item[0]))),
+            "market_pattern_states": market_pattern_states,
+            "surface_types": surface_types,
+            "zone_states": zone_states,
+            "direction_groups": direction_groups,
+            "distance_modes": distance_modes,
+            "target_distance_buckets": target_distance_buckets,
+            "lifecycle_stages": lifecycle_stages,
+        },
+        "legacy_interpretation_summary": {
+            "pattern_match_states": pattern_match_states,
+            "trigger_states": trigger_states,
+            "extraction_signatures": extraction_signatures,
+            "doctrine_family_ids": doctrine_family_ids,
+            "payload_status": payload_status,
+        },
     }
 
 

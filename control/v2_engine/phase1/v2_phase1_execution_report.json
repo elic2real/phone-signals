@@ -1,7 +1,7 @@
 {
   "artifact_id": "V2_PHASE1_EXECUTION_REPORT",
-  "generated_at_utc": "2026-04-02T13:59:25.044205Z",
-  "status": "FAIL",
+  "generated_at_utc": "2026-04-02T16:48:47.457931Z",
+  "status": "PASS",
   "determinism_lock": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_determinism_lock.json",
   "boundary_lock": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_boundary_lock.json",
   "phase_contract": "C:\\Users\\mawil\\phone_signals\\phone-signals-publish-clean\\control\\v2_engine\\v2_phase_contracts.json",
@@ -26,7 +26,7 @@
   "pass_gates": {
     "all_scenarios_produced_sanitized_output": true,
     "no_unhandled_nan_or_inf": true,
-    "spread_anomaly_detected": false,
+    "spread_anomaly_detected": true,
     "compression_present": true,
     "expansion_present": true
   },
@@ -40,6 +40,7 @@
     "Tier 0 now also emits precursor families, topology families, distance families, lifecycle states, and grouped opportunity hierarchy fields for downstream doctrine building.",
     "Opportunity reporting is now split into conservative, aggressive-path, and pattern-qualified layers for sanity checking.",
     "Phase 1 sample payloads now also carry non-breaking Tier 1 truth-kernel annotations.",
-    "Phase 1 now publishes explicit Tier 0 sublayer artifacts for event discovery, independent market mapping, opportunity fit, and handoff."
+    "Phase 1 now publishes explicit Tier 0 sublayer artifacts for event discovery, independent market mapping, opportunity fit, and handoff.",
+    "Legacy interpretation fields are still emitted for migration compatibility, but discovery-map summaries now treat them as legacy side channels rather than primary Tier 0 outputs."
   ]
 }

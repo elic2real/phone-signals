@@ -32,6 +32,7 @@
       "output_schema": {
         "profile_fields": [
           "profile_id",
+          "mapping_id",
           "displacement_score",
           "net_displacement_pips",
           "friction_threshold_pips",
@@ -51,9 +52,10 @@
           "acceleration_pips_per_bar",
           "impulse_ratio",
           "direction_group",
+          "distance_mode",
+          "fit_state",
           "discovered_distance_pips",
           "target_distance_bucket",
-          "extraction_signature",
           "precursor_family_id",
           "topology_family_id",
           "location_relation_id",
@@ -65,9 +67,7 @@
           "opportunity_episode_id",
           "overlap_group_id",
           "episode_position",
-          "data_confidence",
-          "pattern_match_state",
-          "live_recognition_state"
+          "data_confidence"
         ]
       }
     },
@@ -118,8 +118,9 @@
       "output_schema": {
         "doctrine_fields": [
           "doctrine_id",
+          "doctrine_state",
           "doctrine_source",
-          "pattern_match_state",
+          "legacy_pattern_match_state",
           "direction_group",
           "support_contract",
           "support_core_topology_family_ids",

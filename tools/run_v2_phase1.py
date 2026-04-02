@@ -178,8 +178,16 @@ def main() -> int:
         kernel_rows = []
         annotated_profiles = []
         kernel_signature_counts: Dict[str, int] = {}
+        handoff_by_profile_id = {
+            str(row.get("profile_id", "") or ""): row
+            for row in list(result["tier0"]["tier0_handoff_rows"])
+        }
         for profile in sampled_profiles:
-            kernel = build_truth_kernel(profile, result["profiles"])
+            kernel = build_truth_kernel(
+                profile,
+                result["profiles"],
+                handoff_by_profile_id.get(str(profile.get("profile_id", "") or "")),
+            )
             kernel_rows.append(kernel)
             signature = str(kernel["kernel_signature"])
             kernel_signature_counts[signature] = kernel_signature_counts.get(signature, 0) + 1
@@ -204,9 +212,10 @@ def main() -> int:
             "pattern_qualified_opportunity_count": summary["pattern_qualified_opportunity_count"],
             "movement_detected_count": summary["movement_detected_count"],
             "cost_covering_count": summary["cost_covering_count"],
+            "tier0_primary_counts": summary.get("tier0_primary_counts", {}),
             "direction_groups": summary["direction_groups"],
             "target_distance_buckets": summary["target_distance_buckets"],
-            "pattern_match_states": summary["pattern_match_states"],
+            "legacy_interpretation_summary": summary.get("legacy_interpretation_summary", {}),
             "top_precursor_families": top_counts(summary["precursor_family_ids"], limit=12),
             "top_topology_families": top_counts(summary["topology_family_ids"], limit=12),
             "top_distance_families": top_counts(summary["distance_family_ids"], limit=12),
@@ -219,7 +228,7 @@ def main() -> int:
 
         compression_present = compression_present or bool(summary["compression_present"])
         expansion_present = expansion_present or bool(summary["expansion_present"])
-        if "spread_anomaly" in sanitizer["drop_reasons"]:
+        if "spread_anomaly" in sanitizer["drop_reasons"] or bool(sanitizer.get("spread_stress_detected")):
             spread_stress_detected = True
         for profile in result["profiles"]:
             for key, value in profile.items():
@@ -255,7 +264,8 @@ def main() -> int:
             "Tier 0 now also emits precursor families, topology families, distance families, lifecycle states, and grouped opportunity hierarchy fields for downstream doctrine building.",
             "Opportunity reporting is now split into conservative, aggressive-path, and pattern-qualified layers for sanity checking.",
             "Phase 1 sample payloads now also carry non-breaking Tier 1 truth-kernel annotations.",
-            "Phase 1 now publishes explicit Tier 0 sublayer artifacts for event discovery, independent market mapping, opportunity fit, and handoff."
+            "Phase 1 now publishes explicit Tier 0 sublayer artifacts for event discovery, independent market mapping, opportunity fit, and handoff.",
+            "Legacy interpretation fields are still emitted for migration compatibility, but discovery-map summaries now treat them as legacy side channels rather than primary Tier 0 outputs."
         ],
     }
 
